@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "داشبورد تب جدید من",
-  "version": "1.3",
+  "version": "1.4",
   "description": "صفحه تب جدید سفارشی شامل ساعت، تسک و میانبرها مشابه دستیار",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
