@@ -37,14 +37,14 @@
 
   <div class="dashboard-container">
     
-    <!-- ستون راست: آب‌وهوا/ساعت در بالا و تقویم در پایین -->
+    <!-- ستون سمت راست: ویجت‌ها -->
     <div class="col col-left">
       
-      <!-- باکس دوتایی ساعت و آب‌وهوا مشابه تصویر منبع -->
-      <div class="ios-glass-card weather-clock-card">
+      <!-- ردیف باکس‌های جداگانه ساعت و آب‌وهوا -->
+      <div class="split-widgets-row">
         
-        <!-- نیمه چپ کارت: آب و هوای هوشمند -->
-        <div class="weather-pane">
+        <!-- باکس مستقل آب و هوا -->
+        <div class="ios-glass-card weather-single-card">
           <div class="weather-top-row">
             <span class="weather-temp-val" id="weather-temp">۱۷°</span>
             <div class="weather-icon-badge" id="weather-icon">🌙</div>
@@ -54,10 +54,8 @@
           <div class="pill-btn forecast-pill">پیش‌بینی ⌵</div>
         </div>
 
-        <div class="pane-divider"></div>
-
-        <!-- نیمه راست کارت: ساعت و تاریخ شمسی، میلادی، قمری -->
-        <div class="clock-pane">
+        <!-- باکس مستقل ساعت و تاریخ -->
+        <div class="ios-glass-card clock-single-card">
           <div class="digital-clock" id="clock">۰۲:۰۳</div>
           <div class="date-shamsi-main" id="shamsi-date">پنج‌شنبه، ۹ مهر</div>
           <div class="date-secondary-row" id="date-secondary">۲۰۲۶/Oct/1 | ۱۹ ربیع‌الثانی ۱۴۴۸</div>
@@ -69,7 +67,7 @@
 
       </div>
 
-      <!-- تقویم شمسی با جزئیات کامل عکس -->
+      <!-- باکس تقویم شمسی -->
       <div class="ios-glass-card calendar-card">
         <div class="cal-top-bar">
           <button class="cal-arrow" id="cal-next">‹</button>
@@ -85,7 +83,6 @@
         </div>
 
         <div class="cal-dates-grid" id="cal-dates">
-          <!-- روزهای تقویم با منطق روز جاری و رویدادها -->
           <span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span>
           <span>۱</span><span>۲</span><span class="fri holiday">۳</span>
           <span>۴</span><span>۵</span><span>۶</span><span>۷</span><span>۸</span><span class="today-circle">۹</span><span class="fri holiday dot">۱۰</span>
@@ -103,7 +100,7 @@
 
     </div>
 
-    <!-- ستون وسط: سرچ‌بار کپسولی و شورت‌کات‌های ۶ تایی -->
+    <!-- ستون وسط: سرچ‌بار و میانبرها -->
     <div class="col col-center">
       
       <div class="search-capsule" id="search-capsule">
@@ -136,49 +133,64 @@
 
     </div>
 
-    <!-- ستون چپ: پنل تسک و یادداشت با جزئیات تصویر دوم -->
+    <!-- ستون چپ: پنل تسک دقیقاً مطابق عکس ارسالی -->
     <div class="col col-right">
-      <div class="ios-glass-card todo-panel">
+      <div class="ios-glass-card task-master-card">
         
         <!-- تب‌بار سوئیچ تسک و یادداشت -->
-        <div class="task-tabs-row">
-          <button class="task-tab active" id="tab-tasks">تسک <span class="tab-check-icon">✓</span></button>
-          <button class="task-tab" id="tab-notes">یادداشت 🗒</button>
+        <div class="task-top-tabs">
+          <button class="tab-item active" id="tab-tasks">
+            <span class="tab-badge-icon">☑</span>
+            <span>تسک</span>
+          </button>
+          <button class="tab-item" id="tab-notes">
+            <span class="tab-badge-icon">📋</span>
+            <span>یادداشت</span>
+          </button>
         </div>
 
-        <!-- نوار ابزارهای فیلتر و مرتب‌سازی -->
-        <div class="task-controls-bar">
-          <button class="ctrl-icon-btn" title="بیشتر">⋯</button>
-          <button class="ctrl-icon-btn" title="پنهان/نمایش انجام شده‌ها">👁</button>
-          <button class="ctrl-icon-btn" title="فیلترها">Ⴤ</button>
-          <button class="ctrl-icon-btn" title="مرتب‌سازی">⇅</button>
-        </div>
-
-        <!-- محتوای لیست یا Empty State -->
-        <div class="task-content-area" id="task-content">
-          <div class="empty-state-box" id="empty-state">
-            <div class="empty-badge-box">
-              <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
-                <rect x="2" y="2" width="20" height="20" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
-                <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h4>هنوز تسکی ثبت نکردی!</h4>
-            <p class="suggestions-label">موضوعات پیشنهادی:</p>
-            <ul class="suggestions-list">
-              <li>• کارهای روزانه</li>
-              <li>• لیست خرید</li>
-              <li>• یادآوری‌های پرداخت</li>
-            </ul>
-            <button class="plan-btn" id="plan-btn">برنامه‌ریزی ✦</button>
+        <!-- ردیف ابزارهای ۴ تایی فیلتر و مرتب‌سازی قرصی -->
+        <div class="task-action-pills">
+          <div class="pill-action-btn" title="بیشتر">⋯</div>
+          <div class="pill-action-btn" title="پنهان/نمایش انجام شده‌ها">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </div>
-          
+          <div class="pill-action-btn" title="فیلترها">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          </div>
+          <div class="pill-action-btn" title="مرتب‌سازی">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+          </div>
+        </div>
+
+        <!-- محتوای خالی تسک (Empty State) دقیقاً مطابق عکس منبع -->
+        <div class="task-body-zone">
+          <div class="exact-empty-state" id="empty-state">
+            <div class="empty-halo-circle">
+              <div class="cube-check-icon">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+                  <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            
+            <h3 class="empty-main-heading">هنوز تسکی ثبت نکردی!</h3>
+            <p class="empty-sub-heading">موضوعات پیشنهادی:</p>
+            
+            <div class="empty-bullets">
+              <span>• کارهای روزانه</span>
+              <span>• لیست خرید</span>
+              <span>• یادآوری‌های پرداخت</span>
+            </div>
+          </div>
+
           <ul class="todo-list" id="todo-list" style="display: none;"></ul>
         </div>
 
-        <!-- ورودی تسک کپسولی در پایین -->
-        <div class="task-input-wrapper">
-          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید...">
+        <!-- اینپوت سفید کپسولی در پایین -->
+        <div class="task-input-bottom">
+          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید" autocomplete="off">
         </div>
 
       </div>
