@@ -3,32 +3,35 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Vazirmatn', sans-serif;
+  user-select: none;
 }
 
 :root {
-  --bg-fallback: radial-gradient(circle at 10% 20%, #d8f1ff 0%, #e4e0ff 45%, #f0f8ff 90%);
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --bg-gradient: radial-gradient(circle at 20% 20%, #d8ebff 0%, #e9e4ff 50%, #d9f3ea 100%);
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.05);
+  --glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --text-main: #0f172a;
+  --text-muted: #475569;
   --accent-color: #2563eb;
-  --card-bg: rgba(255, 255, 255, 0.85);
 }
 
 [data-theme="dark"] {
-  --bg-fallback: radial-gradient(circle at 10% 20%, #090d16 0%, #171b2c 50%, #050810 100%);
-  --glass-bg: rgba(23, 27, 44, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --bg-gradient: radial-gradient(circle at 20% 20%, #0b0f19 0%, #151828 50%, #09121d 100%);
+  --glass-bg: rgba(26, 32, 53, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5);
+  --glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  --card-bg: rgba(30, 41, 59, 0.65);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --accent-color: #38bdf8;
-  --card-bg: rgba(30, 41, 59, 0.85);
 }
 
 body {
-  background: var(--bg-fallback);
+  background: var(--bg-gradient);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -38,7 +41,7 @@ body {
   position: relative;
 }
 
-/* لایه بک‌گراند کاستوم کاربر */
+/* پس‌زمینه کاربر */
 .bg-overlay {
   position: fixed;
   top: 0;
@@ -47,49 +50,97 @@ body {
   height: 100vh;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   z-index: -1;
   transition: filter 0.3s ease;
 }
 
-.bg-overlay.active {
-  filter: blur(12px) brightness(0.95);
-  transform: scale(1.05);
+.bg-overlay.blurred {
+  filter: blur(20px) brightness(0.9);
+  transform: scale(1.04);
 }
 
-/* کنترل‌های بالا */
+.bg-overlay.clear {
+  filter: blur(0px) brightness(0.95);
+}
+
+/* دکمه‌های کنترل بالا */
 .top-controls {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 24px;
+  left: 24px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   z-index: 100;
 }
 
-.glass-btn {
-  width: 44px;
-  height: 44px;
+.ios-glass-btn {
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(35px) saturate(200%);
+  -webkit-backdrop-filter: blur(35px) saturate(200%);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
-  transition: transform 0.15s ease;
+  font-size: 1.25rem;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.glass-btn:hover {
-  transform: scale(1.08);
+.ios-glass-btn:hover {
+  transform: scale(1.1);
 }
 
+/* منوی تنظیمات پس‌زمینه */
+.glass-dropdown {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(210%);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+  z-index: 110;
+}
+
+.glass-dropdown.active {
+  display: flex;
+}
+
+.dropdown-item {
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  text-align: right;
+  font-size: 0.88rem;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: background 0.2s;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-item.danger {
+  color: #ef4444;
+}
+
+/* ساختار کلی داشبورد */
 .dashboard-container {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   width: 92%;
   max-width: 1280px;
   height: 600px;
@@ -98,30 +149,36 @@ body {
 .col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .col-left { flex: 1.1; }
 .col-center { flex: 2; }
 .col-right { flex: 1.2; }
 
-/* کارت شیشه‌ای بلر */
-.glass-card {
+/* کارت شیشه‌ای با شفافیت آیفون (iOS Glass) */
+.ios-glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: var(--glass-shadow);
+  border-radius: 30px;
+  padding: 22px;
+  box-shadow: var(--glass-shadow), var(--glass-specular);
 }
 
-/* سرچ بار مشابه دستیار */
-.search-card {
-  padding: 10px 18px;
+/* سرچ بار کپسولی iOS */
+.search-capsule {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  border: 1px solid var(--glass-border);
   border-radius: 40px;
+  padding: 8px 18px;
+  box-shadow: var(--glass-shadow), var(--glass-specular);
 }
 
-.search-form {
+.search-inner {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -130,21 +187,22 @@ body {
 .search-actions-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.action-icon {
+.tool-btn {
+  font-size: 1.25rem;
   cursor: pointer;
-  font-size: 1.1rem;
-  opacity: 0.8;
-  transition: opacity 0.2s;
+  opacity: 0.85;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.action-icon:hover {
+.tool-btn:hover {
+  transform: scale(1.15);
   opacity: 1;
 }
 
-.search-form input {
+.search-inner input {
   flex: 1;
   background: transparent;
   border: none;
@@ -152,29 +210,42 @@ body {
   font-size: 1.05rem;
   color: var(--text-main);
   text-align: right;
-  padding: 4px 8px;
+  padding: 6px 10px;
 }
 
-.google-badge {
+.engine-badge {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.4);
-  padding: 4px 10px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 6px 12px;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
-.google-badge .arrow-icon {
+.engine-badge:hover {
+  transform: scale(1.04);
+}
+
+.badge-arrow {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* شبکه میانبرها (مربعی، مرتب) */
+.zarebin-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0284c7;
+}
+
+/* میانبرهای مربعی */
 .shortcuts-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-top: 10px;
+  margin-top: 6px;
   overflow-y: auto;
   max-height: 480px;
   padding: 4px;
@@ -183,36 +254,35 @@ body {
 .shortcut-box {
   position: relative;
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(30px) saturate(190%);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 14px 10px;
+  box-shadow: var(--glass-specular), 0 8px 24px rgba(0,0,0,0.04);
+  border-radius: 22px;
+  padding: 16px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  color: var(--text-main);
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
 }
 
 .shortcut-box:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.1);
 }
 
 .shortcut-icon-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  object-fit: cover;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   margin-bottom: 8px;
+  object-fit: cover;
 }
 
 .shortcut-title {
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -220,7 +290,6 @@ body {
   width: 100%;
 }
 
-/* دکمه سه نقطه هر آیکون */
 .more-btn {
   position: absolute;
   top: 6px;
@@ -238,21 +307,20 @@ body {
   opacity: 1;
 }
 
-/* منوی بازشونده ۳ نقطه */
 .context-menu {
   position: absolute;
-  top: 32px;
+  top: 34px;
   right: 8px;
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(40px);
   border: 1px solid var(--glass-border);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 6px;
   display: none;
   flex-direction: column;
   gap: 4px;
   z-index: 50;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+  box-shadow: var(--glass-shadow);
   min-width: 130px;
 }
 
@@ -263,41 +331,37 @@ body {
 .menu-item {
   background: none;
   border: none;
-  padding: 6px 10px;
+  padding: 7px 10px;
   text-align: right;
   font-size: 0.82rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .menu-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .menu-item.delete {
   color: #ef4444;
 }
 
-/* دکمه مثبت افزودن میانبر */
+/* دکمه مثبت افزودن */
 .add-shortcut-box {
   background: var(--glass-bg);
   border: 2px dashed var(--glass-border);
-  border-radius: 20px;
+  border-radius: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  min-height: 105px;
-  transition: all 0.2s ease;
+  min-height: 110px;
+  transition: transform 0.2s;
 }
 
 .add-shortcut-box:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
 }
 
 .add-plus-icon {
@@ -313,18 +377,14 @@ body {
 }
 
 .digital-clock {
-  font-size: 2.7rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--accent-color);
 }
 
 .date-text {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-}
-
-.weather-box {
-  text-align: left;
 }
 
 .temp {
@@ -332,13 +392,8 @@ body {
   font-weight: 700;
 }
 
-.weather-desc {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
 .calendar-card { flex: 1; }
-.calendar-header { font-weight: 700; margin-bottom: 12px; text-align: center; }
+.calendar-header { font-weight: 700; margin-bottom: 14px; text-align: center; }
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -346,74 +401,60 @@ body {
   text-align: center;
   font-size: 0.85rem;
 }
-.calendar-grid span { padding: 5px 0; border-radius: 8px; }
+.calendar-grid span { padding: 6px 0; border-radius: 8px; }
 .calendar-grid .dim { color: var(--text-muted); opacity: 0.4; }
 .calendar-grid .holiday { color: #ef4444; }
 .calendar-grid .today { background: var(--accent-color); color: #fff; font-weight: 700; }
 
 /* تسک‌ها */
 .todo-card { flex: 1; display: flex; flex-direction: column; }
-.todo-header h3 { font-size: 1.05rem; margin-bottom: 12px; }
+.todo-header h3 { font-size: 1.1rem; margin-bottom: 12px; }
 .todo-list { flex: 1; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
 .todo-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: var(--card-bg);
-  border-radius: 12px;
-  font-size: 0.9rem;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  border: 1px solid var(--glass-border);
 }
 .todo-item.done span { text-decoration: line-through; color: var(--text-muted); }
 .todo-item button { background: none; border: none; color: #ef4444; cursor: pointer; }
 .todo-input-box { margin-top: 12px; }
 .todo-input-box input {
   width: 100%;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 14px;
+  border-radius: 16px;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--text-main);
 }
 
-/* مدال افزودن */
+/* مودال */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(8px);
-  display: none;
-  justify-content: center;
-  align-items: center;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  display: none; justify-content: center; align-items: center;
   z-index: 200;
 }
 .modal-overlay.active { display: flex; }
 .modal-content {
   width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 .modal-content input {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
-  outline: none;
-  font-size: 0.9rem;
+  padding: 10px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
+  outline: none; font-size: 0.9rem; background: var(--card-bg); color: var(--text-main);
 }
-.modal-buttons { display: flex; gap: 10px; margin-top: 8px; }
+.modal-buttons { display: flex; gap: 10px; margin-top: 6px; }
 .modal-btn {
-  flex: 1;
-  padding: 8px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
+  flex: 1; padding: 10px; border-radius: 12px; border: none; cursor: pointer; font-size: 0.9rem;
 }
 .modal-btn.save { background: var(--accent-color); color: #fff; }
-.modal-btn.cancel { background: #e2e8f0; color: #475569; }
+.modal-btn.cancel { background: rgba(255,255,255,0.3); color: var(--text-main); }

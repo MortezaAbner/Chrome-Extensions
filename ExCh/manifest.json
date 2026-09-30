@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "داشبورد تب جدید من",
-  "version": "1.6",
-  "description": "صفحه تب جدید سفارشی شامل ساعت، تسک و میانبرها مشابه دستیار",
+  "name": "Abner Chrome Extension",
+  "version": "1.7.1",
+  "description": "Minimalist iOS-inspired glassmorphic new tab dashboard featuring dynamic widgets, smart search engine switching, and custom productivity tools.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
