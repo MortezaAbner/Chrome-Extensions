@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- تصویر پس‌زمینه پویا -->
+  <!-- تصویر پس‌زمینه کاربر -->
   <div id="custom-bg-overlay" class="bg-overlay"></div>
 
   <!-- کنترل‌های بالا سمت چپ -->
@@ -37,13 +37,11 @@
 
   <div class="dashboard-container">
     
-    <!-- ستون سمت راست: ویجت‌ها -->
+    <!-- ستون راست: ویجت‌ها -->
     <div class="col col-left">
       
-      <!-- ردیف باکس‌های جداگانه ساعت و آب‌وهوا -->
       <div class="split-widgets-row">
-        
-        <!-- باکس مستقل آب و هوا -->
+        <!-- باکس آب و هوا -->
         <div class="ios-glass-card weather-single-card">
           <div class="weather-top-row">
             <span class="weather-temp-val" id="weather-temp">۱۷°</span>
@@ -54,7 +52,7 @@
           <div class="pill-btn forecast-pill">پیش‌بینی ⌵</div>
         </div>
 
-        <!-- باکس مستقل ساعت و تاریخ -->
+        <!-- باکس ساعت و تاریخ -->
         <div class="ios-glass-card clock-single-card">
           <div class="digital-clock" id="clock">۰۲:۰۳</div>
           <div class="date-shamsi-main" id="shamsi-date">پنج‌شنبه، ۹ مهر</div>
@@ -64,10 +62,9 @@
             <span class="pill-btn">تایمر ⌵</span>
           </div>
         </div>
-
       </div>
 
-      <!-- باکس تقویم شمسی -->
+      <!-- تقویم شمسی -->
       <div class="ios-glass-card calendar-card">
         <div class="cal-top-bar">
           <button class="cal-arrow" id="cal-next">‹</button>
@@ -100,7 +97,7 @@
 
     </div>
 
-    <!-- ستون وسط: سرچ‌بار و میانبرها -->
+    <!-- ستون وسط: سرچ‌بار و میانبرهای ۶ تایی وسط -->
     <div class="col col-center">
       
       <div class="search-capsule" id="search-capsule">
@@ -113,7 +110,7 @@
 
           <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-          <div class="engine-badge" id="engine-switcher" title="تغییر بین گوگل و ذره‌بین">
+          <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
             <span class="badge-arrow">↕</span>
             <div id="engine-logo-container">
               <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -129,15 +126,15 @@
         </form>
       </div>
 
+      <!-- شبکه میانبرها (۶ ستونه) -->
       <div class="shortcuts-container" id="shortcuts-grid"></div>
 
     </div>
 
-    <!-- ستون چپ: پنل تسک دقیقاً مطابق عکس ارسالی -->
+    <!-- ستون چپ: پنل تسک -->
     <div class="col col-right">
       <div class="ios-glass-card task-master-card">
         
-        <!-- تب‌بار سوئیچ تسک و یادداشت -->
         <div class="task-top-tabs">
           <button class="tab-item active" id="tab-tasks">
             <span class="tab-badge-icon">☑</span>
@@ -149,7 +146,6 @@
           </button>
         </div>
 
-        <!-- ردیف ابزارهای ۴ تایی فیلتر و مرتب‌سازی قرصی -->
         <div class="task-action-pills">
           <div class="pill-action-btn" title="بیشتر">⋯</div>
           <div class="pill-action-btn" title="پنهان/نمایش انجام شده‌ها">
@@ -163,7 +159,6 @@
           </div>
         </div>
 
-        <!-- محتوای خالی تسک (Empty State) دقیقاً مطابق عکس منبع -->
         <div class="task-body-zone">
           <div class="exact-empty-state" id="empty-state">
             <div class="empty-halo-circle">
@@ -188,7 +183,6 @@
           <ul class="todo-list" id="todo-list" style="display: none;"></ul>
         </div>
 
-        <!-- اینپوت سفید کپسولی در پایین -->
         <div class="task-input-bottom">
           <input type="text" id="new-todo" placeholder="نوشتن تسک جدید" autocomplete="off">
         </div>
