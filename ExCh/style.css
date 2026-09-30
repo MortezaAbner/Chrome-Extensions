@@ -8,12 +8,12 @@
 
 :root {
   --bg-gradient: radial-gradient(circle at 20% 20%, #d8ebff 0%, #e9e4ff 50%, #d9f3ea 100%);
-  /* شفافیت شیشه‌ای بسیار بالا شبیه Liquid Glass آیفون */
-  --glass-bg: rgba(255, 255, 255, 0.22);
-  --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.04);
-  --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
-  --card-bg: rgba(255, 255, 255, 0.28);
+  /* ۵۰٪ شیشه‌ای‌تر و زلال‌تر */
+  --glass-bg: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-specular: inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.03);
+  --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.12);
   --text-main: #0f172a;
   --text-muted: #334155;
   --accent-color: #2563eb;
@@ -21,11 +21,11 @@
 
 [data-theme="dark"] {
   --bg-gradient: radial-gradient(circle at 20% 20%, #0b0f19 0%, #151828 50%, #09121d 100%);
-  --glass-bg: rgba(18, 22, 38, 0.35);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
+  --glass-bg: rgba(18, 22, 38, 0.18);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-specular: inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
   --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
-  --card-bg: rgba(24, 30, 48, 0.38);
+  --card-bg: rgba(24, 30, 48, 0.18);
   --text-main: #f8fafc;
   --text-muted: #cbd5e1;
   --accent-color: #38bdf8;
@@ -43,7 +43,6 @@ body {
   position: relative;
 }
 
-/* تصویر پس‌زمینه */
 .bg-overlay {
   position: fixed;
   top: 0;
@@ -65,7 +64,6 @@ body {
   filter: blur(0px) brightness(0.98);
 }
 
-/* کنترل‌های بالا */
 .top-controls {
   position: fixed;
   top: 18px;
@@ -97,7 +95,6 @@ body {
   transform: scale(1.08);
 }
 
-/* منوی بازشونده تنظیمات عکس */
 .glass-dropdown {
   position: absolute;
   top: 48px;
@@ -139,13 +136,12 @@ body {
   color: #ef4444;
 }
 
-/* داشبورد */
 .dashboard-container {
   display: flex;
   gap: 20px;
-  width: 90%;
-  max-width: 1200px;
-  height: 560px;
+  width: 94%;
+  max-width: 1360px;
+  height: 580px;
 }
 
 .col {
@@ -154,11 +150,10 @@ body {
   gap: 16px;
 }
 
-.col-left { flex: 1.1; }
-.col-center { flex: 2; }
+.col-left { flex: 1; }
+.col-center { flex: 2.3; }
 .col-right { flex: 1.1; }
 
-/* کارت شیشه‌ای بلر قوی iOS */
 .ios-glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(50px) saturate(220%);
@@ -169,7 +164,6 @@ body {
   box-shadow: var(--glass-shadow), var(--glass-specular);
 }
 
-/* سرچ بار کپسولی شفاف */
 .search-capsule {
   background: var(--glass-bg);
   backdrop-filter: blur(50px) saturate(220%);
@@ -218,8 +212,8 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 4px 10px;
   border-radius: 20px;
   cursor: pointer;
@@ -236,49 +230,50 @@ body {
   color: #0284c7;
 }
 
-/* گرید شورت‌کات‌ها - سایز متناسب و فشرده‌تر */
+/* ۶ ستون کاملاً مربعی */
 .shortcuts-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
   margin-top: 4px;
   overflow-y: auto;
-  max-height: 460px;
+  max-height: 480px;
   padding: 2px;
 }
 
 .shortcut-box {
   position: relative;
+  aspect-ratio: 1 / 1;
   background: var(--card-bg);
-  backdrop-filter: blur(45px) saturate(200%);
+  backdrop-filter: blur(45px) saturate(220%);
+  -webkit-backdrop-filter: blur(45px) saturate(220%);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-specular), 0 6px 18px rgba(0,0,0,0.06);
+  box-shadow: var(--glass-specular), 0 4px 14px rgba(0,0,0,0.04);
   border-radius: 18px;
-  padding: 10px 6px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 84px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .shortcut-box:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.1);
 }
 
 .shortcut-icon-img {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  margin-bottom: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  margin-bottom: 4px;
   object-fit: cover;
 }
 
 .shortcut-title {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
@@ -289,13 +284,13 @@ body {
 
 .more-btn {
   position: absolute;
-  top: 4px;
-  right: 6px;
+  top: 3px;
+  right: 5px;
   background: none;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -306,19 +301,19 @@ body {
 
 .context-menu {
   position: absolute;
-  top: 28px;
-  right: 6px;
+  top: 24px;
+  right: 4px;
   background: var(--glass-bg);
   backdrop-filter: blur(45px);
   border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  padding: 5px;
+  border-radius: 12px;
+  padding: 4px;
   display: none;
   flex-direction: column;
   gap: 3px;
   z-index: 50;
   box-shadow: var(--glass-shadow);
-  min-width: 120px;
+  min-width: 110px;
 }
 
 .context-menu.active {
@@ -328,11 +323,11 @@ body {
 .menu-item {
   background: none;
   border: none;
-  padding: 6px 8px;
+  padding: 5px 7px;
   text-align: right;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 7px;
   color: var(--text-main);
 }
 
@@ -344,8 +339,9 @@ body {
   color: #ef4444;
 }
 
-/* دکمه مثبت با ابعاد متناسب جدید */
+/* دکمه مثبت مربعی */
 .add-shortcut-box {
+  aspect-ratio: 1 / 1;
   background: var(--glass-bg);
   border: 1.5px dashed var(--glass-border);
   border-radius: 18px;
@@ -353,7 +349,6 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  min-height: 84px;
   transition: transform 0.2s;
 }
 
@@ -362,11 +357,10 @@ body {
 }
 
 .add-plus-icon {
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   color: var(--text-muted);
 }
 
-/* ساعت و تاریخ */
 .weather-clock-card {
   display: flex;
   justify-content: space-between;
@@ -403,7 +397,6 @@ body {
 .calendar-grid .holiday { color: #ef4444; }
 .calendar-grid .today { background: var(--accent-color); color: #fff; font-weight: 700; }
 
-/* تسک‌ها */
 .todo-card { flex: 1; display: flex; flex-direction: column; }
 .todo-header h3 { font-size: 1rem; margin-bottom: 10px; }
 .todo-list { flex: 1; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
@@ -431,7 +424,6 @@ body {
   color: var(--text-main);
 }
 
-/* متن شناور پایین (بدون هیچ نوار تیره‌ای) */
 .footer-brand {
   position: fixed;
   bottom: 14px;
@@ -443,7 +435,6 @@ body {
   pointer-events: none;
 }
 
-/* مودال */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
