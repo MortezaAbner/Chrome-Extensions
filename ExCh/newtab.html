@@ -17,7 +17,6 @@
       <span id="theme-icon">🌙</span>
     </button>
     
-    <!-- دکمه آیکون قاب عکس برای پس‌زمینه -->
     <button id="bg-settings-btn" class="ios-glass-btn" title="شخصی‌سازی تصویر زمینه">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
@@ -38,47 +37,86 @@
 
   <div class="dashboard-container">
     
-    <!-- ستون ساعت و تقویم فوق شیشه‌ای -->
+    <!-- ستون راست: آب‌وهوا/ساعت در بالا و تقویم در پایین -->
     <div class="col col-left">
+      
+      <!-- باکس دوتایی ساعت و آب‌وهوا مشابه تصویر منبع -->
       <div class="ios-glass-card weather-clock-card">
-        <div class="clock-box">
-          <div class="digital-clock" id="clock">00:00</div>
-          <div class="date-text" id="shamsi-date">چهارشنبه، ۸ مهر</div>
+        
+        <!-- نیمه چپ کارت: آب و هوای هوشمند -->
+        <div class="weather-pane">
+          <div class="weather-top-row">
+            <span class="weather-temp-val" id="weather-temp">۱۷°</span>
+            <div class="weather-icon-badge" id="weather-icon">🌙</div>
+          </div>
+          <div class="weather-status-phrase" id="weather-phrase">حس خوب مهر 🧡</div>
+          <div class="weather-range">۲۵° حداکثر . ۱۵° حداقل</div>
+          <div class="pill-btn forecast-pill">پیش‌بینی ⌵</div>
         </div>
-        <div class="weather-box">
-          <span class="temp">۲۲°</span>
-          <span class="weather-desc">آفتابی و شفاف</span>
+
+        <div class="pane-divider"></div>
+
+        <!-- نیمه راست کارت: ساعت و تاریخ شمسی، میلادی، قمری -->
+        <div class="clock-pane">
+          <div class="digital-clock" id="clock">۰۲:۰۳</div>
+          <div class="date-shamsi-main" id="shamsi-date">پنج‌شنبه، ۹ مهر</div>
+          <div class="date-secondary-row" id="date-secondary">۲۰۲۶/Oct/1 | ۱۹ ربیع‌الثانی ۱۴۴۸</div>
+          <div class="clock-actions-row">
+            <span class="pill-btn">اوقات شرعی ⌵</span>
+            <span class="pill-btn">تایمر ⌵</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- تقویم شمسی با جزئیات کامل عکس -->
+      <div class="ios-glass-card calendar-card">
+        <div class="cal-top-bar">
+          <button class="cal-arrow" id="cal-next">‹</button>
+          <div class="cal-title-box">
+            <div class="cal-month-title">مهر ۱۴۰۵ ▾</div>
+            <div class="cal-sub-title">ربیع الثانی-جمادی الاول Sep-Oct</div>
+          </div>
+          <button class="cal-arrow" id="cal-prev">›</button>
+        </div>
+
+        <div class="cal-weekdays">
+          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span class="fri">ج</span>
+        </div>
+
+        <div class="cal-dates-grid" id="cal-dates">
+          <!-- روزهای تقویم با منطق روز جاری و رویدادها -->
+          <span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span>
+          <span>۱</span><span>۲</span><span class="fri holiday">۳</span>
+          <span>۴</span><span>۵</span><span>۶</span><span>۷</span><span>۸</span><span class="today-circle">۹</span><span class="fri holiday dot">۱۰</span>
+          <span>۱۱</span><span class="dot">۱۲</span><span class="dot">۱۳</span><span class="dot">۱۴</span><span>۱۵</span><span>۱۶</span><span class="fri holiday">۱۷</span>
+          <span>۱۸</span><span>۱۹</span><span>۲۰</span><span>۲۱</span><span>۲۲</span><span>۲۳</span><span class="fri holiday">۲۴</span>
+          <span>۲۵</span><span>۲۶</span><span>۲۷</span><span>۲۸</span><span>۲۹</span><span>۳۰</span>
+        </div>
+
+        <div class="cal-footer">
+          <div class="cal-action-btn" id="cal-convert-btn">تبدیل تاریخ 🔄</div>
+          <span class="cal-footer-separator">|</span>
+          <div class="cal-action-btn" id="google-cal-btn">تقویم گوگل <span class="g-icon">G</span></div>
         </div>
       </div>
 
-      <div class="ios-glass-card calendar-card">
-        <div class="calendar-header">
-          <span>مهر ۱۴۰۵</span>
-        </div>
-        <div class="calendar-grid">
-          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
-          <span class="dim">۲۸</span><span class="dim">۲۹</span><span class="dim">۳۰</span><span>۱</span><span>۲</span><span>۳</span><span class="holiday">۴</span>
-          <span>۵</span><span>۶</span><span>۷</span><span class="today">۸</span><span>۹</span><span>۱۰</span><span class="holiday">۱۱</span>
-          <span>۱۲</span><span>۱۳</span><span>۱۴</span><span>۱۵</span><span>۱۶</span><span>۱۷</span><span class="holiday">۱۸</span>
-        </div>
-      </div>
     </div>
 
-    <!-- ستون وسط: سرچ‌بار و میانبرهای جمع‌وجور -->
+    <!-- ستون وسط: سرچ‌بار کپسولی و شورت‌کات‌های ۶ تایی -->
     <div class="col col-center">
       
-      <!-- سرچ بار کپسولی شیشه‌ای -->
       <div class="search-capsule" id="search-capsule">
         <form id="search-form" class="search-inner" action="https://www.google.com/search" method="GET">
           
           <div class="search-actions-left" id="search-tools">
             <span class="tool-btn" id="voice-btn" title="جستجوی صوتی گوگل">🎙️</span>
-            <span class="tool-btn" id="lens-btn" title="گوگل لنز (جستجو با تصویر)">📷</span>
+            <span class="tool-btn" id="lens-btn" title="گوگل لنز">📷</span>
           </div>
 
           <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-          <div class="engine-badge" id="engine-switcher" title="تغییر به ذره‌بین / گوگل">
+          <div class="engine-badge" id="engine-switcher" title="تغییر بین گوگل و ذره‌بین">
             <span class="badge-arrow">↕</span>
             <div id="engine-logo-container">
               <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -94,27 +132,60 @@
         </form>
       </div>
 
-      <!-- شبکه میانبرها با سایز متناسب و فشرده -->
       <div class="shortcuts-container" id="shortcuts-grid"></div>
 
     </div>
 
-    <!-- ستون سمت چپ: تسک‌ها -->
+    <!-- ستون چپ: پنل تسک و یادداشت با جزئیات تصویر دوم -->
     <div class="col col-right">
-      <div class="ios-glass-card todo-card">
-        <div class="todo-header">
-          <h3>✅ تسک‌های من</h3>
+      <div class="ios-glass-card todo-panel">
+        
+        <!-- تب‌بار سوئیچ تسک و یادداشت -->
+        <div class="task-tabs-row">
+          <button class="task-tab active" id="tab-tasks">تسک <span class="tab-check-icon">✓</span></button>
+          <button class="task-tab" id="tab-notes">یادداشت 🗒</button>
         </div>
-        <ul class="todo-list" id="todo-list"></ul>
-        <div class="todo-input-box">
+
+        <!-- نوار ابزارهای فیلتر و مرتب‌سازی -->
+        <div class="task-controls-bar">
+          <button class="ctrl-icon-btn" title="بیشتر">⋯</button>
+          <button class="ctrl-icon-btn" title="پنهان/نمایش انجام شده‌ها">👁</button>
+          <button class="ctrl-icon-btn" title="فیلترها">Ⴤ</button>
+          <button class="ctrl-icon-btn" title="مرتب‌سازی">⇅</button>
+        </div>
+
+        <!-- محتوای لیست یا Empty State -->
+        <div class="task-content-area" id="task-content">
+          <div class="empty-state-box" id="empty-state">
+            <div class="empty-badge-box">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="2" width="20" height="20" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+                <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h4>هنوز تسکی ثبت نکردی!</h4>
+            <p class="suggestions-label">موضوعات پیشنهادی:</p>
+            <ul class="suggestions-list">
+              <li>• کارهای روزانه</li>
+              <li>• لیست خرید</li>
+              <li>• یادآوری‌های پرداخت</li>
+            </ul>
+            <button class="plan-btn" id="plan-btn">برنامه‌ریزی ✦</button>
+          </div>
+          
+          <ul class="todo-list" id="todo-list" style="display: none;"></ul>
+        </div>
+
+        <!-- ورودی تسک کپسولی در پایین -->
+        <div class="task-input-wrapper">
           <input type="text" id="new-todo" placeholder="نوشتن تسک جدید...">
         </div>
+
       </div>
     </div>
 
   </div>
 
-  <!-- متن برندینگ شناور و بدون نوار تیره -->
   <div class="footer-brand">Abner Chrome Extension</div>
 
   <!-- مودال افزودن شورتکات -->

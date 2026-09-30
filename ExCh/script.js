@@ -1,4 +1,4 @@
-// ۱. سیستم پیشرفته بک‌گراند (انتخاب عکس، حالت بلر / واضح و ریست)
+// ۱. سیستم پیشرفته بک‌گراند
 const bgOverlay = document.getElementById('custom-bg-overlay');
 const bgSettingsBtn = document.getElementById('bg-settings-btn');
 const bgDropdown = document.getElementById('bg-dropdown-menu');
@@ -19,7 +19,7 @@ window.addEventListener('click', () => {
 
 function applyBackgroundConfig() {
   const savedBg = localStorage.getItem('custom_bg');
-  const isBlurred = localStorage.getItem('bg_blur') !== 'false'; // پیش‌فرض مات
+  const isBlurred = localStorage.getItem('bg_blur') !== 'false';
 
   if (savedBg) {
     bgOverlay.style.backgroundImage = `url(${savedBg})`;
@@ -63,7 +63,7 @@ resetBgBtn.addEventListener('click', (e) => {
 
 applyBackgroundConfig();
 
-// ۲. تم تاریک و روشن
+// ۲. تم شب و روز
 const themeBtn = document.getElementById('theme-toggle-btn');
 const themeIcon = document.getElementById('theme-icon');
 
@@ -80,7 +80,38 @@ themeBtn.addEventListener('click', () => {
 
 applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-// ۳. موتور جستجو (گوگل / ذره‌بین) + عملکردهای لنز و ویس
+// ۳. ساعت زنده، تاریخ و آب‌وهوای هوشمند شب/روز
+function updateClockAndWeather() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  
+  // تبدیل ارقام به فارسی
+  const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  const toFa = n => String(n).replace(/\d/g, d => persianDigits[d]);
+
+  document.getElementById('clock').textContent = `${toFa(String(hours).padStart(2, '0'))}:${toFa(minutes)}`;
+
+  // آیکون هوشمند روز / شب
+  const weatherIcon = document.getElementById('weather-icon');
+  const weatherPhrase = document.getElementById('weather-phrase');
+
+  if (hours >= 19 || hours < 6) {
+    weatherIcon.textContent = '🌙';
+    weatherPhrase.textContent = 'شب مهتابی و آرام 🧡';
+  } else {
+    weatherIcon.textContent = '☀️';
+    weatherPhrase.textContent = 'روز آفتابی و دلنشین ☀️';
+  }
+}
+setInterval(updateClockAndWeather, 1000);
+updateClockAndWeather();
+
+// کلیک‌های تقویم گوگل و تبدیل تاریخ
+document.getElementById('google-cal-btn').onclick = () => window.open('https://calendar.google.com', '_blank');
+document.getElementById('cal-convert-btn').onclick = () => alert('امکان تبدیل تاریخ شمسی به میلادی و قمری');
+
+// ۴. سرچ‌بار و موتورهای گوگل و ذره‌بین
 const engineSwitcher = document.getElementById('engine-switcher');
 const googleLogo = document.getElementById('google-logo');
 const zarebinLogo = document.getElementById('zarebin-logo');
@@ -96,7 +127,7 @@ function updateSearchEngineUI() {
   if (currentEngine === 'zarebin') {
     googleLogo.style.display = 'none';
     zarebinLogo.style.display = 'inline-block';
-    searchTools.style.display = 'none'; // در ذره‌بین مخفی شود
+    searchTools.style.display = 'none';
     searchInput.placeholder = 'جستجو در ذره‌بین...';
     searchForm.action = 'https://zarebin.ir/search';
   } else {
@@ -115,13 +146,11 @@ engineSwitcher.addEventListener('click', () => {
 });
 updateSearchEngineUI();
 
-// گوگل لنز
 lensBtn.addEventListener('click', (e) => {
   e.preventDefault();
   window.open('https://lens.google.com/', '_blank');
 });
 
-// سرچ صوتی با Speech Recognition واقعی
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
@@ -130,39 +159,20 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   voiceBtn.addEventListener('click', (e) => {
     e.preventDefault();
     voiceBtn.textContent = '🔴';
-    searchInput.placeholder = 'در حال گوش دادن... صحبت کنید';
+    searchInput.placeholder = 'در حال گوش دادن...';
     recognition.start();
   });
 
   recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    searchInput.value = text;
+    searchInput.value = event.results[0][0].transcript;
     voiceBtn.textContent = '🎙️';
     searchForm.submit();
   };
 
-  recognition.onerror = () => {
-    voiceBtn.textContent = '🎙️';
-    searchInput.placeholder = 'جستجو در گوگل...';
-  };
-
-  recognition.onend = () => {
-    voiceBtn.textContent = '🎙️';
-  };
-} else {
-  voiceBtn.addEventListener('click', () => alert('مرورگر شما از جستجوی صوتی مستقیم پشتیبانی نمی‌کند.'));
+  recognition.onend = () => { voiceBtn.textContent = '🎙️'; };
 }
 
-// ۴. ساعت
-function updateClock() {
-  const now = new Date();
-  document.getElementById('clock').textContent = 
-    `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ۵. شورتکات‌ها و تسک‌ها
+// ۵. میانبرهای ۶ تایی
 const shortcutsGrid = document.getElementById('shortcuts-grid');
 const addModal = document.getElementById('add-modal');
 const modalSaveBtn = document.getElementById('modal-save-btn');
@@ -171,13 +181,18 @@ const modalTitle = document.getElementById('modal-site-title');
 const modalUrl = document.getElementById('modal-site-url');
 
 const defaultShortcuts = [
-  { title: 'یوتیوب', url: 'https://www.youtube.com' },
-  { title: 'واتساپ', url: 'https://web.whatsapp.com' },
+  { title: 'دم‌دستی', url: 'https://dastyar.io' },
+  { title: 'تلفنچی', url: 'https://telephonchi.com' },
+  { title: 'X', url: 'https://x.com' },
   { title: 'پینترست', url: 'https://www.pinterest.com' },
-  { title: 'توییتر', url: 'https://x.com' },
+  { title: 'یوتیوب', url: 'https://www.youtube.com' },
+  { title: 'App', url: 'https://cafebazaar.ir' },
+  { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
+  { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
+  { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
   { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
   { title: 'دیوار', url: 'https://divar.ir' },
-  { title: 'آپارات', url: 'https://www.aparat.com' }
+  { title: 'واتساپ', url: 'https://web.whatsapp.com' }
 ];
 
 let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts')) || defaultShortcuts;
@@ -220,7 +235,6 @@ function renderShortcuts() {
   addBtn.onclick = () => addModal.classList.add('active');
   shortcutsGrid.appendChild(addBtn);
 
-  // رویدادهای منو
   document.querySelectorAll('.more-btn').forEach(b => {
     b.onclick = (e) => {
       e.stopPropagation();
@@ -270,18 +284,42 @@ modalSaveBtn.onclick = () => {
 modalCancelBtn.onclick = () => addModal.classList.remove('active');
 renderShortcuts();
 
-// تسک‌ها
-const todoInput = document.getElementById('new-todo');
+// ۶. تب‌های تسک و یادداشت
+const tabTasks = document.getElementById('tab-tasks');
+const tabNotes = document.getElementById('tab-notes');
+const emptyState = document.getElementById('empty-state');
 const todoList = document.getElementById('todo-list');
+const todoInput = document.getElementById('new-todo');
+
+tabTasks.onclick = () => {
+  tabTasks.classList.add('active');
+  tabNotes.classList.remove('active');
+  todoInput.placeholder = 'نوشتن تسک جدید...';
+};
+
+tabNotes.onclick = () => {
+  tabNotes.classList.add('active');
+  tabTasks.classList.remove('active');
+  todoInput.placeholder = 'نوشتن یادداشت جدید...';
+};
+
+document.getElementById('plan-btn').onclick = () => {
+  todoInput.focus();
+};
+
 let todos = JSON.parse(localStorage.getItem('my_todos') || '[]');
 
 function saveAndRenderTodos() {
   localStorage.setItem('my_todos', JSON.stringify(todos));
   todoList.innerHTML = '';
   if (todos.length === 0) {
-    todoList.innerHTML = '<li style="color:var(--text-muted); text-align:center; padding-top:25px;">هیچ تسکی وجود ندارد ✨</li>';
+    emptyState.style.display = 'flex';
+    todoList.style.display = 'none';
     return;
   }
+  emptyState.style.display = 'none';
+  todoList.style.display = 'flex';
+
   todos.forEach((item, index) => {
     const li = document.createElement('li');
     li.className = `todo-item ${item.done ? 'done' : ''}`;
