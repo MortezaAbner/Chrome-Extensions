@@ -8,28 +8,32 @@
 </head>
 <body>
 
+  <!-- دکمه تغییر دستی تم روز/شب -->
+  <button id="theme-toggle-btn" class="theme-toggle" title="تغییر حالت شب/روز">
+    <span id="theme-icon">🌙</span>
+  </button>
+
   <div class="dashboard-container">
     
-    <!-- ستون سمت راست: ساعت، تاریخ و ویجت -->
+    <!-- ستون ساعت، تاریخ و تقویم شیشه‌ای -->
     <div class="col col-left">
-      <div class="card weather-clock-card">
+      <div class="glass-card weather-clock-card">
         <div class="clock-box">
           <div class="digital-clock" id="clock">00:00</div>
           <div class="date-text" id="shamsi-date">چهارشنبه، ۸ مهر</div>
         </div>
         <div class="weather-box">
           <span class="temp">۲۲°</span>
-          <span class="weather-desc">آفتابی و ملایم</span>
+          <span class="weather-desc">صاف و شفاف</span>
         </div>
       </div>
 
-      <div class="card calendar-card">
+      <div class="glass-card calendar-card">
         <div class="calendar-header">
           <span id="cal-month">مهر ۱۴۰۵</span>
         </div>
         <div class="calendar-grid">
           <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
-          <!-- روزهای نمونه -->
           <span class="dim">۲۸</span><span class="dim">۲۹</span><span class="dim">۳۰</span><span>۱</span><span>۲</span><span>۳</span><span class="holiday">۴</span>
           <span>۵</span><span>۶</span><span>۷</span><span class="today">۸</span><span>۹</span><span>۱۰</span><span class="holiday">۱۱</span>
           <span>۱۲</span><span>۱۳</span><span>۱۴</span><span>۱۵</span><span>۱۶</span><span>۱۷</span><span class="holiday">۱۸</span>
@@ -37,16 +41,16 @@
       </div>
     </div>
 
-    <!-- ستون وسط: جستجوی گوگل و میانبرها -->
+    <!-- ستون وسط: سرچ‌بار شیشه‌ای و میانبرها -->
     <div class="col col-center">
-      <div class="card search-card">
+      <div class="glass-card search-card">
         <form action="https://www.google.com/search" method="GET" class="search-form">
           <button type="submit" class="search-btn">🔍</button>
-          <input type="text" name="q" placeholder="جستجو در گوگل یا وارد کردن آدرس..." autofocus autocomplete="off">
+          <input type="text" name="q" placeholder="جستجو در وب یا وارد کردن آدرس..." autofocus autocomplete="off">
         </form>
       </div>
 
-      <div class="card shortcuts-card">
+      <div class="glass-card shortcuts-card">
         <div class="shortcuts-grid" id="shortcuts-grid">
           <a href="https://www.youtube.com" class="shortcut-item">
             <div class="shortcut-icon youtube">▶</div>
@@ -76,15 +80,15 @@
       </div>
     </div>
 
-    <!-- ستون سمت چپ: تسک‌ها و یادداشت روزانه -->
+    <!-- ستون تسک‌های شیشه‌ای -->
     <div class="col col-right">
-      <div class="card todo-card">
+      <div class="glass-card todo-card">
         <div class="todo-header">
-          <h3>✅ چک‌لیست و تسک‌ها</h3>
+          <h3>✅ تسک‌های من</h3>
         </div>
         <ul class="todo-list" id="todo-list"></ul>
         <div class="todo-input-box">
-          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید و فشردن Enter...">
+          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید...">
         </div>
       </div>
     </div>

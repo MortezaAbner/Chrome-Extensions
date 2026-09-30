@@ -3,41 +3,96 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Vazirmatn', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* تم روز (Light Glass) */
+:root {
+  --bg-gradient: radial-gradient(circle at 10% 20%, rgba(216, 241, 255, 1) 0%, rgba(228, 224, 255, 1) 45%, rgba(240, 248, 255, 1) 90%);
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --accent-color: #3b82f6;
+  --input-bg: rgba(255, 255, 255, 0.55);
+}
+
+/* تم شب (Dark Glass) */
+[data-theme="dark"] {
+  --bg-gradient: radial-gradient(circle at 10% 20%, #0f172a 0%, #1e1b4b 50%, #090d16 100%);
+  --glass-bg: rgba(23, 27, 44, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --accent-color: #60a5fa;
+  --input-bg: rgba(15, 23, 42, 0.6);
 }
 
 body {
-  background-color: #dbeafc;
+  background: var(--bg-gradient);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #2c3e50;
+  color: var(--text-main);
   user-select: none;
+  overflow: hidden;
+}
+
+/* دکمه تغییر تم */
+.theme-toggle {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  z-index: 100;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.08);
 }
 
 .dashboard-container {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   width: 90%;
   max-width: 1250px;
-  height: 580px;
+  height: 600px;
 }
 
 .col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .col-left { flex: 1.1; }
 .col-center { flex: 1.8; }
 .col-right { flex: 1.3; }
 
-.card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+/* کارت‌های شیشه‌ای شفاف (Frosted Glass) */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: var(--glass-shadow);
 }
 
 /* کارت ساعت و آب‌وهوا */
@@ -48,14 +103,15 @@ body {
 }
 
 .digital-clock {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  color: #2b6cb0;
+  color: var(--accent-color);
+  letter-spacing: -1px;
 }
 
 .date-text {
-  font-size: 0.9rem;
-  color: #718096;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
 .weather-box {
@@ -63,26 +119,27 @@ body {
 }
 
 .temp {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #553c9a;
+  color: var(--text-main);
   display: block;
 }
 
 .weather-desc {
-  font-size: 0.8rem;
-  color: #718096;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
-/* تقویم ساده */
+/* تقویم */
 .calendar-card {
   flex: 1;
 }
 
 .calendar-header {
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-weight: 700;
+  margin-bottom: 16px;
   text-align: center;
+  font-size: 1.05rem;
 }
 
 .calendar-grid {
@@ -94,45 +151,48 @@ body {
 }
 
 .calendar-grid span {
-  padding: 5px 0;
-  border-radius: 8px;
+  padding: 6px 0;
+  border-radius: 10px;
 }
 
-.calendar-grid .dim { color: #cbd5e0; }
-.calendar-grid .holiday { color: #e53e3e; }
+.calendar-grid .dim { color: var(--text-muted); opacity: 0.4; }
+.calendar-grid .holiday { color: #f87171; font-weight: 600; }
 .calendar-grid .today {
-  background: #3182ce;
+  background: var(--accent-color);
   color: #ffffff;
   font-weight: 700;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-/* سرچ‌بار گوگل */
+/* سرچ بار */
 .search-card {
-  padding: 10px 16px;
-  border-radius: 30px;
+  padding: 12px 20px;
+  border-radius: 36px;
 }
 
 .search-form {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .search-form input {
   flex: 1;
+  background: transparent;
   border: none;
   outline: none;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  color: var(--text-main);
 }
 
 .search-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
-/* میانبرها (Shortcuts) */
+/* شورت‌کات‌ها */
 .shortcuts-card {
   flex: 1;
 }
@@ -140,43 +200,37 @@ body {
 .shortcuts-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 22px;
   text-align: center;
-  padding: 10px 0;
 }
 
 .shortcut-item {
   text-decoration: none;
-  color: #4a5568;
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  transition: transform 0.15s ease;
+  gap: 10px;
+  font-size: 0.88rem;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .shortcut-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px) scale(1.05);
 }
 
 .shortcut-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
-  background: #edf2f7;
+  font-size: 1.5rem;
+  background: var(--input-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
 }
-
-.shortcut-icon.youtube { background: #ffebee; color: #e53e3e; }
-.shortcut-icon.whatsapp { background: #e8f5e9; color: #38a169; }
-.shortcut-icon.pinterest { background: #fff5f5; color: #c53030; }
-.shortcut-icon.x { background: #edf2f7; color: #1a202c; }
-.shortcut-icon.digikala { background: #ffebee; color: #ef394e; }
-.shortcut-icon.divar { background: #fff0f0; color: #a71d2a; }
 
 /* تسک‌ها */
 .todo-card {
@@ -186,8 +240,8 @@ body {
 }
 
 .todo-header h3 {
-  font-size: 1.05rem;
-  margin-bottom: 12px;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
 }
 
 .todo-list {
@@ -196,40 +250,44 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .todo-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: #f7fafc;
-  border-radius: 12px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  background: var(--input-bg);
+  border-radius: 14px;
+  font-size: 0.92rem;
+  border: 1px solid var(--glass-border);
 }
 
 .todo-item.done span {
   text-decoration: line-through;
-  color: #a0aec0;
+  color: var(--text-muted);
 }
 
 .todo-item button {
   background: none;
   border: none;
-  color: #e53e3e;
+  color: #f87171;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .todo-input-box {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .todo-input-box input {
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text-main);
 }

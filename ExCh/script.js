@@ -1,3 +1,34 @@
+// مدیریت تم شب و روز هوشمند
+const themeBtn = document.getElementById('theme-toggle-btn');
+const themeIcon = document.getElementById('theme-icon');
+
+function getInitialTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) return savedTheme;
+  // بررسی تم سیستم کاربر (Dark Mode ویندوز یا مک)
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+themeBtn.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
+
+// گوش دادن به تغییر تم در سیستم کاربر به شکل زنده
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (!localStorage.getItem('theme')) {
+    applyTheme(e.matches ? 'dark' : 'light');
+  }
+});
+
+applyTheme(getInitialTheme());
+
 // به‌روزرسانی ساعت زنده
 function updateClock() {
   const now = new Date();
@@ -8,10 +39,9 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// مدیریت تسک‌ها (با ذخیره در localStorage)
+// مدیریت تسک‌ها
 const todoInput = document.getElementById('new-todo');
 const todoList = document.getElementById('todo-list');
-
 let todos = JSON.parse(localStorage.getItem('my_todos') || '[]');
 
 function saveAndRender() {
@@ -19,7 +49,7 @@ function saveAndRender() {
   todoList.innerHTML = '';
 
   if (todos.length === 0) {
-    todoList.innerHTML = '<li style="color:#a0aec0; text-align:center; padding-top:20px;">هیچ تسکی وجود ندارد 🎉</li>';
+    todoList.innerHTML = '<li style="color:var(--text-muted); text-align:center; padding-top:30px;">هیچ تسکی وجود ندارد ✨</li>';
     return;
   }
 
