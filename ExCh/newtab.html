@@ -8,30 +8,37 @@
 </head>
 <body>
 
-  <!-- پس‌زمینه کاربر -->
+  <!-- تصویر پس‌زمینه پویا -->
   <div id="custom-bg-overlay" class="bg-overlay"></div>
 
   <!-- کنترل‌های بالا سمت چپ -->
   <div class="top-controls">
-    <button id="theme-toggle-btn" class="ios-glass-btn" title="تغییر تم شب/روز">
+    <button id="theme-toggle-btn" class="ios-glass-btn" title="تغییر حالت شب/روز">
       <span id="theme-icon">🌙</span>
     </button>
     
-    <!-- دکمه تنظیمات پس‌زمینه -->
-    <button id="bg-settings-btn" class="ios-glass-btn" title="شخصی‌سازی تصویر زمینه">🖼</button>
+    <!-- دکمه آیکون قاب عکس برای پس‌زمینه -->
+    <button id="bg-settings-btn" class="ios-glass-btn" title="شخصی‌سازی تصویر زمینه">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+    </button>
+
     <div id="bg-dropdown-menu" class="glass-dropdown">
       <label class="dropdown-item">
-        📁 انتخاب تصویر از سیستم
+        📁 انتخاب عکس از سیستم
         <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
       </label>
       <button id="toggle-blur-btn" class="dropdown-item">✨ وضعیت بلر: <span id="blur-status-text">مات</span></button>
-      <button id="reset-bg-btn" class="dropdown-item danger">↺ حذف تصویر و بازنشانی</button>
+      <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌زمینه</button>
     </div>
   </div>
 
   <div class="dashboard-container">
     
-    <!-- ستون سمت راست: ساعت و تقویم شیشه‌ای -->
+    <!-- ستون ساعت و تقویم فوق شیشه‌ای -->
     <div class="col col-left">
       <div class="ios-glass-card weather-clock-card">
         <div class="clock-box">
@@ -57,10 +64,10 @@
       </div>
     </div>
 
-    <!-- ستون وسط: سرچ‌بار کپسولی و شورت‌کات‌ها -->
+    <!-- ستون وسط: سرچ‌بار و میانبرهای جمع‌وجور -->
     <div class="col col-center">
       
-      <!-- سرچ‌بار آیفونی شیشه‌ای با قابلیت سوئیچ گوگل و ذره‌بین -->
+      <!-- سرچ بار کپسولی شیشه‌ای -->
       <div class="search-capsule" id="search-capsule">
         <form id="search-form" class="search-inner" action="https://www.google.com/search" method="GET">
           
@@ -71,18 +78,15 @@
 
           <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-          <!-- نشانگر و سوییچر موتور جستجو -->
-          <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر به ذره‌بین / گوگل">
+          <div class="engine-badge" id="engine-switcher" title="تغییر به ذره‌بین / گوگل">
             <span class="badge-arrow">↕</span>
             <div id="engine-logo-container">
-              <!-- لوگوی گوگل به عنوان پیش‌فرض -->
-              <svg id="google-logo" viewBox="0 0 24 24" width="22" height="22">
+              <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.27 21.36 7.35 24 12 24z"/>
                 <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.27 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
               </svg>
-              <!-- لوگوی ذره‌بین -->
               <span id="zarebin-logo" class="zarebin-text" style="display: none;">ذره‌بین</span>
             </div>
           </div>
@@ -90,7 +94,7 @@
         </form>
       </div>
 
-      <!-- شبکه میانبرهای شیشه‌ای -->
+      <!-- شبکه میانبرها با سایز متناسب و فشرده -->
       <div class="shortcuts-container" id="shortcuts-grid"></div>
 
     </div>
@@ -110,12 +114,15 @@
 
   </div>
 
+  <!-- متن برندینگ شناور و بدون نوار تیره -->
+  <div class="footer-brand">Abner Chrome Extension</div>
+
   <!-- مودال افزودن شورتکات -->
   <div id="add-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card">
       <h3>افزودن میانبر</h3>
       <input type="text" id="modal-site-title" placeholder="نام میانبر">
-      <input type="text" id="modal-site-url" placeholder="آدرس سایت (مثلاً: https://site.com)">
+      <input type="text" id="modal-site-url" placeholder="آدرس سایت">
       <div class="modal-buttons">
         <button id="modal-save-btn" class="modal-btn save">افزودن</button>
         <button id="modal-cancel-btn" class="modal-btn cancel">انصراف</button>

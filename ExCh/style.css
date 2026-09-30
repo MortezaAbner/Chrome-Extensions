@@ -8,25 +8,26 @@
 
 :root {
   --bg-gradient: radial-gradient(circle at 20% 20%, #d8ebff 0%, #e9e4ff 50%, #d9f3ea 100%);
-  --glass-bg: rgba(255, 255, 255, 0.42);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.05);
-  --glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
-  --card-bg: rgba(255, 255, 255, 0.6);
+  /* شفافیت شیشه‌ای بسیار بالا شبیه Liquid Glass آیفون */
+  --glass-bg: rgba(255, 255, 255, 0.22);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.04);
+  --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  --card-bg: rgba(255, 255, 255, 0.28);
   --text-main: #0f172a;
-  --text-muted: #475569;
+  --text-muted: #334155;
   --accent-color: #2563eb;
 }
 
 [data-theme="dark"] {
   --bg-gradient: radial-gradient(circle at 20% 20%, #0b0f19 0%, #151828 50%, #09121d 100%);
-  --glass-bg: rgba(26, 32, 53, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.16);
-  --glass-specular: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5);
-  --glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-  --card-bg: rgba(30, 41, 59, 0.65);
+  --glass-bg: rgba(18, 22, 38, 0.35);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
+  --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  --card-bg: rgba(24, 30, 48, 0.38);
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --text-muted: #cbd5e1;
   --accent-color: #38bdf8;
 }
 
@@ -34,6 +35,7 @@ body {
   background: var(--bg-gradient);
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   color: var(--text-main);
@@ -41,7 +43,7 @@ body {
   position: relative;
 }
 
-/* پس‌زمینه کاربر */
+/* تصویر پس‌زمینه */
 .bg-overlay {
   position: fixed;
   top: 0;
@@ -55,60 +57,61 @@ body {
 }
 
 .bg-overlay.blurred {
-  filter: blur(20px) brightness(0.9);
+  filter: blur(20px) brightness(0.92);
   transform: scale(1.04);
 }
 
 .bg-overlay.clear {
-  filter: blur(0px) brightness(0.95);
+  filter: blur(0px) brightness(0.98);
 }
 
-/* دکمه‌های کنترل بالا */
+/* کنترل‌های بالا */
 .top-controls {
   position: fixed;
-  top: 24px;
-  left: 24px;
+  top: 18px;
+  left: 18px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   z-index: 100;
 }
 
 .ios-glass-btn {
-  width: 46px;
-  height: 46px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: var(--glass-bg);
-  backdrop-filter: blur(35px) saturate(200%);
-  -webkit-backdrop-filter: blur(35px) saturate(200%);
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow), var(--glass-specular);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 1.05rem;
+  color: var(--text-main);
+  transition: transform 0.15s ease;
 }
 
 .ios-glass-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
-/* منوی تنظیمات پس‌زمینه */
+/* منوی بازشونده تنظیمات عکس */
 .glass-dropdown {
   position: absolute;
-  top: 56px;
+  top: 48px;
   left: 0;
   background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(210%);
+  backdrop-filter: blur(50px) saturate(220%);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
+  border-radius: 18px;
   box-shadow: var(--glass-shadow), var(--glass-specular);
-  padding: 8px;
+  padding: 6px;
   display: none;
   flex-direction: column;
-  gap: 6px;
-  min-width: 220px;
+  gap: 4px;
+  min-width: 200px;
   z-index: 110;
 }
 
@@ -119,13 +122,12 @@ body {
 .dropdown-item {
   background: none;
   border: none;
-  padding: 10px 14px;
+  padding: 8px 12px;
   text-align: right;
-  font-size: 0.88rem;
-  border-radius: 12px;
+  font-size: 0.82rem;
+  border-radius: 10px;
   cursor: pointer;
   color: var(--text-main);
-  transition: background 0.2s;
   display: block;
 }
 
@@ -137,69 +139,68 @@ body {
   color: #ef4444;
 }
 
-/* ساختار کلی داشبورد */
+/* داشبورد */
 .dashboard-container {
   display: flex;
-  gap: 24px;
-  width: 92%;
-  max-width: 1280px;
-  height: 600px;
+  gap: 20px;
+  width: 90%;
+  max-width: 1200px;
+  height: 560px;
 }
 
 .col {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .col-left { flex: 1.1; }
 .col-center { flex: 2; }
-.col-right { flex: 1.2; }
+.col-right { flex: 1.1; }
 
-/* کارت شیشه‌ای با شفافیت آیفون (iOS Glass) */
+/* کارت شیشه‌ای بلر قوی iOS */
 .ios-glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(220%);
-  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
   border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  padding: 22px;
+  border-radius: 28px;
+  padding: 20px;
   box-shadow: var(--glass-shadow), var(--glass-specular);
 }
 
-/* سرچ بار کپسولی iOS */
+/* سرچ بار کپسولی شفاف */
 .search-capsule {
   background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(220%);
-  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
   border: 1px solid var(--glass-border);
-  border-radius: 40px;
-  padding: 8px 18px;
+  border-radius: 36px;
+  padding: 7px 16px;
   box-shadow: var(--glass-shadow), var(--glass-specular);
 }
 
 .search-inner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .search-actions-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .tool-btn {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   cursor: pointer;
   opacity: 0.85;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
 .tool-btn:hover {
   transform: scale(1.15);
-  opacity: 1;
 }
 
 .search-inner input {
@@ -207,81 +208,77 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: var(--text-main);
   text-align: right;
-  padding: 6px 10px;
+  padding: 4px 8px;
 }
 
 .engine-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  padding: 6px 12px;
-  border-radius: 24px;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 4px 10px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.engine-badge:hover {
-  transform: scale(1.04);
 }
 
 .badge-arrow {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .zarebin-text {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #0284c7;
 }
 
-/* میانبرهای مربعی */
+/* گرید شورت‌کات‌ها - سایز متناسب و فشرده‌تر */
 .shortcuts-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 4px;
   overflow-y: auto;
-  max-height: 480px;
-  padding: 4px;
+  max-height: 460px;
+  padding: 2px;
 }
 
 .shortcut-box {
   position: relative;
   background: var(--card-bg);
-  backdrop-filter: blur(30px) saturate(190%);
+  backdrop-filter: blur(45px) saturate(200%);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-specular), 0 8px 24px rgba(0,0,0,0.04);
-  border-radius: 22px;
-  padding: 16px 10px;
+  box-shadow: var(--glass-specular), 0 6px 18px rgba(0,0,0,0.06);
+  border-radius: 18px;
+  padding: 10px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 84px;
 }
 
 .shortcut-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 30px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
 }
 
 .shortcut-icon-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  margin-bottom: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  margin-bottom: 6px;
   object-fit: cover;
 }
 
 .shortcut-title {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
@@ -292,13 +289,13 @@ body {
 
 .more-btn {
   position: absolute;
-  top: 6px;
-  right: 8px;
+  top: 4px;
+  right: 6px;
   background: none;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -309,19 +306,19 @@ body {
 
 .context-menu {
   position: absolute;
-  top: 34px;
-  right: 8px;
+  top: 28px;
+  right: 6px;
   background: var(--glass-bg);
-  backdrop-filter: blur(40px);
+  backdrop-filter: blur(45px);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 6px;
+  border-radius: 14px;
+  padding: 5px;
   display: none;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   z-index: 50;
   box-shadow: var(--glass-shadow);
-  min-width: 130px;
+  min-width: 120px;
 }
 
 .context-menu.active {
@@ -331,11 +328,11 @@ body {
 .menu-item {
   background: none;
   border: none;
-  padding: 7px 10px;
+  padding: 6px 8px;
   text-align: right;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-main);
 }
 
@@ -347,29 +344,29 @@ body {
   color: #ef4444;
 }
 
-/* دکمه مثبت افزودن */
+/* دکمه مثبت با ابعاد متناسب جدید */
 .add-shortcut-box {
   background: var(--glass-bg);
-  border: 2px dashed var(--glass-border);
-  border-radius: 22px;
+  border: 1.5px dashed var(--glass-border);
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  min-height: 110px;
+  min-height: 84px;
   transition: transform 0.2s;
 }
 
 .add-shortcut-box:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
 .add-plus-icon {
-  font-size: 2.2rem;
+  font-size: 1.7rem;
   color: var(--text-muted);
 }
 
-/* ساعت و تقویم */
+/* ساعت و تاریخ */
 .weather-clock-card {
   display: flex;
   justify-content: space-between;
@@ -377,84 +374,96 @@ body {
 }
 
 .digital-clock {
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--accent-color);
 }
 
 .date-text {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
 }
 
 .temp {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
 .calendar-card { flex: 1; }
-.calendar-header { font-weight: 700; margin-bottom: 14px; text-align: center; }
+.calendar-header { font-weight: 700; margin-bottom: 10px; text-align: center; font-size: 0.95rem; }
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 5px;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
-.calendar-grid span { padding: 6px 0; border-radius: 8px; }
-.calendar-grid .dim { color: var(--text-muted); opacity: 0.4; }
+.calendar-grid span { padding: 5px 0; border-radius: 8px; }
+.calendar-grid .dim { color: var(--text-muted); opacity: 0.35; }
 .calendar-grid .holiday { color: #ef4444; }
 .calendar-grid .today { background: var(--accent-color); color: #fff; font-weight: 700; }
 
 /* تسک‌ها */
 .todo-card { flex: 1; display: flex; flex-direction: column; }
-.todo-header h3 { font-size: 1.1rem; margin-bottom: 12px; }
-.todo-list { flex: 1; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.todo-header h3 { font-size: 1rem; margin-bottom: 10px; }
+.todo-list { flex: 1; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
 .todo-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: var(--card-bg);
-  border-radius: 14px;
-  font-size: 0.92rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
   border: 1px solid var(--glass-border);
 }
 .todo-item.done span { text-decoration: line-through; color: var(--text-muted); }
 .todo-item button { background: none; border: none; color: #ef4444; cursor: pointer; }
-.todo-input-box { margin-top: 12px; }
+.todo-input-box { margin-top: 10px; }
 .todo-input-box input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 14px;
   outline: none;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-main);
+}
+
+/* متن شناور پایین (بدون هیچ نوار تیره‌ای) */
+.footer-brand {
+  position: fixed;
+  bottom: 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+  pointer-events: none;
 }
 
 /* مودال */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.3);
   backdrop-filter: blur(10px);
   display: none; justify-content: center; align-items: center;
   z-index: 200;
 }
 .modal-overlay.active { display: flex; }
 .modal-content {
-  width: 320px;
-  display: flex; flex-direction: column; gap: 12px;
+  width: 300px;
+  display: flex; flex-direction: column; gap: 10px;
 }
 .modal-content input {
-  padding: 10px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
-  outline: none; font-size: 0.9rem; background: var(--card-bg); color: var(--text-main);
+  padding: 9px 12px; border-radius: 10px; border: 1px solid var(--glass-border);
+  outline: none; font-size: 0.85rem; background: var(--card-bg); color: var(--text-main);
 }
-.modal-buttons { display: flex; gap: 10px; margin-top: 6px; }
+.modal-buttons { display: flex; gap: 8px; margin-top: 4px; }
 .modal-btn {
-  flex: 1; padding: 10px; border-radius: 12px; border: none; cursor: pointer; font-size: 0.9rem;
+  flex: 1; padding: 8px; border-radius: 10px; border: none; cursor: pointer; font-size: 0.85rem;
 }
 .modal-btn.save { background: var(--accent-color); color: #fff; }
 .modal-btn.cancel { background: rgba(255,255,255,0.3); color: var(--text-main); }
