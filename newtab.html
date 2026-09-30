@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تب جدید</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- ستون سمت راست: ساعت، تاریخ و ویجت -->
+    <div class="col col-left">
+      <div class="card weather-clock-card">
+        <div class="clock-box">
+          <div class="digital-clock" id="clock">00:00</div>
+          <div class="date-text" id="shamsi-date">چهارشنبه، ۸ مهر</div>
+        </div>
+        <div class="weather-box">
+          <span class="temp">۲۲°</span>
+          <span class="weather-desc">آفتابی و ملایم</span>
+        </div>
+      </div>
+
+      <div class="card calendar-card">
+        <div class="calendar-header">
+          <span id="cal-month">مهر ۱۴۰۵</span>
+        </div>
+        <div class="calendar-grid">
+          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+          <!-- روزهای نمونه -->
+          <span class="dim">۲۸</span><span class="dim">۲۹</span><span class="dim">۳۰</span><span>۱</span><span>۲</span><span>۳</span><span class="holiday">۴</span>
+          <span>۵</span><span>۶</span><span>۷</span><span class="today">۸</span><span>۹</span><span>۱۰</span><span class="holiday">۱۱</span>
+          <span>۱۲</span><span>۱۳</span><span>۱۴</span><span>۱۵</span><span>۱۶</span><span>۱۷</span><span class="holiday">۱۸</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ستون وسط: جستجوی گوگل و میانبرها -->
+    <div class="col col-center">
+      <div class="card search-card">
+        <form action="https://www.google.com/search" method="GET" class="search-form">
+          <button type="submit" class="search-btn">🔍</button>
+          <input type="text" name="q" placeholder="جستجو در گوگل یا وارد کردن آدرس..." autofocus autocomplete="off">
+        </form>
+      </div>
+
+      <div class="card shortcuts-card">
+        <div class="shortcuts-grid" id="shortcuts-grid">
+          <a href="https://www.youtube.com" class="shortcut-item">
+            <div class="shortcut-icon youtube">▶</div>
+            <span>یوتیوب</span>
+          </a>
+          <a href="https://web.whatsapp.com" class="shortcut-item">
+            <div class="shortcut-icon whatsapp">💬</div>
+            <span>واتساپ</span>
+          </a>
+          <a href="https://www.pinterest.com" class="shortcut-item">
+            <div class="shortcut-icon pinterest">📌</div>
+            <span>پینترست</span>
+          </a>
+          <a href="https://x.com" class="shortcut-item">
+            <div class="shortcut-icon x">𝕏</div>
+            <span>توییتر</span>
+          </a>
+          <a href="https://www.digikala.com" class="shortcut-item">
+            <div class="shortcut-icon digikala">🛍</div>
+            <span>دیجی‌کالا</span>
+          </a>
+          <a href="https://divar.ir" class="shortcut-item">
+            <div class="shortcut-icon divar">🏠</div>
+            <span>دیوار</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ستون سمت چپ: تسک‌ها و یادداشت روزانه -->
+    <div class="col col-right">
+      <div class="card todo-card">
+        <div class="todo-header">
+          <h3>✅ چک‌لیست و تسک‌ها</h3>
+        </div>
+        <ul class="todo-list" id="todo-list"></ul>
+        <div class="todo-input-box">
+          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید و فشردن Enter...">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
