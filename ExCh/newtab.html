@@ -2,6 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>New Tab</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
@@ -197,7 +198,7 @@
 
   </div>
 
-  <!-- مودال تنظیم موقعیت مکانی با ۳ حالت کاملاً مجزا -->
+  <!-- مودال تنظیم موقعیت مکانی -->
   <div id="city-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card location-modal-box">
       <div class="modal-header-title">
@@ -210,17 +211,17 @@
         <button id="auto-gps-btn" class="loc-method-btn primary-glass">
           <div class="loc-icon-circle">🎯</div>
           <div class="loc-text-desc">
-            <strong>موقعیت‌یابی زنده مرورگر (GPS)</strong>
-            <span>استفاده از مختصات شبکه و سیستم با مجوز شما</span>
+            <strong>موقعیت‌یابی زنده دستگاه (GPS)</strong>
+            <span>دریافت مختصات آنلاین با سوییچ هوشمند خودکار</span>
           </div>
         </button>
 
-        <!-- گزینه ۲: آی‌پی بدون نیاز به GPS -->
+        <!-- گزینه ۲: آی‌پی اینترنت -->
         <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
           <div class="loc-icon-circle">🌐</div>
           <div class="loc-text-desc">
-            <strong>تشخیص خودکار با آی‌پی اینترنت</strong>
-            <span>سریع، پایدار و بدون نیاز به دسترسی سیستم</span>
+            <strong>تشخیص موقعیت مکانی با آی‌پی</strong>
+            <span>سریع، بدون نیاز به مجوز سیستم</span>
           </div>
         </button>
       </div>
@@ -231,7 +232,7 @@
 
       <!-- گزینه ۳: جستجوی دستی شهر -->
       <div class="manual-input-wrapper">
-        <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، شیراز، مشهد)">
+        <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، مشهد، شیراز)">
       </div>
 
       <div class="modal-buttons">

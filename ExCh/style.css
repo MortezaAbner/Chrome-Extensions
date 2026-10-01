@@ -4,6 +4,7 @@
   box-sizing: border-box;
   font-family: 'Vazirmatn', sans-serif;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :root {
@@ -42,7 +43,7 @@ body {
   justify-content: center;
   align-items: center;
   color: var(--text-main);
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -153,7 +154,7 @@ body {
   width: fit-content; cursor: pointer;
 }
 
-/* پنل پیش‌بینی با پس‌زمینه شیری متراکم برای رفع کامل ناخوانایی روی تقویم */
+/* پنل پیش‌بینی با پس‌زمینه شیری متراکم */
 .forecast-drawer {
   position: absolute;
   top: calc(100% + 8px);
@@ -385,7 +386,7 @@ body {
   background: rgba(255, 255, 255, 0.12); color: #f8fafc; border: 1px solid var(--glass-border);
 }
 
-/* مودال‌ها و پاپ‌آپ موقعیت مکانی جدید با پوشش مات و خوانایی کامل */
+/* مودال‌ها و پاپ‌آپ موقعیت مکانی جدید */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(16px);
@@ -457,3 +458,60 @@ body {
 .modal-btn.save { background: var(--blue-badge); color: #fff; }
 .modal-btn.cancel { background: rgba(0, 0, 0, 0.08); color: var(--text-main); }
 [data-theme="dark"] .modal-btn.cancel { background: rgba(255, 255, 255, 0.12); }
+
+/* 📱 سازگاری کامل برای تبلت و موبایل (Responsive Media Queries) */
+@media (max-width: 1100px) {
+  body {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    padding: 70px 16px 30px;
+  }
+  .dashboard-container {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    max-width: 760px;
+    gap: 16px;
+  }
+  .col-center { order: 1; }
+  .col-left { order: 2; }
+  .col-right { order: 3; }
+  .shortcuts-container {
+    max-height: none;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .forecast-drawer {
+    width: 100%;
+    right: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 65px 12px 24px;
+  }
+  .dashboard-container {
+    gap: 14px;
+  }
+  .split-widgets-row {
+    flex-direction: column;
+  }
+  .forecast-drawer {
+    width: 100%;
+  }
+  .forecast-days-grid {
+    flex-wrap: wrap;
+  }
+  .forecast-day-box {
+    flex: 1 1 30%;
+  }
+  .shortcuts-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .location-modal-box {
+    width: 92% !important;
+    padding: 18px !important;
+  }
+}

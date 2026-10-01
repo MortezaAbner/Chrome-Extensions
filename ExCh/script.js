@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. آب‌وهوای زنده واقعی و پیش‌بینی (Open-Meteo API)
+  // ۵. آب‌وهوای زنده و پیش‌بینی (Open-Meteo API)
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIcon = document.getElementById('weather-icon');
@@ -222,80 +222,84 @@ document.addEventListener('DOMContentLoaded', () => {
   if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
   if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
 
-  // گزینه ۱: درخواست مجوز استاندارد GPS
+  // تابع مشترک و ضدتحریم دریافت موقعیت از آی‌پی
+  async function resolveByIp() {
+    let resolved = false;
+    try {
+      const r1 = await fetch('https://ipwho.is/');
+      const d1 = await r1.json();
+      if (d1.success !== false && d1.latitude && d1.longitude) {
+        activeCoords = { lat: d1.latitude, lon: d1.longitude, name: d1.city || 'موقعیت شما' };
+        resolved = true;
+      }
+    } catch (e) {}
+
+    if (!resolved) {
+      try {
+        const r2 = await fetch('https://freeipapi.com/api/json');
+        const d2 = await r2.json();
+        if (d2.latitude && d2.longitude) {
+          activeCoords = { lat: d2.latitude, lon: d2.longitude, name: d2.cityName || 'موقعیت شما' };
+          resolved = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!resolved) {
+      try {
+        const r3 = await fetch('https://ipapi.co/json/');
+        const d3 = await r3.json();
+        if (d3.latitude && d3.longitude) {
+          activeCoords = { lat: d3.latitude, lon: d3.longitude, name: d3.city || 'موقعیت شما' };
+          resolved = true;
+        }
+      } catch (e) {}
+    }
+
+    if (resolved) {
+      localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+      fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+      cityModal.classList.remove('active');
+    } else {
+      alert('سرویس‌های مکان‌یابی آنلاین در دسترس نیستند. لطفاً نام شهر را دستی وارد کنید.');
+    }
+  }
+
+  // گزینه ۱: موقعیت‌یابی هوشمند (GPS با فال‌بک خودکار به IP بدون هیچ اروری)
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
+      const originalText = autoGpsBtn.innerHTML;
+      autoGpsBtn.innerHTML = '<span style="font-size:0.8rem;">در حال دریافت خودکار موقعیت...</span>';
+
       if (navigator.geolocation) {
-        const originalText = autoGpsBtn.innerHTML;
-        autoGpsBtn.innerHTML = '<span style="font-size:0.8rem;">در حال دریافت مختصات با اجازه شما...</span>';
-        
-        navigator.geolocation.getCurrentPosition((pos) => {
-          activeCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: 'موقعیت شما' };
-          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
-          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
-          cityModal.classList.remove('active');
-          autoGpsBtn.innerHTML = originalText;
-        }, (err) => {
-          alert('دسترسی مرورگر به موقعیت مکانی تأیید نشد. لطفاً از گزینه ۲ (آی‌پی) استفاده کنید.');
-          autoGpsBtn.innerHTML = originalText;
-        }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            activeCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: 'موقعیت شما' };
+            localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+            fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+            cityModal.classList.remove('active');
+            autoGpsBtn.innerHTML = originalText;
+          },
+          // در صورت بروز هرگونه خطای دسترسی یا عدم وجود GPS در ویندوز، بلافاصله به آی‌پی سوییچ می‌کند
+          async () => {
+            await resolveByIp();
+            autoGpsBtn.innerHTML = originalText;
+          },
+          { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+        );
       } else {
-        alert('مرورگر شما از GPS پشتیبانی نمی‌کند.');
+        resolveByIp().then(() => { autoGpsBtn.innerHTML = originalText; });
       }
     };
   }
 
-  // گزینه ۲: تشخیص خودکار و پایدار با آی‌پی (با فال‌بک ضد تحریم)
+  // گزینه ۲: تشخیص مستقیم با آی‌پی
   if (autoIpBtn) {
     autoIpBtn.onclick = async () => {
       const originalText = autoIpBtn.innerHTML;
-      autoIpBtn.innerHTML = '<span style="font-size:0.8rem;">در حال شناسایی خودکار شهر با آی‌پی...</span>';
-      
-      let resolved = false;
-
-      // ۱. تلاش با ipwho.is (پرسرعت، بدون تحریم و CORS-friendly)
-      try {
-        const r1 = await fetch('https://ipwho.is/');
-        const d1 = await r1.json();
-        if (d1.success !== false && d1.latitude && d1.longitude) {
-          activeCoords = { lat: d1.latitude, lon: d1.longitude, name: d1.city || 'شهر شما' };
-          resolved = true;
-        }
-      } catch (e) {}
-
-      // ۲. تلاش با freeipapi در صورت عدم پاسخ اولی
-      if (!resolved) {
-        try {
-          const r2 = await fetch('https://freeipapi.com/api/json');
-          const d2 = await r2.json();
-          if (d2.latitude && d2.longitude) {
-            activeCoords = { lat: d2.latitude, lon: d2.longitude, name: d2.cityName || 'شهر شما' };
-            resolved = true;
-          }
-        } catch (e) {}
-      }
-
-      // ۳. تلاش با ipapi.co به عنوان آخرین احتمال
-      if (!resolved) {
-        try {
-          const r3 = await fetch('https://ipapi.co/json/');
-          const d3 = await r3.json();
-          if (d3.latitude && d3.longitude) {
-            activeCoords = { lat: d3.latitude, lon: d3.longitude, name: d3.city || 'شهر شما' };
-            resolved = true;
-          }
-        } catch (e) {}
-      }
-
+      autoIpBtn.innerHTML = '<span style="font-size:0.8rem;">در حال شناسایی شهر با آی‌پی...</span>';
+      await resolveByIp();
       autoIpBtn.innerHTML = originalText;
-
-      if (resolved) {
-        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
-        fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
-        cityModal.classList.remove('active');
-      } else {
-        alert('سرویس‌های مکان‌یابی آنلاین در دسترس نیستند. لطفاً نام شهر را دستی وارد کنید.');
-      }
     };
   }
 
