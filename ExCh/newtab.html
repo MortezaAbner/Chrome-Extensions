@@ -52,13 +52,13 @@
           <div class="weather-range" id="weather-range">--° حداکثر . --° حداقل</div>
           
           <div class="weather-footer-actions">
-            <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
-            <div class="location-chip" id="city-select-btn" title="تغییر شهر">
-              <span id="current-city-label">تهران</span> 📍
+            <div class="location-chip" id="city-select-btn" title="تغییر شهر یا موقعیت مکانی">
+              📍 <span id="current-city-label">تهران</span>
             </div>
+            <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
           </div>
 
-          <!-- پنل کشویی پیش‌بینی روزهای آینده (طرح تصویر دوم) -->
+          <!-- پنل کشویی پیش‌بینی روزهای آینده (قرار می‌گیرد روی تقویم) -->
           <div class="forecast-drawer" id="forecast-drawer">
             <div class="forecast-days-grid" id="forecast-grid"></div>
           </div>
@@ -197,15 +197,46 @@
 
   </div>
 
-  <!-- مودال انتخاب شهر و لوکیشن -->
+  <!-- مودال مدرن و اصلاح‌شده تنظیم موقعیت مکانی با ۳ حالت -->
   <div id="city-modal" class="modal-overlay">
-    <div class="modal-content ios-glass-card">
-      <h3>تنظیم شهر و موقعیت مکانی</h3>
-      <button id="auto-gps-btn" class="modal-btn save" style="margin-bottom: 6px;">🎯 تشخیص خودکار موقعیت (GPS / IP)</button>
-      <input type="text" id="manual-city-input" placeholder="یا نام شهر را وارد کنید (مثلاً: تهران، مشهد)">
+    <div class="modal-content ios-glass-card location-modal-box">
+      <div class="modal-header-title">
+        <h3>📍 تنظیم موقعیت مکانی آب‌وهوا</h3>
+        <p>نحوه دریافت وضعیت آب‌وهوای خود را مشخص کنید</p>
+      </div>
+
+      <div class="loc-options-group">
+        <!-- گزینه ۱: GPS دستگاه با درخواست مجوز -->
+        <button id="auto-gps-btn" class="loc-method-btn primary-glass">
+          <div class="loc-icon-circle">🎯</div>
+          <div class="loc-text-desc">
+            <strong>موقعیت‌یابی دقیق زنده (GPS)</strong>
+            <span>درخواست دسترسی به موقعیت مکانی سیستم</span>
+          </div>
+        </button>
+
+        <!-- گزینه ۲: موقعیت خودکار بر اساس IP اینترنت -->
+        <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
+          <div class="loc-icon-circle">🌐</div>
+          <div class="loc-text-desc">
+            <strong>تشخیص هوشمند با آی‌پی (IP Location)</strong>
+            <span>بدون نیاز به GPS و به صورت لحظه‌ای</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="loc-divider">
+        <span>یا جستجوی دستی شهر</span>
+      </div>
+
+      <!-- گزینه ۳: جستجوی دستی شهر -->
+      <div class="manual-input-wrapper">
+        <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، شیراز، مشهد)">
+      </div>
+
       <div class="modal-buttons">
-        <button id="city-save-btn" class="modal-btn save">ذخیره</button>
-        <button id="city-cancel-btn" class="modal-btn cancel">انصراف</button>
+        <button id="city-save-btn" class="modal-btn save">تأیید و ذخیره</button>
+        <button id="city-cancel-btn" class="modal-btn cancel">بستن</button>
       </div>
     </div>
   </div>

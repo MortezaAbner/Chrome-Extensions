@@ -92,23 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // ۳. تقویم شمسی واقعی پویا
+  // ۳. تقویم شمسی
   function renderRealCalendar() {
     const datesGrid = document.getElementById('cal-dates');
     if (!datesGrid) return;
     datesGrid.innerHTML = '';
-
-    const todayDate = new Date();
-    // تقویم شمسی تقریبی برای ماه جاری
     for (let i = 1; i <= 30; i++) {
       const span = document.createElement('span');
       span.textContent = toFa(i);
-      
-      const dayOfWeek = (i + 4) % 7; // محاسبه تقریبی جمعه
+      const dayOfWeek = (i + 4) % 7;
       if (dayOfWeek === 6) span.className = 'fri holiday';
       if (i === 9) span.className = 'today-circle';
       if ([10, 12, 13, 14, 21].includes(i)) span.classList.add('dot');
-
       datesGrid.appendChild(span);
     }
   }
@@ -145,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cityModal = document.getElementById('city-modal');
   const citySelectBtn = document.getElementById('city-select-btn');
   const autoGpsBtn = document.getElementById('auto-gps-btn');
+  const autoIpBtn = document.getElementById('auto-ip-btn');
   const manualCityInput = document.getElementById('manual-city-input');
   const citySaveBtn = document.getElementById('city-save-btn');
   const cityCancelBtn = document.getElementById('city-cancel-btn');
 
-  // شهرهای پیش‌فرض
   const knownCities = {
     'تهران': { lat: 35.6892, lon: 51.3890 },
     'مشهد': { lat: 36.2972, lon: 59.6067 },
@@ -165,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: isDay ? 'آفتابی و دلنشین' : 'شب صاف و مهتابی' };
     if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌ابری' };
     if (code === 3) return { icon: '☁️', desc: 'تمام ابری' };
-    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧️️', desc: 'بارانی و با طراوت' };
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧', desc: 'بارانی و با طراوت' };
     if ([71, 73, 75, 85].includes(code)) return { icon: '❄️', desc: 'برفی و زمستانی' };
     if ([95, 96, 99].includes(code)) return { icon: '⛈️', desc: 'رعد و برق' };
     return { icon: '⛅', desc: 'هوای معتدل' };
@@ -191,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const minT = Math.round(daily.temperature_2m_min[0]);
       weatherRange.textContent = `${toFa(maxT)}° حداکثر . ${toFa(minT)}° حداقل`;
 
-      // رندر ۵ روز پیش‌بینی (عکس دوم)
       forecastGrid.innerHTML = '';
       const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
       for (let i = 0; i < 5; i++) {
@@ -217,47 +211,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
-  // دکمه باز و بسته کردن پیش‌بینی
-  if (forecastToggleBtn) {
+  // دکمه باز و بسته کردن پیش‌بینی (شناور روی تقویم)
+  if (forecastToggleBtn && forecastDrawer) {
     forecastToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       forecastDrawer.classList.toggle('active');
     });
   }
 
-  // تنظیمات لوکیشن
   if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
   if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
 
-  // جی‌پی‌اس اتوماتیک
+  // گزینه ۱: درخواست مجوز GPS دقیق سیستم
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
       if (navigator.geolocation) {
-        autoGpsBtn.textContent = 'در حال موقعیت‌یابی...';
+        const originalText = autoGpsBtn.innerHTML;
+        autoGpsBtn.innerHTML = '<span>در حال درخواست دسترسی و دریافت موقعیت...</span>';
+        
         navigator.geolocation.getCurrentPosition((pos) => {
-          activeCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: 'موقعیت شما' };
+          activeCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: 'موقعیت شما (GPS)' };
           localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
           fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
           cityModal.classList.remove('active');
-          autoGpsBtn.textContent = '🎯 تشخیص خودکار موقعیت (GPS / IP)';
-        }, () => {
-          alert('دسترسی به لوکیشن داده نشد.');
-          autoGpsBtn.textContent = '🎯 تشخیص خودکار موقعیت (GPS / IP)';
-        });
+          autoGpsBtn.innerHTML = originalText;
+        }, (err) => {
+          alert('دسترسی به GPS مسدود است یا خطا رخ داد. از گزینه تشخیص با IP استفاده کنید.');
+          autoGpsBtn.innerHTML = originalText;
+        }, { enableHighAccuracy: true, timeout: 10000 });
+      } else {
+        alert('مرورگر شما از GPS پشتیبانی نمی‌کند.');
       }
     };
   }
 
+  // گزینه ۲: تشخیص خودکار و سریع بر اساس IP (بدون نیاز به تأیید GPS)
+  if (autoIpBtn) {
+    autoIpBtn.onclick = async () => {
+      const originalText = autoIpBtn.innerHTML;
+      autoIpBtn.innerHTML = '<span>در حال شناسایی شهر با آی‌پی...</span>';
+      try {
+        const r = await fetch('https://ipapi.co/json/');
+        const d = await r.json();
+        if (d.latitude && d.longitude) {
+          activeCoords = { lat: d.latitude, lon: d.longitude, name: d.city || 'شهر شما' };
+          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+          cityModal.classList.remove('active');
+        } else {
+          throw new Error();
+        }
+      } catch (err) {
+        alert('موقعیت‌یابی با IP با خطا مواجه شد. نام شهر را دستی وارد کنید.');
+      } finally {
+        autoIpBtn.innerHTML = originalText;
+      }
+    };
+  }
+
+  // گزینه ۳: جستجوی دستی شهر
   if (citySaveBtn) {
     citySaveBtn.onclick = () => {
       const city = manualCityInput.value.trim();
+      if (!city) return;
       if (knownCities[city]) {
         activeCoords = { lat: knownCities[city].lat, lon: knownCities[city].lon, name: city };
         localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
         fetchRealWeather(activeCoords.lat, activeCoords.lon, city);
         cityModal.classList.remove('active');
-      } else if (city) {
-        // ژئوکدینگ ساده با سرچ Open-Meteo
+      } else {
+        citySaveBtn.textContent = 'در حال جستجو...';
         fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`)
           .then(r => r.json())
           .then(d => {
@@ -270,7 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
               alert('شهر مورد نظر پیدا نشد!');
             }
-          });
+          })
+          .catch(() => alert('خطا در جستجوی شهر'))
+          .finally(() => citySaveBtn.textContent = 'تأیید و ذخیره');
       }
     };
   }
@@ -350,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { title: 'پینترست', url: 'https://www.pinterest.com' },
     { title: 'یوتیوب', url: 'https://www.youtube.com' },
     { title: 'App', url: 'https://cafebazaar.ir' },
-    { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
+    { title: 'آپ‌‌تی‌وی', url: 'https://uptvs.com' },
     { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
     { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
     { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
@@ -373,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="context-menu" id="menu-${index}">
           <button class="menu-item open-tab" data-url="${item.url}">🔗 تب جدید</button>
           <button class="menu-item copy-link" data-url="${item.url}">📋 کپی لینک</button>
-          <button class="menu-item delete" data-index="${index}">🗑️️ حذف</button>
+          <button class="menu-item delete" data-index="${index}">🗑 حذف</button>
         </div>
         <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" class="shortcut-icon-img" alt="${item.title}">
         <span class="shortcut-title">${item.title}</span>
