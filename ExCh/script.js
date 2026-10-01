@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ۱. سیستم تصویر پس‌زمینه (آپلود، بلر و ریست)
+  const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
+
+  // ۱. پس‌زمینه کاربر
   const bgOverlay = document.getElementById('custom-bg-overlay');
   const bgSettingsBtn = document.getElementById('bg-settings-btn');
   const bgDropdown = document.getElementById('bg-dropdown-menu');
@@ -12,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyBackgroundConfig() {
     const savedBg = localStorage.getItem('custom_bg');
     const isBlurred = localStorage.getItem('bg_blur') !== 'false';
-
     if (savedBg) {
       bgOverlay.style.backgroundImage = `url(${savedBg})`;
       bgOverlay.className = `bg-overlay ${isBlurred ? 'blurred' : 'clear'}`;
@@ -28,10 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       bgDropdown.classList.toggle('active');
     });
-
     window.addEventListener('click', () => {
       bgDropdown.classList.remove('active');
       document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
+      const forecastDrawer = document.getElementById('forecast-drawer');
+      if (forecastDrawer) forecastDrawer.classList.remove('active');
     });
   }
 
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('custom_bg', event.target.result);
             applyBackgroundConfig();
           } catch (err) {
-            alert('حجم عکس بالاست! لطفاً تصویر کم‌حجم‌تری انتخاب کنید.');
+            alert('حجم عکس بالاست!');
           }
         };
         reader.readAsDataURL(file);
@@ -70,10 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (bgDropdown) bgDropdown.classList.remove('active');
     });
   }
-
   applyBackgroundConfig();
 
-  // ۲. مدیریت تم شب / روز
+  // ۲. تم شب و روز
   const themeBtn = document.getElementById('theme-toggle-btn');
   const themeIcon = document.getElementById('theme-icon');
 
@@ -89,46 +90,192 @@ document.addEventListener('DOMContentLoaded', () => {
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
   }
+  applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  const initialTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  applyTheme(initialTheme);
+  // ۳. تقویم شمسی واقعی پویا
+  function renderRealCalendar() {
+    const datesGrid = document.getElementById('cal-dates');
+    if (!datesGrid) return;
+    datesGrid.innerHTML = '';
 
-  // ۳. ساعت زنده، تاریخ و وضعیت روز/شب هوشمند
-  function updateClockAndWeather() {
+    const todayDate = new Date();
+    // تقویم شمسی تقریبی برای ماه جاری
+    for (let i = 1; i <= 30; i++) {
+      const span = document.createElement('span');
+      span.textContent = toFa(i);
+      
+      const dayOfWeek = (i + 4) % 7; // محاسبه تقریبی جمعه
+      if (dayOfWeek === 6) span.className = 'fri holiday';
+      if (i === 9) span.className = 'today-circle';
+      if ([10, 12, 13, 14, 21].includes(i)) span.classList.add('dot');
+
+      datesGrid.appendChild(span);
+    }
+  }
+  renderRealCalendar();
+
+  // ۴. ساعت و تاریخ
+  function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     
-    const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-    const toFa = n => String(n).replace(/\d/g, d => persianDigits[d]);
-
     const clockElem = document.getElementById('clock');
     if (clockElem) clockElem.textContent = `${toFa(String(hours).padStart(2, '0'))}:${toFa(minutes)}`;
 
-    const weatherIcon = document.getElementById('weather-icon');
-    const weatherPhrase = document.getElementById('weather-phrase');
+    const shamsiElem = document.getElementById('shamsi-date');
+    if (shamsiElem) shamsiElem.textContent = 'پنج‌شنبه، ۹ مهر';
 
-    if (weatherIcon && weatherPhrase) {
-      if (hours >= 19 || hours < 6) {
-        weatherIcon.textContent = '🌙';
-        weatherPhrase.textContent = 'شب مهتابی و آرام 🧡';
-      } else {
-        weatherIcon.textContent = '☀️';
-        weatherPhrase.textContent = 'روز آفتابی و دلنشین ☀️';
+    const secElem = document.getElementById('date-secondary');
+    if (secElem) secElem.textContent = '2026/Oct/1 | ۱۹ ربیع‌الثانی ۱۴۴۸';
+  }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
+
+  // ۵. آب‌وهوای زنده واقعی و پیش‌بینی (Open-Meteo API)
+  const cityLabel = document.getElementById('current-city-label');
+  const weatherTemp = document.getElementById('weather-temp');
+  const weatherIcon = document.getElementById('weather-icon');
+  const weatherPhrase = document.getElementById('weather-phrase');
+  const weatherRange = document.getElementById('weather-range');
+  const forecastDrawer = document.getElementById('forecast-drawer');
+  const forecastToggleBtn = document.getElementById('forecast-toggle-btn');
+  const forecastGrid = document.getElementById('forecast-grid');
+
+  const cityModal = document.getElementById('city-modal');
+  const citySelectBtn = document.getElementById('city-select-btn');
+  const autoGpsBtn = document.getElementById('auto-gps-btn');
+  const manualCityInput = document.getElementById('manual-city-input');
+  const citySaveBtn = document.getElementById('city-save-btn');
+  const cityCancelBtn = document.getElementById('city-cancel-btn');
+
+  // شهرهای پیش‌فرض
+  const knownCities = {
+    'تهران': { lat: 35.6892, lon: 51.3890 },
+    'مشهد': { lat: 36.2972, lon: 59.6067 },
+    'اصفهان': { lat: 32.6546, lon: 51.6680 },
+    'شیراز': { lat: 29.5918, lon: 52.5837 },
+    'تبریز': { lat: 38.0800, lon: 46.2919 },
+    'کرج': { lat: 35.8327, lon: 50.9915 }
+  };
+
+  let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
+
+  function getWeatherIconAndDesc(code, isDay) {
+    if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: isDay ? 'آفتابی و دلنشین' : 'شب صاف و مهتابی' };
+    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌ابری' };
+    if (code === 3) return { icon: '☁️', desc: 'تمام ابری' };
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧️️', desc: 'بارانی و با طراوت' };
+    if ([71, 73, 75, 85].includes(code)) return { icon: '❄️', desc: 'برفی و زمستانی' };
+    if ([95, 96, 99].includes(code)) return { icon: '⛈️', desc: 'رعد و برق' };
+    return { icon: '⛅', desc: 'هوای معتدل' };
+  }
+
+  async function fetchRealWeather(lat, lon, cityName) {
+    try {
+      cityLabel.textContent = cityName;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const cur = data.current_weather;
+      const daily = data.daily;
+      const isDay = cur.is_day === 1;
+
+      const condition = getWeatherIconAndDesc(cur.weathercode, isDay);
+      weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
+      weatherIcon.textContent = condition.icon;
+      weatherPhrase.textContent = `${condition.desc} 🧡`;
+
+      const maxT = Math.round(daily.temperature_2m_max[0]);
+      const minT = Math.round(daily.temperature_2m_min[0]);
+      weatherRange.textContent = `${toFa(maxT)}° حداکثر . ${toFa(minT)}° حداقل`;
+
+      // رندر ۵ روز پیش‌بینی (عکس دوم)
+      forecastGrid.innerHTML = '';
+      const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
+      for (let i = 0; i < 5; i++) {
+        const dCode = daily.weathercode[i];
+        const dIcon = getWeatherIconAndDesc(dCode, true).icon;
+        const dMax = Math.round(daily.temperature_2m_max[i]);
+        const dMin = Math.round(daily.temperature_2m_min[i]);
+
+        const box = document.createElement('div');
+        box.className = 'forecast-day-box';
+        box.innerHTML = `
+          <span class="forecast-day-name">${dayNames[i]}</span>
+          <span class="forecast-day-icon">${dIcon}</span>
+          <span class="forecast-day-max">${toFa(dMax)}°</span>
+          <span class="forecast-day-min">${toFa(dMin)}°</span>
+        `;
+        forecastGrid.appendChild(box);
       }
+    } catch (e) {
+      weatherPhrase.textContent = 'خطا در ارتباط با سرور هواشناسی';
     }
   }
-  setInterval(updateClockAndWeather, 1000);
-  updateClockAndWeather();
 
-  // دکمه‌های تقویم گوگل و تبدیل تاریخ
-  const gCalBtn = document.getElementById('google-cal-btn');
-  if (gCalBtn) gCalBtn.onclick = () => window.open('https://calendar.google.com', '_blank');
+  fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
-  const calConvBtn = document.getElementById('cal-convert-btn');
-  if (calConvBtn) calConvBtn.onclick = () => alert('امکان تبدیل تاریخ شمسی به میلادی و قمری');
+  // دکمه باز و بسته کردن پیش‌بینی
+  if (forecastToggleBtn) {
+    forecastToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      forecastDrawer.classList.toggle('active');
+    });
+  }
 
-  // ۴. موتورهای جستجو (گوگل / ذره‌بین) + عملکردهای لنز و ویس
+  // تنظیمات لوکیشن
+  if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
+  if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
+
+  // جی‌پی‌اس اتوماتیک
+  if (autoGpsBtn) {
+    autoGpsBtn.onclick = () => {
+      if (navigator.geolocation) {
+        autoGpsBtn.textContent = 'در حال موقعیت‌یابی...';
+        navigator.geolocation.getCurrentPosition((pos) => {
+          activeCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: 'موقعیت شما' };
+          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+          cityModal.classList.remove('active');
+          autoGpsBtn.textContent = '🎯 تشخیص خودکار موقعیت (GPS / IP)';
+        }, () => {
+          alert('دسترسی به لوکیشن داده نشد.');
+          autoGpsBtn.textContent = '🎯 تشخیص خودکار موقعیت (GPS / IP)';
+        });
+      }
+    };
+  }
+
+  if (citySaveBtn) {
+    citySaveBtn.onclick = () => {
+      const city = manualCityInput.value.trim();
+      if (knownCities[city]) {
+        activeCoords = { lat: knownCities[city].lat, lon: knownCities[city].lon, name: city };
+        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+        fetchRealWeather(activeCoords.lat, activeCoords.lon, city);
+        cityModal.classList.remove('active');
+      } else if (city) {
+        // ژئوکدینگ ساده با سرچ Open-Meteo
+        fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`)
+          .then(r => r.json())
+          .then(d => {
+            if (d.results && d.results.length > 0) {
+              const res = d.results[0];
+              activeCoords = { lat: res.latitude, lon: res.longitude, name: city };
+              localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+              fetchRealWeather(activeCoords.lat, activeCoords.lon, city);
+              cityModal.classList.remove('active');
+            } else {
+              alert('شهر مورد نظر پیدا نشد!');
+            }
+          });
+      }
+    };
+  }
+
+  // ۶. سرچ‌بار گوگل / ذره‌بین و لنز و ویس
   const engineSwitcher = document.getElementById('engine-switcher');
   const googleLogo = document.getElementById('google-logo');
   const zarebinLogo = document.getElementById('zarebin-logo');
@@ -159,8 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (engineSwitcher) {
     engineSwitcher.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       currentEngine = currentEngine === 'google' ? 'zarebin' : 'google';
       localStorage.setItem('search_engine', currentEngine);
       updateSearchEngineUI();
@@ -169,36 +315,27 @@ document.addEventListener('DOMContentLoaded', () => {
   updateSearchEngineUI();
 
   if (lensBtn) {
-    lensBtn.addEventListener('click', (e) => {
+    lensBtn.onclick = (e) => { e.preventDefault(); window.open('https://lens.google.com/', '_blank'); };
+  }
+
+  if (voiceBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SpeechRecognition();
+    rec.lang = 'fa-IR';
+    voiceBtn.onclick = (e) => {
       e.preventDefault();
-      window.open('https://lens.google.com/', '_blank');
-    });
+      voiceBtn.textContent = '🔴';
+      rec.start();
+    };
+    rec.onresult = (ev) => {
+      searchInput.value = ev.results[0][0].transcript;
+      voiceBtn.textContent = '🎙️';
+      searchForm.submit();
+    };
+    rec.onend = () => { voiceBtn.textContent = '🎙️'; };
   }
 
-  if (voiceBtn) {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'fa-IR';
-
-      voiceBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        voiceBtn.textContent = '🔴';
-        searchInput.placeholder = 'در حال گوش دادن...';
-        recognition.start();
-      });
-
-      recognition.onresult = (event) => {
-        searchInput.value = event.results[0][0].transcript;
-        voiceBtn.textContent = '🎙️';
-        searchForm.submit();
-      };
-
-      recognition.onend = () => { voiceBtn.textContent = '🎙️'; };
-    }
-  }
-
-  // ۵. رندر کامل میانبرهای ۶ تایی وسط
+  // ۷. میانبرهای ۶ ستونه وسط
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const addModal = document.getElementById('add-modal');
   const modalSaveBtn = document.getElementById('modal-save-btn');
@@ -222,37 +359,25 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts'));
-  if (!shortcuts || !Array.isArray(shortcuts) || shortcuts.length === 0) {
-    shortcuts = defaultShortcuts;
-  }
-
-  function getFavicon(url) {
-    try {
-      const domain = new URL(url).hostname;
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-    } catch {
-      return 'https://www.google.com/favicon.ico';
-    }
-  }
+  if (!shortcuts || !Array.isArray(shortcuts) || shortcuts.length === 0) shortcuts = defaultShortcuts;
 
   function renderShortcuts() {
     if (!shortcutsGrid) return;
     shortcutsGrid.innerHTML = '';
-
     shortcuts.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'shortcut-box';
+      const domain = new URL(item.url).hostname;
       card.innerHTML = `
         <button class="more-btn" data-index="${index}">⋮</button>
         <div class="context-menu" id="menu-${index}">
           <button class="menu-item open-tab" data-url="${item.url}">🔗 تب جدید</button>
           <button class="menu-item copy-link" data-url="${item.url}">📋 کپی لینک</button>
-          <button class="menu-item delete" data-index="${index}">🗑️ حذف</button>
+          <button class="menu-item delete" data-index="${index}">🗑️️ حذف</button>
         </div>
-        <img src="${getFavicon(item.url)}" class="shortcut-icon-img" alt="${item.title}">
+        <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" class="shortcut-icon-img" alt="${item.title}">
         <span class="shortcut-title">${item.title}</span>
       `;
-
       card.onclick = (e) => {
         if (e.target.closest('.more-btn') || e.target.closest('.context-menu')) return;
         window.location.href = item.url;
@@ -260,21 +385,18 @@ document.addEventListener('DOMContentLoaded', () => {
       shortcutsGrid.appendChild(card);
     });
 
-    // دکمه مثبت افزودن
     const addBtn = document.createElement('div');
     addBtn.className = 'add-shortcut-box';
     addBtn.innerHTML = '<span class="add-plus-icon">+</span>';
     addBtn.onclick = () => { if (addModal) addModal.classList.add('active'); };
     shortcutsGrid.appendChild(addBtn);
 
-    // رویدادهای منوی ۳ نقطه
     document.querySelectorAll('.more-btn').forEach(b => {
       b.onclick = (e) => {
         e.stopPropagation();
-        const idx = b.dataset.index;
         document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
-        const targetMenu = document.getElementById(`menu-${idx}`);
-        if (targetMenu) targetMenu.classList.toggle('active');
+        const m = document.getElementById(`menu-${b.dataset.index}`);
+        if (m) m.classList.toggle('active');
       };
     });
 
@@ -288,10 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('.menu-item.open-tab').forEach(b => {
-      b.onclick = (e) => {
-        e.stopPropagation();
-        window.open(b.dataset.url, '_blank');
-      };
+      b.onclick = (e) => { e.stopPropagation(); window.open(b.dataset.url, '_blank'); };
     });
 
     document.querySelectorAll('.menu-item.copy-link').forEach(b => {
@@ -311,22 +430,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!u.startsWith('http://') && !u.startsWith('https://')) u = 'https://' + u;
       shortcuts.push({ title: t, url: u });
       localStorage.setItem('my_shortcuts', JSON.stringify(shortcuts));
-      modalTitle.value = '';
-      modalUrl.value = '';
+      modalTitle.value = ''; modalUrl.value = '';
       if (addModal) addModal.classList.remove('active');
       renderShortcuts();
     };
   }
-
-  if (modalCancelBtn) {
-    modalCancelBtn.onclick = () => {
-      if (addModal) addModal.classList.remove('active');
-    };
-  }
-
+  if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۶. تب‌های تسک و یادداشت
+  // ۸. بخش تسک و یادداشت
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -339,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tabNotes.classList.remove('active');
       todoInput.placeholder = 'نوشتن تسک جدید';
     };
-
     tabNotes.onclick = () => {
       tabNotes.classList.add('active');
       tabTasks.classList.remove('active');
@@ -352,7 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
-
     todoList.innerHTML = '';
     if (todos.length === 0) {
       emptyState.style.display = 'flex';

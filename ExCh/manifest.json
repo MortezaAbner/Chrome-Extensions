@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Abner Chrome Extension",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "Minimalist iOS-inspired glassmorphic new tab dashboard featuring dynamic widgets, smart search engine switching, and custom productivity tools.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
