@@ -111,7 +111,6 @@ body {
   display: flex; gap: 12px; width: 100%; position: relative; z-index: 30;
 }
 
-/* باکس آب و هوا و منوی پیش‌بینی رو به جلو */
 .weather-single-card {
   flex: 1.15; padding: 14px; display: flex;
   flex-direction: column; justify-content: space-between; border-radius: 24px;
@@ -154,22 +153,28 @@ body {
   width: fit-content; cursor: pointer;
 }
 
-/* پنل پیش‌بینی کشویی ۵ روزه (به صورت مطلق و روی تقویم) */
+/* پنل پیش‌بینی با پس‌زمینه شیری متراکم برای رفع کامل ناخوانایی روی تقویم */
 .forecast-drawer {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
   width: 205%;
-  background: var(--glass-bg);
-  backdrop-filter: blur(55px) saturate(230%);
-  -webkit-backdrop-filter: blur(55px) saturate(230%);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(50px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 24px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25), var(--glass-specular);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 1);
   padding: 12px;
   display: none;
-  z-index: 999;
-  animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 9999;
+  animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .forecast-drawer {
+  background: rgba(18, 24, 38, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
 }
 
 @keyframes slideDownFade {
@@ -186,18 +191,25 @@ body {
 }
 
 .forecast-day-box {
-  flex: 1; background: var(--card-bg); border: 1px solid var(--glass-border);
+  flex: 1; background: rgba(241, 245, 249, 0.85); border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 16px; padding: 10px 4px; display: flex; flex-direction: column;
   align-items: center; gap: 4px; text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
-.forecast-day-name { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
-.forecast-day-icon { font-size: 1.35rem; margin: 3px 0; }
-.forecast-day-max { font-size: 0.9rem; font-weight: 800; color: var(--text-main); }
-.forecast-day-min { font-size: 0.74rem; color: var(--text-muted); }
+[data-theme="dark"] .forecast-day-box {
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(255, 255, 255, 0.08);
+}
 
-/* باکس ساعت */
+.forecast-day-name { font-size: 0.72rem; color: #475569; font-weight: 700; }
+[data-theme="dark"] .forecast-day-name { color: #94a3b8; }
+.forecast-day-icon { font-size: 1.35rem; margin: 3px 0; }
+.forecast-day-max { font-size: 0.92rem; font-weight: 800; color: #0f172a; }
+[data-theme="dark"] .forecast-day-max { color: #f8fafc; }
+.forecast-day-min { font-size: 0.74rem; color: #64748b; font-weight: 600; }
+[data-theme="dark"] .forecast-day-min { color: #94a3b8; }
+
 .clock-single-card {
   flex: 1; padding: 14px; display: flex;
   flex-direction: column; align-items: flex-end; text-align: left;
@@ -226,7 +238,6 @@ body {
   color: var(--text-muted); cursor: pointer;
 }
 
-/* تقویم شمسی */
 .calendar-card {
   flex: 1; display: flex; flex-direction: column; padding: 16px 20px;
   position: relative; z-index: 10;
@@ -374,122 +385,75 @@ body {
   background: rgba(255, 255, 255, 0.12); color: #f8fafc; border: 1px solid var(--glass-border);
 }
 
-/* مودال‌ها و پاپ‌آپ موقعیت مکانی جدید */
+/* مودال‌ها و پاپ‌آپ موقعیت مکانی جدید با پوشش مات و خوانایی کامل */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.35); backdrop-filter: blur(12px);
-  display: none; justify-content: center; align-items: center; z-index: 9999;
+  background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: none; justify-content: center; align-items: center; z-index: 10000;
 }
 .modal-overlay.active { display: flex; }
 
 .location-modal-box {
-  width: 380px !important;
+  width: 390px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22) !important;
   padding: 24px !important;
   border-radius: 30px !important;
   gap: 16px !important;
 }
 
+[data-theme="dark"] .location-modal-box {
+  background: rgba(20, 26, 42, 0.98) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75) !important;
+}
+
 .modal-header-title h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  margin-bottom: 4px;
+  font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;
 }
+[data-theme="dark"] .modal-header-title h3 { color: #f8fafc; }
+.modal-header-title p { font-size: 0.8rem; color: #64748b; }
+[data-theme="dark"] .modal-header-title p { color: #94a3b8; }
 
-.modal-header-title p {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.loc-options-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
+.loc-options-group { display: flex; flex-direction: column; gap: 10px; }
 .loc-method-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 18px;
-  border: 1px solid var(--glass-border);
-  cursor: pointer;
-  text-align: right;
-  transition: transform 0.15s ease, background 0.15s ease;
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-radius: 18px; border: 1px solid rgba(0, 0, 0, 0.08); cursor: pointer;
+  text-align: right; transition: transform 0.15s ease;
 }
-
-.loc-method-btn:hover {
-  transform: translateY(-2px);
-}
-
-.loc-method-btn.primary-glass {
-  background: rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.4);
-}
-
-.loc-method-btn.secondary-glass {
-  background: var(--card-bg);
-}
+.loc-method-btn:hover { transform: translateY(-2px); }
+.loc-method-btn.primary-glass { background: #eff6ff; border-color: #bfdbfe; }
+[data-theme="dark"] .loc-method-btn.primary-glass { background: rgba(37, 99, 235, 0.18); border-color: rgba(96, 165, 250, 0.3); }
+.loc-method-btn.secondary-glass { background: #f8fafc; }
+[data-theme="dark"] .loc-method-btn.secondary-glass { background: rgba(30, 41, 59, 0.6); border-color: rgba(255, 255, 255, 0.08); }
 
 .loc-icon-circle {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: 50%; background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); display: flex; align-items: center;
+  justify-content: center; font-size: 1.25rem; flex-shrink: 0;
 }
+[data-theme="dark"] .loc-icon-circle { background: #1e293b; }
 
-.loc-text-desc {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+.loc-text-desc strong { font-size: 0.9rem; font-weight: 700; color: #0f172a; display: block; }
+[data-theme="dark"] .loc-text-desc strong { color: #f1f5f9; }
+.loc-text-desc span { font-size: 0.74rem; color: #64748b; }
+[data-theme="dark"] .loc-text-desc span { color: #94a3b8; }
 
-.loc-text-desc strong {
-  font-size: 0.88rem;
-  color: var(--text-main);
-}
-
-.loc-text-desc span {
-  font-size: 0.74rem;
-  color: var(--text-muted);
-}
-
-.loc-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 4px 0;
-}
-
-.loc-divider::before, .loc-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.loc-divider span {
-  padding: 0 10px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
+.loc-divider { display: flex; align-items: center; text-align: center; margin: 4px 0; }
+.loc-divider::before, .loc-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--glass-border); }
+.loc-divider span { padding: 0 10px; font-size: 0.75rem; color: var(--text-muted); }
 
 .manual-input-wrapper input {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  outline: none;
-  font-size: 0.88rem;
-  color: var(--text-main);
+  width: 100%; padding: 12px 16px; background: #f1f5f9; border: 1px solid #cbd5e1;
+  border-radius: 16px; outline: none; font-size: 0.9rem; color: #0f172a;
 }
+[data-theme="dark"] .manual-input-wrapper input { background: #0f172a; border-color: #334155; color: #f8fafc; }
 
 .modal-buttons { display: flex; gap: 10px; margin-top: 6px; }
 .modal-btn { flex: 1; padding: 10px; border-radius: 14px; border: none; cursor: pointer; font-size: 0.88rem; font-weight: 600; }
 .modal-btn.save { background: var(--blue-badge); color: #fff; }
-.modal-btn.cancel { background: rgba(255,255,255,0.3); color: var(--text-main); }
+.modal-btn.cancel { background: rgba(0, 0, 0, 0.08); color: var(--text-main); }
+[data-theme="dark"] .modal-btn.cancel { background: rgba(255, 255, 255, 0.12); }
