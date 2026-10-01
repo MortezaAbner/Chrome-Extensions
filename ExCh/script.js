@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getWeatherIconAndDesc(code, isDay) {
     if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: isDay ? 'آفتابی و دلنشین' : 'شب صاف و مهتابی' };
-    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌ابری' };
+    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌‌ابری' };
     if (code === 3) return { icon: '☁️', desc: 'تمام ابری' };
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧', desc: 'بارانی و با طراوت' };
     if ([71, 73, 75, 85].includes(code)) return { icon: '❄️', desc: 'برفی و زمستانی' };
@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
-  // دکمه باز و بسته کردن پیش‌بینی
   if (forecastToggleBtn && forecastDrawer) {
     forecastToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -222,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
   if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
 
-  // تابع مشترک و ضدتحریم دریافت موقعیت از آی‌پی
   async function resolveByIp() {
     let resolved = false;
     try {
@@ -265,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // گزینه ۱: موقعیت‌یابی هوشمند (GPS با فال‌بک خودکار به IP بدون هیچ اروری)
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
       const originalText = autoGpsBtn.innerHTML;
@@ -280,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cityModal.classList.remove('active');
             autoGpsBtn.innerHTML = originalText;
           },
-          // در صورت بروز هرگونه خطای دسترسی یا عدم وجود GPS در ویندوز، بلافاصله به آی‌پی سوییچ می‌کند
           async () => {
             await resolveByIp();
             autoGpsBtn.innerHTML = originalText;
@@ -293,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // گزینه ۲: تشخیص مستقیم با آی‌پی
   if (autoIpBtn) {
     autoIpBtn.onclick = async () => {
       const originalText = autoIpBtn.innerHTML;
@@ -303,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // گزینه ۳: جستجوی دستی شهر
   if (citySaveBtn) {
     citySaveBtn.onclick = () => {
       const city = manualCityInput.value.trim();
@@ -391,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
       voiceBtn.textContent = '🎙️';
       searchForm.submit();
     };
-    rec.onend = () => { voiceBtn.textContent = '🎙️'; };
+    rec.onend = () => { voiceBtn.textContent = '🎙️️'; };
   }
 
   // ۷. میانبرهای ۶ ستونه وسط
@@ -551,5 +545,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   saveAndRenderTodos();
+
+  // ۹. ثبت Service Worker برای پشتیبانی از PWA و نصب روی موبایل و تبلت
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
 
 });
