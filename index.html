@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>New Tab</title>
+  
+  <!-- تنظیمات اختصاصی وب‌اپ PWA برای آیفون (iOS Safari) و اندروید -->
+  <link rel="manifest" href="app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Abner">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/compass.png">
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <!-- تصویر پس‌زمینه کاربر -->
+  <div id="custom-bg-overlay" class="bg-overlay"></div>
+
+  <!-- کنترل‌های بالا سمت چپ -->
+  <div class="top-controls">
+    <button id="theme-toggle-btn" class="ios-glass-btn" title="تغییر حالت شب/روز">
+      <span id="theme-icon">🌙</span>
+    </button>
+    
+    <button id="bg-settings-btn" class="ios-glass-btn" title="شخصی‌سازی تصویر زمینه">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+    </button>
+
+    <div id="bg-dropdown-menu" class="glass-dropdown">
+      <label class="dropdown-item">
+        📁 انتخاب عکس از سیستم
+        <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
+      </label>
+      <button id="toggle-blur-btn" class="dropdown-item">✨ وضعیت بلر: <span id="blur-status-text">مات</span></button>
+      <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌زمینه</button>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    
+    <!-- ستون راست: آب‌وهوا، ساعت و تقویم -->
+    <div class="col col-left">
+      
+      <div class="split-widgets-row">
+        
+        <!-- باکس مستقل آب و هوا -->
+        <div class="ios-glass-card weather-single-card" id="weather-card">
+          <div class="weather-top-row">
+            <span class="weather-temp-val" id="weather-temp">--°</span>
+            <div class="weather-icon-badge" id="weather-icon">☀️</div>
+          </div>
+          <div class="weather-status-phrase" id="weather-phrase">در حال دریافت...</div>
+          <div class="weather-range" id="weather-range">--° حداکثر . --° حداقل</div>
+          
+          <div class="weather-footer-actions">
+            <div class="location-chip" id="city-select-btn" title="تغییر شهر یا موقعیت مکانی">
+              📍 <span id="current-city-label">تهران</span>
+            </div>
+            <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
+          </div>
+
+          <!-- پنل پیش‌بینی روزهای آینده -->
+          <div class="forecast-drawer" id="forecast-drawer">
+            <div class="forecast-days-grid" id="forecast-grid"></div>
+          </div>
+        </div>
+
+        <!-- باکس مستقل ساعت و تاریخ -->
+        <div class="ios-glass-card clock-single-card">
+          <div class="digital-clock" id="clock">۰۰:۰۰</div>
+          <div class="date-shamsi-main" id="shamsi-date">...</div>
+          <div class="date-secondary-row" id="date-secondary">...</div>
+          <div class="clock-actions-row">
+            <span class="pill-btn">اوقات شرعی ⌵</span>
+            <span class="pill-btn">تایمر ⌵</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- تقویم شمسی -->
+      <div class="ios-glass-card calendar-card">
+        <div class="cal-top-bar">
+          <button class="cal-arrow" id="cal-next">‹</button>
+          <div class="cal-title-box">
+            <div class="cal-month-title" id="cal-month-header">مهر ۱۴۰۵ ▾</div>
+            <div class="cal-sub-title">ربیع الثانی-جمادی الاول Sep-Oct</div>
+          </div>
+          <button class="cal-arrow" id="cal-prev">›</button>
+        </div>
+
+        <div class="cal-weekdays">
+          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span class="fri">ج</span>
+        </div>
+
+        <div class="cal-dates-grid" id="cal-dates"></div>
+
+        <div class="cal-footer">
+          <div class="cal-action-btn" id="cal-convert-btn">تبدیل تاریخ 🔄</div>
+          <span class="cal-footer-separator">|</span>
+          <div class="cal-action-btn" id="google-cal-btn">تقویم گوگل <span class="g-icon">G</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ستون وسط: سرچ‌بار و میانبرها -->
+    <div class="col col-center">
+      
+      <div class="search-capsule" id="search-capsule">
+        <form id="search-form" class="search-inner" action="https://www.google.com/search" method="GET">
+          
+          <div class="search-actions-left" id="search-tools">
+            <span class="tool-btn" id="voice-btn" title="جستجوی صوتی گوگل">🎙️</span>
+            <span class="tool-btn" id="lens-btn" title="گوگل لنز">📷</span>
+          </div>
+
+          <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
+
+          <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
+            <span class="badge-arrow">↕</span>
+            <div id="engine-logo-container">
+              <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.27 21.36 7.35 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.27 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+              <span id="zarebin-logo" class="zarebin-text" style="display: none;">ذره‌بین</span>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="shortcuts-container" id="shortcuts-grid"></div>
+
+    </div>
+
+    <!-- ستون چپ: پنل تسک -->
+    <div class="col col-right">
+      <div class="ios-glass-card task-master-card">
+        
+        <div class="task-top-tabs">
+          <button class="tab-item active" id="tab-tasks">
+            <span class="tab-badge-icon">☑</span>
+            <span>تسک</span>
+          </button>
+          <button class="tab-item" id="tab-notes">
+            <span class="tab-badge-icon">📋</span>
+            <span>یادداشت</span>
+          </button>
+        </div>
+
+        <div class="task-action-pills">
+          <div class="pill-action-btn" title="بیشتر">⋯</div>
+          <div class="pill-action-btn" title="پنهان/نمایش انجام شده‌ها">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+          </div>
+          <div class="pill-action-btn" title="فیلترها">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          </div>
+          <div class="pill-action-btn" title="مرتب‌سازی">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+          </div>
+        </div>
+
+        <div class="task-body-zone">
+          <div class="exact-empty-state" id="empty-state">
+            <div class="empty-halo-circle">
+              <div class="cube-check-icon">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+                  <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            
+            <h3 class="empty-main-heading">هنوز تسکی ثبت نکردی!</h3>
+            <p class="empty-sub-heading">موضوعات پیشنهادی:</p>
+            
+            <div class="empty-bullets">
+              <span>• کارهای روزانه</span>
+              <span>• لیست خرید</span>
+              <span>• یادآوری‌های پرداخت</span>
+            </div>
+          </div>
+
+          <ul class="todo-list" id="todo-list" style="display: none;"></ul>
+        </div>
+
+        <div class="task-input-bottom">
+          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید" autocomplete="off">
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- مودال تنظیم موقعیت مکانی -->
+  <div id="city-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card location-modal-box">
+      <div class="modal-header-title">
+        <h3>📍 تنظیم موقعیت مکانی آب‌وهوا</h3>
+        <p>روش دریافت وضعیت آب‌وهوای خود را انتخاب کنید:</p>
+      </div>
+
+      <div class="loc-options-group">
+        <!-- گزینه ۱: GPS دستگاه -->
+        <button id="auto-gps-btn" class="loc-method-btn primary-glass">
+          <div class="loc-icon-circle">🎯</div>
+          <div class="loc-text-desc">
+            <strong>موقعیت‌یابی زنده دستگاه (GPS)</strong>
+            <span>دریافت مختصات آنلاین با سوییچ هوشمند خودکار</span>
+          </div>
+        </button>
+
+        <!-- گزینه ۲: آی‌پی اینترنت -->
+        <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
+          <div class="loc-icon-circle">🌐</div>
+          <div class="loc-text-desc">
+            <strong>تشخیص موقعیت مکانی با آی‌پی</strong>
+            <span>سریع، بدون نیاز به مجوز سیستم</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="loc-divider">
+        <span>یا جستجوی دستی شهر</span>
+      </div>
+
+      <!-- گزینه ۳: جستجوی دستی شهر -->
+      <div class="manual-input-wrapper">
+        <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، مشهد، شیراز)">
+      </div>
+
+      <div class="modal-buttons">
+        <button id="city-save-btn" class="modal-btn save">تأیید و ذخیره</button>
+        <button id="city-cancel-btn" class="modal-btn cancel">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال افزودن شورتکات -->
+  <div id="add-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card">
+      <h3>افزودن میانبر</h3>
+      <input type="text" id="modal-site-title" placeholder="نام میانبر">
+      <input type="text" id="modal-site-url" placeholder="آدرس سایت">
+      <div class="modal-buttons">
+        <button id="modal-save-btn" class="modal-btn save">افزودن</button>
+        <button id="modal-cancel-btn" class="modal-btn cancel">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
