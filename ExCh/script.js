@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const dockHomeBtn = document.getElementById('dock-home-btn');
   const dockSettingsBtn = document.getElementById('dock-settings-btn');
   const dockTasksBtn = document.getElementById('dock-tasks-btn');
-  const dockNotesBtn = document.getElementById('dock-notes-btn');
   const settingsCloseBtn = document.getElementById('settings-close-btn');
 
   function switchView(activeView, activeBtn) {
@@ -32,17 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsCloseBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
   }
 
-  // تسک و یادداشت باهم به نمای جامع تسک/یادداشت می‌روند
   if (dockTasksBtn) {
     dockTasksBtn.onclick = () => {
       switchView(viewTasks, dockTasksBtn);
       document.getElementById('full-tab-tasks')?.click();
-    };
-  }
-  if (dockNotesBtn) {
-    dockNotesBtn.onclick = () => {
-      switchView(viewTasks, dockNotesBtn);
-      document.getElementById('full-tab-notes')?.click();
     };
   }
 
@@ -672,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (googleLogo) googleLogo.style.display = 'none';
       if (zarebinLogo) zarebinLogo.style.display = 'inline-block';
       if (searchTools) searchTools.style.display = 'none';
-      searchInput.placeholder = 'جستجو در ذره‌‌بین...';
+      searchInput.placeholder = 'جستجو در ذره‌بین...';
       searchForm.action = 'https://zarebin.ir/search';
     } else {
       if (googleLogo) googleLogo.style.display = 'inline-block';
@@ -765,6 +757,18 @@ document.addEventListener('DOMContentLoaded', () => {
         shortcuts.splice(b.dataset.index, 1);
         localStorage.setItem('my_shortcuts', JSON.stringify(shortcuts));
         renderShortcuts();
+      };
+    });
+
+    document.querySelectorAll('.menu-item.open-tab').forEach(b => {
+      b.onclick = (e) => { e.stopPropagation(); window.open(b.dataset.url, '_blank'); };
+    });
+
+    document.querySelectorAll('.menu-item.copy-link').forEach(b => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(b.dataset.url);
+        alert('لینک کپی شد!');
       };
     });
   }
