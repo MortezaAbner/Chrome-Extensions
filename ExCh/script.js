@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('timer-drawer')?.classList.remove('active');
       document.getElementById('azan-city-dropdown')?.classList.remove('active');
       document.getElementById('month-year-picker')?.classList.remove('active');
-      document.getElementById('date-event-popup').style.display = 'none';
+      const evPopup = document.getElementById('date-event-popup');
+      if (evPopup) evPopup.style.display = 'none';
     });
   }
 
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // ۳. تقویم شمسی تعاملی و مناسبت‌های تقویم (عکس ۱، ۲، ۳، ۷)
+  // ۳. تقویم شمسی با انتخاب نامحدود سال‌ها به گذشته و نقطه سبز رویدادها (عکس ۱ و ۷)
   const persianMonthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   const monthSubTitles = [
     'رمضان-شوال Mar-Apr', 'شوال-ذی القعده Apr-May', 'ذی القعده-ذی الحجه May-Jun',
@@ -106,16 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
     'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
   ];
 
-  // دیتابیس مناسبت‌های روزها (عکس ۷)
+  // دیتابیس مناسبت‌های کامل (شمسی، قمری و میلادی)
   const specialEventsData = {
-    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-10': { title: 'روز بزرگداشت مولوی', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-13': { title: 'روز نیروی انتظامی 🍮 روز جهانی رول دارچینی', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌‌الثانی ۱۴۴۸' },
-    '1405-7-14': { title: 'روز دامپزشکی', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-16': { title: 'روز جهانی کودک', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-20': { title: 'روز بزرگداشت حافظ', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-23': { title: 'روز جهانی استاندارد', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
+    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
   };
 
   let currentYear = 1405;
@@ -161,11 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
 
       const eventKey = `${year}-${monthIndex + 1}-${i}`;
-      if (specialEventsData[eventKey] || [10, 12, 13, 14, 21].includes(i)) {
-        span.classList.add('dot');
+      // فقط روزهایی که مناسبت دارند نقطه سبز اختصاصی می‌گیرند
+      if (specialEventsData[eventKey]) {
+        span.classList.add('event-green-dot');
       }
 
-      // کلیک روی تاریخ و نمایش رویداد (عکس ۷)
       span.onclick = (e) => {
         e.stopPropagation();
         if (specialEventsData[eventKey]) {
@@ -207,14 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // مقداردهی انتخابگر سال و ماه چرخشی و کوچک (عکس ۱)
+  // انتخابگر سال‌ها: پشتیبانی کامل از سال ۱۳۰۰ تا ۱۵۰۰ به صورت بی‌نهایت به گذشته (عکس ۱)
   function initPickerLists() {
     if (!pickerYearsList || !pickerMonthsList) return;
     pickerYearsList.innerHTML = '';
-    for (let y = 1400; y <= 1410; y++) {
+    for (let y = 1300; y <= 1500; y++) {
       const item = document.createElement('div');
       item.className = `picker-item ${y === selectedPickerYear ? 'selected' : ''}`;
       item.textContent = toFa(y);
+      item.dataset.year = y;
       item.onclick = (e) => {
         e.stopPropagation();
         selectedPickerYear = y;
@@ -239,6 +241,14 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       pickerMonthsList.appendChild(item);
     });
+
+    // اسکرول خودکار روی سال انتخاب شده
+    setTimeout(() => {
+      const selectedEl = pickerYearsList.querySelector(`[data-year="${selectedPickerYear}"]`);
+      if (selectedEl) {
+        pickerYearsList.scrollTop = selectedEl.offsetTop - pickerYearsList.offsetTop - 35;
+      }
+    }, 50);
   }
 
   if (calMonthHeaderBtn && monthYearPicker) {
@@ -279,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. نمای تقویم گوگل ۲۴ ساعته و ورق زدن روزانه (عکس ۹)
+  // ۵. تقویم گوگل ۲۴ ساعته با جهت درست فلش‌ها (عکس ۹)
   const googleCalBtn = document.getElementById('google-cal-btn');
   const calStandardView = document.getElementById('calendar-standard-view');
   const calGoogleView = document.getElementById('calendar-google-view');
@@ -291,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const gViewDateText = document.getElementById('g-view-date-text');
   const gViewDayText = document.getElementById('g-view-day-text');
 
-  let googleCurrentDayOffset = 0; // آفست روز برای جلو و عقب بردن روزانه
+  let googleCurrentDayOffset = 0;
 
   function updateGoogleCalendarTimeline() {
     if (!gTimeline24h) return;
@@ -309,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const curHour = new Date().getHours();
     const curMin = new Date().getMinutes();
 
-    // ایجاد ۲۴ ساعت کامل شبانه‌روز
     for (let h = 0; h < 24; h++) {
       const row = document.createElement('div');
       const isLiveHour = (googleCurrentDayOffset === 0 && h === curHour);
@@ -336,18 +345,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (gPrevDayBtn) {
-    gPrevDayBtn.onclick = (e) => {
-      e.stopPropagation();
-      googleCurrentDayOffset--;
-      updateGoogleCalendarTimeline();
-    };
-  }
-
+  // فلش سمت راست (›): روز به جلو
   if (gNextDayBtn) {
     gNextDayBtn.onclick = (e) => {
       e.stopPropagation();
       googleCurrentDayOffset++;
+      updateGoogleCalendarTimeline();
+    };
+  }
+
+  // فلش سمت چپ (‹): روز به عقب
+  if (gPrevDayBtn) {
+    gPrevDayBtn.onclick = (e) => {
+      e.stopPropagation();
+      googleCurrentDayOffset--;
       updateGoogleCalendarTimeline();
     };
   }
@@ -373,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
   }
 
-  // ۶. تبدیل تاریخ با راست‌چین بودن و فرمول دقیق (عکس ۳، ۴، ۵، ۶)
+  // ۶. تبدیل تاریخ
   const calConvertBtn = document.getElementById('cal-convert-btn');
   const dateConvertModal = document.getElementById('date-convert-modal');
   const convertCloseBtn = document.getElementById('convert-close-btn');
@@ -392,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wheelMonth.innerHTML = '';
     persianMonthNames.forEach((m, idx) => wheelMonth.innerHTML += `<option value="${idx + 1}" ${idx === 3 ? 'selected' : ''}>${m}</option>`);
     wheelYear.innerHTML = '';
-    for (let y = 1350; y <= 1410; y++) wheelYear.innerHTML += `<option value="${y}" ${y === 1405 ? 'selected' : ''}>${toFa(y)}</option>`;
+    for (let y = 1300; y <= 1500; y++) wheelYear.innerHTML += `<option value="${y}" ${y === 1405 ? 'selected' : ''}>${toFa(y)}</option>`;
   }
   initConvertSelects();
 
