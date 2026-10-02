@@ -59,7 +59,7 @@
           <div class="ios-glass-card clock-single-card" id="clock-card">
             <div class="clock-first-line">
               <span class="clock-day-name" id="clock-day-label">جمعه</span>
-              <span class="digital-clock" id="clock">۲۲:۰۲</span>
+              <span class="digital-clock" id="clock">۲۲:۴۸</span>
             </div>
 
             <div class="custom-dates-stack">
@@ -72,7 +72,7 @@
                 <span class="digits-part">۲۰۲۶/۱۰/۰۲</span>
               </div>
               <div class="date-custom-row" id="hijri-row">
-                <span class="month-part">(ربیع‌الثانی)</span>
+                <span class="month-part">(ربیع‌‌الثانی)</span>
                 <span class="digits-part">۱۴۴۸/۰۳/۱۹</span>
               </div>
             </div>
@@ -248,7 +248,7 @@
 
             <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
+            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌‌بین">
               <span class="badge-arrow">↕</span>
               <div id="engine-logo-container">
                 <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -324,16 +324,15 @@
     </div>
   </main>
 
-  <!-- ۲. صفحه جدید شیشه‌ای تنظیمات (عکس ۲) -->
+  <!-- ۲. صفحه جدید شیشه‌ای تنظیمات -->
   <section id="view-settings" class="app-view">
-    <div class="settings-modal-card ios-glass-card glass-blur-menu">
+    <div class="settings-modal-card ios-glass-card">
       <div class="settings-card-header">
         <button class="settings-close-icon" id="settings-close-btn" title="بستن">✕</button>
         <div class="settings-header-title">تنظیمات › عمومی</div>
       </div>
 
       <div class="settings-layout-body">
-        <!-- ستون گزینه‌های اصلی تنظیمات -->
         <div class="settings-content-main">
           <div class="settings-form-row">
             <label class="settings-field-label">زبان<span class="sub-tip">انتخاب زبان پیش‌فرض</span></label>
@@ -375,12 +374,11 @@
           </div>
         </div>
 
-        <!-- سایدبار راست تنظیمات مطابق عکس ۲ -->
         <div class="settings-sidebar-nav">
           <div class="nav-item-glass"><span class="nav-ico">👤</span> پروفایل</div>
           <div class="nav-item-glass"><span class="nav-ico">✨</span> دستیار پلاس</div>
           <div class="nav-item-glass"><span class="nav-ico">💌</span> دعوت از دوستان <span class="badge-tag">۰/۳</span></div>
-          <div class="nav-item-glass"><span class="nav-ico">🖼️</span> تصویر زمینه</div>
+          <div class="nav-item-glass"><span class="nav-ico">🖼️️</span> تصویر زمینه</div>
           <div class="nav-item-glass"><span class="nav-ico">🎨</span> تم و رنگ</div>
           <div class="nav-item-glass active"><span class="nav-ico">⚙️</span> عمومی</div>
           <div class="nav-item-glass"><span class="nav-ico">📅</span> تقویم و زمان</div>
@@ -393,11 +391,10 @@
     </div>
   </section>
 
-  <!-- ۳. صفحه جدید شیشه‌ای تقویم هفتگی و تسک/یادداشت (عکس ۳) -->
+  <!-- ۳. صفحه جدید شیشه‌ای تقویم هفتگی و تسک/یادداشت -->
   <section id="view-tasks" class="app-view">
     <div class="tasks-page-layout">
-      <!-- بخش تقویم هفتگی گسترده در سمت چپ -->
-      <div class="weekly-calendar-card ios-glass-card glass-blur-menu">
+      <div class="weekly-calendar-card ios-glass-card">
         <div class="weekly-top-bar">
           <button class="cal-action-btn primary-fill" id="new-event-btn-full">+ رویداد جدید</button>
           
@@ -450,8 +447,7 @@
         </div>
       </div>
 
-      <!-- پنل تسک و یادداشت اختصاصی سمت راست -->
-      <div class="tasks-side-card ios-glass-card glass-blur-menu">
+      <div class="tasks-side-card ios-glass-card">
         <div class="task-top-tabs">
           <button class="tab-item active" id="full-tab-tasks">☑ تسک</button>
           <button class="tab-item" id="full-tab-notes">📋 یادداشت</button>
@@ -479,10 +475,51 @@
     </div>
   </section>
 
-  <!-- داک شیشه‌ای شناور در پایین‌ترین بخش صفحه (عکس ۱ و ۴) -->
-  <footer class="bottom-floating-dock ios-glass-card glass-blur-menu" id="bottom-dock">
+  <!-- داک شیشه‌ای کشیده‌تر با همان فرمول دقیق شیشه‌ای کارت‌های دیگر (عکس جدید) -->
+  <footer class="bottom-floating-dock ios-glass-card" id="bottom-dock">
     
-    <!-- ۱. پروفایل -->
+    <!-- راست: لوگوی اختصاصی آبنر اکستنشن -->
+    <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
+      <div class="dock-abner-chip">A</div>
+    </button>
+
+    <div class="dock-sep"></div>
+
+    <!-- بخش وسط: آیکون‌های مینیمال تسک، خانه، تم و تنظیمات -->
+    <div class="dock-center-group">
+      <!-- دکمه خانه -->
+      <button class="dock-btn active" id="dock-home-btn" title="خانه (داشبورد)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5l9-7.5 9 7.5v10.5a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 20z"></path>
+          <polyline points="9 21 9 12 15 12 15 21"></polyline>
+        </svg>
+      </button>
+
+      <!-- فقط آیکون مینیمال تسک (بدون کاغذ) -->
+      <button class="dock-btn" id="dock-tasks-btn" title="تسک‌ها">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+      </button>
+
+      <!-- کادر آیکون تغییر حالت شب و روز -->
+      <button class="dock-btn theme-dock-pill" id="theme-toggle-btn" title="تغییر شب/روز">
+        <span id="theme-icon">🌙</span>
+      </button>
+
+      <!-- آیکون تنظیمات -->
+      <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3.2"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="dock-sep"></div>
+
+    <!-- چپ: پروفایل کاربر -->
     <button class="dock-btn" id="dock-profile-btn" title="پروفایل">
       <div class="dock-profile-circle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -490,54 +527,6 @@
           <path d="M4.5 20c0-3.5 3.3-6.5 7.5-6.5s7.5 3 7.5 6.5"></path>
         </svg>
       </div>
-    </button>
-
-    <div class="dock-sep"></div>
-
-    <!-- ۲. تنظیمات -->
-    <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3.2"></circle>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-      </svg>
-    </button>
-
-    <!-- ۳. تغییر حالت شب و روز با کادر اختصاصی (عکس ۴) -->
-    <button class="dock-btn theme-dock-pill" id="theme-toggle-btn" title="تغییر شب/روز">
-      <span id="theme-icon">🌙</span>
-    </button>
-
-    <!-- ۴. یادداشت‌ها -->
-    <button class="dock-btn" id="dock-notes-btn" title="یادداشت">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" y1="13" x2="8" y2="13"></line>
-        <line x1="16" y1="17" x2="8" y2="17"></line>
-      </svg>
-    </button>
-
-    <!-- ۵. تسک‌ها -->
-    <button class="dock-btn" id="dock-tasks-btn" title="تسک‌ها">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 11 12 14 22 4"></polyline>
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-      </svg>
-    </button>
-
-    <!-- ۶. دکمه خانه (بازگشت به صفحه اول بدون اسکرول) -->
-    <button class="dock-btn active" id="dock-home-btn" title="خانه (صفحه اول)">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9.5l9-7.5 9 7.5v10.5a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 20z"></path>
-        <polyline points="9 21 9 12 15 12 15 21"></polyline>
-      </svg>
-    </button>
-
-    <div class="dock-sep"></div>
-
-    <!-- ۷. لوگوی آبنر اکستنشن (عکس ۴) -->
-    <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
-      <div class="dock-abner-chip">A</div>
     </button>
 
   </footer>
