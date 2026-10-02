@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('azan-drawer')?.classList.remove('active');
       document.getElementById('timer-drawer')?.classList.remove('active');
       document.getElementById('azan-city-dropdown')?.classList.remove('active');
+      document.getElementById('month-year-picker')?.classList.remove('active');
     });
   }
 
@@ -95,26 +96,134 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // ۳. تقویم شمسی
-  function renderRealCalendar() {
-    const datesGrid = document.getElementById('cal-dates');
-    if (!datesGrid) return;
-    datesGrid.innerHTML = '';
-    for (let i = 1; i <= 30; i++) {
+  // ۳. تقویم شمسی پویا با قابلیت ورق زدن ماه و انتخابگر سال و ماه (عکس ۲، ۳ و ۴)
+  const persianMonthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+  const monthSubTitles = [
+    'رمضان-شوال Mar-Apr', 'شوال-ذی القعده Apr-May', 'ذی القعده-ذی الحجه May-Jun',
+    'ذی الحجه-محرم Jun-Jul', 'محرم-صفر Jul-Aug', 'صفر-ربیع الاول Aug-Sep',
+    'ربیع الثانی-جمادی الاول Sep-Oct', 'جمادی الاول-جمادی الثانی Oct-Nov',
+    'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
+  ];
+
+  let currentYear = 1405;
+  let currentMonthIndex = 6; // مهر (۰-ایندکس: ۶)
+
+  const calMonthText = document.getElementById('cal-month-text');
+  const calSubText = document.getElementById('cal-sub-text');
+  const calDates = document.getElementById('cal-dates');
+  const calPrevBtn = document.getElementById('cal-prev-btn');
+  const calNextBtn = document.getElementById('cal-next-btn');
+  const calMonthHeaderBtn = document.getElementById('cal-month-header-btn');
+  const monthYearPicker = document.getElementById('month-year-picker');
+  const pickerYearsList = document.getElementById('picker-years-list');
+  const pickerMonthsList = document.getElementById('picker-months-list');
+  const pickerConfirmBtn = document.getElementById('picker-confirm-btn');
+
+  let selectedPickerYear = currentYear;
+  let selectedPickerMonth = currentMonthIndex;
+
+  function renderCalendar(year, monthIndex) {
+    if (!calMonthText || !calDates) return;
+    calMonthText.textContent = `${persianMonthNames[monthIndex]} ${toFa(year)}`;
+    calSubText.textContent = monthSubTitles[monthIndex];
+
+    calDates.innerHTML = '';
+    const daysInMonth = monthIndex < 6 ? 31 : (monthIndex < 11 ? 30 : 29);
+    
+    // محاسبه روز شروع ماه
+    const startOffset = (monthIndex * 2 + 1) % 7;
+    for (let k = 0; k < startOffset; k++) {
+      const emptySpan = document.createElement('span');
+      calDates.appendChild(emptySpan);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
       const span = document.createElement('span');
       span.textContent = toFa(i);
-      const dayOfWeek = (i + 4) % 7;
+      const dayOfWeek = (i + startOffset - 1) % 7;
       if (dayOfWeek === 6) span.className = 'fri holiday';
-      if (i === 9) span.className = 'today-circle';
+      if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
       if ([10, 12, 13, 14, 21].includes(i)) span.classList.add('dot');
-      datesGrid.appendChild(span);
+      calDates.appendChild(span);
     }
   }
-  renderRealCalendar();
 
-  // ۴. ساعت زنده و تاریخ‌ها (راست‌چین نام ماه و چپ‌چین ارقام)
-  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
-  
+  // فلش ماه قبل و بعد (عکس ۳)
+  if (calPrevBtn) {
+    calPrevBtn.onclick = (e) => {
+      e.stopPropagation();
+      currentMonthIndex--;
+      if (currentMonthIndex < 0) { currentMonthIndex = 11; currentYear--; }
+      renderCalendar(currentYear, currentMonthIndex);
+    };
+  }
+  if (calNextBtn) {
+    calNextBtn.onclick = (e) => {
+      e.stopPropagation();
+      currentMonthIndex++;
+      if (currentMonthIndex > 11) { currentMonthIndex = 0; currentYear++; }
+      renderCalendar(currentYear, currentMonthIndex);
+    };
+  }
+
+  // پاپ‌آپ انتخابگر سال و ماه (عکس ۴)
+  function initPickerLists() {
+    if (!pickerYearsList || !pickerMonthsList) return;
+    pickerYearsList.innerHTML = '';
+    for (let y = 1400; y <= 1410; y++) {
+      const item = document.createElement('div');
+      item.className = `picker-item ${y === selectedPickerYear ? 'selected' : ''}`;
+      item.textContent = toFa(y);
+      item.onclick = (e) => {
+        e.stopPropagation();
+        selectedPickerYear = y;
+        document.querySelectorAll('#picker-years-list .picker-item').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        pickerConfirmBtn.textContent = `نمایش ${persianMonthNames[selectedPickerMonth]} ${toFa(selectedPickerYear)}`;
+      };
+      pickerYearsList.appendChild(item);
+    }
+
+    pickerMonthsList.innerHTML = '';
+    persianMonthNames.forEach((m, idx) => {
+      const item = document.createElement('div');
+      item.className = `picker-item ${idx === selectedPickerMonth ? 'selected' : ''}`;
+      item.textContent = m;
+      item.onclick = (e) => {
+        e.stopPropagation();
+        selectedPickerMonth = idx;
+        document.querySelectorAll('#picker-months-list .picker-item').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        pickerConfirmBtn.textContent = `نمایش ${persianMonthNames[selectedPickerMonth]} ${toFa(selectedPickerYear)}`;
+      };
+      pickerMonthsList.appendChild(item);
+    });
+  }
+
+  if (calMonthHeaderBtn && monthYearPicker) {
+    calMonthHeaderBtn.onclick = (e) => {
+      e.stopPropagation();
+      selectedPickerYear = currentYear;
+      selectedPickerMonth = currentMonthIndex;
+      initPickerLists();
+      pickerConfirmBtn.textContent = `نمایش ${persianMonthNames[selectedPickerMonth]} ${toFa(selectedPickerYear)}`;
+      monthYearPicker.classList.toggle('active');
+    };
+  }
+
+  if (pickerConfirmBtn) {
+    pickerConfirmBtn.onclick = (e) => {
+      e.stopPropagation();
+      currentYear = selectedPickerYear;
+      currentMonthIndex = selectedPickerMonth;
+      renderCalendar(currentYear, currentMonthIndex);
+      monthYearPicker.classList.remove('active');
+    };
+  }
+  renderCalendar(currentYear, currentMonthIndex);
+
+  // ۴. ساعت زنده
+  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
@@ -126,25 +235,104 @@ document.addEventListener('DOMContentLoaded', () => {
     const dayElem = document.getElementById('clock-day-label');
     if (dayElem) dayElem.textContent = persianDays[now.getDay()];
 
-    const shamsiRow = document.getElementById('shamsi-row');
-    if (shamsiRow) {
-      shamsiRow.innerHTML = `<span class="month-part">(مهر ماه)</span><span class="digits-part">۱۴۰۵/۰۷/۰۹</span>`;
-    }
-
-    const gregRow = document.getElementById('gregorian-row');
-    if (gregRow) {
-      gregRow.innerHTML = `<span class="month-part">(اکتبر)</span><span class="digits-part">۲۰۲۶/۱۰/۰۲</span>`;
-    }
-
-    const hijriRow = document.getElementById('hijri-row');
-    if (hijriRow) {
-      hijriRow.innerHTML = `<span class="month-part">(ربیع‌الثانی)</span><span class="digits-part">۱۴۴۸/۰۳/۱۹</span>`;
-    }
+    const gText = document.getElementById('g-view-date-text');
+    if (gText) gText.textContent = `${toFa(currentYear)}/${toFa(String(currentMonthIndex + 1).padStart(2, '0'))}/۱۰`;
   }
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. آب‌وهوای زنده با آیکون‌های انیمیشنی CSS
+  // ۵. نمای تقویم گوگل (عکس ۷)
+  const googleCalBtn = document.getElementById('google-cal-btn');
+  const calStandardView = document.getElementById('calendar-standard-view');
+  const calGoogleView = document.getElementById('calendar-google-view');
+  const gBackToCalBtn = document.getElementById('g-back-to-cal-btn');
+  const gAddEventBtn = document.getElementById('g-add-event-btn');
+
+  if (googleCalBtn && calStandardView && calGoogleView) {
+    googleCalBtn.onclick = (e) => {
+      e.stopPropagation();
+      calStandardView.style.display = 'none';
+      calGoogleView.style.display = 'flex';
+      const scroller = document.getElementById('g-timeline-scroller');
+      if (scroller) scroller.scrollTop = 120;
+    };
+  }
+  if (gBackToCalBtn) {
+    gBackToCalBtn.onclick = (e) => {
+      e.stopPropagation();
+      calGoogleView.style.display = 'none';
+      calStandardView.style.display = 'block';
+    };
+  }
+  if (gAddEventBtn) {
+    gAddEventBtn.onclick = () => {
+      window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
+    };
+  }
+
+  // ۶. تبدیل تاریخ حرفه‌ای (عکس ۵ و ۶)
+  const calConvertBtn = document.getElementById('cal-convert-btn');
+  const dateConvertModal = document.getElementById('date-convert-modal');
+  const convertCloseBtn = document.getElementById('convert-close-btn');
+  const convertInputView = document.getElementById('convert-input-view');
+  const convertResultView = document.getElementById('convert-result-view');
+  const doConvertBtn = document.getElementById('do-convert-btn');
+  const convertAgainBtn = document.getElementById('convert-again-btn');
+  const wheelDay = document.getElementById('wheel-day-select');
+  const wheelMonth = document.getElementById('wheel-month-select');
+  const wheelYear = document.getElementById('wheel-year-select');
+
+  function initConvertSelects() {
+    if (!wheelDay || !wheelMonth || !wheelYear) return;
+    wheelDay.innerHTML = '';
+    for (let d = 1; d <= 31; d++) wheelDay.innerHTML += `<option value="${d}" ${d === 9 ? 'selected' : ''}>${toFa(d)}</option>`;
+    wheelMonth.innerHTML = '';
+    persianMonthNames.forEach((m, idx) => wheelMonth.innerHTML += `<option value="${idx + 1}" ${idx === 6 ? 'selected' : ''}>${m}</option>`);
+    wheelYear.innerHTML = '';
+    for (let y = 1350; y <= 1410; y++) wheelYear.innerHTML += `<option value="${y}" ${y === 1405 ? 'selected' : ''}>${toFa(y)}</option>`;
+  }
+  initConvertSelects();
+
+  if (calConvertBtn && dateConvertModal) {
+    calConvertBtn.onclick = (e) => {
+      e.stopPropagation();
+      convertInputView.style.display = 'block';
+      convertResultView.style.display = 'none';
+      dateConvertModal.classList.add('active');
+    };
+  }
+  if (convertCloseBtn) convertCloseBtn.onclick = () => dateConvertModal.classList.remove('active');
+
+  document.querySelectorAll('.type-tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.type-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+  });
+
+  if (doConvertBtn) {
+    doConvertBtn.onclick = () => {
+      const d = wheelDay.value;
+      const m = wheelMonth.value;
+      const y = wheelYear.value;
+      document.getElementById('res-shamsi-val').textContent = `${toFa(d)} ${persianMonthNames[m - 1]} ${toFa(y)}`;
+      document.getElementById('res-ghamari-val').textContent = `۱۲ شعبان ۱۴۳۱`;
+      document.getElementById('res-miladi-val').textContent = `24 ژوئیه 2010`;
+      document.getElementById('res-day-name').textContent = `شنبه`;
+      document.getElementById('res-age-val').textContent = `۱۶ سال ۲ ماه ۱۲ روز`;
+      convertInputView.style.display = 'none';
+      convertResultView.style.display = 'block';
+    };
+  }
+
+  if (convertAgainBtn) {
+    convertAgainBtn.onclick = () => {
+      convertResultView.style.display = 'none';
+      convertInputView.style.display = 'block';
+    };
+  }
+
+  // ۷. آب‌وهوا و پیش‌بینی
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -189,24 +377,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
 
   function renderWeatherAnimatedIcon(code, isDay) {
-    if (code === 0) {
-      return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
-    }
+    if (code === 0) return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) {
-      return `
-        <div class="weather-dynamic-art rainy">
-          <div class="art-cloud"></div>
-          <div class="art-rain-drop d1"></div>
-          <div class="art-rain-drop d2"></div>
-          <div class="art-rain-drop d3"></div>
-        </div>
-      `;
+      return `<div class="weather-dynamic-art rainy"><div class="art-cloud"></div><div class="art-rain-drop d1"></div><div class="art-rain-drop d2"></div><div class="art-rain-drop d3"></div></div>`;
     }
     return `<div class="weather-dynamic-art cloudy"><div class="art-cloud"></div></div>`;
   }
 
   function getWeatherPhrase(code, isDay) {
-    if (code === 0) return isDay ? 'آفتابی و دلنشین ☀️️' : 'شب صاف و مهتابی 🌙';
+    if (code === 0) return isDay ? 'آفتابی و دلنشین ☀' : 'شب صاف و مهتابی 🌙';
     if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
     if (code === 3) return 'تمام ابری 🧡';
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
@@ -215,30 +394,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'معتدل و آرام ⛅';
   }
 
-  function getForecastEmoji(code) {
-    if (code === 0) return '☀️';
-    if ([1, 2].includes(code)) return '⛅';
-    if (code === 3) return '☁️';
-    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return '🌧';
-    if ([71, 73, 75, 85].includes(code)) return '❄️';
-    return '🌦';
-  }
-
   async function fetchRealWeather(lat, lon, cityName) {
     try {
       cityLabel.textContent = cityName;
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
       const res = await fetch(url);
       const data = await res.json();
-
       const cur = data.current_weather;
       const daily = data.daily;
       const isDay = cur.is_day === 1;
 
       weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
-      if (weatherIconContainer) {
-        weatherIconContainer.innerHTML = renderWeatherAnimatedIcon(cur.weathercode, isDay);
-      }
+      if (weatherIconContainer) weatherIconContainer.innerHTML = renderWeatherAnimatedIcon(cur.weathercode, isDay);
       weatherPhrase.textContent = getWeatherPhrase(cur.weathercode, isDay);
 
       const maxT = Math.round(daily.temperature_2m_max[0]);
@@ -247,17 +414,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       forecastGrid.innerHTML = '';
       const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
+      const emojis = ['☀️', '⛅', '☁️', '🌧', '🌦'];
       for (let i = 0; i < 5; i++) {
-        const dCode = daily.weathercode[i];
-        const dIcon = getForecastEmoji(dCode);
         const dMax = Math.round(daily.temperature_2m_max[i]);
         const dMin = Math.round(daily.temperature_2m_min[i]);
-
         const box = document.createElement('div');
         box.className = 'forecast-day-box';
         box.innerHTML = `
           <span class="forecast-day-name">${dayNames[i]}</span>
-          <div class="forecast-day-icon-box">${dIcon}</div>
+          <div class="forecast-day-icon-box">${emojis[i % 5]}</div>
           <span class="forecast-day-max">${toFa(dMax)}°</span>
           <span class="forecast-day-min">${toFa(dMin)}°</span>
         `;
@@ -267,7 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
       weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
     }
   }
-
   fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
   if (forecastToggleBtn && forecastDrawer) {
@@ -283,23 +447,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
 
   async function resolveByIp() {
-    let resolved = false;
     try {
       const r1 = await fetch('https://ipwho.is/');
       const d1 = await r1.json();
       if (d1.success !== false && d1.latitude && d1.longitude) {
         activeCoords = { lat: d1.latitude, lon: d1.longitude, name: d1.city || 'موقعیت شما' };
-        resolved = true;
+        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+        fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+        cityModal.classList.remove('active');
       }
-    } catch (e) {}
-
-    if (resolved) {
-      localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
-      fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
-      cityModal.classList.remove('active');
-    } else {
-      alert('سرویس‌های آنلاین در دسترس نیستند.');
-    }
+    } catch (e) { alert('سرویس‌های آنلاین در دسترس نیستند.'); }
   }
 
   if (autoGpsBtn) {
@@ -315,12 +472,9 @@ document.addEventListener('DOMContentLoaded', () => {
           async () => { await resolveByIp(); },
           { timeout: 6000 }
         );
-      } else {
-        resolveByIp();
-      }
+      } else { resolveByIp(); }
     };
   }
-
   if (autoIpBtn) autoIpBtn.onclick = async () => { await resolveByIp(); };
 
   if (citySaveBtn) {
@@ -337,20 +491,17 @@ document.addEventListener('DOMContentLoaded', () => {
           .then(r => r.json())
           .then(d => {
             if (d.results && d.results.length > 0) {
-              const res = d.results[0];
-              activeCoords = { lat: res.latitude, lon: res.longitude, name: city };
+              activeCoords = { lat: d.results[0].latitude, lon: d.results[0].longitude, name: city };
               localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
               fetchRealWeather(activeCoords.lat, activeCoords.lon, city);
               cityModal.classList.remove('active');
-            } else {
-              alert('شهر مورد نظر پیدا نشد!');
-            }
+            } else { alert('شهر پیدا نشد!'); }
           });
       }
     };
   }
 
-  // ۶. اوقات شرعی با منحنی کم‌ارتفاع و خوانا
+  // ۸. اوقات شرعی
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
   const azanDrawer = document.getElementById('azan-drawer');
   const azanCurrentCity = document.getElementById('azan-current-city');
@@ -396,8 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAzanCities(filter = '') {
     if (!azanCityList) return;
     azanCityList.innerHTML = '';
-    const cities = Object.keys(cityDatabase).filter(c => c.includes(filter));
-    cities.forEach(city => {
+    Object.keys(cityDatabase).filter(c => c.includes(filter)).forEach(city => {
       const li = document.createElement('li');
       li.textContent = city;
       li.onclick = (e) => {
@@ -418,14 +568,11 @@ document.addEventListener('DOMContentLoaded', () => {
       azanCityDropdown.classList.toggle('active');
     });
   }
-
   if (azanCitySearchInput) {
-    azanCitySearchInput.addEventListener('input', (e) => {
-      renderAzanCities(e.target.value.trim());
-    });
+    azanCitySearchInput.addEventListener('input', (e) => renderAzanCities(e.target.value.trim()));
   }
 
-  // ۷. تایمر بدون فلش و با تایپ مستقیم
+  // ۹. تایمر با کنترل دقیق
   const timerToggleBtn = document.getElementById('timer-toggle-btn');
   const timerDrawer = document.getElementById('timer-drawer');
   const timerActionMain = document.getElementById('timer-toggle-action');
@@ -448,14 +595,11 @@ document.addEventListener('DOMContentLoaded', () => {
   [timerHr, timerMin, timerSec].forEach(input => {
     if (!input) return;
     input.addEventListener('click', (e) => e.stopPropagation());
-    input.addEventListener('mousedown', (e) => e.stopPropagation());
-    
     input.addEventListener('input', (e) => {
       let val = toEn(e.target.value).replace(/\D/g, '');
       if (val.length > 2) val = val.slice(-2);
       e.target.value = val ? toFa(val) : '';
     });
-
     input.addEventListener('blur', (e) => {
       let val = toEn(e.target.value).replace(/\D/g, '');
       if (!val) val = '0';
@@ -466,38 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  function playAlarmSound() {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const playBeep = (freq, time, duration) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.3, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        osc.start(time);
-        osc.stop(time + duration);
-      };
-      const now = ctx.currentTime;
-      playBeep(880, now, 0.2);
-      playBeep(880, now + 0.25, 0.2);
-      playBeep(1200, now + 0.5, 0.4);
-    } catch (e) {}
-  }
-
-  function triggerAlarmNotification() {
-    playAlarmSound();
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('⏰ زمان تایمر به پایان رسید!', {
-        body: 'زمان مشخص شده به اتمام رسید.',
-        icon: 'https://img.icons8.com/fluency/192/compass.png'
-      });
-    }
-    alert('⏰ زمان تایمر شما به پایان رسید!');
-  }
-
   if (timerActionMain) {
     timerActionMain.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -507,14 +619,10 @@ document.addEventListener('DOMContentLoaded', () => {
         timerActionMain.textContent = 'شروع';
         timerActionMain.classList.remove('running');
       } else {
-        if ('Notification' in window && Notification.permission === 'default') {
-          Notification.requestPermission();
-        }
         const h = parseInt(toEn(timerHr.value), 10) || 0;
         const m = parseInt(toEn(timerMin.value), 10) || 0;
         const s = parseInt(toEn(timerSec.value), 10) || 0;
         totalRemainingSec = (h * 3600) + (m * 60) + s;
-
         if (totalRemainingSec <= 0) return;
 
         timerActionMain.textContent = 'توقف';
@@ -527,10 +635,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timerInterval = null;
             timerActionMain.textContent = 'شروع';
             timerActionMain.classList.remove('running');
-            timerHr.value = '۰۰';
-            timerMin.value = '۲۵';
-            timerSec.value = '۰۰';
-            triggerAlarmNotification();
+            timerHr.value = '۰۰'; timerMin.value = '۲۵'; timerSec.value = '۰۰';
+            alert('⏰ زمان تایمر به پایان رسید!');
             return;
           }
           const curH = Math.floor(totalRemainingSec / 3600);
@@ -544,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۸. سرچ‌بار گوگل و ذره‌بین
+  // ۱۰. سرچ‌بار
   const engineSwitcher = document.getElementById('engine-switcher');
   const googleLogo = document.getElementById('google-logo');
   const zarebinLogo = document.getElementById('zarebin-logo');
@@ -583,28 +689,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateSearchEngineUI();
 
-  if (lensBtn) {
-    lensBtn.onclick = (e) => { e.preventDefault(); window.open('https://lens.google.com/', '_blank'); };
-  }
+  if (lensBtn) lensBtn.onclick = (e) => { e.preventDefault(); window.open('https://lens.google.com/', '_blank'); };
 
   if (voiceBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const rec = new SpeechRecognition();
     rec.lang = 'fa-IR';
-    voiceBtn.onclick = (e) => {
-      e.preventDefault();
-      voiceBtn.textContent = '🔴';
-      rec.start();
-    };
-    rec.onresult = (ev) => {
-      searchInput.value = ev.results[0][0].transcript;
-      voiceBtn.textContent = '🎙️';
-      searchForm.submit();
-    };
-    rec.onend = () => { voiceBtn.textContent = '🎙️️'; };
+    voiceBtn.onclick = (e) => { e.preventDefault(); voiceBtn.textContent = '🔴'; rec.start(); };
+    rec.onresult = (ev) => { searchInput.value = ev.results[0][0].transcript; voiceBtn.textContent = '🎙️'; searchForm.submit(); };
+    rec.onend = () => { voiceBtn.textContent = '🎙️'; };
   }
 
-  // ۹. میانبرها
+  // ۱۱. میانبرها
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const addModal = document.getElementById('add-modal');
   const modalSaveBtn = document.getElementById('modal-save-btn');
@@ -707,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۰. تسک‌ها
+  // ۱۲. تسک‌ها
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -762,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   saveAndRenderTodos();
 
-  // ۱۱. Service Worker
+  // ۱۳. Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
