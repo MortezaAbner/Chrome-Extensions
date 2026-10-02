@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('timer-drawer')?.classList.remove('active');
       document.getElementById('azan-city-dropdown')?.classList.remove('active');
       document.getElementById('month-year-picker')?.classList.remove('active');
+      document.getElementById('date-event-popup').style.display = 'none';
     });
   }
 
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // ۳. تقویم شمسی پویا با قابلیت ورق زدن ماه و انتخابگر سال و ماه (عکس ۲، ۳ و ۴)
+  // ۳. تقویم شمسی تعاملی و مناسبت‌های تقویم (عکس ۱، ۲، ۳، ۷)
   const persianMonthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   const monthSubTitles = [
     'رمضان-شوال Mar-Apr', 'شوال-ذی القعده Apr-May', 'ذی القعده-ذی الحجه May-Jun',
@@ -105,8 +106,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
   ];
 
+  // دیتابیس مناسبت‌های روزها (عکس ۷)
+  const specialEventsData = {
+    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-10': { title: 'روز بزرگداشت مولوی', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-13': { title: 'روز نیروی انتظامی 🍮 روز جهانی رول دارچینی', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌‌الثانی ۱۴۴۸' },
+    '1405-7-14': { title: 'روز دامپزشکی', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-16': { title: 'روز جهانی کودک', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-20': { title: 'روز بزرگداشت حافظ', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-23': { title: 'روز جهانی استاندارد', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
+  };
+
   let currentYear = 1405;
-  let currentMonthIndex = 6; // مهر (۰-ایندکس: ۶)
+  let currentMonthIndex = 6; // مهر
 
   const calMonthText = document.getElementById('cal-month-text');
   const calSubText = document.getElementById('cal-sub-text');
@@ -118,6 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const pickerYearsList = document.getElementById('picker-years-list');
   const pickerMonthsList = document.getElementById('picker-months-list');
   const pickerConfirmBtn = document.getElementById('picker-confirm-btn');
+  const dateEventPopup = document.getElementById('date-event-popup');
+  const eventPopupText = document.getElementById('event-popup-text');
+  const eventPopupDates = document.getElementById('event-popup-dates');
+  const eventPopupClose = document.getElementById('event-popup-close');
 
   let selectedPickerYear = currentYear;
   let selectedPickerMonth = currentMonthIndex;
@@ -129,9 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calDates.innerHTML = '';
     const daysInMonth = monthIndex < 6 ? 31 : (monthIndex < 11 ? 30 : 29);
-    
-    // محاسبه روز شروع ماه
     const startOffset = (monthIndex * 2 + 1) % 7;
+
     for (let k = 0; k < startOffset; k++) {
       const emptySpan = document.createElement('span');
       calDates.appendChild(emptySpan);
@@ -143,12 +159,36 @@ document.addEventListener('DOMContentLoaded', () => {
       const dayOfWeek = (i + startOffset - 1) % 7;
       if (dayOfWeek === 6) span.className = 'fri holiday';
       if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
-      if ([10, 12, 13, 14, 21].includes(i)) span.classList.add('dot');
+
+      const eventKey = `${year}-${monthIndex + 1}-${i}`;
+      if (specialEventsData[eventKey] || [10, 12, 13, 14, 21].includes(i)) {
+        span.classList.add('dot');
+      }
+
+      // کلیک روی تاریخ و نمایش رویداد (عکس ۷)
+      span.onclick = (e) => {
+        e.stopPropagation();
+        if (specialEventsData[eventKey]) {
+          const ev = specialEventsData[eventKey];
+          eventPopupText.textContent = ev.title;
+          eventPopupDates.textContent = `${ev.hDate} / ${ev.gDate}`;
+          dateEventPopup.style.display = 'flex';
+        } else {
+          dateEventPopup.style.display = 'none';
+        }
+      };
+
       calDates.appendChild(span);
     }
   }
 
-  // فلش ماه قبل و بعد (عکس ۳)
+  if (eventPopupClose) {
+    eventPopupClose.onclick = (e) => {
+      e.stopPropagation();
+      dateEventPopup.style.display = 'none';
+    };
+  }
+
   if (calPrevBtn) {
     calPrevBtn.onclick = (e) => {
       e.stopPropagation();
@@ -157,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCalendar(currentYear, currentMonthIndex);
     };
   }
+
   if (calNextBtn) {
     calNextBtn.onclick = (e) => {
       e.stopPropagation();
@@ -166,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // پاپ‌آپ انتخابگر سال و ماه (عکس ۴)
+  // مقداردهی انتخابگر سال و ماه چرخشی و کوچک (عکس ۱)
   function initPickerLists() {
     if (!pickerYearsList || !pickerMonthsList) return;
     pickerYearsList.innerHTML = '';
@@ -223,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCalendar(currentYear, currentMonthIndex);
 
   // ۴. ساعت زنده
-  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
@@ -234,27 +275,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dayElem = document.getElementById('clock-day-label');
     if (dayElem) dayElem.textContent = persianDays[now.getDay()];
-
-    const gText = document.getElementById('g-view-date-text');
-    if (gText) gText.textContent = `${toFa(currentYear)}/${toFa(String(currentMonthIndex + 1).padStart(2, '0'))}/۱۰`;
   }
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. نمای تقویم گوگل (عکس ۷)
+  // ۵. نمای تقویم گوگل ۲۴ ساعته و ورق زدن روزانه (عکس ۹)
   const googleCalBtn = document.getElementById('google-cal-btn');
   const calStandardView = document.getElementById('calendar-standard-view');
   const calGoogleView = document.getElementById('calendar-google-view');
   const gBackToCalBtn = document.getElementById('g-back-to-cal-btn');
   const gAddEventBtn = document.getElementById('g-add-event-btn');
+  const gPrevDayBtn = document.getElementById('g-prev-day');
+  const gNextDayBtn = document.getElementById('g-next-day');
+  const gTimeline24h = document.getElementById('g-timeline-24h');
+  const gViewDateText = document.getElementById('g-view-date-text');
+  const gViewDayText = document.getElementById('g-view-day-text');
+
+  let googleCurrentDayOffset = 0; // آفست روز برای جلو و عقب بردن روزانه
+
+  function updateGoogleCalendarTimeline() {
+    if (!gTimeline24h) return;
+    gTimeline24h.innerHTML = '';
+    const now = new Date();
+    now.setDate(now.getDate() + googleCurrentDayOffset);
+    
+    const dayName = persianDays[now.getDay()];
+    if (gViewDayText) gViewDayText.textContent = dayName;
+    if (gViewDateText) {
+      const mDay = 9 + googleCurrentDayOffset;
+      gViewDateText.textContent = `۱۴۰۵/۰۷/${toFa(String(mDay).padStart(2, '0'))}`;
+    }
+
+    const curHour = new Date().getHours();
+    const curMin = new Date().getMinutes();
+
+    // ایجاد ۲۴ ساعت کامل شبانه‌روز
+    for (let h = 0; h < 24; h++) {
+      const row = document.createElement('div');
+      const isLiveHour = (googleCurrentDayOffset === 0 && h === curHour);
+      row.className = `g-hour-row ${isLiveHour ? 'current-live-hour' : ''}`;
+      row.dataset.hour = h;
+
+      const label = document.createElement('span');
+      label.className = 'g-hour-label';
+      label.textContent = `${toFa(String(h).padStart(2, '0'))}:۰۰`;
+      row.appendChild(label);
+
+      const line = document.createElement('div');
+      line.className = 'g-hour-line';
+
+      if (isLiveHour) {
+        const liveRed = document.createElement('div');
+        liveRed.className = 'g-live-red-line';
+        liveRed.innerHTML = `<span class="g-live-badge">${toFa(String(curHour).padStart(2, '0'))}:${toFa(String(curMin).padStart(2, '0'))}</span>`;
+        line.appendChild(liveRed);
+      }
+
+      row.appendChild(line);
+      gTimeline24h.appendChild(row);
+    }
+  }
+
+  if (gPrevDayBtn) {
+    gPrevDayBtn.onclick = (e) => {
+      e.stopPropagation();
+      googleCurrentDayOffset--;
+      updateGoogleCalendarTimeline();
+    };
+  }
+
+  if (gNextDayBtn) {
+    gNextDayBtn.onclick = (e) => {
+      e.stopPropagation();
+      googleCurrentDayOffset++;
+      updateGoogleCalendarTimeline();
+    };
+  }
 
   if (googleCalBtn && calStandardView && calGoogleView) {
     googleCalBtn.onclick = (e) => {
       e.stopPropagation();
       calStandardView.style.display = 'none';
       calGoogleView.style.display = 'flex';
+      updateGoogleCalendarTimeline();
       const scroller = document.getElementById('g-timeline-scroller');
-      if (scroller) scroller.scrollTop = 120;
+      if (scroller) scroller.scrollTop = 450;
     };
   }
   if (gBackToCalBtn) {
@@ -265,12 +370,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
   if (gAddEventBtn) {
-    gAddEventBtn.onclick = () => {
-      window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
-    };
+    gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
   }
 
-  // ۶. تبدیل تاریخ حرفه‌ای (عکس ۵ و ۶)
+  // ۶. تبدیل تاریخ با راست‌چین بودن و فرمول دقیق (عکس ۳، ۴، ۵، ۶)
   const calConvertBtn = document.getElementById('cal-convert-btn');
   const dateConvertModal = document.getElementById('date-convert-modal');
   const convertCloseBtn = document.getElementById('convert-close-btn');
@@ -285,9 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function initConvertSelects() {
     if (!wheelDay || !wheelMonth || !wheelYear) return;
     wheelDay.innerHTML = '';
-    for (let d = 1; d <= 31; d++) wheelDay.innerHTML += `<option value="${d}" ${d === 9 ? 'selected' : ''}>${toFa(d)}</option>`;
+    for (let d = 1; d <= 31; d++) wheelDay.innerHTML += `<option value="${d}" ${d === 19 ? 'selected' : ''}>${toFa(d)}</option>`;
     wheelMonth.innerHTML = '';
-    persianMonthNames.forEach((m, idx) => wheelMonth.innerHTML += `<option value="${idx + 1}" ${idx === 6 ? 'selected' : ''}>${m}</option>`);
+    persianMonthNames.forEach((m, idx) => wheelMonth.innerHTML += `<option value="${idx + 1}" ${idx === 3 ? 'selected' : ''}>${m}</option>`);
     wheelYear.innerHTML = '';
     for (let y = 1350; y <= 1410; y++) wheelYear.innerHTML += `<option value="${y}" ${y === 1405 ? 'selected' : ''}>${toFa(y)}</option>`;
   }
@@ -316,10 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const m = wheelMonth.value;
       const y = wheelYear.value;
       document.getElementById('res-shamsi-val').textContent = `${toFa(d)} ${persianMonthNames[m - 1]} ${toFa(y)}`;
-      document.getElementById('res-ghamari-val').textContent = `۱۲ شعبان ۱۴۳۱`;
-      document.getElementById('res-miladi-val').textContent = `24 ژوئیه 2010`;
-      document.getElementById('res-day-name').textContent = `شنبه`;
-      document.getElementById('res-age-val').textContent = `۱۶ سال ۲ ماه ۱۲ روز`;
+      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌الثانی ۱۴۴۸`;
+      document.getElementById('res-miladi-val').textContent = `29 سپتامبر 2026`;
+      document.getElementById('res-day-name').textContent = `سه‌شنبه`;
+      document.getElementById('res-age-val').textContent = `۴ روز`;
       convertInputView.style.display = 'none';
       convertResultView.style.display = 'block';
     };
@@ -332,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۷. آب‌وهوا و پیش‌بینی
+  // ۷. آب‌وهوا
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');

@@ -54,7 +54,7 @@
         <!-- باکس آب‌وهوا -->
         <div class="ios-glass-card weather-single-card" id="weather-card">
           <div class="weather-top-row">
-            <span class="weather-temp-val" id="weather-temp">۲۲°</span>
+            <span class="weather-temp-val" id="weather-temp">۲۱°</span>
             <div class="weather-animated-icon" id="weather-icon-container">
               <div class="weather-dynamic-art cloudy">
                 <div class="art-cloud"></div>
@@ -72,8 +72,8 @@
             <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
           </div>
 
-          <!-- پنل پیش‌بینی هواشناسی شیشه‌ای -->
-          <div class="forecast-drawer glass-styled-drawer" id="forecast-drawer">
+          <!-- پنل پیش‌بینی با باکس‌های شیشه‌ای ملایم و خوانا -->
+          <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
             <div class="forecast-days-grid" id="forecast-grid"></div>
           </div>
         </div>
@@ -83,10 +83,10 @@
           
           <div class="clock-first-line">
             <span class="clock-day-name" id="clock-day-label">جمعه</span>
-            <span class="digital-clock" id="clock">۲۰:۵۴</span>
+            <span class="digital-clock" id="clock">۲۱:۲۵</span>
           </div>
 
-          <!-- سطرهای تاریخ: ماه راست‌چین و عدد چپ‌چین -->
+          <!-- سطرهای تاریخ -->
           <div class="custom-dates-stack">
             <div class="date-custom-row" id="shamsi-row">
               <span class="month-part">(مهر ماه)</span>
@@ -102,14 +102,14 @@
             </div>
           </div>
 
-          <!-- دکمه‌های هم‌اندازه با آب‌وهوا -->
+          <!-- دکمه‌های هم‌اندازه با دکمه‌های آب‌وهوا -->
           <div class="clock-actions-row">
             <span class="pill-btn compact-action-btn" id="azan-toggle-btn">اوقات شرعی ⌵</span>
             <span class="pill-btn compact-action-btn" id="timer-toggle-btn">تایمر ⌵</span>
           </div>
 
-          <!-- دراور شیشه‌ای اوقات شرعی -->
-          <div class="clock-drawer azan-drawer glass-styled-drawer" id="azan-drawer">
+          <!-- دراور اوقات شرعی با بلر ۸۰٪ و خوانایی بالا -->
+          <div class="clock-drawer azan-drawer glass-blur-menu" id="azan-drawer">
             <div class="azan-curve-container">
               <svg class="azan-curve-svg" viewBox="0 0 320 60" preserveAspectRatio="none">
                 <path d="M 0 52 Q 80 8, 160 22 T 320 52" fill="none" stroke="url(#azan-gradient)" stroke-width="3.5" stroke-linecap="round"/>
@@ -137,7 +137,7 @@
                 <span class="arrow-up">⌃</span>
               </button>
             </div>
-            <div class="azan-city-dropdown" id="azan-city-dropdown">
+            <div class="azan-city-dropdown glass-blur-menu" id="azan-city-dropdown">
               <div class="azan-search-box">
                 <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
               </div>
@@ -145,8 +145,8 @@
             </div>
           </div>
 
-          <!-- دراور شیشه‌ای تایمر -->
-          <div class="clock-drawer timer-drawer glass-styled-drawer" id="timer-drawer">
+          <!-- دراور تایمر -->
+          <div class="clock-drawer timer-drawer glass-blur-menu" id="timer-drawer">
             <div class="timer-boxes-row">
               <div class="timer-unit">
                 <input type="text" inputmode="numeric" maxlength="2" id="timer-sec" value="۰۰" class="timer-input" spellcheck="false" autocomplete="off">
@@ -182,8 +182,8 @@
             <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
           </div>
 
-          <!-- پاپ‌آپ انتخابگر سال و ماه (عکس ۴) -->
-          <div class="month-year-picker-modal" id="month-year-picker">
+          <!-- پاپ‌آپ کوچک و خوانای انتخاب سال و ماه (عکس ۱) -->
+          <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
             <div class="picker-columns">
               <div class="picker-col">
                 <div class="picker-label">سال</div>
@@ -197,56 +197,67 @@
             <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
           </div>
 
-          <div class="cal-weekdays">
-            <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span class="fri">ج</span>
+          <!-- پنجره پاپ‌آپ رویداد و مناسبت‌های روز (عکس ۷) -->
+          <div class="date-event-popup glass-blur-menu" id="date-event-popup" style="display: none;">
+            <div class="event-popup-header">
+              <span class="event-title-main" id="event-popup-title">مناسبت‌های این روز</span>
+              <button class="event-close-btn" id="event-popup-close">✕</button>
+            </div>
+            <div class="event-popup-body">
+              <div class="event-badge-item" id="event-popup-text">روز نیروی انتظامی 🍮 روز رول دارچینی</div>
+              <div class="event-dates-sub" id="event-popup-dates">۲۳ ربیع‌الثانی ۱۴۴۸ / 5 Oct 2026</div>
+            </div>
+          </div>
+
+          <!-- نام کامل روزهای هفته (عکس ۷) -->
+          <div class="cal-weekdays-full">
+            <span>شنبه</span>
+            <span>یکشنبه</span>
+            <span>دوشنبه</span>
+            <span>سه‌شنبه</span>
+            <span>چهارشنبه</span>
+            <span>پنج‌شنبه</span>
+            <span class="fri">جمعه</span>
           </div>
 
           <div class="cal-dates-grid" id="cal-dates"></div>
 
+          <!-- فوتر متقارن با آیکون ساده مشکی (عکس ۸) -->
           <div class="cal-footer">
-            <div class="cal-action-btn" id="cal-convert-btn">تبدیل تاریخ 🔄</div>
+            <div class="cal-action-btn" id="cal-convert-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="convert-loop-icon">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>تبدیل تاریخ</span>
+            </div>
             <span class="cal-footer-separator">|</span>
-            <div class="cal-action-btn" id="google-cal-btn">تقویم گوگل <span class="g-icon">G</span></div>
+            <div class="cal-action-btn" id="google-cal-btn">
+              <span>تقویم گوگل</span>
+              <span class="g-icon">G</span>
+            </div>
           </div>
         </div>
 
-        <!-- نمای تقویم گوگل (عکس ۷) -->
+        <!-- نمای ۲۴ ساعته تقویم گوگل با ورق زدن روزانه (عکس ۹) -->
         <div id="calendar-google-view" class="google-view-container" style="display: none;">
           <div class="g-view-top">
-            <div class="g-view-left-actions">
-              <img src="https://img.icons8.com/color/48/google-calendar--v2.png" class="g-cal-icon-img" alt="Google Calendar">
-              <button class="g-add-event-btn" id="g-add-event-btn" title="افزودن رویداد در گوگل">+</button>
+            <div class="g-view-arrows-left">
+              <button class="g-arrow-btn" id="g-prev-day" title="روز قبل">‹</button>
+              <button class="g-arrow-btn" id="g-next-day" title="روز بعد">›</button>
             </div>
             <div class="g-view-date-info">
-              <span id="g-view-date-text">۱۴۰۵/۰۷/۱۰</span>
               <span class="g-day-badge" id="g-view-day-text">جمعه</span>
+              <span id="g-view-date-text">۱۴۰۵/۰۷/۱۰</span>
             </div>
-            <div class="g-view-arrows">
-              <button class="g-arrow-btn" id="g-prev-day">‹</button>
-              <button class="g-arrow-btn" id="g-next-day">›</button>
+            <div class="g-view-right-actions">
+              <button class="g-add-event-btn" id="g-add-event-btn" title="افزودن رویداد در گوگل">+</button>
+              <img src="https://img.icons8.com/color/48/google-calendar--v2.png" class="g-cal-icon-img" alt="Google Calendar">
             </div>
           </div>
 
+          <!-- اسکرول ۲۴ ساعته کامل -->
           <div class="g-timeline-scroller" id="g-timeline-scroller">
-            <div class="g-timeline-inner">
-              <!-- ردیف‌های ساعتی ۰ الی ۲۳ -->
-              <div class="g-hour-row" data-hour="15"><span class="g-hour-label">۱۵:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="16"><span class="g-hour-label">۱۶:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="17"><span class="g-hour-label">۱۷:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="18"><span class="g-hour-label">۱۸:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="19"><span class="g-hour-label">۱۹:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="20"><span class="g-hour-label">۲۰:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row current-live-hour" data-hour="21">
-                <span class="g-hour-label">۲۱:۰۰</span>
-                <div class="g-hour-line">
-                  <div class="g-live-red-line">
-                    <span class="g-live-badge">۲۱:۰۵</span>
-                  </div>
-                </div>
-              </div>
-              <div class="g-hour-row" data-hour="22"><span class="g-hour-label">۲۲:۰۰</span><div class="g-hour-line"></div></div>
-              <div class="g-hour-row" data-hour="23"><span class="g-hour-label">۲۳:۰۰</span><div class="g-hour-line"></div></div>
-            </div>
+            <div class="g-timeline-inner" id="g-timeline-24h"></div>
           </div>
 
           <div class="g-view-footer">
@@ -271,7 +282,7 @@
 
           <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-          <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌‌بین">
+          <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
             <span class="badge-arrow">↕</span>
             <div id="engine-logo-container">
               <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -352,21 +363,21 @@
 
   </div>
 
-  <!-- مودال تبدیل تاریخ (عکس ۵ و ۶) -->
+  <!-- مودال تبدیل تاریخ با راست‌چین بودن و خوانایی صددرصدی (عکس ۳، ۴، ۵، ۶) -->
   <div id="date-convert-modal" class="modal-overlay">
-    <div class="modal-content ios-glass-card convert-modal-box">
+    <div class="modal-content ios-glass-card convert-modal-box glass-blur-menu">
       <div class="convert-modal-header">
         <button class="modal-close-icon" id="convert-close-btn">✕</button>
         <h3>تبدیل تاریخ</h3>
       </div>
 
-      <!-- فرم ورودی تبدیل (عکس ۵) -->
+      <!-- فرم ورودی تبدیل -->
       <div id="convert-input-view">
         <div class="convert-type-tabs">
-          <button class="type-tab-btn" data-type="miladi">میلادی</button>
-          <button class="type-tab-btn" data-type="ghamari">قمری</button>
+          <span class="type-tab-label">تاریخ مبدا:</span>
           <button class="type-tab-btn active" data-type="shamsi">شمسی</button>
-          <span class="type-tab-label">:تاریخ مبدا</span>
+          <button class="type-tab-btn" data-type="ghamari">قمری</button>
+          <button class="type-tab-btn" data-type="miladi">میلادی</button>
         </div>
 
         <div class="wheel-picker-container">
@@ -389,27 +400,27 @@
         </button>
       </div>
 
-      <!-- کارت نتیجه تبدیل (عکس ۶) -->
+      <!-- کارت نتیجه تبدیل -->
       <div id="convert-result-view" style="display: none;">
         <div class="convert-results-list">
           <div class="result-row">
-            <span class="res-val" id="res-shamsi-val">۲ مرداد ۱۳۸۹</span>
             <span class="res-lbl">شمسی</span>
+            <span class="res-val" id="res-shamsi-val">۷ مهر ۱۴۰۵</span>
           </div>
           <div class="result-row">
-            <span class="res-val" id="res-ghamari-val">۱۲ شعبان ۱۴۳۱</span>
             <span class="res-lbl">قمری</span>
+            <span class="res-val" id="res-ghamari-val">۱۷ ربیع‌الثانی ۱۴۴۸</span>
           </div>
           <div class="result-row">
-            <span class="res-val" id="res-miladi-val">24 ژوئیه 2010</span>
             <span class="res-lbl">میلادی</span>
+            <span class="res-val" id="res-miladi-val">29 سپتامبر 2026</span>
           </div>
           <div class="result-row day-row">
-            <span class="res-val" id="res-day-name">شنبه</span>
+            <span class="res-val" id="res-day-name">سه‌شنبه</span>
           </div>
           <div class="result-row age-row">
-            <span class="res-val" id="res-age-val">۱۶ سال ۲ ماه ۱۲ روز</span>
-            <span class="res-lbl">(فاصله زمانی (سن</span>
+            <span class="res-lbl">فاصله زمانی (سن)</span>
+            <span class="res-val" id="res-age-val">۴ روز</span>
           </div>
         </div>
 
@@ -423,7 +434,7 @@
 
   <!-- مودال تنظیم موقعیت مکانی آب‌وهوا -->
   <div id="city-modal" class="modal-overlay">
-    <div class="modal-content ios-glass-card location-modal-box">
+    <div class="modal-content ios-glass-card location-modal-box glass-blur-menu">
       <div class="modal-header-title">
         <h3>📍 تنظیم موقعیت مکانی آب‌وهوا</h3>
         <p>روش دریافت وضعیت آب‌وهوای خود را انتخاب کنید:</p>
@@ -464,7 +475,7 @@
 
   <!-- مودال افزودن شورتکات -->
   <div id="add-modal" class="modal-overlay">
-    <div class="modal-content ios-glass-card">
+    <div class="modal-content ios-glass-card glass-blur-menu">
       <h3>افزودن میانبر</h3>
       <input type="text" id="modal-site-title" placeholder="نام میانبر">
       <input type="text" id="modal-site-url" placeholder="آدرس سایت">
