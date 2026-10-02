@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
   const toEn = n => String(n).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
-  // ۱. پس‌زمینه کاربر
+  // ۱. پس‌زمینه کاربر و کنترل‌های داک جدید
   const bgOverlay = document.getElementById('custom-bg-overlay');
   const bgSettingsBtn = document.getElementById('bg-settings-btn');
   const bgDropdown = document.getElementById('bg-dropdown-menu');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyBackgroundConfig();
 
-  // ۲. تم شب و روز
+  // ۲. تم شب و روز داخل داک
   const themeBtn = document.getElementById('theme-toggle-btn');
   const themeIcon = document.getElementById('theme-icon');
 
@@ -91,14 +91,52 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
+    themeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const current = document.documentElement.getAttribute('data-theme') || 'light';
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
   }
   applyTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 
-  // ۳. تقویم شمسی با انتخاب نامحدود سال‌ها به گذشته و نقطه سبز رویدادها (عکس ۱ و ۷)
+  // ۳. کلیک‌های داک شناور جدید
+  const dockHomeBtn = document.getElementById('dock-home-btn');
+  const dockTasksBtn = document.getElementById('dock-tasks-btn');
+  const dockNotesBtn = document.getElementById('dock-notes-btn');
+  const dockLogoBtn = document.getElementById('dock-abner-logo');
+  const dockProfileBtn = document.getElementById('dock-profile-btn');
+
+  if (dockHomeBtn) {
+    dockHomeBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (dockTasksBtn) {
+    dockTasksBtn.onclick = () => {
+      document.getElementById('tab-tasks')?.click();
+      document.getElementById('new-todo')?.focus();
+    };
+  }
+
+  if (dockNotesBtn) {
+    dockNotesBtn.onclick = () => {
+      document.getElementById('tab-notes')?.click();
+      document.getElementById('new-todo')?.focus();
+    };
+  }
+
+  if (dockLogoBtn) {
+    dockLogoBtn.onclick = () => {
+      alert('✨ Abner Extension v1.17.0 - داشبورد هوشمند با طراحی شیشه‌ای اختصاصی');
+    };
+  }
+
+  if (dockProfileBtn) {
+    dockProfileBtn.onclick = () => {
+      alert('👤 پروفایل کاربر: تنظیمات و مدیریت حساب کاربری');
+    };
+  }
+
+  // ۴. تقویم شمسی با بازه نامحدود سال‌ها به گذشته
   const persianMonthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   const monthSubTitles = [
     'رمضان-شوال Mar-Apr', 'شوال-ذی القعده Apr-May', 'ذی القعده-ذی الحجه May-Jun',
@@ -107,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
   ];
 
-  // دیتابیس مناسبت‌های کامل (شمسی، قمری و میلادی)
   const specialEventsData = {
     '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
@@ -120,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let currentYear = 1405;
-  let currentMonthIndex = 6; // مهر
+  let currentMonthIndex = 6;
 
   const calMonthText = document.getElementById('cal-month-text');
   const calSubText = document.getElementById('cal-sub-text');
@@ -162,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
 
       const eventKey = `${year}-${monthIndex + 1}-${i}`;
-      // فقط روزهایی که مناسبت دارند نقطه سبز اختصاصی می‌گیرند
       if (specialEventsData[eventKey]) {
         span.classList.add('event-green-dot');
       }
@@ -208,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // انتخابگر سال‌ها: پشتیبانی کامل از سال ۱۳۰۰ تا ۱۵۰۰ به صورت بی‌نهایت به گذشته (عکس ۱)
   function initPickerLists() {
     if (!pickerYearsList || !pickerMonthsList) return;
     pickerYearsList.innerHTML = '';
@@ -242,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
       pickerMonthsList.appendChild(item);
     });
 
-    // اسکرول خودکار روی سال انتخاب شده
     setTimeout(() => {
       const selectedEl = pickerYearsList.querySelector(`[data-year="${selectedPickerYear}"]`);
       if (selectedEl) {
@@ -273,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderCalendar(currentYear, currentMonthIndex);
 
-  // ۴. ساعت زنده
+  // ۵. ساعت زنده
   const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   function updateLiveClock() {
     const now = new Date();
@@ -289,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. تقویم گوگل ۲۴ ساعته با جهت درست فلش‌ها (عکس ۹)
+  // ۶. تقویم گوگل ۲۴ ساعته
   const googleCalBtn = document.getElementById('google-cal-btn');
   const calStandardView = document.getElementById('calendar-standard-view');
   const calGoogleView = document.getElementById('calendar-google-view');
@@ -345,7 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // فلش سمت راست (›): روز به جلو
   if (gNextDayBtn) {
     gNextDayBtn.onclick = (e) => {
       e.stopPropagation();
@@ -354,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // فلش سمت چپ (‹): روز به عقب
   if (gPrevDayBtn) {
     gPrevDayBtn.onclick = (e) => {
       e.stopPropagation();
@@ -384,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
   }
 
-  // ۶. تبدیل تاریخ
+  // ۷. تبدیل تاریخ
   const calConvertBtn = document.getElementById('cal-convert-btn');
   const dateConvertModal = document.getElementById('date-convert-modal');
   const convertCloseBtn = document.getElementById('convert-close-btn');
@@ -446,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۷. آب‌وهوا
+  // ۸. آب‌وهوا
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -615,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. اوقات شرعی
+  // ۹. اوقات شرعی
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
   const azanDrawer = document.getElementById('azan-drawer');
   const azanCurrentCity = document.getElementById('azan-current-city');
@@ -686,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
     azanCitySearchInput.addEventListener('input', (e) => renderAzanCities(e.target.value.trim()));
   }
 
-  // ۹. تایمر با کنترل دقیق
+  // ۱۰. تایمر
   const timerToggleBtn = document.getElementById('timer-toggle-btn');
   const timerDrawer = document.getElementById('timer-drawer');
   const timerActionMain = document.getElementById('timer-toggle-action');
@@ -764,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۱۰. سرچ‌بار
+  // ۱۱. سرچ‌بار
   const engineSwitcher = document.getElementById('engine-switcher');
   const googleLogo = document.getElementById('google-logo');
   const zarebinLogo = document.getElementById('zarebin-logo');
@@ -814,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rec.onend = () => { voiceBtn.textContent = '🎙️'; };
   }
 
-  // ۱۱. میانبرها
+  // ۱۲. میانبرها
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const addModal = document.getElementById('add-modal');
   const modalSaveBtn = document.getElementById('modal-save-btn');
@@ -917,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۲. تسک‌ها
+  // ۱۳. تسک‌ها
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -972,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   saveAndRenderTodos();
 
-  // ۱۳. Service Worker
+  // ۱۴. Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});

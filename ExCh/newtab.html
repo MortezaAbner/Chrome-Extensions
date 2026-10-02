@@ -20,30 +20,6 @@
   <!-- تصویر پس‌زمینه کاربر -->
   <div id="custom-bg-overlay" class="bg-overlay"></div>
 
-  <!-- کنترل‌های بالا سمت چپ -->
-  <div class="top-controls">
-    <button id="theme-toggle-btn" class="ios-glass-btn" title="تغییر حالت شب/روز">
-      <span id="theme-icon">🌙</span>
-    </button>
-    
-    <button id="bg-settings-btn" class="ios-glass-btn" title="شخصی‌سازی تصویر زمینه">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
-        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-        <polyline points="21 15 16 10 5 21"></polyline>
-      </svg>
-    </button>
-
-    <div id="bg-dropdown-menu" class="glass-dropdown">
-      <label class="dropdown-item">
-        📁 انتخاب عکس از سیستم
-        <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
-      </label>
-      <button id="toggle-blur-btn" class="dropdown-item">✨ وضعیت بلر: <span id="blur-status-text">مات</span></button>
-      <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌زمینه</button>
-    </div>
-  </div>
-
   <div class="dashboard-container">
     
     <!-- ستون اول: آب‌وهوا، ساعت و تقویم -->
@@ -69,10 +45,10 @@
             <div class="location-chip" id="city-select-btn" title="تغییر شهر یا موقعیت مکانی">
               📍 <span id="current-city-label">تهران</span>
             </div>
-            <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
+            <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌‌بینی ⌵</div>
           </div>
 
-          <!-- پنل پیش‌بینی با باکس‌های شیشه‌ای ملایم و خوانا -->
+          <!-- پنل پیش‌بینی -->
           <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
             <div class="forecast-days-grid" id="forecast-grid"></div>
           </div>
@@ -102,13 +78,13 @@
             </div>
           </div>
 
-          <!-- دکمه‌های هم‌اندازه با دکمه‌های آب‌وهوا -->
+          <!-- دکمه‌های اوقات شرعی و تایمر -->
           <div class="clock-actions-row">
             <span class="pill-btn compact-action-btn" id="azan-toggle-btn">اوقات شرعی ⌵</span>
             <span class="pill-btn compact-action-btn" id="timer-toggle-btn">تایمر ⌵</span>
           </div>
 
-          <!-- دراور اوقات شرعی با بلر ۸۰٪ و خوانایی بالا -->
+          <!-- دراور اوقات شرعی -->
           <div class="clock-drawer azan-drawer glass-blur-menu" id="azan-drawer">
             <div class="azan-curve-container">
               <svg class="azan-curve-svg" viewBox="0 0 320 60" preserveAspectRatio="none">
@@ -182,7 +158,7 @@
             <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
           </div>
 
-          <!-- پاپ‌آپ کوچک و خوانای انتخاب سال و ماه (عکس ۱) -->
+          <!-- پاپ‌آپ جمع‌وجور سال و ماه -->
           <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
             <div class="picker-columns">
               <div class="picker-col">
@@ -197,7 +173,7 @@
             <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
           </div>
 
-          <!-- پنجره پاپ‌آپ رویداد و مناسبت‌های روز (عکس ۷) -->
+          <!-- پنجره مناسبت‌های روز -->
           <div class="date-event-popup glass-blur-menu" id="date-event-popup" style="display: none;">
             <div class="event-popup-header">
               <span class="event-title-main" id="event-popup-title">مناسبت‌های این روز</span>
@@ -209,7 +185,7 @@
             </div>
           </div>
 
-          <!-- نام کامل روزهای هفته (عکس ۷) -->
+          <!-- نام کامل روزهای هفته -->
           <div class="cal-weekdays-full">
             <span>شنبه</span>
             <span>یکشنبه</span>
@@ -222,7 +198,7 @@
 
           <div class="cal-dates-grid" id="cal-dates"></div>
 
-          <!-- فوتر متقارن با آیکون ساده مشکی (عکس ۸) -->
+          <!-- فوتر متقارن -->
           <div class="cal-footer">
             <div class="cal-action-btn" id="cal-convert-btn">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="convert-loop-icon">
@@ -238,7 +214,7 @@
           </div>
         </div>
 
-        <!-- نمای ۲۴ ساعته تقویم گوگل با ورق زدن روزانه (عکس ۹) -->
+        <!-- نمای ۲۴ ساعته تقویم گوگل -->
         <div id="calendar-google-view" class="google-view-container" style="display: none;">
           <div class="g-view-top">
             <div class="g-view-arrows-left">
@@ -255,7 +231,6 @@
             </div>
           </div>
 
-          <!-- اسکرول ۲۴ ساعته کامل -->
           <div class="g-timeline-scroller" id="g-timeline-scroller">
             <div class="g-timeline-inner" id="g-timeline-24h"></div>
           </div>
@@ -269,7 +244,7 @@
 
     </div>
 
-    <!-- ستون دوم: سرچ‌بار و میانبرها -->
+    <!-- ستون دوم: سرچ‌بار، میانبرها و منوی داک شیشه‌ای در پایین -->
     <div class="col col-center">
       
       <div class="search-capsule" id="search-capsule">
@@ -300,6 +275,84 @@
 
       <div class="shortcuts-container" id="shortcuts-grid"></div>
 
+      <!-- منوی مستطیلی شیشه‌ای جدید در پایین و وسط (هماهنگ با عرض میانبرها) -->
+      <div class="bottom-floating-dock glass-blur-menu" id="bottom-dock">
+        <!-- لوگوی آبنر اکستنشن -->
+        <button class="dock-btn logo-btn" id="dock-abner-logo" title="Abner Extension">
+          <div class="dock-logo-box">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+              <rect width="24" height="24" rx="6" fill="#38bdf8"/>
+              <path d="M7 17L12 7L17 17M9 13.5H15" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </button>
+
+        <div class="dock-divider"></div>
+
+        <!-- دکمه خانه -->
+        <button class="dock-btn" id="dock-home-btn" title="خانه">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </button>
+
+        <!-- دکمه تسک -->
+        <button class="dock-btn" id="dock-tasks-btn" title="تسک‌ها">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </button>
+
+        <!-- دکمه یادداشت -->
+        <button class="dock-btn" id="dock-notes-btn" title="یادداشت‌ها">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </button>
+
+        <!-- دکمه تغییر حالت شب و روز -->
+        <button class="dock-btn" id="theme-toggle-btn" title="تغییر حالت شب و روز">
+          <span id="theme-icon">🌙</span>
+        </button>
+
+        <!-- دکمه تنظیمات پس‌زمینه همراه با منوی کشویی -->
+        <div class="dock-dropdown-wrapper">
+          <button class="dock-btn" id="bg-settings-btn" title="تنظیمات تصویر پس‌زمینه">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+          
+          <div id="bg-dropdown-menu" class="glass-dropdown glass-blur-menu">
+            <label class="dropdown-item">
+              📁 انتخاب عکس از سیستم
+              <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
+            </label>
+            <button id="toggle-blur-btn" class="dropdown-item">✨ وضعیت بلر: <span id="blur-status-text">مات</span></button>
+            <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌زمینه</button>
+          </div>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- دکمه پروفایل -->
+        <button class="dock-btn profile-btn" id="dock-profile-btn" title="پروفایل کاربر">
+          <div class="dock-avatar">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+        </button>
+      </div>
+
     </div>
 
     <!-- ستون سوم: پنل تسک -->
@@ -325,7 +378,7 @@
           <div class="pill-action-btn" title="فیلترها">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
           </div>
-          <div class="pill-action-btn" title="مرتب‌سازی">
+          <div class="pill-action-btn" title="مرتب‌‌سازی">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
           </div>
         </div>
@@ -363,7 +416,7 @@
 
   </div>
 
-  <!-- مودال تبدیل تاریخ با راست‌چین بودن و خوانایی صددرصدی (عکس ۳، ۴، ۵، ۶) -->
+  <!-- مودال تبدیل تاریخ -->
   <div id="date-convert-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card convert-modal-box glass-blur-menu">
       <div class="convert-modal-header">
@@ -371,7 +424,6 @@
         <h3>تبدیل تاریخ</h3>
       </div>
 
-      <!-- فرم ورودی تبدیل -->
       <div id="convert-input-view">
         <div class="convert-type-tabs">
           <span class="type-tab-label">تاریخ مبدا:</span>
@@ -400,7 +452,6 @@
         </button>
       </div>
 
-      <!-- کارت نتیجه تبدیل -->
       <div id="convert-result-view" style="display: none;">
         <div class="convert-results-list">
           <div class="result-row">
@@ -452,7 +503,7 @@
         <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
           <div class="loc-icon-circle">🌐</div>
           <div class="loc-text-desc">
-            <strong>تشخیص موقعیت مکانی با آی‌پی</strong>
+            <strong>تشخیص موقعیت مکانی با آی‌‌پی</strong>
             <span>سریع، بدون نیاز به مجوز سیستم</span>
           </div>
         </button>
