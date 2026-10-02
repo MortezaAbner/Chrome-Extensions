@@ -7,25 +7,26 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۰. همگام‌سازی سریع با گیت‌هاب
+// ۰. دریافت آرگومان‌ها: اولی تایتل انگلیسی، دومی توضیحات فارسی
+const titleArg = process.argv[2] || 'Improvements and Fixes';
+const notesArg = process.argv[3] || 'بهبود عملکرد و رفع ایرادات جزئی';
+
+// ۱. همگام‌سازی سریع با گیت‌هاب جهت جلوگیری از خطای push
 try {
   execSync('git pull --rebase origin main', { stdio: 'pipe' });
 } catch (e) {}
 
-const customMessage = process.argv.slice(2).join(' ') || 'Update and improvements';
-const lowerMsg = customMessage.toLowerCase();
-
-// ۱. خواندن و ارتقای هوشمندانه نسخه
+// ۲. خواندن و ارتقای هوشمند نسخه بر اساس عنوان انگلیسی
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let [major, minor, patch] = manifest.version.split('.').map(Number);
 if (isNaN(patch)) patch = 0;
 
-if (lowerMsg.includes('break') || lowerMsg.includes('major') || lowerMsg.includes('rebuild')) {
+const lowerTitle = titleArg.toLowerCase();
+if (lowerTitle.includes('break') || lowerTitle.includes('major') || lowerTitle.includes('rebuild')) {
   major += 1; minor = 0; patch = 0;
 } else if (
-  lowerMsg.includes('feat') || lowerMsg.includes('add') || 
-  lowerMsg.includes('ezafe') || lowerMsg.includes('جدید') || 
-  lowerMsg.includes('ویجت') || lowerMsg.includes('pwa')
+  lowerTitle.includes('feat') || lowerTitle.includes('add') || 
+  lowerTitle.includes('pwa') || lowerTitle.includes('responsive')
 ) {
   minor += 1; patch = 0;
 } else {
@@ -36,16 +37,17 @@ manifest.version = `${major}.${minor}.${patch}`;
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
 const tagName = `v${manifest.version}`;
-const releaseTitle = `Abner Extension ${tagName} - ${customMessage}`;
+// تایتل کاملاً تمیز و استاندارد مانند عکس دوم
+const releaseTitle = `Abner Extension ${tagName} - ${titleArg}`;
 const zipName = `Chrome-Extension-${tagName}.zip`;
 
-// ۲. ساخت index.html برای وب‌اپ
+// ۳. کپی خودکار index.html برای وب‌اپ و رفع خطای ۴۰۴
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
 }
 
-// ۳. ساخت فایل فشرده ZIP
-console.log(`📦 Dar hal sakhte file ZIP: ${zipName}...`);
+// ۴. ساخت فایل فشرده ZIP
+console.log(`📦 Dar hal sakhte: ${zipName}...`);
 const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js', 'app.webmanifest', 'sw.js']
   .filter(f => fs.existsSync(f))
   .join(', ');
@@ -53,23 +55,28 @@ const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 
 const zipCmd = `powershell Compress-Archive -Path ${targetFiles} -DestinationPath ${zipName} -Force`;
 execSync(zipCmd, { stdio: 'inherit' });
 
-// ۴. ثبت در گیت و ارسال
+// ۵. کامیت، ایجاد تگ و پوش مستقیم به گیت‌هاب
 try {
   execSync('git add .', { stdio: 'inherit' });
-  execSync(`git commit -m "chore(release): ${tagName} - ${customMessage}"`, { stdio: 'inherit' });
+  execSync(`git commit -m "chore(release): ${tagName} - ${titleArg}"`, { stdio: 'inherit' });
   execSync(`git tag -a ${tagName} -m "${releaseTitle}"`, { stdio: 'inherit' });
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
-  console.log(`\n📌 Tag ${tagName} sabt shod.`);
 
-  // ۵. انتشار رسمی در Releases گیت‌هاب
+  // ۶. ساخت تمیز Release در گیت‌هاب (متن فارسی در بدنه و تایتل کوتاه در بالا)
   try {
-    console.log('🚀 Dar hal enteshare Release dar GitHub...');
-    const notes = `تغییرات این نسخه:\n- ${customMessage}\n\nنصب آسان به عنوان افزونه یا اجرای تحت وب (PWA).`;
-    execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes "${notes}"`, { stdio: 'inherit' });
-    console.log(`\n🎉 Release ${tagName} be hamrahe file ZIP montasher shod!`);
+    const fullNotes = `${notesArg}\n\nEnglish: ${titleArg}`;
+    // نوشتن متن در فایل موقت برای جلوگیری از به هم ریختگی کاراکترهای فارسی در شل ویندوز
+    fs.writeFileSync('temp_release_notes.txt', fullNotes, 'utf8');
+    
+    execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
+    
+    if (fs.existsSync('temp_release_notes.txt')) {
+      fs.unlinkSync('temp_release_notes.txt');
+    }
+    console.log(`\n🎉 Release ${tagName} ba movafaghiat va zaher moratab montasher shod!`);
   } catch (ghErr) {
-    console.log('\n⚠️ Dastoor gh release ejra nashod (Lotfan gh auth login ra check konid).');
+    console.log('\n⚠️ Release ba gh sakhte nashod. (Check konid gh auth login bashe).');
   }
 
 } catch (err) {
