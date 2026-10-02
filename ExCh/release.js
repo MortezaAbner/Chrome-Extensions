@@ -7,35 +7,29 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// متن پیامی که در ترمینال وارد می‌کنید
+// ۰. همگام‌سازی سریع با گیت‌هاب
+try {
+  execSync('git pull --rebase origin main', { stdio: 'pipe' });
+} catch (e) {}
+
 const customMessage = process.argv.slice(2).join(' ') || 'Update and improvements';
 const lowerMsg = customMessage.toLowerCase();
 
-// ۱. خواندن نسخه فعلی
+// ۱. خواندن و ارتقای هوشمندانه نسخه
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let [major, minor, patch] = manifest.version.split('.').map(Number);
 if (isNaN(patch)) patch = 0;
 
-// ۲. افزایش هوشمندانه نسخه بر اساس کلمات کلیدی پیام (Semantic Versioning)
 if (lowerMsg.includes('break') || lowerMsg.includes('major') || lowerMsg.includes('rebuild')) {
-  major += 1;
-  minor = 0;
-  patch = 0;
-  console.log('🚀 نوع تغییر: MAJOR (تغییرات اساسی و بزرگ)');
+  major += 1; minor = 0; patch = 0;
 } else if (
-  lowerMsg.includes('feat') || 
-  lowerMsg.includes('add') || 
-  lowerMsg.includes('ezafe') || 
-  lowerMsg.includes('جدید') || 
-  lowerMsg.includes('ویجت') || 
-  lowerMsg.includes('pwa')
+  lowerMsg.includes('feat') || lowerMsg.includes('add') || 
+  lowerMsg.includes('ezafe') || lowerMsg.includes('جدید') || 
+  lowerMsg.includes('ویجت') || lowerMsg.includes('pwa')
 ) {
-  minor += 1;
-  patch = 0;
-  console.log('✨ نوع تغییر: MINOR (افزودن قابلیت یا بخش جدید)');
+  minor += 1; patch = 0;
 } else {
   patch += 1;
-  console.log('🛠 نوع تغییر: PATCH (اصلاح باگ، استایل یا بهبودهای جزئی)');
 }
 
 manifest.version = `${major}.${minor}.${patch}`;
@@ -45,13 +39,13 @@ const tagName = `v${manifest.version}`;
 const releaseTitle = `Abner Extension ${tagName} - ${customMessage}`;
 const zipName = `Chrome-Extension-${tagName}.zip`;
 
-// ۳. ایجاد خودکار index.html برای GitHub Pages جهت رفع خطای 404
+// ۲. ساخت index.html برای وب‌اپ
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
 }
 
-// ۴. ساخت فایل ZIP فشرده
-console.log(`📦 در حال ساخت فایل فشرده: ${zipName}...`);
+// ۳. ساخت فایل فشرده ZIP
+console.log(`📦 Dar hal sakhte file ZIP: ${zipName}...`);
 const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js', 'app.webmanifest', 'sw.js']
   .filter(f => fs.existsSync(f))
   .join(', ');
@@ -59,27 +53,25 @@ const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 
 const zipCmd = `powershell Compress-Archive -Path ${targetFiles} -DestinationPath ${zipName} -Force`;
 execSync(zipCmd, { stdio: 'inherit' });
 
-// ۵. گیت کامیت، ایجاد تگ و پوش کردن
+// ۴. ثبت در گیت و ارسال
 try {
   execSync('git add .', { stdio: 'inherit' });
   execSync(`git commit -m "chore(release): ${tagName} - ${customMessage}"`, { stdio: 'inherit' });
   execSync(`git tag -a ${tagName} -m "${releaseTitle}"`, { stdio: 'inherit' });
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
-  console.log(`\n📌 تگ ${tagName} روی گیت‌هاب ثبت شد.`);
+  console.log(`\n📌 Tag ${tagName} sabt shod.`);
 
-  // ۶. ساخت خودکار Release و پیوست کردن مستقیم فایل ZIP
+  // ۵. انتشار رسمی در Releases گیت‌هاب
   try {
-    const ghCheck = execSync('gh --version', { stdio: 'pipe' });
-    console.log('🚀 در حال انتشار خودکار Release در صفحه گیت‌هاب...');
-    const releaseNotes = `### تغییرات نسخه ${tagName}\n- ${customMessage}\n\n*منتشر شده به صورت خودکار توسط اسکریپت انتشار.*`;
-    
-    execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes "${releaseNotes}"`, { stdio: 'inherit' });
-    console.log(`\n🎉 تبریک! نسخه ${tagName} به همراه فایل ZIP با موفقیت روی صفحه Releases گیت‌هاب منتشر شد.`);
+    console.log('🚀 Dar hal enteshare Release dar GitHub...');
+    const notes = `تغییرات این نسخه:\n- ${customMessage}\n\nنصب آسان به عنوان افزونه یا اجرای تحت وب (PWA).`;
+    execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes "${notes}"`, { stdio: 'inherit' });
+    console.log(`\n🎉 Release ${tagName} be hamrahe file ZIP montasher shod!`);
   } catch (ghErr) {
-    console.log('\n⚠️ ابزار gh لاگین نبود یا نصب نیست؛ فایل زیپ محلی آماده است و تگ در گیت‌هاب ثبت شد.');
+    console.log('\n⚠️ Dastoor gh release ejra nashod (Lotfan gh auth login ra check konid).');
   }
 
 } catch (err) {
-  console.error('خطا در اجرای فرآیند:', err.message);
+  console.error('Khata:', err.message);
 }
