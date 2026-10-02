@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderRealCalendar();
 
-  // ۴. ساعت و فرمت دقیق تاریخ‌ها بر اساس تصویر دست‌خط کاربر
+  // ۴. ساعت زنده و تاریخ‌ها (راست‌چین نام ماه و چپ‌چین ارقام)
   const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   
   function updateLiveClock() {
@@ -120,32 +120,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     
-    // سطر ۱: روز هفته روبروی ساعت
     const clockElem = document.getElementById('clock');
     if (clockElem) clockElem.textContent = `${toFa(String(hours).padStart(2, '0'))}:${toFa(minutes)}`;
 
     const dayElem = document.getElementById('clock-day-label');
     if (dayElem) dayElem.textContent = persianDays[now.getDay()];
 
-    // سطر ۲: شمسی مطابق دست‌خط -> (مهر ماه) ۱۴۰۵/۰۷/۰۹
-    const shamsiElem = document.getElementById('shamsi-row');
-    if (shamsiElem) shamsiElem.textContent = `(مهر ماه) ۱۴۰۵/۰۷/۰۹`;
+    const shamsiRow = document.getElementById('shamsi-row');
+    if (shamsiRow) {
+      shamsiRow.innerHTML = `<span class="month-part">(مهر ماه)</span><span class="digits-part">۱۴۰۵/۰۷/۰۹</span>`;
+    }
 
-    // سطر ۳: میلادی مطابق دست‌خط -> (اکتبر) ۲۰۲۶/۱۰/۰۲
-    const gregElem = document.getElementById('gregorian-row');
-    if (gregElem) gregElem.textContent = `(اکتبر) ۲۰۲۶/۱۰/۰۲`;
+    const gregRow = document.getElementById('gregorian-row');
+    if (gregRow) {
+      gregRow.innerHTML = `<span class="month-part">(اکتبر)</span><span class="digits-part">۲۰۲۶/۱۰/۰۲</span>`;
+    }
 
-    // سطر ۴: قمری مطابق دست‌خط -> (ربیع‌الثانی) ۱۴۴۸/۰۳/۱۹
-    const hijriElem = document.getElementById('hijri-row');
-    if (hijriElem) hijriElem.textContent = `(ربیع‌الثانی) ۱۴۴۸/۰۳/۱۹`;
+    const hijriRow = document.getElementById('hijri-row');
+    if (hijriRow) {
+      hijriRow.innerHTML = `<span class="month-part">(ربیع‌الثانی)</span><span class="digits-part">۱۴۴۸/۰۳/۱۹</span>`;
+    }
   }
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. آب‌وهوای زنده و پیش‌بینی
+  // ۵. آب‌وهوای زنده با آیکون‌های انیمیشنی CSS
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
-  const weatherIcon = document.getElementById('weather-icon');
+  const weatherIconContainer = document.getElementById('weather-icon-container');
   const weatherPhrase = document.getElementById('weather-phrase');
   const weatherRange = document.getElementById('weather-range');
   const forecastDrawer = document.getElementById('forecast-drawer');
@@ -186,14 +188,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
 
-  function getWeatherIconAndDesc(code, isDay) {
-    if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: isDay ? 'آفتابی و دلنشین' : 'شب صاف و مهتابی' };
-    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌ابری' };
-    if (code === 3) return { icon: '☁️', desc: 'تمام ابری' };
-    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧', desc: 'بارانی و با طراوت' };
-    if ([71, 73, 75, 85].includes(code)) return { icon: '❄️', desc: 'برفی و زمستانی' };
-    if ([95, 96, 99].includes(code)) return { icon: '⛈️', desc: 'رعد و برق' };
-    return { icon: '⛅', desc: 'هوای معتدل' };
+  function renderWeatherAnimatedIcon(code, isDay) {
+    if (code === 0) {
+      return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
+    }
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) {
+      return `
+        <div class="weather-dynamic-art rainy">
+          <div class="art-cloud"></div>
+          <div class="art-rain-drop d1"></div>
+          <div class="art-rain-drop d2"></div>
+          <div class="art-rain-drop d3"></div>
+        </div>
+      `;
+    }
+    return `<div class="weather-dynamic-art cloudy"><div class="art-cloud"></div></div>`;
+  }
+
+  function getWeatherPhrase(code, isDay) {
+    if (code === 0) return isDay ? 'آفتابی و دلنشین ☀️️' : 'شب صاف و مهتابی 🌙';
+    if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
+    if (code === 3) return 'تمام ابری 🧡';
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
+    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
+    if ([95, 96, 99].includes(code)) return 'رعد و برق شدید ⛈️';
+    return 'معتدل و آرام ⛅';
+  }
+
+  function getForecastEmoji(code) {
+    if (code === 0) return '☀️';
+    if ([1, 2].includes(code)) return '⛅';
+    if (code === 3) return '☁️';
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return '🌧';
+    if ([71, 73, 75, 85].includes(code)) return '❄️';
+    return '🌦';
   }
 
   async function fetchRealWeather(lat, lon, cityName) {
@@ -207,10 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const daily = data.daily;
       const isDay = cur.is_day === 1;
 
-      const condition = getWeatherIconAndDesc(cur.weathercode, isDay);
       weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
-      weatherIcon.textContent = condition.icon;
-      weatherPhrase.textContent = `${condition.desc} 🧡`;
+      if (weatherIconContainer) {
+        weatherIconContainer.innerHTML = renderWeatherAnimatedIcon(cur.weathercode, isDay);
+      }
+      weatherPhrase.textContent = getWeatherPhrase(cur.weathercode, isDay);
 
       const maxT = Math.round(daily.temperature_2m_max[0]);
       const minT = Math.round(daily.temperature_2m_min[0]);
@@ -220,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
       for (let i = 0; i < 5; i++) {
         const dCode = daily.weathercode[i];
-        const dIcon = getWeatherIconAndDesc(dCode, true).icon;
+        const dIcon = getForecastEmoji(dCode);
         const dMax = Math.round(daily.temperature_2m_max[i]);
         const dMin = Math.round(daily.temperature_2m_min[i]);
 
@@ -228,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         box.className = 'forecast-day-box';
         box.innerHTML = `
           <span class="forecast-day-name">${dayNames[i]}</span>
-          <span class="forecast-day-icon">${dIcon}</span>
+          <div class="forecast-day-icon-box">${dIcon}</div>
           <span class="forecast-day-max">${toFa(dMax)}°</span>
           <span class="forecast-day-min">${toFa(dMin)}°</span>
         `;
@@ -321,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۶. اوقات شرعی خودکار
+  // ۶. اوقات شرعی با منحنی کم‌ارتفاع و خوانا
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
   const azanDrawer = document.getElementById('azan-drawer');
   const azanCurrentCity = document.getElementById('azan-current-city');
@@ -350,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('azan-dhuhr').textContent = '۱۱:۵۴';
       document.getElementById('azan-sunset').textContent = '۱۷:۴۷';
       document.getElementById('azan-maghrib').textContent = '۱۸:۰۵';
-      document.getElementById('azan-midnight').textContent = '۲۳:۱۱';
+      document.getElementById('azan-midnight').textContent = '۲۳:۵۴';
     }
   }
   fetchAzanTimes(azanCoords.lat, azanCoords.lon, azanCoords.name);
@@ -396,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۷. تایمر بدون پرش با تایپ مستقیم کیبورد
+  // ۷. تایمر بدون فلش و با تایپ مستقیم
   const timerToggleBtn = document.getElementById('timer-toggle-btn');
   const timerDrawer = document.getElementById('timer-drawer');
   const timerActionMain = document.getElementById('timer-toggle-action');
@@ -416,20 +445,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // جلوگیری از بسته شدن دراور و پرش هنگام کلیک روی اینپوت‌های تایمر
   [timerHr, timerMin, timerSec].forEach(input => {
     if (!input) return;
     input.addEventListener('click', (e) => e.stopPropagation());
     input.addEventListener('mousedown', (e) => e.stopPropagation());
     
-    // هنگام تایپ، فقط ارقام مجاز باشند
     input.addEventListener('input', (e) => {
       let val = toEn(e.target.value).replace(/\D/g, '');
       if (val.length > 2) val = val.slice(-2);
       e.target.value = val ? toFa(val) : '';
     });
 
-    // پس از خروج از کادر (Blur)، اگر خالی بود یا تک‌رقمی بود فرمت دورقمی شود
     input.addEventListener('blur', (e) => {
       let val = toEn(e.target.value).replace(/\D/g, '');
       if (!val) val = '0';
@@ -468,8 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
         body: 'زمان مشخص شده به اتمام رسید.',
         icon: 'https://img.icons8.com/fluency/192/compass.png'
       });
-    } else if ('Notification' in window && Notification.permission !== 'denied') {
-      Notification.requestPermission();
     }
     alert('⏰ زمان تایمر شما به پایان رسید!');
   }
@@ -577,10 +601,10 @@ document.addEventListener('DOMContentLoaded', () => {
       voiceBtn.textContent = '🎙️';
       searchForm.submit();
     };
-    rec.onend = () => { voiceBtn.textContent = '🎙️'; };
+    rec.onend = () => { voiceBtn.textContent = '🎙️️'; };
   }
 
-  // ۹. شورت‌کات‌ها
+  // ۹. میانبرها
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const addModal = document.getElementById('add-modal');
   const modalSaveBtn = document.getElementById('modal-save-btn');
