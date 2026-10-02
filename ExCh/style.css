@@ -160,7 +160,6 @@ body {
   width: fit-content; cursor: pointer;
 }
 
-/* پنل پیش‌بینی */
 .forecast-drawer {
   position: absolute;
   top: calc(100% + 8px);
@@ -217,28 +216,38 @@ body {
 .forecast-day-min { font-size: 0.74rem; color: #64748b; font-weight: 600; }
 [data-theme="dark"] .forecast-day-min { color: #94a3b8; }
 
-/* استایل باکس ساعت */
+/* طراحی ساعت و تاریخ‌ها بر اساس دست‌خط کاربر */
 .clock-single-card {
   flex: 1; padding: 14px; display: flex;
-  flex-direction: column; align-items: flex-end; text-align: left;
+  flex-direction: column; align-items: flex-end; text-align: right;
   border-radius: 24px; justify-content: space-between;
   position: relative; z-index: 40;
 }
 
+/* سطر اول: روز هفته روبروی ساعت دیجیتال */
+.clock-first-line {
+  display: flex; justify-content: space-between; align-items: baseline; width: 100%;
+}
+.clock-day-name {
+  font-size: 1.05rem; font-weight: 800; color: #1e293b;
+}
+[data-theme="dark"] .clock-day-name { color: #f8fafc; }
+
 .digital-clock {
-  font-size: 2.3rem; font-weight: 800; color: var(--blue-badge); line-height: 1;
+  font-size: 2.1rem; font-weight: 800; color: var(--blue-badge); line-height: 1;
 }
 
-.date-shamsi-main {
-  font-size: 0.88rem; font-weight: 700; margin-top: 4px; text-align: right; width: 100%;
+/* سطرهای ۲، ۳ و ۴ تاریخ‌ها */
+.custom-dates-stack {
+  display: flex; flex-direction: column; gap: 2px; width: 100%; margin: 4px 0; text-align: right;
 }
-
-.date-secondary-row {
-  font-size: 0.68rem; color: var(--text-muted); direction: ltr; margin-top: 2px;
+.date-custom-row {
+  font-size: 0.78rem; font-weight: 700; color: #334155; line-height: 1.35;
 }
+[data-theme="dark"] .date-custom-row { color: #cbd5e1; }
 
 .clock-actions-row {
-  display: flex; gap: 6px; margin-top: 6px;
+  display: flex; gap: 6px; margin-top: 4px;
 }
 
 .pill-btn {
@@ -280,7 +289,7 @@ body {
   gap: 12px;
 }
 
-/* چیدمان اوقات شرعی */
+/* اوقات شرعی */
 .azan-curve-container {
   position: relative; width: 100%; height: 90px; display: flex; flex-direction: column; justify-content: flex-end;
 }
@@ -344,21 +353,38 @@ body {
   background: #1e293b; color: #60a5fa;
 }
 
-/* چیدمان تایمر */
+/* تایمر بدون فلش و با فوکوس نرم کیبورد */
 .timer-boxes-row {
   display: flex; gap: 12px; justify-content: center; align-items: center;
 }
 .timer-unit {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
+
 .timer-input {
-  width: 60px; height: 50px; background: #f1f5f9; border: 1px solid #cbd5e1;
-  border-radius: 14px; text-align: center; font-size: 1.4rem; font-weight: 800;
-  color: #0f172a; outline: none;
+  width: 66px; height: 54px; background: #f1f5f9; border: 1.5px solid #cbd5e1;
+  border-radius: 16px; text-align: center; font-size: 1.45rem; font-weight: 800;
+  color: #0f172a; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: text;
+  -moz-appearance: textfield;
+}
+
+.timer-input::-webkit-outer-spin-button,
+.timer-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.timer-input:focus {
+  border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); background: #ffffff;
 }
 [data-theme="dark"] .timer-input {
   background: #1e293b; border-color: #334155; color: #f8fafc;
 }
+[data-theme="dark"] .timer-input:focus {
+  background: #0f172a; border-color: #38bdf8;
+}
+
 .timer-unit label {
   font-size: 0.72rem; color: #64748b; font-weight: 600;
 }
@@ -482,7 +508,7 @@ body {
 .add-shortcut-box:hover { transform: translateY(-3px); }
 .add-plus-icon { font-size: 1.8rem; color: var(--text-muted); }
 
-/* ساختار تسک */
+/* تسک‌ها */
 .task-master-card {
   flex: 1; display: flex; flex-direction: column; padding: 16px; justify-content: space-between;
 }

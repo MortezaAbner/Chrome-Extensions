@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
+  const toEn = n => String(n).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
   // ۱. پس‌زمینه کاربر
   const bgOverlay = document.getElementById('custom-bg-overlay');
@@ -32,14 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', () => {
       bgDropdown.classList.remove('active');
       document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
-      const fd = document.getElementById('forecast-drawer');
-      if (fd) fd.classList.remove('active');
-      const azanD = document.getElementById('azan-drawer');
-      if (azanD) azanD.classList.remove('active');
-      const timerD = document.getElementById('timer-drawer');
-      if (timerD) timerD.classList.remove('active');
-      const azanDrop = document.getElementById('azan-city-dropdown');
-      if (azanDrop) azanDrop.classList.remove('active');
+      document.getElementById('forecast-drawer')?.classList.remove('active');
+      document.getElementById('azan-drawer')?.classList.remove('active');
+      document.getElementById('timer-drawer')?.classList.remove('active');
+      document.getElementById('azan-city-dropdown')?.classList.remove('active');
     });
   }
 
@@ -115,30 +112,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderRealCalendar();
 
-  // ۴. ساعت و فرمت دقیق تاریخ‌ها (مطابق خواسته: عددی + نام ماه برای هر ۳ تقویم)
-  const persianMonths = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
-  const gregorianMonths = ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن', 'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'];
-  const hijriMonths = ['محرم', 'صفر', 'ربیع‌الاول', 'ربیع‌الثانی', 'جمادی‌الاول', 'جمادی‌الثانی', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذی‌القعده', 'ذی‌الحجه'];
-
+  // ۴. ساعت و فرمت دقیق تاریخ‌ها بر اساس تصویر دست‌خط کاربر
+  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+  
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     
+    // سطر ۱: روز هفته روبروی ساعت
     const clockElem = document.getElementById('clock');
     if (clockElem) clockElem.textContent = `${toFa(String(hours).padStart(2, '0'))}:${toFa(minutes)}`;
 
-    // فرمت دقیق تاریخ شمسی: ۱۴۰۵/۰۷/۰۹ (مهر ماه)
-    const shamsiElem = document.getElementById('shamsi-date');
-    if (shamsiElem) {
-      shamsiElem.textContent = `پنج‌شنبه، ۱۴۰۵/۰۷/۰۹ (${persianMonths[6]} ماه)`;
-    }
+    const dayElem = document.getElementById('clock-day-label');
+    if (dayElem) dayElem.textContent = persianDays[now.getDay()];
 
-    // فرمت دقیق میلادی و قمری: 2026/10/02 (اکتبر) | ۱۴۴۸/۰۳/۱۹ (ربیع‌الثانی)
-    const secElem = document.getElementById('date-secondary');
-    if (secElem) {
-      secElem.textContent = `2026/10/02 (${gregorianMonths[9]}) | ۱۴۴۸/۰۳/۱۹ (${hijriMonths[3]})`;
-    }
+    // سطر ۲: شمسی مطابق دست‌خط -> (مهر ماه) ۱۴۰۵/۰۷/۰۹
+    const shamsiElem = document.getElementById('shamsi-row');
+    if (shamsiElem) shamsiElem.textContent = `(مهر ماه) ۱۴۰۵/۰۷/۰۹`;
+
+    // سطر ۳: میلادی مطابق دست‌خط -> (اکتبر) ۲۰۲۶/۱۰/۰۲
+    const gregElem = document.getElementById('gregorian-row');
+    if (gregElem) gregElem.textContent = `(اکتبر) ۲۰۲۶/۱۰/۰۲`;
+
+    // سطر ۴: قمری مطابق دست‌خط -> (ربیع‌الثانی) ۱۴۴۸/۰۳/۱۹
+    const hijriElem = document.getElementById('hijri-row');
+    if (hijriElem) hijriElem.textContent = `(ربیع‌الثانی) ۱۴۴۸/۰۳/۱۹`;
   }
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
@@ -322,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۶. اوقات شرعی خودکار و انتخاب شهر (ویجت تصویر اول)
+  // ۶. اوقات شرعی خودکار
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
   const azanDrawer = document.getElementById('azan-drawer');
   const azanCurrentCity = document.getElementById('azan-current-city');
@@ -397,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۷. ویجت تایمر معکوس با هشدار صوتی و نوتیفیکیشن (ویجت تصویر دوم)
+  // ۷. تایمر بدون پرش با تایپ مستقیم کیبورد
   const timerToggleBtn = document.getElementById('timer-toggle-btn');
   const timerDrawer = document.getElementById('timer-drawer');
   const timerActionMain = document.getElementById('timer-toggle-action');
@@ -417,7 +416,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // پخش بوق هشدار استاندارد صوتی با Web Audio API بدون نیاز به فایل خارجی
+  // جلوگیری از بسته شدن دراور و پرش هنگام کلیک روی اینپوت‌های تایمر
+  [timerHr, timerMin, timerSec].forEach(input => {
+    if (!input) return;
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('mousedown', (e) => e.stopPropagation());
+    
+    // هنگام تایپ، فقط ارقام مجاز باشند
+    input.addEventListener('input', (e) => {
+      let val = toEn(e.target.value).replace(/\D/g, '');
+      if (val.length > 2) val = val.slice(-2);
+      e.target.value = val ? toFa(val) : '';
+    });
+
+    // پس از خروج از کادر (Blur)، اگر خالی بود یا تک‌رقمی بود فرمت دورقمی شود
+    input.addEventListener('blur', (e) => {
+      let val = toEn(e.target.value).replace(/\D/g, '');
+      if (!val) val = '0';
+      let num = parseInt(val, 10);
+      if (input === timerHr && num > 99) num = 99;
+      if ((input === timerMin || input === timerSec) && num > 59) num = 59;
+      e.target.value = toFa(String(num).padStart(2, '0'));
+    });
+  });
+
   function playAlarmSound() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -456,19 +478,17 @@ document.addEventListener('DOMContentLoaded', () => {
     timerActionMain.addEventListener('click', (e) => {
       e.stopPropagation();
       if (timerInterval) {
-        // توقف تایمر
         clearInterval(timerInterval);
         timerInterval = null;
         timerActionMain.textContent = 'شروع';
         timerActionMain.classList.remove('running');
       } else {
-        // شروع تایمر
         if ('Notification' in window && Notification.permission === 'default') {
           Notification.requestPermission();
         }
-        const h = parseInt(timerHr.value) || 0;
-        const m = parseInt(timerMin.value) || 0;
-        const s = parseInt(timerSec.value) || 0;
+        const h = parseInt(toEn(timerHr.value), 10) || 0;
+        const m = parseInt(toEn(timerMin.value), 10) || 0;
+        const s = parseInt(toEn(timerSec.value), 10) || 0;
         totalRemainingSec = (h * 3600) + (m * 60) + s;
 
         if (totalRemainingSec <= 0) return;
@@ -483,18 +503,18 @@ document.addEventListener('DOMContentLoaded', () => {
             timerInterval = null;
             timerActionMain.textContent = 'شروع';
             timerActionMain.classList.remove('running');
-            timerHr.value = '00';
-            timerMin.value = '25';
-            timerSec.value = '00';
+            timerHr.value = '۰۰';
+            timerMin.value = '۲۵';
+            timerSec.value = '۰۰';
             triggerAlarmNotification();
             return;
           }
           const curH = Math.floor(totalRemainingSec / 3600);
           const curM = Math.floor((totalRemainingSec % 3600) / 60);
           const curS = totalRemainingSec % 60;
-          timerHr.value = String(curH).padStart(2, '0');
-          timerMin.value = String(curM).padStart(2, '0');
-          timerSec.value = String(curS).padStart(2, '0');
+          timerHr.value = toFa(String(curH).padStart(2, '0'));
+          timerMin.value = toFa(String(curM).padStart(2, '0'));
+          timerSec.value = toFa(String(curS).padStart(2, '0'));
         }, 1000);
       }
     });
@@ -718,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   saveAndRenderTodos();
 
-  // ۱۱. فعال‌سازی PWA Service Worker
+  // ۱۱. Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});

@@ -73,11 +73,23 @@
           </div>
         </div>
 
-        <!-- باکس مستقل ساعت و تاریخ با پنل اوقات شرعی و تایمر -->
+        <!-- باکس مستقل ساعت و تاریخ با چیدمان اختصاصی دست‌خط -->
         <div class="ios-glass-card clock-single-card" id="clock-card">
-          <div class="digital-clock" id="clock">۰۰:۰۰</div>
-          <div class="date-shamsi-main" id="shamsi-date">...</div>
-          <div class="date-secondary-row" id="date-secondary">...</div>
+          
+          <!-- سطر اول: روز هفته روبروی ساعت دیجیتال -->
+          <div class="clock-first-line">
+            <span class="clock-day-name" id="clock-day-label">...</span>
+            <span class="digital-clock" id="clock">۰۰:۰۰</span>
+          </div>
+
+          <!-- سطرهای ۲، ۳ و ۴ تاریخ‌ها -->
+          <div class="custom-dates-stack">
+            <div class="date-custom-row" id="shamsi-row">...</div>
+            <div class="date-custom-row" id="gregorian-row">...</div>
+            <div class="date-custom-row" id="hijri-row">...</div>
+          </div>
+
+          <!-- دکمه‌های اقدامات -->
           <div class="clock-actions-row">
             <span class="pill-btn" id="azan-toggle-btn">اوقات شرعی ⌵</span>
             <span class="pill-btn" id="timer-toggle-btn">تایمر ⌵</span>
@@ -112,7 +124,6 @@
                 <span class="arrow-up">⌃</span>
               </button>
             </div>
-            <!-- پاپ‌آپ جستجوی شهر برای اوقات شرعی -->
             <div class="azan-city-dropdown" id="azan-city-dropdown">
               <div class="azan-search-box">
                 <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
@@ -125,15 +136,15 @@
           <div class="clock-drawer timer-drawer" id="timer-drawer">
             <div class="timer-boxes-row">
               <div class="timer-unit">
-                <input type="number" id="timer-sec" min="0" max="59" value="00" class="timer-input">
+                <input type="text" inputmode="numeric" maxlength="2" id="timer-sec" value="۰۰" class="timer-input" spellcheck="false" autocomplete="off">
                 <label>ثانیه</label>
               </div>
               <div class="timer-unit">
-                <input type="number" id="timer-min" min="0" max="59" value="25" class="timer-input">
+                <input type="text" inputmode="numeric" maxlength="2" id="timer-min" value="۲۵" class="timer-input" spellcheck="false" autocomplete="off">
                 <label>دقیقه</label>
               </div>
               <div class="timer-unit">
-                <input type="number" id="timer-hr" min="0" max="23" value="00" class="timer-input">
+                <input type="text" inputmode="numeric" maxlength="2" id="timer-hr" value="۰۰" class="timer-input" spellcheck="false" autocomplete="off">
                 <label>ساعت</label>
               </div>
             </div>
@@ -226,7 +237,7 @@
           <div class="pill-action-btn" title="فیلترها">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
           </div>
-          <div class="pill-action-btn" title="مرتب‌‌سازی">
+          <div class="pill-action-btn" title="مرتب‌سازی">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
           </div>
         </div>
