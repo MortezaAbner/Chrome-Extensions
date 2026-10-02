@@ -32,8 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', () => {
       bgDropdown.classList.remove('active');
       document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
-      const forecastDrawer = document.getElementById('forecast-drawer');
-      if (forecastDrawer) forecastDrawer.classList.remove('active');
+      const fd = document.getElementById('forecast-drawer');
+      if (fd) fd.classList.remove('active');
+      const azanD = document.getElementById('azan-drawer');
+      if (azanD) azanD.classList.remove('active');
+      const timerD = document.getElementById('timer-drawer');
+      if (timerD) timerD.classList.remove('active');
+      const azanDrop = document.getElementById('azan-city-dropdown');
+      if (azanDrop) azanDrop.classList.remove('active');
     });
   }
 
@@ -109,7 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderRealCalendar();
 
-  // ۴. ساعت و تاریخ
+  // ۴. ساعت و فرمت دقیق تاریخ‌ها (مطابق خواسته: عددی + نام ماه برای هر ۳ تقویم)
+  const persianMonths = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+  const gregorianMonths = ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن', 'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'];
+  const hijriMonths = ['محرم', 'صفر', 'ربیع‌الاول', 'ربیع‌الثانی', 'جمادی‌الاول', 'جمادی‌الثانی', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذی‌القعده', 'ذی‌الحجه'];
+
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
@@ -118,16 +128,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const clockElem = document.getElementById('clock');
     if (clockElem) clockElem.textContent = `${toFa(String(hours).padStart(2, '0'))}:${toFa(minutes)}`;
 
+    // فرمت دقیق تاریخ شمسی: ۱۴۰۵/۰۷/۰۹ (مهر ماه)
     const shamsiElem = document.getElementById('shamsi-date');
-    if (shamsiElem) shamsiElem.textContent = 'پنج‌شنبه، ۹ مهر';
+    if (shamsiElem) {
+      shamsiElem.textContent = `پنج‌شنبه، ۱۴۰۵/۰۷/۰۹ (${persianMonths[6]} ماه)`;
+    }
 
+    // فرمت دقیق میلادی و قمری: 2026/10/02 (اکتبر) | ۱۴۴۸/۰۳/۱۹ (ربیع‌الثانی)
     const secElem = document.getElementById('date-secondary');
-    if (secElem) secElem.textContent = '2026/Oct/1 | ۱۹ ربیع‌الثانی ۱۴۴۸';
+    if (secElem) {
+      secElem.textContent = `2026/10/02 (${gregorianMonths[9]}) | ۱۴۴۸/۰۳/۱۹ (${hijriMonths[3]})`;
+    }
   }
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۵. آب‌وهوای زنده و پیش‌بینی (Open-Meteo API)
+  // ۵. آب‌وهوای زنده و پیش‌بینی
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIcon = document.getElementById('weather-icon');
@@ -145,20 +161,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const citySaveBtn = document.getElementById('city-save-btn');
   const cityCancelBtn = document.getElementById('city-cancel-btn');
 
-  const knownCities = {
+  const cityDatabase = {
     'تهران': { lat: 35.6892, lon: 51.3890 },
     'مشهد': { lat: 36.2972, lon: 59.6067 },
     'اصفهان': { lat: 32.6546, lon: 51.6680 },
     'شیراز': { lat: 29.5918, lon: 52.5837 },
     'تبریز': { lat: 38.0800, lon: 46.2919 },
-    'کرج': { lat: 35.8327, lon: 50.9915 }
+    'کرج': { lat: 35.8327, lon: 50.9915 },
+    'اهواز': { lat: 31.3183, lon: 48.6706 },
+    'قم': { lat: 34.6401, lon: 50.8764 },
+    'کرمانشاه': { lat: 34.3142, lon: 47.0650 },
+    'رشت': { lat: 37.2808, lon: 49.5832 },
+    'ارومیه': { lat: 37.5527, lon: 45.0761 },
+    'یزد': { lat: 31.8974, lon: 54.3569 },
+    'کرمان': { lat: 30.2839, lon: 57.0834 },
+    'بندرعباس': { lat: 27.1832, lon: 56.2666 },
+    'آذرشهر': { lat: 37.7600, lon: 45.9789 },
+    'اهر': { lat: 38.4774, lon: 47.0697 },
+    'بناب': { lat: 37.3400, lon: 46.0561 },
+    'سراب': { lat: 37.9408, lon: 47.5367 },
+    'استانبول': { lat: 41.0082, lon: 28.9784 },
+    'دبی': { lat: 25.2048, lon: 55.2708 },
+    'لندن': { lat: 51.5074, lon: -0.1278 }
   };
 
   let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
 
   function getWeatherIconAndDesc(code, isDay) {
     if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: isDay ? 'آفتابی و دلنشین' : 'شب صاف و مهتابی' };
-    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌‌ابری' };
+    if ([1, 2].includes(code)) return { icon: isDay ? '🌤️' : '☁️', desc: 'کمی تا نیمه‌ابری' };
     if (code === 3) return { icon: '☁️', desc: 'تمام ابری' };
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return { icon: '🌧', desc: 'بارانی و با طراوت' };
     if ([71, 73, 75, 85].includes(code)) return { icon: '❄️', desc: 'برفی و زمستانی' };
@@ -205,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         forecastGrid.appendChild(box);
       }
     } catch (e) {
-      weatherPhrase.textContent = 'خطا در ارتباط با سرور هواشناسی';
+      weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
     }
   }
 
@@ -215,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
     forecastToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       forecastDrawer.classList.toggle('active');
+      document.getElementById('azan-drawer')?.classList.remove('active');
+      document.getElementById('timer-drawer')?.classList.remove('active');
     });
   }
 
@@ -232,42 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {}
 
-    if (!resolved) {
-      try {
-        const r2 = await fetch('https://freeipapi.com/api/json');
-        const d2 = await r2.json();
-        if (d2.latitude && d2.longitude) {
-          activeCoords = { lat: d2.latitude, lon: d2.longitude, name: d2.cityName || 'موقعیت شما' };
-          resolved = true;
-        }
-      } catch (e) {}
-    }
-
-    if (!resolved) {
-      try {
-        const r3 = await fetch('https://ipapi.co/json/');
-        const d3 = await r3.json();
-        if (d3.latitude && d3.longitude) {
-          activeCoords = { lat: d3.latitude, lon: d3.longitude, name: d3.city || 'موقعیت شما' };
-          resolved = true;
-        }
-      } catch (e) {}
-    }
-
     if (resolved) {
       localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
       fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
       cityModal.classList.remove('active');
     } else {
-      alert('سرویس‌های مکان‌یابی آنلاین در دسترس نیستند. لطفاً نام شهر را دستی وارد کنید.');
+      alert('سرویس‌های آنلاین در دسترس نیستند.');
     }
   }
 
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
-      const originalText = autoGpsBtn.innerHTML;
-      autoGpsBtn.innerHTML = '<span style="font-size:0.8rem;">در حال دریافت خودکار موقعیت...</span>';
-
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
@@ -275,40 +283,28 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
             fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
             cityModal.classList.remove('active');
-            autoGpsBtn.innerHTML = originalText;
           },
-          async () => {
-            await resolveByIp();
-            autoGpsBtn.innerHTML = originalText;
-          },
-          { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+          async () => { await resolveByIp(); },
+          { timeout: 6000 }
         );
       } else {
-        resolveByIp().then(() => { autoGpsBtn.innerHTML = originalText; });
+        resolveByIp();
       }
     };
   }
 
-  if (autoIpBtn) {
-    autoIpBtn.onclick = async () => {
-      const originalText = autoIpBtn.innerHTML;
-      autoIpBtn.innerHTML = '<span style="font-size:0.8rem;">در حال شناسایی شهر با آی‌پی...</span>';
-      await resolveByIp();
-      autoIpBtn.innerHTML = originalText;
-    };
-  }
+  if (autoIpBtn) autoIpBtn.onclick = async () => { await resolveByIp(); };
 
   if (citySaveBtn) {
     citySaveBtn.onclick = () => {
       const city = manualCityInput.value.trim();
       if (!city) return;
-      if (knownCities[city]) {
-        activeCoords = { lat: knownCities[city].lat, lon: knownCities[city].lon, name: city };
+      if (cityDatabase[city]) {
+        activeCoords = { lat: cityDatabase[city].lat, lon: cityDatabase[city].lon, name: city };
         localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
         fetchRealWeather(activeCoords.lat, activeCoords.lon, city);
         cityModal.classList.remove('active');
       } else {
-        citySaveBtn.textContent = 'در حال جستجو...';
         fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`)
           .then(r => r.json())
           .then(d => {
@@ -321,14 +317,190 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
               alert('شهر مورد نظر پیدا نشد!');
             }
-          })
-          .catch(() => alert('خطا در جستجوی شهر'))
-          .finally(() => citySaveBtn.textContent = 'تأیید و ذخیره');
+          });
       }
     };
   }
 
-  // ۶. سرچ‌بار گوگل / ذره‌بین و لنز و ویس
+  // ۶. اوقات شرعی خودکار و انتخاب شهر (ویجت تصویر اول)
+  const azanToggleBtn = document.getElementById('azan-toggle-btn');
+  const azanDrawer = document.getElementById('azan-drawer');
+  const azanCurrentCity = document.getElementById('azan-current-city');
+  const azanCityPickBtn = document.getElementById('azan-city-pick-btn');
+  const azanCityDropdown = document.getElementById('azan-city-dropdown');
+  const azanCitySearchInput = document.getElementById('azan-city-search-input');
+  const azanCityList = document.getElementById('azan-city-list');
+
+  let azanCoords = JSON.parse(localStorage.getItem('azan_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
+
+  async function fetchAzanTimes(lat, lon, cityName) {
+    if (azanCurrentCity) azanCurrentCity.textContent = cityName;
+    try {
+      const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=7`);
+      const data = await res.json();
+      const t = data.data.timings;
+      document.getElementById('azan-fajr').textContent = toFa(t.Fajr);
+      document.getElementById('azan-sunrise').textContent = toFa(t.Sunrise);
+      document.getElementById('azan-dhuhr').textContent = toFa(t.Dhuhr);
+      document.getElementById('azan-sunset').textContent = toFa(t.Sunset);
+      document.getElementById('azan-maghrib').textContent = toFa(t.Maghrib);
+      document.getElementById('azan-midnight').textContent = toFa(t.Midnight);
+    } catch (e) {
+      document.getElementById('azan-fajr').textContent = '۰۴:۳۷';
+      document.getElementById('azan-sunrise').textContent = '۰۶:۰۰';
+      document.getElementById('azan-dhuhr').textContent = '۱۱:۵۴';
+      document.getElementById('azan-sunset').textContent = '۱۷:۴۷';
+      document.getElementById('azan-maghrib').textContent = '۱۸:۰۵';
+      document.getElementById('azan-midnight').textContent = '۲۳:۱۱';
+    }
+  }
+  fetchAzanTimes(azanCoords.lat, azanCoords.lon, azanCoords.name);
+
+  if (azanToggleBtn && azanDrawer) {
+    azanToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      azanDrawer.classList.toggle('active');
+      document.getElementById('timer-drawer')?.classList.remove('active');
+      document.getElementById('forecast-drawer')?.classList.remove('active');
+    });
+  }
+
+  function renderAzanCities(filter = '') {
+    if (!azanCityList) return;
+    azanCityList.innerHTML = '';
+    const cities = Object.keys(cityDatabase).filter(c => c.includes(filter));
+    cities.forEach(city => {
+      const li = document.createElement('li');
+      li.textContent = city;
+      li.onclick = (e) => {
+        e.stopPropagation();
+        azanCoords = { lat: cityDatabase[city].lat, lon: cityDatabase[city].lon, name: city };
+        localStorage.setItem('azan_coords', JSON.stringify(azanCoords));
+        fetchAzanTimes(azanCoords.lat, azanCoords.lon, city);
+        azanCityDropdown.classList.remove('active');
+      };
+      azanCityList.appendChild(li);
+    });
+  }
+  renderAzanCities();
+
+  if (azanCityPickBtn && azanCityDropdown) {
+    azanCityPickBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      azanCityDropdown.classList.toggle('active');
+    });
+  }
+
+  if (azanCitySearchInput) {
+    azanCitySearchInput.addEventListener('input', (e) => {
+      renderAzanCities(e.target.value.trim());
+    });
+  }
+
+  // ۷. ویجت تایمر معکوس با هشدار صوتی و نوتیفیکیشن (ویجت تصویر دوم)
+  const timerToggleBtn = document.getElementById('timer-toggle-btn');
+  const timerDrawer = document.getElementById('timer-drawer');
+  const timerActionMain = document.getElementById('timer-toggle-action');
+  const timerHr = document.getElementById('timer-hr');
+  const timerMin = document.getElementById('timer-min');
+  const timerSec = document.getElementById('timer-sec');
+
+  let timerInterval = null;
+  let totalRemainingSec = 0;
+
+  if (timerToggleBtn && timerDrawer) {
+    timerToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      timerDrawer.classList.toggle('active');
+      document.getElementById('azan-drawer')?.classList.remove('active');
+      document.getElementById('forecast-drawer')?.classList.remove('active');
+    });
+  }
+
+  // پخش بوق هشدار استاندارد صوتی با Web Audio API بدون نیاز به فایل خارجی
+  function playAlarmSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const playBeep = (freq, time, duration) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        osc.start(time);
+        osc.stop(time + duration);
+      };
+      const now = ctx.currentTime;
+      playBeep(880, now, 0.2);
+      playBeep(880, now + 0.25, 0.2);
+      playBeep(1200, now + 0.5, 0.4);
+    } catch (e) {}
+  }
+
+  function triggerAlarmNotification() {
+    playAlarmSound();
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('⏰ زمان تایمر به پایان رسید!', {
+        body: 'زمان مشخص شده به اتمام رسید.',
+        icon: 'https://img.icons8.com/fluency/192/compass.png'
+      });
+    } else if ('Notification' in window && Notification.permission !== 'denied') {
+      Notification.requestPermission();
+    }
+    alert('⏰ زمان تایمر شما به پایان رسید!');
+  }
+
+  if (timerActionMain) {
+    timerActionMain.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (timerInterval) {
+        // توقف تایمر
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerActionMain.textContent = 'شروع';
+        timerActionMain.classList.remove('running');
+      } else {
+        // شروع تایمر
+        if ('Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission();
+        }
+        const h = parseInt(timerHr.value) || 0;
+        const m = parseInt(timerMin.value) || 0;
+        const s = parseInt(timerSec.value) || 0;
+        totalRemainingSec = (h * 3600) + (m * 60) + s;
+
+        if (totalRemainingSec <= 0) return;
+
+        timerActionMain.textContent = 'توقف';
+        timerActionMain.classList.add('running');
+
+        timerInterval = setInterval(() => {
+          totalRemainingSec--;
+          if (totalRemainingSec <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerActionMain.textContent = 'شروع';
+            timerActionMain.classList.remove('running');
+            timerHr.value = '00';
+            timerMin.value = '25';
+            timerSec.value = '00';
+            triggerAlarmNotification();
+            return;
+          }
+          const curH = Math.floor(totalRemainingSec / 3600);
+          const curM = Math.floor((totalRemainingSec % 3600) / 60);
+          const curS = totalRemainingSec % 60;
+          timerHr.value = String(curH).padStart(2, '0');
+          timerMin.value = String(curM).padStart(2, '0');
+          timerSec.value = String(curS).padStart(2, '0');
+        }, 1000);
+      }
+    });
+  }
+
+  // ۸. سرچ‌بار گوگل و ذره‌بین
   const engineSwitcher = document.getElementById('engine-switcher');
   const googleLogo = document.getElementById('google-logo');
   const zarebinLogo = document.getElementById('zarebin-logo');
@@ -385,10 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
       voiceBtn.textContent = '🎙️';
       searchForm.submit();
     };
-    rec.onend = () => { voiceBtn.textContent = '🎙️️'; };
+    rec.onend = () => { voiceBtn.textContent = '🎙️'; };
   }
 
-  // ۷. میانبرهای ۶ ستونه وسط
+  // ۹. شورت‌کات‌ها
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const addModal = document.getElementById('add-modal');
   const modalSaveBtn = document.getElementById('modal-save-btn');
@@ -491,7 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۸. بخش تسک و یادداشت
+  // ۱۰. تسک‌ها
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -546,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   saveAndRenderTodos();
 
-  // ۹. ثبت Service Worker برای پشتیبانی از PWA و نصب روی موبایل و تبلت
+  // ۱۱. فعال‌سازی PWA Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});

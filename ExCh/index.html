@@ -40,7 +40,7 @@
         <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
       </label>
       <button id="toggle-blur-btn" class="dropdown-item">✨ وضعیت بلر: <span id="blur-status-text">مات</span></button>
-      <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌‌زمینه</button>
+      <button id="reset-bg-btn" class="dropdown-item danger">↺ بازنشانی پس‌زمینه</button>
     </div>
   </div>
 
@@ -73,15 +73,73 @@
           </div>
         </div>
 
-        <!-- باکس مستقل ساعت و تاریخ -->
-        <div class="ios-glass-card clock-single-card">
+        <!-- باکس مستقل ساعت و تاریخ با پنل اوقات شرعی و تایمر -->
+        <div class="ios-glass-card clock-single-card" id="clock-card">
           <div class="digital-clock" id="clock">۰۰:۰۰</div>
           <div class="date-shamsi-main" id="shamsi-date">...</div>
           <div class="date-secondary-row" id="date-secondary">...</div>
           <div class="clock-actions-row">
-            <span class="pill-btn">اوقات شرعی ⌵</span>
-            <span class="pill-btn">تایمر ⌵</span>
+            <span class="pill-btn" id="azan-toggle-btn">اوقات شرعی ⌵</span>
+            <span class="pill-btn" id="timer-toggle-btn">تایمر ⌵</span>
           </div>
+
+          <!-- دراور کشویی اوقات شرعی -->
+          <div class="clock-drawer azan-drawer" id="azan-drawer">
+            <div class="azan-curve-container">
+              <svg class="azan-curve-svg" viewBox="0 0 320 80" preserveAspectRatio="none">
+                <path d="M 0 65 Q 80 10, 160 30 T 320 65" fill="none" stroke="url(#azan-gradient)" stroke-width="3" stroke-linecap="round"/>
+                <line x1="0" y1="50" x2="320" y2="50" stroke="rgba(255,255,255,0.4)" stroke-dasharray="3,3" stroke-width="1"/>
+                <defs>
+                  <linearGradient id="azan-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#fb923c" />
+                    <stop offset="50%" stop-color="#fbbf24" />
+                    <stop offset="100%" stop-color="#3b82f6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="azan-times-row">
+                <div class="azan-item"><span class="azan-t" id="azan-fajr">۰۴:۳۷</span><span class="azan-l">صبح</span></div>
+                <div class="azan-item"><span class="azan-t" id="azan-sunrise">۰۶:۰۰</span><span class="azan-l">طلوع</span></div>
+                <div class="azan-item"><span class="azan-t" id="azan-dhuhr">۱۱:۵۴</span><span class="azan-l">ظهر</span></div>
+                <div class="azan-item"><span class="azan-t" id="azan-sunset">۱۷:۴۷</span><span class="azan-l">غروب</span></div>
+                <div class="azan-item"><span class="azan-t" id="azan-maghrib">۱۸:۰۵</span><span class="azan-l">مغرب</span></div>
+                <div class="azan-item"><span class="azan-t" id="azan-midnight">۲۳:۱۱</span><span class="azan-l">نیمه‌شب</span></div>
+              </div>
+            </div>
+            <div class="azan-footer-select">
+              <button class="azan-city-btn" id="azan-city-pick-btn">
+                <span>📍 <span id="azan-current-city">تهران</span></span>
+                <span class="arrow-up">⌃</span>
+              </button>
+            </div>
+            <!-- پاپ‌آپ جستجوی شهر برای اوقات شرعی -->
+            <div class="azan-city-dropdown" id="azan-city-dropdown">
+              <div class="azan-search-box">
+                <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
+              </div>
+              <ul class="azan-city-list" id="azan-city-list"></ul>
+            </div>
+          </div>
+
+          <!-- دراور کشویی تایمر معکوس -->
+          <div class="clock-drawer timer-drawer" id="timer-drawer">
+            <div class="timer-boxes-row">
+              <div class="timer-unit">
+                <input type="number" id="timer-sec" min="0" max="59" value="00" class="timer-input">
+                <label>ثانیه</label>
+              </div>
+              <div class="timer-unit">
+                <input type="number" id="timer-min" min="0" max="59" value="25" class="timer-input">
+                <label>دقیقه</label>
+              </div>
+              <div class="timer-unit">
+                <input type="number" id="timer-hr" min="0" max="23" value="00" class="timer-input">
+                <label>ساعت</label>
+              </div>
+            </div>
+            <button class="timer-action-main" id="timer-toggle-action">شروع</button>
+          </div>
+
         </div>
 
       </div>
@@ -168,7 +226,7 @@
           <div class="pill-action-btn" title="فیلترها">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
           </div>
-          <div class="pill-action-btn" title="مرتب‌سازی">
+          <div class="pill-action-btn" title="مرتب‌‌سازی">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
           </div>
         </div>
@@ -206,7 +264,7 @@
 
   </div>
 
-  <!-- مودال تنظیم موقعیت مکانی -->
+  <!-- مودال تنظیم موقعیت مکانی آب و هوا -->
   <div id="city-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card location-modal-box">
       <div class="modal-header-title">
