@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>New Tab</title>
+  <title>Abner Dashboard</title>
   
-  <!-- تنظیمات اختصاصی وب‌اپ PWA برای آیفون (iOS Safari) و اندروید -->
-  <link rel="manifest" href="app.webmanifest">
+  <!-- تنظیمات اختصاصی وب‌اپ PWA برای آیفون، اندروید و ویندوز -->
+  <link rel="manifest" href="./app.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Abner">
-  <meta name="theme-color" content="#0b0f19">
+  <meta name="theme-color" content="#2563eb">
   <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/compass.png">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -47,7 +47,7 @@
 
   <div class="dashboard-container">
     
-    <!-- ستون راست: آب‌وهوا، ساعت و تقویم -->
+    <!-- ستون اول: آب‌وهوا، ساعت و تقویم -->
     <div class="col col-left">
       
       <div class="split-widgets-row">
@@ -113,7 +113,7 @@
 
     </div>
 
-    <!-- ستون وسط: سرچ‌بار و میانبرها -->
+    <!-- ستون دوم: سرچ‌بار و میانبرها -->
     <div class="col col-center">
       
       <div class="search-capsule" id="search-capsule">
@@ -146,7 +146,7 @@
 
     </div>
 
-    <!-- ستون چپ: پنل تسک -->
+    <!-- ستون سوم: پنل تسک -->
     <div class="col col-right">
       <div class="ios-glass-card task-master-card">
         
@@ -216,7 +216,6 @@
       </div>
 
       <div class="loc-options-group">
-        <!-- گزینه ۱: GPS دستگاه -->
         <button id="auto-gps-btn" class="loc-method-btn primary-glass">
           <div class="loc-icon-circle">🎯</div>
           <div class="loc-text-desc">
@@ -225,7 +224,6 @@
           </div>
         </button>
 
-        <!-- گزینه ۲: آی‌پی اینترنت -->
         <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
           <div class="loc-icon-circle">🌐</div>
           <div class="loc-text-desc">
@@ -239,7 +237,6 @@
         <span>یا جستجوی دستی شهر</span>
       </div>
 
-      <!-- گزینه ۳: جستجوی دستی شهر -->
       <div class="manual-input-wrapper">
         <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، مشهد، شیراز)">
       </div>
@@ -264,6 +261,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
