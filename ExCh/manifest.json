@@ -1,13 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Abner Chrome Extension",
-  "version": "1.11.11",
-  "description": "Minimalist iOS-inspired glassmorphic new tab dashboard featuring dynamic widgets, smart search engine switching, and custom productivity tools.",
+  "name": "Abner Dashboard",
+  "version": "1.22.0",
+  "description": "یک افزونه شیشه‌ای هوشمند برای مرورگر شامل آب‌وهوا، تقویم تعاملی، تایمر، تسک و میانبرها",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
+  "action": {
+    "default_title": "Abner Dashboard",
+    "default_icon": {
+      "192": "https://img.icons8.com/fluency/192/compass.png"
+    }
+  },
+  "icons": {
+    "192": "https://img.icons8.com/fluency/192/compass.png",
+    "512": "https://img.icons8.com/fluency/512/compass.png"
+  },
   "permissions": [
-    "storage",
-    "geolocation"
+    "storage"
   ]
 }

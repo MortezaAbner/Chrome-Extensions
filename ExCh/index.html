@@ -17,7 +17,7 @@
 </head>
 <body>
 
-  <!-- تصویر پس‌‌زمینه کاربر -->
+  <!-- تصویر پس‌زمینه کاربر -->
   <div id="custom-bg-overlay" class="bg-overlay"></div>
 
   <!-- ۱. نمای اصلی داشبورد (صفحه خانه) -->
@@ -49,7 +49,7 @@
               <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
             </div>
 
-            <!-- پنل پیش‌‌بینی -->
+            <!-- پنل پیش‌بینی -->
             <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
               <div class="forecast-days-grid" id="forecast-grid"></div>
             </div>
@@ -153,7 +153,7 @@
               <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
             </div>
 
-            <!-- پاپ‌آپ کوچک سال و ماه -->
+            <!-- پاپ‌‌آپ کوچک سال و ماه -->
             <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
               <div class="picker-columns">
                 <div class="picker-col">
@@ -266,7 +266,7 @@
         <div class="shortcuts-container" id="shortcuts-grid"></div>
       </div>
 
-      <!-- ستون سوم: پنل تسک و یادداشت ارتقایافته (عکس ۱، ۲، ۳ و ۴) -->
+      <!-- ستون سوم: پنل تسک بدون بنر و با ادغام درون کادر ورودی -->
       <div class="col col-right">
         <div class="ios-glass-card task-master-card" id="task-main-box">
           
@@ -294,28 +294,9 @@
             </div>
           </div>
 
-          <!-- بدنه تسک با بنر بنفش و وضعیت خالی (عکس ۱) -->
+          <!-- بدنه تسک بدون هیچ بنر بنفش -->
           <div class="task-body-zone">
-            
-            <!-- بنر بنفش انگیزشی هفتگی (عکس ۱) -->
-            <div class="task-promo-banner" id="task-promo-banner">
-              <button class="banner-close-btn" id="banner-close-btn">✕</button>
-              <div class="banner-text-content">
-                <h4>هفته رو با برنامه شروع کن</h4>
-                <p>کارهای این هفته رو بگو و بقیشو بسپر به دستیار</p>
-              </div>
-              <div class="banner-hand-art">
-                <svg width="68" height="60" viewBox="0 0 68 60" fill="none">
-                  <path d="M22 15C22 10 26 6 30 6C34 6 38 10 38 15V32H22V15Z" fill="#FBCFE8"/>
-                  <path d="M38 18C38 13 42 9 46 9C50 9 54 13 54 18V32H38V18Z" fill="#FBCFE8"/>
-                  <rect x="36" y="22" width="28" height="34" rx="4" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
-                  <path d="M42 32L46 36L56 26" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <line x1="42" y1="44" x2="58" y2="44" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-            </div>
-
-            <!-- حالت خالی بدون تسک (عکس ۱) -->
+            <!-- وضعیت خالی تسک -->
             <div class="exact-empty-state" id="empty-state">
               <div class="empty-halo-circle">
                 <div class="cube-check-icon">
@@ -334,22 +315,29 @@
               </div>
             </div>
 
-            <!-- لیست تسک‌های ثبت‌شده (عکس ۳ و ۴) -->
+            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای با تیک راست‌چین و آیکون‌های مداد و سطل در چپ -->
             <ul class="todo-list" id="todo-list" style="display: none;"></ul>
           </div>
 
-          <!-- کادر ورودی تسک ساده و بازشونده پاپ‌آپ (عکس ۲) -->
-          <div class="task-input-container">
-            <div class="task-input-trigger" id="task-input-trigger">
+          <!-- کادر همه‌کاره درون‌خطی تسک -->
+          <div class="inline-task-box ios-glass-card" id="inline-task-box">
+            <!-- حالت اولیه بسته -->
+            <div class="inline-task-collapsed" id="task-trigger-collapsed">
               <span>نوشتن تسک جدید</span>
             </div>
 
-            <!-- پاپ‌آپ پیشرفته ایجاد تسک با تایتل، توضیحات و آیکون‌ها (عکس ۲) -->
-            <div class="task-composer-popup glass-blur-menu" id="task-composer-popup" style="display: none;">
+            <!-- حالت باز شده درون همان کادر -->
+            <div class="inline-task-expanded" id="task-composer-expanded" style="display: none;">
               <input type="text" id="composer-title" placeholder="نوشتن تسک جدید" autocomplete="off">
               <textarea id="composer-desc" placeholder="توضیحات..." rows="2"></textarea>
               
-              <div class="composer-footer-actions">
+              <div class="inline-composer-footer">
+                <button type="button" class="composer-submit-btn" id="composer-submit-btn" title="ثبت تسک">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                </button>
                 <div class="composer-tools-row">
                   <button type="button" class="composer-tool-btn" title="تکرار">🔄</button>
                   <button type="button" class="composer-tool-btn" title="اولویت">🚩</button>
@@ -357,12 +345,6 @@
                   <button type="button" class="composer-tool-btn" title="تاریخ سررسید">📅</button>
                   <button type="button" class="composer-tool-btn" title="برچسب">🏷️</button>
                 </div>
-                <button type="button" class="composer-submit-btn" id="composer-submit-btn" title="ثبت تسک">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="19" x2="12" y2="5"></line>
-                    <polyline points="5 12 12 5 19 12"></polyline>
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
@@ -427,7 +409,7 @@
           <div class="nav-item-glass"><span class="nav-ico">👤</span> پروفایل</div>
           <div class="nav-item-glass"><span class="nav-ico">✨</span> دستیار پلاس</div>
           <div class="nav-item-glass"><span class="nav-ico">💌</span> دعوت از دوستان <span class="badge-tag">۰/۳</span></div>
-          <div class="nav-item-glass"><span class="nav-ico">🖼️️</span> تصویر زمینه</div>
+          <div class="nav-item-glass"><span class="nav-ico">🖼️</span> تصویر زمینه</div>
           <div class="nav-item-glass"><span class="nav-ico">🎨</span> تم و رنگ</div>
           <div class="nav-item-glass active"><span class="nav-ico">⚙️</span> عمومی</div>
           <div class="nav-item-glass"><span class="nav-ico">📅</span> تقویم و زمان</div>
@@ -524,9 +506,8 @@
     </div>
   </section>
 
-  <!-- داک شیشه‌ای کشیده‌تر با همان فرمول دقیق شیشه‌ای کارت‌های دیگر -->
+  <!-- داک شیشه‌ای در پایین صفحه -->
   <footer class="bottom-floating-dock ios-glass-card" id="bottom-dock">
-    
     <!-- راست: لوگوی اختصاصی آبنر اکستنشن -->
     <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
       <div class="dock-abner-chip">A</div>
@@ -557,7 +538,7 @@
       <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
@@ -573,7 +554,6 @@
         </svg>
       </div>
     </button>
-
   </footer>
 
   <!-- مودال تبدیل تاریخ -->
@@ -660,7 +640,7 @@
         <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
           <div class="loc-icon-circle">🌐</div>
           <div class="loc-text-desc">
-            <strong>تشخیص موقعیت مکانی با آی‌‌پی</strong>
+            <strong>تشخیص موقعیت مکانی با آی‌پی</strong>
             <span>سریع، بدون نیاز به مجوز سیستم</span>
           </div>
         </button>

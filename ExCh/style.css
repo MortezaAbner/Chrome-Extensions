@@ -450,7 +450,7 @@ body {
 .add-shortcut-box:hover { transform: translateY(-3px); }
 .add-plus-icon { font-size: 1.8rem; color: var(--text-muted); }
 
-/* ساختار پیشرفته و اختصاصی تسک (عکس ۱، ۲، ۳ و ۴) */
+/* ساختار تسک در داشبورد */
 .task-master-card {
   flex: 1; display: flex; flex-direction: column; padding: 16px; justify-content: space-between;
 }
@@ -476,23 +476,8 @@ body {
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
 }
 
-/* بنر بنفش هفتگی (عکس ۱) */
-.task-promo-banner {
-  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-  border-radius: 20px; padding: 12px 14px; color: #ffffff;
-  display: flex; justify-content: space-between; align-items: center;
-  position: relative; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-}
-.banner-close-btn {
-  position: absolute; top: 8px; left: 8px; background: none; border: none;
-  color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 0.85rem;
-}
-.banner-text-content h4 { font-size: 0.95rem; font-weight: 850; margin-bottom: 2px; }
-.banner-text-content p { font-size: 0.75rem; opacity: 0.88; font-weight: 600; }
-.banner-hand-art { display: flex; align-items: center; justify-content: center; }
-
 /* وضعیت خالی تسک */
-.exact-empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 8px; }
+.exact-empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; margin: auto 0; }
 .empty-halo-circle {
   width: 70px; height: 70px; border-radius: 50%; background: rgba(59, 130, 246, 0.12);
   display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
@@ -501,98 +486,209 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* کارت تسک ثبت‌شده (عکس ۳ و ۴) */
+/* کارت‌های تسک شیشه‌ای با چک‌باکس راست‌چین و آیکون‌های مداد و سطل در چپ (عکس ۲ و ۳) */
 .todo-list {
-  list-style: none; display: flex; flex-direction: column; gap: 8px; width: 100%;
+  list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
 .task-item-card {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  border-radius: 18px; padding: 10px 14px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
+  padding: 12px 16px;
+  border-radius: 20px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
-[data-theme="dark"] .task-item-card {
-  background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15);
+.task-item-card:hover {
+  transform: translateY(-2px);
 }
+
 .task-card-right {
-  display: flex; align-items: flex-start; gap: 10px; flex: 1; text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 14px; /* فاصله مناسب و متوازن تیک از متن */
+  flex: 1;
 }
+
 .task-checkbox-custom {
-  width: 20px; height: 20px; border-radius: 6px; border: 2px solid #94a3b8;
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  background: #ffffff; flex-shrink: 0; margin-top: 2px; transition: all 0.15s;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid rgba(15, 23, 42, 0.4);
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+[data-theme="dark"] .task-checkbox-custom {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
 }
 .task-item-card.done .task-checkbox-custom {
-  background: #3b82f6; border-color: #3b82f6; color: #ffffff;
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
 }
-.task-text-stack { display: flex; flex-direction: column; gap: 2px; }
-.task-item-title { font-size: 0.92rem; font-weight: 850; color: #1e293b; }
-[data-theme="dark"] .task-item-title { color: #f8fafc; }
-.task-item-desc { font-size: 0.78rem; font-weight: 650; color: #64748b; }
 
-/* استایل خط‌خوردگی تسک در عکس ۴ */
+.task-text-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right; /* کاملاً راست‌چین */
+}
+.task-item-title {
+  font-size: 0.95rem;
+  font-weight: 850;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+.task-item-desc {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--text-muted);
+}
+
+/* خط خوردگی تسک انجام‌شده */
 .task-item-card.done .task-item-title {
-  text-decoration: line-through; color: #94a3b8 !important;
+  text-decoration: line-through;
+  opacity: 0.55;
 }
 .task-item-card.done .task-item-desc {
-  color: #cbd5e1 !important;
+  opacity: 0.45;
 }
 
+/* آیکون‌های مداد و سطل در سمت چپ (عکس ۲ و ۳) */
 .task-card-left-actions {
-  display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 .task-item-card:hover .task-card-left-actions,
 .task-item-card:active .task-card-left-actions {
   opacity: 1;
 }
+
 .task-act-btn {
-  width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.85); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 0.85rem; color: #475569; transition: transform 0.1s;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: transform 0.12s, background 0.12s;
 }
-.task-act-btn:hover { transform: scale(1.1); }
-.task-act-btn.tag-badge { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
-.task-act-btn.delete-btn:hover { color: #ef4444; border-color: #fca5a5; }
+.task-act-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.95);
+}
+.task-act-btn.delete-btn:hover {
+  color: #ef4444;
+  border-color: #fca5a5;
+}
 
-/* فیلد ورودی و پاپ‌آپ ساخت تسک (عکس ۲) */
-.task-input-container { position: relative; margin-top: 8px; }
-.task-input-trigger {
-  width: 100%; padding: 13px 20px; background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.95); border-radius: 28px;
-  font-size: 0.92rem; color: #64748b; font-weight: 750; cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04); text-align: right;
+/* کادر نوشتن تسک درون‌خطی و باز شونده در همان جا (عکس ۴) */
+.inline-task-box {
+  width: 100%;
+  border-radius: 24px !important;
+  margin-top: 8px;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-[data-theme="dark"] .task-input-trigger { background: rgba(255, 255, 255, 0.12); color: #cbd5e1; }
 
-.task-composer-popup {
-  position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
-  padding: 14px; border-radius: 22px !important; display: flex; flex-direction: column; gap: 8px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2) !important; z-index: 100;
+.inline-task-collapsed {
+  padding: 14px 20px;
+  cursor: pointer;
+  text-align: right;
+  font-size: 0.92rem;
+  font-weight: 750;
+  color: var(--text-muted);
 }
-.task-composer-popup input {
-  width: 100%; border: none; background: transparent; outline: none;
-  font-size: 0.96rem; font-weight: 850; color: var(--text-main); text-align: right;
+.inline-task-collapsed:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
-.task-composer-popup textarea {
-  width: 100%; border: none; background: transparent; outline: none; resize: none;
-  font-size: 0.84rem; font-weight: 650; color: var(--text-muted); text-align: right;
+
+.inline-task-expanded {
+  padding: 14px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-.composer-footer-actions {
-  display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06);
-  padding-top: 8px;
+.inline-task-expanded input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.96rem;
+  font-weight: 850;
+  color: var(--text-main);
+  text-align: right;
 }
-.composer-tools-row { display: flex; gap: 6px; }
+.inline-task-expanded textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.inline-composer-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+.composer-tools-row {
+  display: flex;
+  gap: 6px;
+}
 .composer-tool-btn {
-  background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border);
-  width: 28px; height: 28px; border-radius: 8px; font-size: 0.82rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border);
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+.composer-tool-btn:hover {
+  transform: scale(1.1);
 }
 .composer-submit-btn {
-  width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; border: none;
-  color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transition: transform 0.15s;
+}
+.composer-submit-btn:hover {
+  transform: scale(1.08);
 }
 
 /* داک شیشه‌ای در پایین صفحه */
@@ -736,7 +832,7 @@ body {
   flex: 1; display: flex; flex-direction: column; padding: 18px; border-radius: 28px !important; justify-content: space-between;
 }
 
-/* حل قطعی ریسپانسیو و به‌هم‌ریختگی موبایل (عکس آخر) */
+/* ریسپانسیو موبایل و تبلت */
 @media (max-width: 1100px) {
   body {
     overflow-y: auto; height: auto; min-height: 100vh;

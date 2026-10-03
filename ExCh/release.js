@@ -7,16 +7,16 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۰. دریافت آرگومان‌ها: اولی تایتل انگلیسی، دومی توضیحات فارسی
+// ۰. دریافت آرگومان‌ها: اولی عنوان کوتاه انگلیسی، دومی توضیحات فارسی بدنه
 const titleArg = process.argv[2] || 'Improvements and Fixes';
-const notesArg = process.argv[3] || 'بهبود عملکرد و رفع ایرادات جزئی';
+const notesArg = process.argv[3] || 'بهبود عملکرد و به‌‌روزرسانی بخش‌ها';
 
-// ۱. همگام‌سازی سریع با گیت‌هاب جهت جلوگیری از خطای push
+// ۱. دریافت آخرین تغییرات آنلاین گیت‌هاب جهت جلوگیری از خطای push
 try {
   execSync('git pull --rebase origin main', { stdio: 'pipe' });
 } catch (e) {}
 
-// ۲. خواندن و ارتقای هوشمند نسخه بر اساس عنوان انگلیسی
+// ۲. ارتقای هوشمند نسخه بر اساس کلیدواژه‌های پیام انگلیسی
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let [major, minor, patch] = manifest.version.split('.').map(Number);
 if (isNaN(patch)) patch = 0;
@@ -26,7 +26,8 @@ if (lowerTitle.includes('break') || lowerTitle.includes('major') || lowerTitle.i
   major += 1; minor = 0; patch = 0;
 } else if (
   lowerTitle.includes('feat') || lowerTitle.includes('add') || 
-  lowerTitle.includes('pwa') || lowerTitle.includes('responsive')
+  lowerTitle.includes('pwa') || lowerTitle.includes('layout') ||
+  lowerTitle.includes('dock') || lowerTitle.includes('system')
 ) {
   minor += 1; patch = 0;
 } else {
@@ -37,25 +38,26 @@ manifest.version = `${major}.${minor}.${patch}`;
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
 const tagName = `v${manifest.version}`;
-// تایتل کاملاً تمیز و استاندارد مانند عکس دوم
 const releaseTitle = `Abner Extension ${tagName} - ${titleArg}`;
 const zipName = `Chrome-Extension-${tagName}.zip`;
 
-// ۳. کپی خودکار index.html برای وب‌اپ و رفع خطای ۴۰۴
+// ۳. کپی خودکار newtab.html درون index.html برای وب‌اپ گیت‌هاب پیجز
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
 }
 
-// ۴. ساخت فایل فشرده ZIP
+// ۴. ساخت خودکار فایل فشرده ZIP
 console.log(`📦 Dar hal sakhte: ${zipName}...`);
 const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js', 'app.webmanifest', 'sw.js']
   .filter(f => fs.existsSync(f))
   .join(', ');
 
 const zipCmd = `powershell Compress-Archive -Path ${targetFiles} -DestinationPath ${zipName} -Force`;
-execSync(zipCmd, { stdio: 'inherit' });
+try {
+  execSync(zipCmd, { stdio: 'inherit' });
+} catch (e) {}
 
-// ۵. کامیت، ایجاد تگ و پوش مستقیم به گیت‌هاب
+// ۵. کامیت، ایجاد تگ و پوش به مخزن
 try {
   execSync('git add .', { stdio: 'inherit' });
   execSync(`git commit -m "chore(release): ${tagName} - ${titleArg}"`, { stdio: 'inherit' });
@@ -63,22 +65,18 @@ try {
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
 
-  // ۶. ساخت تمیز Release در گیت‌هاب (متن فارسی در بدنه و تایتل کوتاه در بالا)
+  // ۶. ثبت ریلیز رسمی در گیت‌هاب همراه با فایل زیپ
   try {
-    const fullNotes = `${notesArg}\n\nEnglish: ${titleArg}`;
-    // نوشتن متن در فایل موقت برای جلوگیری از به هم ریختگی کاراکترهای فارسی در شل ویندوز
-    fs.writeFileSync('temp_release_notes.txt', fullNotes, 'utf8');
-    
+    fs.writeFileSync('temp_release_notes.txt', notesArg, 'utf8');
     execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
-    
     if (fs.existsSync('temp_release_notes.txt')) {
       fs.unlinkSync('temp_release_notes.txt');
     }
-    console.log(`\n🎉 Release ${tagName} ba movafaghiat va zaher moratab montasher shod!`);
+    console.log(`\n🎉 Release ${tagName} ba movafaghiat montasher shod!`);
   } catch (ghErr) {
-    console.log('\n⚠️ Release ba gh sakhte nashod. (Check konid gh auth login bashe).');
+    console.log('\n⚠️ Release ba gh sakhte nashod (push be git anjam shod).');
   }
 
 } catch (err) {
-  console.error('Khata:', err.message);
+  console.error('Khata dar sync git:', err.message);
 }
