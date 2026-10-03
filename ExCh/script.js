@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌‌الثانی ۱۴۴۸' },
-    '1405-7-16': { title: 'روز جهانی کودک (بین‌‌‌‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
   };
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. آب‌وهوا
+  // ۸. آب‌‌وهوا
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۳. سیستم تسک پیشرفته به همراه ۵ ابزار کامل (عکس ۱ تا ۱۰)
+  // ۱۳. سیستم تسک پیشرفته (اصلاح چیدمان تیک در راست، ادیت/حذف در چپ، متادیتا در یک خط)
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ابزار ۳: ساعت و دقیقه دقیقاً تراز شده با دو نقطه (عکس ۵) ---
+  // --- ابزار ۳: ساعت و دقیقه بدون پرش و هماهنگ با دو نقطه (عکس ۱ و ۵) ---
   const toolBtnTime = document.getElementById('tool-btn-time');
   const popupTime = document.getElementById('popup-time');
   const wheelHour = document.getElementById('wheel-hour');
@@ -941,39 +941,79 @@ document.addEventListener('DOMContentLoaded', () => {
   function initTimeWheels() {
     if (!wheelHour || !wheelMinute) return;
     wheelHour.innerHTML = '';
+    wheelMinute.innerHTML = '';
+
     for (let h = 0; h < 24; h++) {
       const hStr = String(h).padStart(2, '0');
       const div = document.createElement('div');
       div.className = `time-num-item ${hStr === selectedHour ? 'selected' : ''}`;
       div.textContent = toFa(hStr);
+      div.dataset.value = hStr;
       div.onclick = (ev) => {
         ev.stopPropagation();
         selectedHour = hStr;
-        initTimeWheels();
+        wheelHour.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        div.scrollIntoView({ block: 'center', behavior: 'smooth' });
       };
       wheelHour.appendChild(div);
     }
 
-    wheelMinute.innerHTML = '';
     for (let m = 0; m < 60; m += 5) {
       const mStr = String(m).padStart(2, '0');
       const div = document.createElement('div');
       div.className = `time-num-item ${mStr === selectedMinute ? 'selected' : ''}`;
       div.textContent = toFa(mStr);
+      div.dataset.value = mStr;
       div.onclick = (ev) => {
         ev.stopPropagation();
         selectedMinute = mStr;
-        initTimeWheels();
+        wheelMinute.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        div.scrollIntoView({ block: 'center', behavior: 'smooth' });
       };
       wheelMinute.appendChild(div);
     }
 
     setTimeout(() => {
-      const hIdx = parseInt(selectedHour, 10);
-      const mIdx = Math.floor(parseInt(selectedMinute, 10) / 5);
-      wheelHour.scrollTop = hIdx * 36;
-      wheelMinute.scrollTop = mIdx * 36;
+      const selH = wheelHour.querySelector(`.time-num-item[data-value="${selectedHour}"]`);
+      if (selH) selH.scrollIntoView({ block: 'center', behavior: 'auto' });
+      const selM = wheelMinute.querySelector(`.time-num-item[data-value="${selectedMinute}"]`);
+      if (selM) selM.scrollIntoView({ block: 'center', behavior: 'auto' });
     }, 40);
+  }
+
+  // شناسایی هوشمند عدد مرکزی هنگام اسکرول نرم بدون پرش
+  function attachWheelScrollDetection(scroller, onSelect) {
+    let timeout;
+    scroller.addEventListener('scroll', () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        const scrollerRect = scroller.getBoundingClientRect();
+        const centerY = scrollerRect.top + scrollerRect.height / 2;
+        let closestItem = null;
+        let minDiff = Infinity;
+        scroller.querySelectorAll('.time-num-item').forEach(item => {
+          const rect = item.getBoundingClientRect();
+          const itemCenter = rect.top + rect.height / 2;
+          const diff = Math.abs(itemCenter - centerY);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestItem = item;
+          }
+        });
+        if (closestItem) {
+          scroller.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
+          closestItem.classList.add('selected');
+          onSelect(closestItem.dataset.value);
+        }
+      }, 70);
+    });
+  }
+
+  if (wheelHour && wheelMinute) {
+    attachWheelScrollDetection(wheelHour, val => { selectedHour = val; });
+    attachWheelScrollDetection(wheelMinute, val => { selectedMinute = val; });
   }
 
   if (toolBtnTime && popupTime) {
@@ -997,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ابزار ۴: اولویت و تغییر رنگ کادر تیک (عکس ۶ و ۷) ---
+  // --- ابزار ۴: اولویت و تغییر رنگ حاشیه تیک ---
   const toolBtnPriority = document.getElementById('tool-btn-priority');
   const popupPriority = document.getElementById('popup-priority');
 
@@ -1021,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- ابزار ۵: تکرار هوشمند با نام کامل روزها (عکس ۷ تا ۱۰) ---
+  // --- ابزار ۵: تکرار هوشمند با چینش متن در راست و کنترل‌ها در چپ (عکس ۲، ۳ و ۴) ---
   const toolBtnRepeat = document.getElementById('tool-btn-repeat');
   const popupRepeat = document.getElementById('popup-repeat');
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
@@ -1033,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRepeatCancel = document.getElementById('btn-repeat-cancel');
 
   let repeatCount = 2;
-  let repeatSelectedDays = [0]; // فقط شنبه به‌صورت پیش‌فرض
+  let repeatSelectedDays = [0]; // شنبه به‌صورت پیش‌فرض
   let repeatSelectedMonthDays = [1];
   let repeatSelectedMonths = [0];
 
@@ -1043,9 +1083,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const unit = repeatUnitSelect.value;
 
     if (unit === 'day') {
-      // حالت روز: فقط شمارنده بالا
+      // فقط شمارنده بالا
     } else if (unit === 'week') {
-      // حالت هفته: نام کامل روزهای هفته با دکمه‌های مجزا
+      // نام کامل روزهای هفته با دکمه‌های مجزا
       const wrap = document.createElement('div');
       wrap.className = 'sub-row-wrap';
       wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
@@ -1058,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'دوشنبه', idx: 2 },
         { label: 'سه‌شنبه', idx: 3 },
         { label: 'چهارشنبه', idx: 4 },
-        { label: 'پنج‌شنبه', idx: 5 },
+        { label: 'پنج‌‌شنبه', idx: 5 },
         { label: 'جمعه', idx: 6 }
       ];
 
@@ -1200,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ذخیره و رندر تسک‌ها (طراحی دقیق کارت عکس ۱ و ۷) ---
+  // --- ذخیره و رندر تسک‌ها با تضمین قطعی چیدمان تیک در راست، ادیت/حذف در چپ و متن تک‌خطی ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1222,47 +1262,48 @@ document.addEventListener('DOMContentLoaded', () => {
       const li = document.createElement('li');
       li.className = `task-item-card ios-glass-card ${item.done ? 'done' : ''}`;
       
-      // ساخت کپسول‌های متادیتا مثل عکس ۷
+      // ساخت کپسول‌های متادیتا در یک خط افقی و کوچک‌شونده خودکار
       let metaHtml = '';
       const pills = [];
       if (item.date) {
         const isToday = item.date.includes('امروز') || item.date.includes('۹ مهر');
-        pills.push(`<span class="task-meta-pill pill-date ${isToday ? 'today' : ''}">📅 ${item.date}</span>`);
+        pills.push(`<span class="task-meta-pill pill-date ${isToday ? 'today' : ''}"><span>${item.date}</span><span>📅</span></span>`);
       }
       if (item.time) {
-        pills.push(`<span class="task-meta-pill pill-time">⏰ ${item.time}</span>`);
+        pills.push(`<span class="task-meta-pill pill-time"><span>${item.time}</span><span>⏰</span></span>`);
       }
       if (item.repeat) {
-        pills.push(`<span class="task-meta-pill pill-repeat">🔄 ${item.repeat}</span>`);
+        pills.push(`<span class="task-meta-pill pill-repeat"><span>${item.repeat}</span><span>↺</span></span>`);
       }
       if (item.tag) {
-        pills.push(`<span class="task-meta-pill pill-tag">🏷️ ${item.tag}</span>`);
+        pills.push(`<span class="task-meta-pill pill-tag"><span>${item.tag}</span><span>🏷️</span></span>`);
       }
 
       if (pills.length > 0) {
         metaHtml = `<div class="task-meta-pills">${pills.join('')}</div>`;
       }
 
-      // تعیین کلاس رنگ اولویت برای کادر تیک
       const prioClass = `prio-${item.priority || 'none'}`;
+      // نمایش فقط خط اول توضیحات
+      const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
       li.innerHTML = `
-        <!-- سمت چپ‌ترین بخش: فقط مداد و سطل زباله در مرکز عمودی (عکس ۱) -->
-        <div class="task-card-left-actions">
-          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
-          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
-        </div>
-
-        <!-- سمت راست: تیک در راست با رنگ اولویت، و متن‌ها و کپسول‌ها راست‌چین (عکس ۱ و ۷) -->
+        <!-- سمت راست‌ترین بخش: چک‌باکس با رنگ اولویت و سپس متن‌ها -->
         <div class="task-card-right">
-          <div class="task-text-stack">
-            <span class="task-item-title">${item.title}</span>
-            ${item.desc ? `<span class="task-item-desc">${item.desc}</span>` : ''}
-            ${metaHtml}
-          </div>
           <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
             ${item.done ? '✓' : ''}
           </div>
+          <div class="task-text-stack">
+            <span class="task-item-title">${item.title}</span>
+            ${firstLineDesc ? `<span class="task-item-desc">${firstLineDesc}</span>` : ''}
+            ${metaHtml}
+          </div>
+        </div>
+
+        <!-- سمت چپ‌ترین بخش: فقط مداد و سطل زباله در مرکز عمودی و سایز کوچک -->
+        <div class="task-card-left-actions">
+          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
         </div>
       `;
 

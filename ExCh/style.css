@@ -471,9 +471,15 @@ body {
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
 
+/* محفظه تسک با اسکرول نامرئی (بدون اسکرول‌بار) */
 .task-body-zone {
   flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.task-body-zone::-webkit-scrollbar {
+  display: none !important;
 }
 
 /* وضعیت خالی تسک */
@@ -486,17 +492,18 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* کارت‌های تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱ و ۷) */
+/* کارت تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱ و ۷) */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
 .task-item-card {
-  padding: 12px 14px;
-  border-radius: 20px !important;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  direction: rtl !important;
+  padding: 10px 14px;
+  border-radius: 18px !important;
   position: relative;
   transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -504,13 +511,15 @@ body {
   transform: translateY(-2px);
 }
 
-/* سمت راست: چک‌باکس و متن‌ها */
+/* سمت راست: چک‌باکس و بعد از آن متن‌ها و آیکون‌ها */
 .task-card-right {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
   gap: 12px;
   flex: 1;
+  text-align: right;
+  min-width: 0;
 }
 
 .task-checkbox-custom {
@@ -528,19 +537,11 @@ body {
   transition: all 0.18s ease;
 }
 
-/* رنگ دور کادر تیک بر اساس اولویت (عکس ۷) */
-.task-checkbox-custom.prio-high {
-  border-color: #ef4444 !important;
-}
-.task-checkbox-custom.prio-medium {
-  border-color: #f97316 !important;
-}
-.task-checkbox-custom.prio-low {
-  border-color: #10b981 !important;
-}
-.task-checkbox-custom.prio-none {
-  border-color: #94a3b8 !important;
-}
+/* رنگ حاشیه تیک براساس اولویت تسک (عکس ۷) */
+.task-checkbox-custom.prio-high { border-color: #ef4444 !important; }
+.task-checkbox-custom.prio-medium { border-color: #f97316 !important; }
+.task-checkbox-custom.prio-low { border-color: #10b981 !important; }
+.task-checkbox-custom.prio-none { border-color: #94a3b8 !important; }
 
 .task-item-card.done .task-checkbox-custom {
   background: #2563eb !important;
@@ -551,9 +552,10 @@ body {
 .task-text-stack {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   text-align: right;
   flex: 1;
+  min-width: 0; /* برای برش صحیح متن تک‌خطی */
 }
 
 .task-item-title {
@@ -561,31 +563,43 @@ body {
   font-weight: 850;
   color: var(--text-main);
   line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* توضیحات تک‌خطی */
 .task-item-desc {
   font-size: 0.8rem;
   font-weight: 650;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* کپسول‌های متادیتا مثل عکس ۷ */
+/* آیکون‌های متادیتا در یک خط افقی و کوچک‌شوندگی خودکار (عکس ۷) */
 .task-meta-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px;
   margin-top: 4px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .task-meta-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.75rem;
-  font-weight: 750;
-  padding: 2px 8px;
+  font-size: clamp(0.62rem, 1.8vw, 0.75rem);
+  padding: 2px 7px;
   border-radius: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+  flex-shrink: 1;
 }
 
 .task-meta-pill.pill-date {
@@ -624,7 +638,7 @@ body {
   color: #7c3aed;
 }
 
-/* خط خوردگی تسک انجام‌شده */
+/* خط‌‌خوردگی تسک انجام‌شده */
 .task-item-card.done .task-item-title {
   text-decoration: line-through;
   opacity: 0.55;
@@ -633,13 +647,15 @@ body {
   opacity: 0.45;
 }
 
-/* سمت چپ: آیکون‌های مداد و سطل زباله (کوچک و در مرکز عمودی) */
+/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک‌تر (عکس ۱) */
 .task-card-left-actions {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
   gap: 6px;
   opacity: 0;
   transition: opacity 0.15s ease;
+  flex-shrink: 0;
   margin-right: 8px;
 }
 .task-item-card:hover .task-card-left-actions,
@@ -648,8 +664,8 @@ body {
 }
 
 .task-act-btn {
-  width: 26px;
-  height: 26px;
+  width: 25px;
+  height: 25px;
   border-radius: 8px;
   border: 1px solid var(--glass-border);
   background: rgba(255, 255, 255, 0.75);
@@ -657,7 +673,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: var(--text-main);
   transition: transform 0.12s, background 0.12s;
 }
@@ -912,7 +928,7 @@ body {
   color: #ef4444;
 }
 
-/* ۳. پاپ‌آپ زمان و ساعت تراز شده با دو نقطه (عکس ۵) */
+/* ۳. پاپ‌آپ زمان بدون پرش و تراز با دو نقطه (عکس ۱) */
 .time-popup-box {
   width: 250px;
   padding: 16px 14px 12px;
@@ -925,43 +941,35 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  height: 130px;
+  gap: 16px;
+  height: 120px;
 }
 .time-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 65px;
+  width: 72px;
+  height: 100%;
 }
 .time-col-header {
   font-size: 0.82rem;
   font-weight: 850;
   color: var(--text-muted);
   margin-bottom: 4px;
-}
-.time-colon {
-  font-size: 1.8rem;
-  font-weight: 850;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100px;
-  margin-top: 18px;
-  color: var(--text-main);
+  height: 18px;
+  line-height: 18px;
 }
 .time-wheel-scroller {
-  height: 100px;
+  height: 98px;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
-  padding: 30px 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding: 31px 0; /* ۳۱ پیکسل دقیق برای قرارگیری نقطه وسط روی ۳۶ پیکسل */
 }
 .time-wheel-scroller::-webkit-scrollbar {
   display: none;
@@ -970,22 +978,34 @@ body {
   height: 36px;
   line-height: 36px;
   scroll-snap-align: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 850;
-  padding: 0 10px;
+  width: 100%;
+  text-align: center;
   border-radius: 10px;
   cursor: pointer;
   color: #94a3b8;
-  transition: all 0.1s;
-  text-align: center;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
 }
 .time-num-item.selected {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   color: var(--text-main);
   background: rgba(0, 0, 0, 0.06);
 }
 [data-theme="dark"] .time-num-item.selected {
   background: rgba(255, 255, 255, 0.12);
+}
+.time-colon {
+  font-size: 1.8rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  line-height: 36px;
+  margin-top: 22px;
+  color: var(--text-main);
 }
 
 /* ۴. پاپ‌آپ اولویت */
@@ -1020,7 +1040,7 @@ body {
 .prio-dot.orange { background: #f97316; }
 .prio-dot.red { background: #ef4444; }
 
-/* ۵. پاپ‌آپ تکرار هوشمند با چینش متن در راست و کنترل‌ها در چپ (عکس ۲، ۳ و ۴) */
+/* ۵. پاپ‌آپ تکرار هوشمند با متن در راست و کنترل‌ها در چپ (عکس ۲، ۳ و ۴) */
 .repeat-popup-box {
   width: 380px;
   padding: 16px;
