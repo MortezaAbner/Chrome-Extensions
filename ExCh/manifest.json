@@ -1,20 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Abner Dashboard",
-  "version": "1.22.1",
+  "version": "1.21.1",
   "description": "یک افزونه شیشه‌ای هوشمند برای مرورگر شامل آب‌وهوا، تقویم تعاملی، تایمر، تسک و میانبرها",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
-  },
-  "action": {
-    "default_title": "Abner Dashboard",
-    "default_icon": {
-      "192": "https://img.icons8.com/fluency/192/compass.png"
-    }
-  },
-  "icons": {
-    "192": "https://img.icons8.com/fluency/192/compass.png",
-    "512": "https://img.icons8.com/fluency/512/compass.png"
   },
   "permissions": [
     "storage"
