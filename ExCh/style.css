@@ -115,7 +115,7 @@ body {
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* باکس آب‌‌وهوا */
+/* باکس آب‌وهوا */
 .weather-single-card {
   flex: 1.15; padding: 16px 18px; display: flex;
   flex-direction: column; justify-content: space-between; border-radius: 26px;
@@ -473,7 +473,7 @@ body {
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
 
-/* محفظه تسک با اسکرول کاملاً نامرئی */
+/* محفظه تسک با اسکرول نامرئی */
 .task-body-zone {
   flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
@@ -494,13 +494,15 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* کارت‌های تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱ و ۲) */
+/* ========================================================
+   ساختار کارت تسک: تیک راست، ادیت/حذف چپ (تضمینی و دقیق)
+   ======================================================== */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
 .task-item-card {
   display: flex !important;
-  flex-direction: row-reverse !important; /* معکوس قطعی جهت قرارگیری تیک در راست و دکمه‌ها در چپ */
+  flex-direction: row !important; /* چینش خطی استاندارد RTL */
   justify-content: space-between !important;
   align-items: center !important;
   padding: 10px 14px;
@@ -512,12 +514,12 @@ body {
   transform: translateY(-2px);
 }
 
-/* سمت راست: چک‌باکس و سپس متون */
-.task-card-right {
+/* محفظه سمت راست: شامل مربع تیک و سپس متون */
+.task-card-right-group {
   display: flex !important;
   flex-direction: row !important;
   align-items: flex-start !important;
-  gap: 12px;
+  gap: 12px !important;
   flex: 1;
   text-align: right;
   min-width: 0;
@@ -579,7 +581,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲ و ۳) */
+/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ */
 .task-meta-pills {
   display: flex !important;
   flex-direction: row !important;
@@ -609,7 +611,7 @@ body {
   color: #cbd5e1;
 }
 
-/* کپسول‌های وضعیت بورد (عکس ۳ و ۴) */
+/* کپسول‌های وضعیت بورد */
 .task-board-badge {
   display: inline-flex;
   align-items: center;
@@ -638,7 +640,7 @@ body {
   opacity: 0.45;
 }
 
-/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک (عکس ۱) */
+/* ستون سمت چپ کارت: آیکون‌های ادیت و سطل زباله در مرکز عمودی */
 .task-card-left-actions {
   display: flex !important;
   flex-direction: row !important;
@@ -647,7 +649,7 @@ body {
   opacity: 0;
   transition: opacity 0.15s ease;
   flex-shrink: 0;
-  margin-left: 8px;
+  margin-right: 8px;
 }
 .task-item-card:hover .task-card-left-actions,
 .task-item-card:active .task-card-left-actions {
@@ -926,7 +928,7 @@ body {
   color: #ef4444;
 }
 
-/* ۳. پاپ‌آپ زمان بدون پرش و تراز با دو نقطه (عکس ۱) */
+/* ۳. پاپ‌آپ زمان بدون پرش و تراز با دو نقطه */
 .time-popup-box {
   width: 250px;
   padding: 16px 14px 12px;
@@ -1217,9 +1219,7 @@ body {
   margin-top: 4px;
 }
 
-/* ========================================================
-   پاپ‌آپ شیشه‌ای ویرایش تسک (عکس ۲)
-   ======================================================== */
+/* پاپ‌آپ شیشه‌ای ویرایش تسک */
 .edit-task-card-box {
   width: 480px !important;
   max-width: 92%;
@@ -1376,9 +1376,7 @@ body {
   cursor: pointer;
 }
 
-/* ========================================================
-   بخش پنهان‌سازی قطعی مودال‌های معلق
-   ======================================================== */
+/* مخفی‌سازی قطعی مودال‌های معلق */
 .modal-overlay {
   position: fixed !important;
   top: 0 !important;

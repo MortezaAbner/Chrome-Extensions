@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌‌‌‌الثانی ۱۴۴۸' },
+    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌‌الثانی ۱۴۴۸' },
     '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCalendar(currentYear, currentMonthIndex);
 
   // ۵. ساعت زنده
-  const persianDays = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+  const persianDays = ['یک‌‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
@@ -762,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
 
-  // متغیرهای ویرایش تسک (عکس ۲)
+  // متغیرهای ویرایش تسک
   const editTaskModal = document.getElementById('edit-task-modal');
   const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
   const editTaskTitleInput = document.getElementById('edit-task-title-input');
@@ -822,7 +822,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
   }
 
-  // پاپ‌آپ ویرایش تسک (عکس ۲)
   function openEditTaskModal(index) {
     currentEditingIndex = index;
     const item = todos[index];
@@ -1012,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ابزار ۳: ساعت و دقیقه پایدار و تراز شده با دو نقطه (عکس ۱) ---
+  // --- ابزار ۳: ساعت و دقیقه پایدار و تراز شده با دو نقطه ---
   const toolBtnTime = document.getElementById('tool-btn-time');
   const popupTime = document.getElementById('popup-time');
   const wheelHour = document.getElementById('wheel-hour');
@@ -1144,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- ابزار ۵: تکرار هوشمند با متن در راست و کنترل‌ها در چپ (عکس ۲ و ۳) ---
+  // --- ابزار ۵: تکرار هوشمند ---
   const toolBtnRepeat = document.getElementById('tool-btn-repeat');
   const popupRepeat = document.getElementById('popup-repeat');
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
@@ -1156,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRepeatCancel = document.getElementById('btn-repeat-cancel');
 
   let repeatCount = 2;
-  let repeatSelectedDays = [0]; // شنبه پیش‌فرض
+  let repeatSelectedDays = [0];
   let repeatSelectedMonthDays = [1];
   let repeatSelectedMonths = [0];
 
@@ -1166,7 +1165,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const unit = repeatUnitSelect.value;
 
     if (unit === 'day') {
-      // حالت روز
     } else if (unit === 'week') {
       const wrap = document.createElement('div');
       wrap.className = 'sub-row-wrap';
@@ -1322,7 +1320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ذخیره و رندر تسک‌ها ---
+  // --- رندر تسک‌ها با تضمین قطعی تیک در راست، ادیت/حذف در چپ (عکس ۱ مرجع) ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1344,11 +1342,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const li = document.createElement('li');
       li.className = `task-item-card ios-glass-card ${item.done ? 'done' : ''}`;
       
-      // ساخت کپسول‌های متادیتا همگی در یک خط افقی و هم‌رنگ (عکس ۲ و ۳)
       let metaHtml = '';
       const pills = [];
 
-      // برچسب بورد (عکس ۳ و ۴)
       if (item.board === 'in_progress') {
         pills.push(`<span class="task-board-badge in-progress">● در دست اقدام</span>`);
       } else if (item.board === 'done') {
@@ -1375,23 +1371,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const prioClass = `prio-${item.priority || 'none'}`;
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
+      // ترتیب تگ‌ها در RTL: اولی در سمت راست‌ترین و دومی در سمت چپ‌ترین می‌نشیند
       li.innerHTML = `
-        <!-- سمت چپ‌ترین بخش: فقط مداد و سطل زباله در مرکز عمودی و سایز کوچک -->
-        <div class="task-card-left-actions">
-          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
-          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
-        </div>
-
-        <!-- سمت راست‌ترین بخش: چک‌باکس با رنگ اولویت و سپس متن‌ها -->
-        <div class="task-card-right">
+        <!-- سمت راست: تیک و متن‌ها -->
+        <div class="task-card-right-group">
+          <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
+            ${item.done ? '✓' : ''}
+          </div>
           <div class="task-text-stack">
             <span class="task-item-title">${item.title}</span>
             ${firstLineDesc ? `<span class="task-item-desc">${firstLineDesc}</span>` : ''}
             ${metaHtml}
           </div>
-          <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
-            ${item.done ? '✓' : ''}
-          </div>
+        </div>
+
+        <!-- سمت چپ: مداد و سطل زباله -->
+        <div class="task-card-left-actions">
+          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
         </div>
       `;
 
@@ -1403,7 +1400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       };
 
-      // باز شدن پاپ‌آپ پیشرفته ویرایش تسک (عکس ۲)
+      // باز شدن پاپ‌آپ ویرایش تسک
       const editBtn = li.querySelector('.edit-btn');
       editBtn.onclick = (e) => {
         e.stopPropagation();
