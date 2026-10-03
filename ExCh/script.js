@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const specialEventsData = {
-    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌‌الثانی ۱۴۴۸' },
     '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
@@ -759,18 +759,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderShortcuts();
       };
     });
-
-    document.querySelectorAll('.menu-item.open-tab').forEach(b => {
-      b.onclick = (e) => { e.stopPropagation(); window.open(b.dataset.url, '_blank'); };
-    });
-
-    document.querySelectorAll('.menu-item.copy-link').forEach(b => {
-      b.onclick = (e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(b.dataset.url);
-        alert('لینک کپی شد!');
-      };
-    });
   }
 
   if (modalSaveBtn) {
@@ -789,46 +777,158 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۳. تسک‌ها
+  // ۱۳. سیستم تسک و یادداشت ارتقایافته (عکس ۱، ۲، ۳ و ۴)
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
   const todoList = document.getElementById('todo-list');
-  const todoInput = document.getElementById('new-todo');
+  const taskPromoBanner = document.getElementById('task-promo-banner');
+  const bannerCloseBtn = document.getElementById('banner-close-btn');
 
-  let todos = JSON.parse(localStorage.getItem('my_todos') || '[]');
+  const taskInputTrigger = document.getElementById('task-input-trigger');
+  const taskComposerPopup = document.getElementById('task-composer-popup');
+  const composerTitle = document.getElementById('composer-title');
+  const composerDesc = document.getElementById('composer-desc');
+  const composerSubmitBtn = document.getElementById('composer-submit-btn');
+  const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
+
+  let todos = JSON.parse(localStorage.getItem('my_todos')) || [];
+  let isBannerDismissed = localStorage.getItem('task_banner_dismissed') === 'true';
+  let hideDoneTasks = false;
+
+  if (bannerCloseBtn) {
+    bannerCloseBtn.onclick = (e) => {
+      e.stopPropagation();
+      taskPromoBanner.style.display = 'none';
+      localStorage.setItem('task_banner_dismissed', 'true');
+    };
+  }
+
+  if (toggleDoneBtn) {
+    toggleDoneBtn.onclick = () => {
+      hideDoneTasks = !hideDoneTasks;
+      saveAndRenderTodos();
+    };
+  }
+
+  // باز کردن پاپ‌آپ ایجاد تسک با کلیک روی فیلد نوشتن
+  if (taskInputTrigger && taskComposerPopup) {
+    taskInputTrigger.onclick = (e) => {
+      e.stopPropagation();
+      taskComposerPopup.style.display = 'flex';
+      composerTitle.focus();
+    };
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('#task-composer-popup') && !e.target.closest('#task-input-trigger')) {
+        taskComposerPopup.style.display = 'none';
+      }
+    });
+  }
 
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
+
+    // اگر بنر بسته نشده بود و تسکی وجود نداشت بنر نمایش داده شود
+    if (taskPromoBanner) {
+      if (isBannerDismissed || todos.length > 0) {
+        taskPromoBanner.style.display = 'none';
+      } else {
+        taskPromoBanner.style.display = 'flex';
+      }
+    }
+
     todoList.innerHTML = '';
+
     if (todos.length === 0) {
       emptyState.style.display = 'flex';
       todoList.style.display = 'none';
       return;
     }
+
     emptyState.style.display = 'none';
     todoList.style.display = 'flex';
 
     todos.forEach((item, index) => {
+      if (hideDoneTasks && item.done) return;
+
       const li = document.createElement('li');
-      li.className = `todo-item ${item.done ? 'done' : ''}`;
-      li.innerHTML = `<span>${item.text}</span><button>✖</button>`;
-      li.querySelector('span').onclick = () => { todos[index].done = !todos[index].done; saveAndRenderTodos(); };
-      li.querySelector('button').onclick = () => { todos.splice(index, 1); saveAndRenderTodos(); };
+      li.className = `task-item-card ${item.done ? 'done' : ''}`;
+      
+      li.innerHTML = `
+        <div class="task-card-left-actions">
+          <button class="task-act-btn tag-badge" title="برچسب">🏷️</button>
+          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
+        </div>
+        <div class="task-card-right">
+          <div class="task-text-stack">
+            <span class="task-item-title">${item.title}</span>
+            ${item.desc ? `<span class="task-item-desc">${item.desc}</span>` : ''}
+          </div>
+          <div class="task-checkbox-custom" title="تغییر وضعیت">
+            ${item.done ? '✓' : ''}
+          </div>
+        </div>
+      `;
+
+      // تغییر وضعیت تیک تسک (عکس ۴)
+      const chk = li.querySelector('.task-checkbox-custom');
+      chk.onclick = (e) => {
+        e.stopPropagation();
+        todos[index].done = !todos[index].done;
+        saveAndRenderTodos();
+      };
+
+      // حذف تسک
+      const delBtn = li.querySelector('.delete-btn');
+      delBtn.onclick = (e) => {
+        e.stopPropagation();
+        todos.splice(index, 1);
+        saveAndRenderTodos();
+      };
+
+      // ویرایش تسک
+      const editBtn = li.querySelector('.edit-btn');
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        const newTitle = prompt('عنوان جدید تسک:', item.title);
+        if (newTitle !== null && newTitle.trim() !== '') {
+          todos[index].title = newTitle.trim();
+          saveAndRenderTodos();
+        }
+      };
+
       todoList.appendChild(li);
     });
   }
 
-  if (todoInput) {
-    todoInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && todoInput.value.trim() !== '') {
-        todos.push({ text: todoInput.value.trim(), done: false });
-        todoInput.value = '';
-        saveAndRenderTodos();
+  // ثبت تسک جدید از طریق پاپ‌آپ (عکس ۲)
+  if (composerSubmitBtn && composerTitle) {
+    const handleCreateTask = () => {
+      const t = composerTitle.value.trim();
+      const d = composerDesc.value.trim();
+      if (!t) return;
+      todos.push({ title: t, desc: d, done: false });
+      composerTitle.value = '';
+      composerDesc.value = '';
+      taskComposerPopup.style.display = 'none';
+      saveAndRenderTodos();
+    };
+
+    composerSubmitBtn.onclick = (e) => {
+      e.stopPropagation();
+      handleCreateTask();
+    };
+
+    composerTitle.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleCreateTask();
       }
     });
   }
+
   saveAndRenderTodos();
 
   // ۱۴. Service Worker

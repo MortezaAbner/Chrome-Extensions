@@ -48,7 +48,7 @@ body {
   justify-content: center;
   align-items: center;
   color: var(--text-main);
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -65,7 +65,7 @@ body {
 .app-view {
   display: none;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   align-items: center;
   justify-content: center;
 }
@@ -76,7 +76,7 @@ body {
 .dashboard-container {
   display: flex; gap: 20px;
   width: 95%; max-width: 1420px; height: 580px;
-  align-items: stretch; margin-bottom: 50px;
+  align-items: stretch; margin-bottom: 55px;
 }
 
 .col { display: flex; flex-direction: column; gap: 16px; }
@@ -450,7 +450,7 @@ body {
 .add-shortcut-box:hover { transform: translateY(-3px); }
 .add-plus-icon { font-size: 1.8rem; color: var(--text-muted); }
 
-/* تسک‌ها در داشبورد */
+/* ساختار پیشرفته و اختصاصی تسک (عکس ۱، ۲، ۳ و ۴) */
 .task-master-card {
   flex: 1; display: flex; flex-direction: column; padding: 16px; justify-content: space-between;
 }
@@ -470,24 +470,132 @@ body {
   align-items: center; justify-content: center; cursor: pointer; color: #475569; font-size: 1rem;
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
-.task-body-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0; }
-.exact-empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.empty-halo-circle {
-  width: 76px; height: 76px; border-radius: 50%; background: rgba(59, 130, 246, 0.12);
-  display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
-}
-.empty-main-heading { font-size: 1.15rem; font-weight: 850; color: var(--text-main); margin-bottom: 6px; }
-.empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; }
-.empty-bullets { display: flex; flex-direction: column; gap: 4px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
-.task-input-bottom { margin-top: 10px; }
-.task-input-bottom input {
-  width: 100%; padding: 14px 20px; background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.95); border-radius: 28px; outline: none;
-  font-size: 0.92rem; color: var(--text-main); font-weight: 750; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-}
-[data-theme="dark"] .task-input-bottom input { background: rgba(255, 255, 255, 0.12); color: #f8fafc; border: 1px solid var(--glass-border); }
 
-/* داک شیشه‌ای در پایین صفحه - کاملاً همسان با شیشه کارت‌های اصلی و کشیده‌تر */
+.task-body-zone {
+  flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+  padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
+}
+
+/* بنر بنفش هفتگی (عکس ۱) */
+.task-promo-banner {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+  border-radius: 20px; padding: 12px 14px; color: #ffffff;
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+.banner-close-btn {
+  position: absolute; top: 8px; left: 8px; background: none; border: none;
+  color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 0.85rem;
+}
+.banner-text-content h4 { font-size: 0.95rem; font-weight: 850; margin-bottom: 2px; }
+.banner-text-content p { font-size: 0.75rem; opacity: 0.88; font-weight: 600; }
+.banner-hand-art { display: flex; align-items: center; justify-content: center; }
+
+/* وضعیت خالی تسک */
+.exact-empty-state { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 8px; }
+.empty-halo-circle {
+  width: 70px; height: 70px; border-radius: 50%; background: rgba(59, 130, 246, 0.12);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+}
+.empty-main-heading { font-size: 1.15rem; font-weight: 850; color: var(--text-main); margin-bottom: 4px; }
+.empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
+.empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
+
+/* کارت تسک ثبت‌شده (عکس ۳ و ۴) */
+.todo-list {
+  list-style: none; display: flex; flex-direction: column; gap: 8px; width: 100%;
+}
+.task-item-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 18px; padding: 10px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+[data-theme="dark"] .task-item-card {
+  background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15);
+}
+.task-card-right {
+  display: flex; align-items: flex-start; gap: 10px; flex: 1; text-align: right;
+}
+.task-checkbox-custom {
+  width: 20px; height: 20px; border-radius: 6px; border: 2px solid #94a3b8;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  background: #ffffff; flex-shrink: 0; margin-top: 2px; transition: all 0.15s;
+}
+.task-item-card.done .task-checkbox-custom {
+  background: #3b82f6; border-color: #3b82f6; color: #ffffff;
+}
+.task-text-stack { display: flex; flex-direction: column; gap: 2px; }
+.task-item-title { font-size: 0.92rem; font-weight: 850; color: #1e293b; }
+[data-theme="dark"] .task-item-title { color: #f8fafc; }
+.task-item-desc { font-size: 0.78rem; font-weight: 650; color: #64748b; }
+
+/* استایل خط‌خوردگی تسک در عکس ۴ */
+.task-item-card.done .task-item-title {
+  text-decoration: line-through; color: #94a3b8 !important;
+}
+.task-item-card.done .task-item-desc {
+  color: #cbd5e1 !important;
+}
+
+.task-card-left-actions {
+  display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.15s;
+}
+.task-item-card:hover .task-card-left-actions,
+.task-item-card:active .task-card-left-actions {
+  opacity: 1;
+}
+.task-act-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.85); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.85rem; color: #475569; transition: transform 0.1s;
+}
+.task-act-btn:hover { transform: scale(1.1); }
+.task-act-btn.tag-badge { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
+.task-act-btn.delete-btn:hover { color: #ef4444; border-color: #fca5a5; }
+
+/* فیلد ورودی و پاپ‌آپ ساخت تسک (عکس ۲) */
+.task-input-container { position: relative; margin-top: 8px; }
+.task-input-trigger {
+  width: 100%; padding: 13px 20px; background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.95); border-radius: 28px;
+  font-size: 0.92rem; color: #64748b; font-weight: 750; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04); text-align: right;
+}
+[data-theme="dark"] .task-input-trigger { background: rgba(255, 255, 255, 0.12); color: #cbd5e1; }
+
+.task-composer-popup {
+  position: absolute; bottom: calc(100% + 8px); left: 0; right: 0;
+  padding: 14px; border-radius: 22px !important; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2) !important; z-index: 100;
+}
+.task-composer-popup input {
+  width: 100%; border: none; background: transparent; outline: none;
+  font-size: 0.96rem; font-weight: 850; color: var(--text-main); text-align: right;
+}
+.task-composer-popup textarea {
+  width: 100%; border: none; background: transparent; outline: none; resize: none;
+  font-size: 0.84rem; font-weight: 650; color: var(--text-muted); text-align: right;
+}
+.composer-footer-actions {
+  display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 8px;
+}
+.composer-tools-row { display: flex; gap: 6px; }
+.composer-tool-btn {
+  background: rgba(255, 255, 255, 0.7); border: 1px solid var(--glass-border);
+  width: 28px; height: 28px; border-radius: 8px; font-size: 0.82rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.composer-submit-btn {
+  width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; border: none;
+  color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+/* داک شیشه‌ای در پایین صفحه */
 .bottom-floating-dock {
   position: fixed;
   bottom: 24px;
@@ -537,7 +645,6 @@ body {
 [data-theme="dark"] .dock-btn:hover { background: rgba(255, 255, 255, 0.12); }
 .dock-btn.active { color: #2563eb; }
 
-/* کادر دور آیکون حالت شب و روز */
 .theme-dock-pill {
   border: 1.5px solid rgba(15, 23, 42, 0.75) !important;
   border-radius: 12px !important;
@@ -562,13 +669,8 @@ body {
 
 /* صفحه شیشه‌ای تنظیمات */
 .settings-modal-card {
-  width: 860px;
-  max-width: 92%;
-  height: 540px;
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  border-radius: 28px !important;
+  width: 860px; max-width: 92%; height: 540px; display: flex; flex-direction: column;
+  padding: 24px; border-radius: 28px !important;
 }
 .settings-card-header {
   display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border);
@@ -634,9 +736,33 @@ body {
   flex: 1; display: flex; flex-direction: column; padding: 18px; border-radius: 28px !important; justify-content: space-between;
 }
 
-/* ریسپانسیو */
+/* حل قطعی ریسپانسیو و به‌هم‌ریختگی موبایل (عکس آخر) */
 @media (max-width: 1100px) {
-  body { overflow-y: auto; height: auto; min-height: 100vh; padding: 40px 16px 90px; justify-content: flex-start; }
-  .dashboard-container, .tasks-page-layout { flex-direction: column; height: auto; width: 100%; max-width: 680px; margin-bottom: 30px; }
+  body {
+    overflow-y: auto; height: auto; min-height: 100vh;
+    padding: 30px 14px 90px; justify-content: flex-start;
+  }
+  .app-view {
+    height: auto; min-height: 100vh; align-items: flex-start;
+  }
+  .dashboard-container, .tasks-page-layout {
+    flex-direction: column; height: auto; width: 100%; max-width: 680px; margin-bottom: 30px;
+  }
+  .col-center { order: 1; }
+  .col-left { order: 2; }
+  .col-right { order: 3; }
+  .shortcuts-container { max-height: none; grid-template-columns: repeat(4, 1fr); }
+  .forecast-drawer, .clock-drawer { width: 100%; right: 0; left: 0; }
   .bottom-floating-dock { bottom: 12px; width: 92%; min-width: 0; max-width: 440px; padding: 6px 14px; }
+}
+
+@media (max-width: 640px) {
+  body { padding: 20px 10px 80px; }
+  .dashboard-container { gap: 14px; }
+  .split-widgets-row { flex-direction: column; }
+  .forecast-drawer, .clock-drawer { width: 100%; }
+  .forecast-days-grid { flex-wrap: wrap; }
+  .forecast-day-box { flex: 1 1 30%; }
+  .shortcuts-container { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .location-modal-box, .convert-modal-box { width: 92% !important; padding: 18px !important; }
 }
