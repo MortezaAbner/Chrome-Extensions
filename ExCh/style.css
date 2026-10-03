@@ -39,17 +39,20 @@
   --temp-min-color: #38bdf8;
 }
 
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* جلوگیری کامل از اسکرول خوردن صفحه به پایین */
+  position: relative;
+}
+
 body {
   background: var(--bg-gradient);
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: var(--text-main);
-  overflow-x: hidden;
-  position: relative;
 }
 
 .bg-overlay {
@@ -65,9 +68,10 @@ body {
 .app-view {
   display: none;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 .app-view.active {
   display: flex;
@@ -471,7 +475,7 @@ body {
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
 
-/* محفظه تسک با اسکرول نامرئی (بدون اسکرول‌بار) */
+/* محفظه تسک با اسکرول کاملاً نامرئی */
 .task-body-zone {
   flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
@@ -511,7 +515,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* سمت راست: چک‌باکس و بعد از آن متن‌ها و آیکون‌ها */
+/* سمت راست: چک‌باکس و سپس متون */
 .task-card-right {
   display: flex !important;
   flex-direction: row !important;
@@ -537,7 +541,7 @@ body {
   transition: all 0.18s ease;
 }
 
-/* رنگ حاشیه تیک براساس اولویت تسک (عکس ۷) */
+/* رنگ حاشیه تیک براساس اولویت تسک */
 .task-checkbox-custom.prio-high { border-color: #ef4444 !important; }
 .task-checkbox-custom.prio-medium { border-color: #f97316 !important; }
 .task-checkbox-custom.prio-low { border-color: #10b981 !important; }
@@ -555,7 +559,7 @@ body {
   gap: 2px;
   text-align: right;
   flex: 1;
-  min-width: 0; /* برای برش صحیح متن تک‌خطی */
+  min-width: 0;
 }
 
 .task-item-title {
@@ -578,7 +582,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* آیکون‌های متادیتا در یک خط افقی و کوچک‌شوندگی خودکار (عکس ۷) */
+/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲ و ۳) */
 .task-meta-pills {
   display: flex !important;
   flex-direction: row !important;
@@ -600,45 +604,15 @@ body {
   font-weight: 750;
   white-space: nowrap;
   flex-shrink: 1;
-}
-
-.task-meta-pill.pill-date {
   background: rgba(0, 0, 0, 0.05);
   color: #475569;
 }
-[data-theme="dark"] .task-meta-pill.pill-date {
-  background: rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
-}
-.task-meta-pill.pill-date.today {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-}
-
-.task-meta-pill.pill-time {
-  background: rgba(0, 0, 0, 0.05);
-  color: #475569;
-}
-[data-theme="dark"] .task-meta-pill.pill-time {
+[data-theme="dark"] .task-meta-pill {
   background: rgba(255, 255, 255, 0.08);
   color: #cbd5e1;
 }
 
-.task-meta-pill.pill-repeat {
-  background: rgba(37, 99, 235, 0.12);
-  color: #2563eb;
-}
-[data-theme="dark"] .task-meta-pill.pill-repeat {
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-}
-
-.task-meta-pill.pill-tag {
-  background: rgba(124, 58, 237, 0.12);
-  color: #7c3aed;
-}
-
-/* خط‌‌خوردگی تسک انجام‌شده */
+/* خط‌خوردگی تسک انجام‌شده */
 .task-item-card.done .task-item-title {
   text-decoration: line-through;
   opacity: 0.55;
@@ -647,7 +621,7 @@ body {
   opacity: 0.45;
 }
 
-/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک‌تر (عکس ۱) */
+/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک */
 .task-card-left-actions {
   display: flex !important;
   flex-direction: row !important;
@@ -686,7 +660,7 @@ body {
   border-color: #fca5a5;
 }
 
-/* کادر نوشتن تسک درون‌خطی */
+/* کادر نوشتن تسک درون‌خطی و حذف اسکرول‌بار تکست‌اریا (عکس ۱) */
 .inline-task-box {
   width: 100%;
   border-radius: 24px !important;
@@ -725,6 +699,8 @@ body {
   color: var(--text-main);
   text-align: right;
 }
+
+/* تکست‌اریا بدون اسکرول‌بار و تمیز */
 .inline-task-expanded textarea {
   width: 100%;
   border: none;
@@ -735,6 +711,12 @@ body {
   font-weight: 650;
   color: var(--text-muted);
   text-align: right;
+  overflow: hidden !important; /* حذف اسکرول‌بار مزاحم */
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.inline-task-expanded textarea::-webkit-scrollbar {
+  display: none !important;
 }
 
 .inline-composer-footer {
@@ -969,7 +951,7 @@ body {
   align-items: center;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding: 31px 0; /* ۳۱ پیکسل دقیق برای قرارگیری نقطه وسط روی ۳۶ پیکسل */
+  padding: 31px 0;
 }
 .time-wheel-scroller::-webkit-scrollbar {
   display: none;
@@ -1040,7 +1022,7 @@ body {
 .prio-dot.orange { background: #f97316; }
 .prio-dot.red { background: #ef4444; }
 
-/* ۵. پاپ‌آپ تکرار هوشمند با متن در راست و کنترل‌ها در چپ (عکس ۲، ۳ و ۴) */
+/* ۵. پاپ‌آپ تکرار با متن در راست و کنترل‌ها در چپ */
 .repeat-popup-box {
   width: 380px;
   padding: 16px;
@@ -1117,7 +1099,6 @@ body {
   text-align: right;
 }
 
-/* روزهای هفته با نام کامل و انتخاب انتخابی (عکس ۴) */
 .weekday-repeat-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1363,12 +1344,14 @@ body {
 
 /* ریسپانسیو */
 @media (max-width: 1100px) {
-  body {
+  html, body {
     overflow-y: auto; height: auto; min-height: 100vh;
+  }
+  body {
     padding: 30px 14px 90px; justify-content: flex-start;
   }
   .app-view {
-    height: auto; min-height: 100vh; align-items: flex-start;
+    height: auto; min-height: 100vh; align-items: flex-start; overflow: visible;
   }
   .dashboard-container, .tasks-page-layout {
     flex-direction: column; height: auto; width: 100%; max-width: 680px; margin-bottom: 30px;

@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۳. سیستم تسک پیشرفته (اصلاح چیدمان تیک در راست، ادیت/حذف در چپ، متادیتا در یک خط)
+  // ۱۳. سیستم تسک
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -794,6 +794,14 @@ document.addEventListener('DOMContentLoaded', () => {
         taskTriggerCollapsed.style.display = 'block';
         closeAllToolPopups();
       }
+    });
+  }
+
+  // تنظیم خودکار ارتفاع تکست‌اریا بدون ایجاد اسکرول‌بار (عکس ۱)
+  if (composerDesc) {
+    composerDesc.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
     });
   }
 
@@ -928,7 +936,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ابزار ۳: ساعت و دقیقه بدون پرش و هماهنگ با دو نقطه (عکس ۱ و ۵) ---
+  // --- ابزار ۳: ساعت و دقیقه پایدار و تراز شده با دو نقطه (عکس ۱) ---
   const toolBtnTime = document.getElementById('tool-btn-time');
   const popupTime = document.getElementById('popup-time');
   const wheelHour = document.getElementById('wheel-hour');
@@ -983,7 +991,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 40);
   }
 
-  // شناسایی هوشمند عدد مرکزی هنگام اسکرول نرم بدون پرش
   function attachWheelScrollDetection(scroller, onSelect) {
     let timeout;
     scroller.addEventListener('scroll', () => {
@@ -1061,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- ابزار ۵: تکرار هوشمند با چینش متن در راست و کنترل‌ها در چپ (عکس ۲، ۳ و ۴) ---
+  // --- ابزار ۵: تکرار هوشمند با متن در راست و کنترل‌ها در چپ (عکس ۲ و ۳) ---
   const toolBtnRepeat = document.getElementById('tool-btn-repeat');
   const popupRepeat = document.getElementById('popup-repeat');
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
@@ -1073,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRepeatCancel = document.getElementById('btn-repeat-cancel');
 
   let repeatCount = 2;
-  let repeatSelectedDays = [0]; // شنبه به‌صورت پیش‌فرض
+  let repeatSelectedDays = [0]; // شنبه پیش‌فرض
   let repeatSelectedMonthDays = [1];
   let repeatSelectedMonths = [0];
 
@@ -1098,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'دوشنبه', idx: 2 },
         { label: 'سه‌شنبه', idx: 3 },
         { label: 'چهارشنبه', idx: 4 },
-        { label: 'پنج‌‌شنبه', idx: 5 },
+        { label: 'پنج‌شنبه', idx: 5 },
         { label: 'جمعه', idx: 6 }
       ];
 
@@ -1240,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ذخیره و رندر تسک‌ها با تضمین قطعی چیدمان تیک در راست، ادیت/حذف در چپ و متن تک‌خطی ---
+  // --- ذخیره و رندر تسک‌ها ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1262,21 +1269,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const li = document.createElement('li');
       li.className = `task-item-card ios-glass-card ${item.done ? 'done' : ''}`;
       
-      // ساخت کپسول‌های متادیتا در یک خط افقی و کوچک‌شونده خودکار
+      // ساخت کپسول‌های متادیتا همگی در یک خط افقی و هم‌رنگ (عکس ۲ و ۳)
       let metaHtml = '';
       const pills = [];
       if (item.date) {
-        const isToday = item.date.includes('امروز') || item.date.includes('۹ مهر');
-        pills.push(`<span class="task-meta-pill pill-date ${isToday ? 'today' : ''}"><span>${item.date}</span><span>📅</span></span>`);
+        pills.push(`<span class="task-meta-pill"><span>${item.date}</span><span>📅</span></span>`);
       }
       if (item.time) {
-        pills.push(`<span class="task-meta-pill pill-time"><span>${item.time}</span><span>⏰</span></span>`);
+        pills.push(`<span class="task-meta-pill"><span>${item.time}</span><span>⏰</span></span>`);
       }
       if (item.repeat) {
-        pills.push(`<span class="task-meta-pill pill-repeat"><span>${item.repeat}</span><span>↺</span></span>`);
+        pills.push(`<span class="task-meta-pill"><span>${item.repeat}</span><span>↺</span></span>`);
       }
       if (item.tag) {
-        pills.push(`<span class="task-meta-pill pill-tag"><span>${item.tag}</span><span>🏷️</span></span>`);
+        pills.push(`<span class="task-meta-pill"><span>${item.tag}</span><span>🏷️</span></span>`);
       }
 
       if (pills.length > 0) {
@@ -1288,22 +1294,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
       li.innerHTML = `
+        <!-- سمت چپ‌ترین بخش: فقط مداد و سطل زباله در مرکز عمودی و سایز کوچک -->
+        <div class="task-card-left-actions">
+          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
+        </div>
+
         <!-- سمت راست‌ترین بخش: چک‌باکس با رنگ اولویت و سپس متن‌ها -->
         <div class="task-card-right">
-          <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
-            ${item.done ? '✓' : ''}
-          </div>
           <div class="task-text-stack">
             <span class="task-item-title">${item.title}</span>
             ${firstLineDesc ? `<span class="task-item-desc">${firstLineDesc}</span>` : ''}
             ${metaHtml}
           </div>
-        </div>
-
-        <!-- سمت چپ‌ترین بخش: فقط مداد و سطل زباله در مرکز عمودی و سایز کوچک -->
-        <div class="task-card-left-actions">
-          <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
-          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
+          <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
+            ${item.done ? '✓' : ''}
+          </div>
         </div>
       `;
 
@@ -1358,6 +1364,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       composerTitle.value = '';
       composerDesc.value = '';
+      if (composerDesc) composerDesc.style.height = 'auto';
       draftTask = { tag: '', date: '', time: '', priority: 'none', repeat: '' };
       document.querySelectorAll('.composer-tool-btn').forEach(b => b.classList.remove('active-tool'));
       closeAllToolPopups();
