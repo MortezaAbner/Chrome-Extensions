@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCalendar(currentYear, currentMonthIndex);
 
   // ۵. ساعت زنده
-  const persianDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌‌شنبه', 'جمعه', 'شنبه'];
+  const persianDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
   function updateLiveClock() {
     const now = new Date();
     const hours = now.getHours();
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const m = wheelMonth.value;
       const y = wheelYear.value;
       document.getElementById('res-shamsi-val').textContent = `${toFa(d)} ${persianMonthNames[m - 1]} ${toFa(y)}`;
-      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌‌الثانی ۱۴۴۸`;
+      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌الثانی ۱۴۴۸`;
       document.getElementById('res-miladi-val').textContent = `29 سپتامبر 2026`;
       document.getElementById('res-day-name').textContent = `سه‌شنبه`;
       document.getElementById('res-age-val').textContent = `۴ روز`;
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. آب‌‌‌‌وهوا
+  // ۸. آب‌وهوا
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -762,16 +762,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
 
-  // متغیرهای مودال ویرایش تسک (عکس ۱ و ۲)
+  // پاپ‌آپ‌های سراسری
+  const popupRepeat = document.getElementById('popup-repeat');
+  const popupPriority = document.getElementById('popup-priority');
+  const popupTime = document.getElementById('popup-time');
+  const popupDate = document.getElementById('popup-date');
+  const popupTag = document.getElementById('popup-tag');
+
+  // متغیرهای مودال ویرایش تسک
   const editTaskModal = document.getElementById('edit-task-modal');
   const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
   const editTaskTitleInput = document.getElementById('edit-task-title-input');
   const editTaskDescInput = document.getElementById('edit-task-desc-input');
   const editTaskChkIndicator = document.getElementById('edit-task-chk-indicator');
   
-  // دکمه‌ها و برچسب‌های نوار ابزار مودال ویرایش
   const editBoardBtn = document.getElementById('edit-board-btn');
+  const editBoardLabel = document.getElementById('edit-board-label');
   const boardDropdownMenu = document.getElementById('board-dropdown-menu');
+
   const editToolRepeatBtn = document.getElementById('edit-tool-repeat-btn');
   const editToolDateBtn = document.getElementById('edit-tool-date-btn');
   const editToolTimeBtn = document.getElementById('edit-tool-time-btn');
@@ -819,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.addEventListener('click', (e) => {
-      if (!e.target.closest('#inline-task-box') && !e.target.closest('.task-tool-popup')) {
+      if (!e.target.closest('#inline-task-box') && !e.target.closest('.task-tool-popup') && !e.target.closest('#edit-task-modal')) {
         taskComposerExpanded.style.display = 'none';
         taskTriggerCollapsed.style.display = 'block';
         closeAllToolPopups();
@@ -835,10 +843,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeAllToolPopups() {
-    document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
+    [popupRepeat, popupPriority, popupTime, popupDate, popupTag].forEach(p => {
+      if (p) p.style.display = 'none';
+    });
+    if (boardDropdownMenu) boardDropdownMenu.style.display = 'none';
   }
 
-  // تابع باز کردن مودال ویرایش تسک (عکس ۱ و ۲)
+  // تنظیم موقعیت دقیق پاپ‌آپ‌ها بالای دکمه هدف (در حالت ساخت یا ویرایش)
+  function positionAndShowPopup(popupEl, targetBtn) {
+    closeAllToolPopups();
+    if (!popupEl || !targetBtn) return;
+    popupEl.style.display = 'flex';
+
+    const rect = targetBtn.getBoundingClientRect();
+    const popupWidth = popupEl.offsetWidth || 300;
+    const popupHeight = popupEl.offsetHeight || 250;
+
+    let leftPos = rect.left + (rect.width / 2) - (popupWidth / 2);
+    if (leftPos + popupWidth > window.innerWidth - 10) leftPos = window.innerWidth - popupWidth - 10;
+    if (leftPos < 10) leftPos = 10;
+
+    let topPos = rect.top - popupHeight - 10;
+    if (topPos < 10) {
+      topPos = rect.bottom + 10; // اگر بالا جا نشد زیر آن باز شود
+    }
+
+    popupEl.style.position = 'fixed';
+    popupEl.style.left = `${leftPos}px`;
+    popupEl.style.top = `${topPos}px`;
+    popupEl.style.zIndex = '100010';
+  }
+
+  // تابع باز کردن مودال ویرایش تسک
   function openEditTaskModal(index) {
     currentEditingIndex = index;
     const item = todos[index];
@@ -856,6 +892,13 @@ document.addEventListener('DOMContentLoaded', () => {
       repeat: item.repeat || ''
     };
 
+    // تنظیم نام زنده بورد (عکس ارسالی)
+    if (editBoardLabel) {
+      if (item.board === 'in_progress') editBoardLabel.textContent = '📁 در دست اقدام ⌵';
+      else if (item.board === 'done') editBoardLabel.textContent = '📁 انجام شده ⌵';
+      else editBoardLabel.textContent = '📁 بورد ⌵';
+    }
+
     if (editRepeatLabel) editRepeatLabel.textContent = item.repeat ? item.repeat : 'تکرار';
     if (editDateLabel) editDateLabel.textContent = item.date ? item.date : 'سررسید';
     if (editTimeLabel) editTimeLabel.textContent = item.time ? item.time : 'ساعت';
@@ -872,18 +915,23 @@ document.addEventListener('DOMContentLoaded', () => {
       editTaskChkIndicator.style.borderColor = '#94a3b8';
     }
 
-    if (boardDropdownMenu) boardDropdownMenu.style.display = 'none';
+    closeAllToolPopups();
     if (editTaskModal) editTaskModal.classList.add('active');
   }
 
   if (editTaskCloseBtn && editTaskModal) {
-    editTaskCloseBtn.onclick = () => editTaskModal.classList.remove('active');
+    editTaskCloseBtn.onclick = () => {
+      editTaskModal.classList.remove('active');
+      isEditingMode = false;
+      closeAllToolPopups();
+    };
   }
 
-  // انتخاب بورد در ویرایش (عکس ۱)
+  // ۱. انتخاب وضعیت‌های سه‌گانه بورد با تغییر نام زنده کپسول
   if (editBoardBtn && boardDropdownMenu) {
     editBoardBtn.onclick = (e) => {
       e.stopPropagation();
+      closeAllToolPopups();
       boardDropdownMenu.style.display = boardDropdownMenu.style.display === 'flex' ? 'none' : 'flex';
     };
 
@@ -891,16 +939,23 @@ document.addEventListener('DOMContentLoaded', () => {
       opt.onclick = (ev) => {
         ev.stopPropagation();
         currentEditingBoard = opt.dataset.board;
+        if (editBoardLabel) {
+          if (currentEditingBoard === 'in_progress') editBoardLabel.textContent = '📁 در دست اقدام ⌵';
+          else if (currentEditingBoard === 'done') editBoardLabel.textContent = '📁 انجام شده ⌵';
+          else editBoardLabel.textContent = '📁 بورد ⌵';
+        }
         boardDropdownMenu.style.display = 'none';
       };
     });
   }
 
+  // ۲. باز شدن اختصاصی پاپ‌آپ‌ها برای مودال ویرایش
   if (editToolRepeatBtn) {
     editToolRepeatBtn.onclick = (e) => {
       e.stopPropagation();
       isEditingMode = true;
-      toolBtnRepeat?.click();
+      renderRepeatDynamicUI();
+      positionAndShowPopup(popupRepeat, editToolRepeatBtn);
     };
   }
 
@@ -908,7 +963,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editToolDateBtn.onclick = (e) => {
       e.stopPropagation();
       isEditingMode = true;
-      toolBtnDate?.click();
+      renderTaskCalendar();
+      positionAndShowPopup(popupDate, editToolDateBtn);
     };
   }
 
@@ -916,7 +972,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editToolTimeBtn.onclick = (e) => {
       e.stopPropagation();
       isEditingMode = true;
-      toolBtnTime?.click();
+      initTimeWheels();
+      positionAndShowPopup(popupTime, editToolTimeBtn);
     };
   }
 
@@ -924,7 +981,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editToolTagBtn.onclick = (e) => {
       e.stopPropagation();
       isEditingMode = true;
-      toolBtnTag?.click();
+      positionAndShowPopup(popupTag, editToolTagBtn);
     };
   }
 
@@ -932,10 +989,11 @@ document.addEventListener('DOMContentLoaded', () => {
     editToolPriorityBtn.onclick = (e) => {
       e.stopPropagation();
       isEditingMode = true;
-      toolBtnPriority?.click();
+      positionAndShowPopup(popupPriority, editToolPriorityBtn);
     };
   }
 
+  // تایید ویرایش
   if (btnEditTaskSave && editTaskModal) {
     btnEditTaskSave.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -949,35 +1007,79 @@ document.addEventListener('DOMContentLoaded', () => {
         todos[currentEditingIndex].repeat = draftTask.repeat;
         saveAndRenderTodos();
       }
+      isEditingMode = false;
+      closeAllToolPopups();
       editTaskModal.classList.remove('active');
     };
   }
 
+  // حذف در ویرایش
   if (btnEditTaskDelete && editTaskModal) {
     btnEditTaskDelete.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
         todos.splice(currentEditingIndex, 1);
         saveAndRenderTodos();
       }
+      isEditingMode = false;
+      closeAllToolPopups();
       editTaskModal.classList.remove('active');
     };
   }
 
-  // --- ابزار ۱: برچسب ---
+  // --- دکمه‌های کادر تسک پایین صفحه برای ساخت تسک جدید ---
+  const toolBtnRepeat = document.getElementById('tool-btn-repeat');
+  const toolBtnPriority = document.getElementById('tool-btn-priority');
+  const toolBtnTime = document.getElementById('tool-btn-time');
+  const toolBtnDate = document.getElementById('tool-btn-date');
   const toolBtnTag = document.getElementById('tool-btn-tag');
-  const popupTag = document.getElementById('popup-tag');
+
+  if (toolBtnRepeat) {
+    toolBtnRepeat.onclick = (e) => {
+      e.stopPropagation();
+      isEditingMode = false;
+      renderRepeatDynamicUI();
+      positionAndShowPopup(popupRepeat, toolBtnRepeat);
+    };
+  }
+
+  if (toolBtnPriority) {
+    toolBtnPriority.onclick = (e) => {
+      e.stopPropagation();
+      isEditingMode = false;
+      positionAndShowPopup(popupPriority, toolBtnPriority);
+    };
+  }
+
+  if (toolBtnTime) {
+    toolBtnTime.onclick = (e) => {
+      e.stopPropagation();
+      isEditingMode = false;
+      initTimeWheels();
+      positionAndShowPopup(popupTime, toolBtnTime);
+    };
+  }
+
+  if (toolBtnDate) {
+    toolBtnDate.onclick = (e) => {
+      e.stopPropagation();
+      isEditingMode = false;
+      renderTaskCalendar();
+      positionAndShowPopup(popupDate, toolBtnDate);
+    };
+  }
+
+  if (toolBtnTag) {
+    toolBtnTag.onclick = (e) => {
+      e.stopPropagation();
+      isEditingMode = false;
+      positionAndShowPopup(popupTag, toolBtnTag);
+    };
+  }
+
+  // منطق برچسب
   const newTagInput = document.getElementById('new-tag-input');
   const tagAddPlusBtn = document.getElementById('tag-add-plus-btn');
   const tagsChipsList = document.getElementById('tags-chips-list');
-
-  if (toolBtnTag && popupTag) {
-    toolBtnTag.onclick = (e) => {
-      e.stopPropagation();
-      const isVisible = popupTag.style.display === 'flex';
-      closeAllToolPopups();
-      popupTag.style.display = isVisible ? 'none' : 'flex';
-    };
-  }
 
   if (tagAddPlusBtn && newTagInput) {
     tagAddPlusBtn.onclick = (e) => {
@@ -1001,9 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- ابزار ۲: تقویم تسک ---
-  const toolBtnDate = document.getElementById('tool-btn-date');
-  const popupDate = document.getElementById('popup-date');
+  // منطق تقویم
   const calPopUp = document.getElementById('cal-pop-up');
   const calPopDown = document.getElementById('cal-pop-down');
   const calPopToday = document.getElementById('cal-pop-today');
@@ -1043,18 +1143,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (toolBtnDate && popupDate) {
-    toolBtnDate.onclick = (e) => {
-      e.stopPropagation();
-      const isVisible = popupDate.style.display === 'flex';
-      closeAllToolPopups();
-      if (!isVisible) {
-        renderTaskCalendar();
-        popupDate.style.display = 'flex';
-      }
-    };
-  }
-
   if (calPopUp) {
     calPopUp.onclick = (e) => {
       e.stopPropagation();
@@ -1089,13 +1177,11 @@ document.addEventListener('DOMContentLoaded', () => {
       draftTask.date = `${toFa(taskCalSelectedDay)} ${persianMonthNames[taskCalMonthIdx]}`;
       if (isEditingMode && editDateLabel) editDateLabel.textContent = draftTask.date;
       popupDate.style.display = 'none';
-      toolBtnDate.classList.add('active-tool');
+      if (!isEditingMode && toolBtnDate) toolBtnDate.classList.add('active-tool');
     };
   }
 
-  // --- ابزار ۳: ساعت و دقیقه پایدار و تراز شده با دو نقطه ---
-  const toolBtnTime = document.getElementById('tool-btn-time');
-  const popupTime = document.getElementById('popup-time');
+  // منطق ساعت و دقیقه
   const wheelHour = document.getElementById('wheel-hour');
   const wheelMinute = document.getElementById('wheel-minute');
   const btnTimeConfirm = document.getElementById('btn-time-confirm');
@@ -1180,40 +1266,18 @@ document.addEventListener('DOMContentLoaded', () => {
     attachWheelScrollDetection(wheelMinute, val => { selectedMinute = val; });
   }
 
-  if (toolBtnTime && popupTime) {
-    toolBtnTime.onclick = (e) => {
-      e.stopPropagation();
-      const isVisible = popupTime.style.display === 'flex';
-      closeAllToolPopups();
-      if (!isVisible) {
-        initTimeWheels();
-        popupTime.style.display = 'flex';
-      }
-    };
-  }
-
   if (btnTimeConfirm) {
     btnTimeConfirm.onclick = (e) => {
       e.stopPropagation();
       draftTask.time = `${toFa(selectedHour)}:${toFa(selectedMinute)}`;
       if (isEditingMode && editTimeLabel) editTimeLabel.textContent = draftTask.time;
       popupTime.style.display = 'none';
-      toolBtnTime.classList.add('active-tool');
+      if (!isEditingMode && toolBtnTime) toolBtnTime.classList.add('active-tool');
     };
   }
 
-  // --- ابزار ۴: اولویت و تغییر رنگ حاشیه تیک ---
-  const toolBtnPriority = document.getElementById('tool-btn-priority');
-  const popupPriority = document.getElementById('popup-priority');
-
-  if (toolBtnPriority && popupPriority) {
-    toolBtnPriority.onclick = (e) => {
-      e.stopPropagation();
-      const isVisible = popupPriority.style.display === 'flex';
-      closeAllToolPopups();
-      popupPriority.style.display = isVisible ? 'none' : 'flex';
-    };
-
+  // منطق اولویت
+  if (popupPriority) {
     popupPriority.querySelectorAll('.prio-item').forEach(el => {
       el.onclick = (ev) => {
         ev.stopPropagation();
@@ -1223,14 +1287,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const prioNames = { none: 'بدون اولویت', low: 'پایین', medium: 'متوسط', high: 'بالا' };
         if (isEditingMode && editPriorityLabel) editPriorityLabel.textContent = prioNames[el.dataset.prio];
         popupPriority.style.display = 'none';
-        toolBtnPriority.classList.add('active-tool');
+        if (!isEditingMode && toolBtnPriority) toolBtnPriority.classList.add('active-tool');
       };
     });
   }
 
-  // --- ابزار ۵: تکرار هوشمند ---
-  const toolBtnRepeat = document.getElementById('tool-btn-repeat');
-  const popupRepeat = document.getElementById('popup-repeat');
+  // منطق تکرار
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
   const cntMinus = document.getElementById('cnt-minus');
   const cntPlus = document.getElementById('cnt-plus');
@@ -1263,7 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'دوشنبه', idx: 2 },
         { label: 'سه‌شنبه', idx: 3 },
         { label: 'چهارشنبه', idx: 4 },
-        { label: 'پنج‌‌شنبه', idx: 5 },
+        { label: 'پنج‌شنبه', idx: 5 },
         { label: 'جمعه', idx: 6 }
       ];
 
@@ -1362,18 +1424,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (toolBtnRepeat && popupRepeat) {
-    toolBtnRepeat.onclick = (e) => {
-      e.stopPropagation();
-      const isVisible = popupRepeat.style.display === 'flex';
-      closeAllToolPopups();
-      if (!isVisible) {
-        renderRepeatDynamicUI();
-        popupRepeat.style.display = 'flex';
-      }
-    };
-  }
-
   if (repeatUnitSelect) repeatUnitSelect.onchange = () => renderRepeatDynamicUI();
 
   if (cntMinus) {
@@ -1402,11 +1452,11 @@ document.addEventListener('DOMContentLoaded', () => {
       draftTask.repeat = (repeatCount === 1) ? uText + 'انه' : `هر ${toFa(repeatCount)} ${uText}`;
       if (isEditingMode && editRepeatLabel) editRepeatLabel.textContent = draftTask.repeat;
       popupRepeat.style.display = 'none';
-      toolBtnRepeat.classList.add('active-tool');
+      if (!isEditingMode && toolBtnRepeat) toolBtnRepeat.classList.add('active-tool');
     };
   }
 
-  // --- رندر تسک‌ها با تثبیت قطعی تیک در راست، متون در کنار آن، و دکمه‌ها در چپ ---
+  // --- رندر تسک‌ها با تضمین قطعی تیک در راست، ادیت/حذف در چپ ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1431,7 +1481,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let metaHtml = '';
       const pills = [];
 
-      // برچسب‌های وضعیت بورد (عکس ۲ و ۳)
       if (item.board === 'in_progress') {
         pills.push(`<span class="task-board-badge in-progress">● در دست اقدام</span>`);
       } else if (item.board === 'done') {
@@ -1458,8 +1507,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const prioClass = `prio-${item.priority || 'none'}`;
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
-      // ۱. تیک در لبه راست، متون در سمت چپ تیک
-      // ۲. دکمه‌های مداد و سطل زباله در منتهی‌الیه چپ
       li.innerHTML = `
         <div class="task-card-right-group">
           <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
@@ -1474,11 +1521,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="task-card-left-actions">
           <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
-          <button class="task-act-btn delete-btn" title="حذف">🗑</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
         </div>
       `;
 
-      // تغییر وضعیت تیک
       const chk = li.querySelector('.task-checkbox-custom');
       chk.onclick = (e) => {
         e.stopPropagation();
@@ -1486,14 +1532,12 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       };
 
-      // باز شدن مودال ویرایش تسک
       const editBtn = li.querySelector('.edit-btn');
       editBtn.onclick = (e) => {
         e.stopPropagation();
         openEditTaskModal(index);
       };
 
-      // حذف تسک
       const delBtn = li.querySelector('.delete-btn');
       delBtn.onclick = (e) => {
         e.stopPropagation();

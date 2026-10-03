@@ -28,7 +28,7 @@
       <div class="col col-left">
         <div class="split-widgets-row">
           
-          <!-- باکس آب‌‌وهوا -->
+          <!-- باکس آب‌وهوا -->
           <div class="ios-glass-card weather-single-card" id="weather-card">
             <div class="weather-top-row">
               <span class="weather-temp-val" id="weather-temp">۲۱°</span>
@@ -49,7 +49,7 @@
               <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
             </div>
 
-            <!-- پنل پیش‌بینی -->
+            <!-- پنل پیش‌‌بینی -->
             <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
               <div class="forecast-days-grid" id="forecast-grid"></div>
             </div>
@@ -248,7 +248,7 @@
 
             <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
+            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌‌بین">
               <span class="badge-arrow">↕</span>
               <div id="engine-logo-container">
                 <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -340,96 +340,26 @@
                   <!-- ۱. تکرار -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-repeat" title="تکرار">🔄</button>
-                    <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
-                      <div class="popup-sec-title">تکرار</div>
-                      <div class="repeat-row-top">
-                        <span class="repeat-lbl">هر چند وقت یکبار؟</span>
-                        <div class="repeat-inputs-left">
-                          <div class="counter-box-glass">
-                            <button type="button" class="cnt-btn" id="cnt-plus">+</button>
-                            <span id="cnt-val">۲</span>
-                            <button type="button" class="cnt-btn" id="cnt-minus">-</button>
-                          </div>
-                          <select id="repeat-unit-select" class="custom-select-glass">
-                            <option value="day">روز</option>
-                            <option value="week">هفته</option>
-                            <option value="month">ماه</option>
-                            <option value="year">سال</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="repeat-dynamic-sub" id="repeat-dynamic-sub"></div>
-
-                      <div class="repeat-modal-actions">
-                        <button type="button" class="btn-repeat-confirm" id="btn-repeat-confirm">تایید ✓</button>
-                        <button type="button" class="btn-repeat-cancel" id="btn-repeat-cancel">بیخیال</button>
-                      </div>
-                    </div>
                   </div>
 
                   <!-- ۲. اولویت / پرچم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-priority" title="اولویت">🚩</button>
-                    <div class="task-tool-popup glass-blur-menu priority-popup-box" id="popup-priority" style="display: none;">
-                      <div class="prio-item active" data-prio="none"><span>بدون اولویت</span><span class="prio-dot gray"></span></div>
-                      <div class="prio-item" data-prio="low"><span>پایین</span><span class="prio-dot green"></span></div>
-                      <div class="prio-item" data-prio="medium"><span>متوسط</span><span class="prio-dot orange"></span></div>
-                      <div class="prio-item" data-prio="high"><span>بالا</span><span class="prio-dot red"></span></div>
-                    </div>
                   </div>
 
                   <!-- ۳. ساعت و زمان -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-time" title="ساعت یادآوری">⏰</button>
-                    <div class="task-tool-popup glass-blur-menu time-popup-box" id="popup-time" style="display: none;">
-                      <div class="time-columns-wrapper">
-                        <div class="time-col">
-                          <span class="time-col-header">ساعت</span>
-                          <div class="time-wheel-scroller" id="wheel-hour"></div>
-                        </div>
-                        <span class="time-colon">:</span>
-                        <div class="time-col">
-                          <span class="time-col-header">دقیقه</span>
-                          <div class="time-wheel-scroller" id="wheel-minute"></div>
-                        </div>
-                      </div>
-                      <button type="button" class="btn-popup-blue" id="btn-time-confirm">تایید</button>
-                    </div>
                   </div>
 
                   <!-- ۴. تقویم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-date" title="تاریخ سررسید">📅</button>
-                    <div class="task-tool-popup glass-blur-menu cal-popup-box" id="popup-date" style="display: none;">
-                      <div class="task-cal-header">
-                        <div class="task-cal-arrows">
-                          <button type="button" class="cal-pop-arrow" id="cal-pop-up" title="ماه بعد">⌃</button>
-                          <button type="button" class="cal-pop-arrow" id="cal-pop-down" title="ماه قبل">⌄</button>
-                          <button type="button" class="cal-pop-today-btn" id="cal-pop-today">امروز</button>
-                        </div>
-                        <span class="task-cal-title" id="task-cal-month-title">مهر ۱۴۰۵</span>
-                      </div>
-                      <div class="task-cal-weekdays">
-                        <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span class="fri">جمعه</span>
-                      </div>
-                      <div class="task-cal-grid" id="task-cal-grid"></div>
-                      <button type="button" class="btn-popup-blue" id="btn-date-confirm">تایید</button>
-                    </div>
                   </div>
 
                   <!-- ۵. برچسب -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-tag" title="برچسب">🏷️</button>
-                    <div class="task-tool-popup glass-blur-menu tag-popup-box" id="popup-tag" style="display: none;">
-                      <div class="tag-input-row">
-                        <input type="text" id="new-tag-input" placeholder="نام برچسب...">
-                        <button type="button" class="tag-add-plus" id="tag-add-plus-btn">+</button>
-                      </div>
-                      <div class="tags-chips-list" id="tags-chips-list">
-                        <span class="tag-chip-item">افزودن برچسب جدید</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -519,7 +449,7 @@
           <div class="weekly-top-center">
             <span class="pill-btn active">یادداشت‌ها 📋</span>
             <span class="pill-btn active">تسک‌ها ☑</span>
-            <span class="pill-btn">امروز ☀️</span>
+            <span class="pill-btn">امروز ☀️️</span>
           </div>
 
           <div class="weekly-nav-week">
@@ -640,7 +570,7 @@
     </button>
   </footer>
 
-  <!-- مودال شیشه‌ای کامل ویرایش تسک همراه با تمام ابزارها (عکس ۱ و ۲) -->
+  <!-- مودال شیشه‌ای کامل ویرایش تسک (عکس ۱ و ۲) -->
   <div id="edit-task-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card edit-task-card-box glass-blur-menu">
       <div class="edit-task-header">
@@ -653,11 +583,11 @@
       </div>
       <textarea id="edit-task-desc-input" class="edit-task-desc-area" placeholder="توضیحات..." rows="3"></textarea>
       
-      <!-- نوار ابزار کامل ویرایش تسک دقیقاً مانند عکس ۱ و ۲ -->
+      <!-- نوار ابزار کامل ویرایش تسک دقیقاً مانند عکس ارسالی -->
       <div class="edit-task-tools-bar">
         <!-- ۱. بورد -->
         <div class="tool-popup-wrap">
-          <button type="button" class="edit-tool-pill" id="edit-board-btn">📁 بورد ⌵</button>
+          <button type="button" class="edit-tool-pill" id="edit-board-btn"><span id="edit-board-label">📁 بورد ⌵</span></button>
           <div class="board-dropdown-menu" id="board-dropdown-menu" style="display: none;">
             <div class="board-opt-item" data-board="none">پیش‌فرض</div>
             <div class="board-opt-item" data-board="in_progress">در دست اقدام</div>
@@ -695,6 +625,85 @@
         <button type="button" class="btn-save-task" id="btn-edit-task-save">تایید</button>
         <button type="button" class="btn-delete-task" id="btn-edit-task-delete">حذف 🗑</button>
       </div>
+    </div>
+  </div>
+
+  <!-- پاپ‌آپ‌های مستقل و اشتراکی شیشه‌ای برای ساخت و ویرایش تسک -->
+  <!-- ۱. پاپ‌آپ تکرار -->
+  <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
+    <div class="popup-sec-title">تکرار</div>
+    <div class="repeat-row-top">
+      <span class="repeat-lbl">هر چند وقت یکبار؟</span>
+      <div class="repeat-inputs-left">
+        <div class="counter-box-glass">
+          <button type="button" class="cnt-btn" id="cnt-plus">+</button>
+          <span id="cnt-val">۲</span>
+          <button type="button" class="cnt-btn" id="cnt-minus">-</button>
+        </div>
+        <select id="repeat-unit-select" class="custom-select-glass">
+          <option value="day">روز</option>
+          <option value="week">هفته</option>
+          <option value="month">ماه</option>
+          <option value="year">سال</option>
+        </select>
+      </div>
+    </div>
+    <div class="repeat-dynamic-sub" id="repeat-dynamic-sub"></div>
+    <div class="repeat-modal-actions">
+      <button type="button" class="btn-repeat-confirm" id="btn-repeat-confirm">تایید ✓</button>
+      <button type="button" class="btn-repeat-cancel" id="btn-repeat-cancel">بیخیال</button>
+    </div>
+  </div>
+
+  <!-- ۲. پاپ‌آپ اولویت -->
+  <div class="task-tool-popup glass-blur-menu priority-popup-box" id="popup-priority" style="display: none;">
+    <div class="prio-item active" data-prio="none"><span>بدون اولویت</span><span class="prio-dot gray"></span></div>
+    <div class="prio-item" data-prio="low"><span>پایین</span><span class="prio-dot green"></span></div>
+    <div class="prio-item" data-prio="medium"><span>متوسط</span><span class="prio-dot orange"></span></div>
+    <div class="prio-item" data-prio="high"><span>بالا</span><span class="prio-dot red"></span></div>
+  </div>
+
+  <!-- ۳. پاپ‌آپ ساعت -->
+  <div class="task-tool-popup glass-blur-menu time-popup-box" id="popup-time" style="display: none;">
+    <div class="time-columns-wrapper">
+      <div class="time-col">
+        <span class="time-col-header">ساعت</span>
+        <div class="time-wheel-scroller" id="wheel-hour"></div>
+      </div>
+      <span class="time-colon">:</span>
+      <div class="time-col">
+        <span class="time-col-header">دقیقه</span>
+        <div class="time-wheel-scroller" id="wheel-minute"></div>
+      </div>
+    </div>
+    <button type="button" class="btn-popup-blue" id="btn-time-confirm">تایید</button>
+  </div>
+
+  <!-- ۴. پاپ‌آپ تقویم -->
+  <div class="task-tool-popup glass-blur-menu cal-popup-box" id="popup-date" style="display: none;">
+    <div class="task-cal-header">
+      <div class="task-cal-arrows">
+        <button type="button" class="cal-pop-arrow" id="cal-pop-up" title="ماه بعد">⌃</button>
+        <button type="button" class="cal-pop-arrow" id="cal-pop-down" title="ماه قبل">⌄</button>
+        <button type="button" class="cal-pop-today-btn" id="cal-pop-today">امروز</button>
+      </div>
+      <span class="task-cal-title" id="task-cal-month-title">مهر ۱۴۰۵</span>
+    </div>
+    <div class="task-cal-weekdays">
+      <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span class="fri">جمعه</span>
+    </div>
+    <div class="task-cal-grid" id="task-cal-grid"></div>
+    <button type="button" class="btn-popup-blue" id="btn-date-confirm">تایید</button>
+  </div>
+
+  <!-- ۵. پاپ‌آپ برچسب -->
+  <div class="task-tool-popup glass-blur-menu tag-popup-box" id="popup-tag" style="display: none;">
+    <div class="tag-input-row">
+      <input type="text" id="new-tag-input" placeholder="نام برچسب...">
+      <button type="button" class="tag-add-plus" id="tag-add-plus-btn">+</button>
+    </div>
+    <div class="tags-chips-list" id="tags-chips-list">
+      <span class="tag-chip-item">افزودن برچسب جدید</span>
     </div>
   </div>
 
