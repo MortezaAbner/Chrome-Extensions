@@ -486,7 +486,7 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* کارت‌های تسک شیشه‌ای با چک‌باکس راست‌چین و آیکون‌های مداد و سطل در چپ (عکس ۲ و ۳) */
+/* کارت‌های تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱) */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
@@ -506,7 +506,7 @@ body {
 .task-card-right {
   display: flex;
   align-items: center;
-  gap: 14px; /* فاصله مناسب و متوازن تیک از متن */
+  gap: 14px;
   flex: 1;
 }
 
@@ -537,7 +537,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  text-align: right; /* کاملاً راست‌چین */
+  text-align: right;
 }
 .task-item-title {
   font-size: 0.95rem;
@@ -550,6 +550,25 @@ body {
   font-weight: 650;
   color: var(--text-muted);
 }
+.task-meta-pills {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 2px;
+}
+.task-tag-badge {
+  font-size: 0.72rem;
+  background: rgba(37, 99, 235, 0.15);
+  color: #2563eb;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: 750;
+}
+.task-meta-item {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 650;
+}
 
 /* خط خوردگی تسک انجام‌شده */
 .task-item-card.done .task-item-title {
@@ -560,7 +579,7 @@ body {
   opacity: 0.45;
 }
 
-/* آیکون‌های مداد و سطل در سمت چپ (عکس ۲ و ۳) */
+/* آیکون‌های مداد و سطل در سمت چپ (عکس ۱) */
 .task-card-left-actions {
   display: flex;
   align-items: center;
@@ -596,12 +615,13 @@ body {
   border-color: #fca5a5;
 }
 
-/* کادر نوشتن تسک درون‌خطی و باز شونده در همان جا (عکس ۴) */
+/* کادر نوشتن تسک درون‌خطی */
 .inline-task-box {
   width: 100%;
   border-radius: 24px !important;
   margin-top: 8px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -622,6 +642,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
 }
 .inline-task-expanded input {
   width: 100%;
@@ -657,21 +678,29 @@ body {
   display: flex;
   gap: 6px;
 }
+.tool-popup-wrap {
+  position: relative;
+}
 .composer-tool-btn {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid var(--glass-border);
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  font-size: 0.85rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-size: 0.88rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s;
+  transition: transform 0.1s, background 0.1s;
 }
 .composer-tool-btn:hover {
   transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.95);
+}
+.composer-tool-btn.active-tool {
+  background: #3b82f6;
+  border-color: #3b82f6;
 }
 .composer-submit-btn {
   width: 34px;
@@ -689,6 +718,385 @@ body {
 }
 .composer-submit-btn:hover {
   transform: scale(1.08);
+}
+
+/* پنجره‌های پاپ‌آپ ابزارهای تسک (عکس ۲ تا ۱۰) */
+.task-tool-popup {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  z-index: 99999;
+  border-radius: 24px !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22) !important;
+  animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ۱. پاپ‌آپ برچسب (عکس ۲) */
+.tag-popup-box {
+  width: 250px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tag-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.tag-input-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.85);
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+.tag-add-plus {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #64748b;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.tags-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag-chip-item {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+/* ۲. پاپ‌آپ تقویم تسک (عکس ۳ و ۴) */
+.cal-popup-box {
+  width: 270px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.task-cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-cal-title {
+  font-size: 1rem;
+  font-weight: 850;
+  color: #1e3a8a;
+}
+[data-theme="dark"] .task-cal-title { color: #93c5fd; }
+.task-cal-arrows {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cal-pop-arrow {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--glass-border);
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+.cal-pop-today-btn {
+  background: #3b82f6;
+  border: none;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.task-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 850;
+  color: var(--text-muted);
+}
+.task-cal-weekdays .fri { color: #ef4444; }
+.task-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.task-cal-grid span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.task-cal-grid span.active-day {
+  background: #3b82f6;
+  color: #ffffff;
+}
+.task-cal-grid span.holiday {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* ۳. پاپ‌آپ زمان و ساعت (عکس ۵) - با اسکرول‌بار کاملاً مخفی */
+.time-popup-box {
+  width: 250px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.time-columns-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.time-col-header {
+  font-size: 0.82rem;
+  font-weight: 850;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.time-colon {
+  font-size: 1.5rem;
+  font-weight: 850;
+  margin-top: 20px;
+}
+.time-wheel-scroller {
+  height: 110px;
+  overflow-y: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.time-wheel-scroller::-webkit-scrollbar {
+  display: none;
+}
+.time-num-item {
+  font-size: 1.15rem;
+  font-weight: 850;
+  padding: 4px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.1s;
+}
+.time-num-item.selected {
+  font-size: 1.35rem;
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ۴. پاپ‌آپ اولویت (عکس ۶) */
+.priority-popup-box {
+  width: 160px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.prio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.prio-item:hover, .prio-item.active {
+  background: rgba(0, 0, 0, 0.05);
+}
+.prio-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.prio-dot.gray { background: #cbd5e1; }
+.prio-dot.green { background: #10b981; }
+.prio-dot.orange { background: #f97316; }
+.prio-dot.red { background: #ef4444; }
+
+/* ۵. پاپ‌آپ تکرار هوشمند (عکس ۷، ۸، ۹، ۱۰) */
+.repeat-popup-box {
+  width: 380px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.popup-sec-title {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 850;
+  color: var(--text-main);
+}
+.repeat-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.repeat-lbl {
+  font-size: 0.88rem;
+  font-weight: 850;
+  color: var(--text-main);
+}
+.custom-select-glass {
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.8);
+  font-weight: 800;
+  outline: none;
+}
+.counter-box-glass {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--glass-border);
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+}
+.cnt-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+.repeat-dynamic-sub {
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sub-row-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sub-row-label {
+  font-size: 0.85rem;
+  font-weight: 850;
+  text-align: right;
+}
+.weekday-repeat-grid, .monthday-repeat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rpt-circle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 850;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rpt-circle-btn.full-day-name {
+  width: auto;
+  border-radius: 16px;
+  padding: 4px 10px;
+}
+.rpt-circle-btn.selected {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+.month-repeat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.rpt-month-btn {
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+.rpt-month-btn.selected {
+  background: #3b82f6;
+  color: #fff;
+}
+.repeat-modal-actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 10px;
+}
+.btn-repeat-confirm {
+  flex: 1;
+  background: #3b82f6;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 14px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.btn-repeat-cancel {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border);
+  padding: 10px;
+  border-radius: 14px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.btn-popup-blue {
+  width: 100%;
+  background: #3b82f6;
+  border: none;
+  color: #ffffff;
+  padding: 8px;
+  border-radius: 12px;
+  font-weight: 850;
+  cursor: pointer;
+  margin-top: 4px;
 }
 
 /* داک شیشه‌ای در پایین صفحه */

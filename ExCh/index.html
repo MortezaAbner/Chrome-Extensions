@@ -294,7 +294,7 @@
             </div>
           </div>
 
-          <!-- بدنه تسک بدون هیچ بنر بنفش -->
+          <!-- بدنه تسک بدون بنر -->
           <div class="task-body-zone">
             <!-- وضعیت خالی تسک -->
             <div class="exact-empty-state" id="empty-state">
@@ -315,11 +315,11 @@
               </div>
             </div>
 
-            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای با تیک راست‌چین و آیکون‌های مداد و سطل در چپ -->
+            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱) -->
             <ul class="todo-list" id="todo-list" style="display: none;"></ul>
           </div>
 
-          <!-- کادر همه‌کاره درون‌خطی تسک -->
+          <!-- کادر همه‌کاره درون‌خطی تسک به همراه ۵ پاپ‌آپ ابزار -->
           <div class="inline-task-box ios-glass-card" id="inline-task-box">
             <!-- حالت اولیه بسته -->
             <div class="inline-task-collapsed" id="task-trigger-collapsed">
@@ -339,11 +339,99 @@
                   </svg>
                 </button>
                 <div class="composer-tools-row">
-                  <button type="button" class="composer-tool-btn" title="تکرار">🔄</button>
-                  <button type="button" class="composer-tool-btn" title="اولویت">🚩</button>
-                  <button type="button" class="composer-tool-btn" title="ساعت یادآوری">⏰</button>
-                  <button type="button" class="composer-tool-btn" title="تاریخ سررسید">📅</button>
-                  <button type="button" class="composer-tool-btn" title="برچسب">🏷️</button>
+                  <!-- ۱. تکرار (عکس ۷ تا ۱۰) -->
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-repeat" title="تکرار">🔄</button>
+                    <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
+                      <div class="popup-sec-title">تکرار</div>
+                      <div class="repeat-row-top">
+                        <select id="repeat-unit-select" class="custom-select-glass">
+                          <option value="day">روز</option>
+                          <option value="week">هفته</option>
+                          <option value="month">ماه</option>
+                          <option value="year">سال</option>
+                        </select>
+                        <div class="counter-box-glass">
+                          <button type="button" class="cnt-btn" id="cnt-minus">-</button>
+                          <span id="cnt-val">۲</span>
+                          <button type="button" class="cnt-btn" id="cnt-plus">+</button>
+                        </div>
+                        <span class="repeat-lbl">هر چند وقت یکبار؟</span>
+                      </div>
+
+                      <!-- بخش زیرین پویا برای روز، هفته، ماه، سال -->
+                      <div class="repeat-dynamic-sub" id="repeat-dynamic-sub"></div>
+
+                      <div class="repeat-modal-actions">
+                        <button type="button" class="btn-repeat-confirm" id="btn-repeat-confirm">تایید ✓</button>
+                        <button type="button" class="btn-repeat-cancel" id="btn-repeat-cancel">بیخیال</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ۲. اولویت / پرچم (عکس ۶) -->
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-priority" title="اولویت">🚩</button>
+                    <div class="task-tool-popup glass-blur-menu priority-popup-box" id="popup-priority" style="display: none;">
+                      <div class="prio-item active" data-prio="none"><span>بدون اولویت</span><span class="prio-dot gray"></span></div>
+                      <div class="prio-item" data-prio="low"><span>پایین</span><span class="prio-dot green"></span></div>
+                      <div class="prio-item" data-prio="medium"><span>متوسط</span><span class="prio-dot orange"></span></div>
+                      <div class="prio-item" data-prio="high"><span>بالا</span><span class="prio-dot red"></span></div>
+                    </div>
+                  </div>
+
+                  <!-- ۳. ساعت و زمان (عکس ۵) -->
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-time" title="ساعت یادآوری">⏰</button>
+                    <div class="task-tool-popup glass-blur-menu time-popup-box" id="popup-time" style="display: none;">
+                      <div class="time-columns-wrapper">
+                        <div class="time-col">
+                          <span class="time-col-header">ساعت</span>
+                          <div class="time-wheel-scroller" id="wheel-hour"></div>
+                        </div>
+                        <span class="time-colon">:</span>
+                        <div class="time-col">
+                          <span class="time-col-header">دقیقه</span>
+                          <div class="time-wheel-scroller" id="wheel-minute"></div>
+                        </div>
+                      </div>
+                      <button type="button" class="btn-popup-blue" id="btn-time-confirm">تایید</button>
+                    </div>
+                  </div>
+
+                  <!-- ۴. تقویم (عکس ۳ و ۴) -->
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-date" title="تاریخ سررسید">📅</button>
+                    <div class="task-tool-popup glass-blur-menu cal-popup-box" id="popup-date" style="display: none;">
+                      <div class="task-cal-header">
+                        <div class="task-cal-arrows">
+                          <button type="button" class="cal-pop-arrow" id="cal-pop-up" title="ماه بعد">⌃</button>
+                          <button type="button" class="cal-pop-arrow" id="cal-pop-down" title="ماه قبل">⌄</button>
+                          <button type="button" class="cal-pop-today-btn" id="cal-pop-today">امروز</button>
+                        </div>
+                        <span class="task-cal-title" id="task-cal-month-title">مهر ۱۴۰۵</span>
+                      </div>
+                      <div class="task-cal-weekdays">
+                        <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span class="fri">جمعه</span>
+                      </div>
+                      <div class="task-cal-grid" id="task-cal-grid"></div>
+                      <button type="button" class="btn-popup-blue" id="btn-date-confirm">تایید</button>
+                    </div>
+                  </div>
+
+                  <!-- ۵. برچسب (عکس ۲) -->
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-tag" title="برچسب">🏷️</button>
+                    <div class="task-tool-popup glass-blur-menu tag-popup-box" id="popup-tag" style="display: none;">
+                      <div class="tag-input-row">
+                        <input type="text" id="new-tag-input" placeholder="نام برچسب...">
+                        <button type="button" class="tag-add-plus" id="tag-add-plus-btn">+</button>
+                      </div>
+                      <div class="tags-chips-list" id="tags-chips-list">
+                        <span class="tag-chip-item">افزودن برچسب جدید</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -538,7 +626,7 @@
       <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>

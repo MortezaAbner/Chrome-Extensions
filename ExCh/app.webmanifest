@@ -1,22 +1,37 @@
 {
-  "manifest_version": 3,
+  "id": "/Chrome-Extensions/",
   "name": "Abner Dashboard",
-  "version": "1.21.0",
-  "description": "یک افزونه شیشه‌ای هوشمند برای مرورگر شامل آب‌وهوا، تقویم تعاملی، تایمر، تسک و میانبرها",
-  "chrome_url_overrides": {
-    "newtab": "newtab.html"
-  },
-  "action": {
-    "default_title": "Abner Dashboard",
-    "default_icon": {
-      "192": "https://img.icons8.com/fluency/192/compass.png"
+  "short_name": "Abner",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#d8ebff",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/fluency/192/compass.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/192/compass.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/512/compass.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/512/compass.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  },
-  "icons": {
-    "192": "https://img.icons8.com/fluency/192/compass.png",
-    "512": "https://img.icons8.com/fluency/512/compass.png"
-  },
-  "permissions": [
-    "storage"
   ]
 }

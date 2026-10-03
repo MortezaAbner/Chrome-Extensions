@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
   const toEn = n => String(n).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
-  // ۱. کنترل ناوبری داخلی SPA (بدون اسکرول و بدون تب جدید)
+  // ۱. کنترل ناوبری داخلی SPA
   const viewDashboard = document.getElementById('view-dashboard');
   const viewSettings = document.getElementById('view-settings');
   const viewTasks = document.getElementById('view-tasks');
@@ -20,16 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeBtn) activeBtn.classList.add('active');
   }
 
-  if (dockHomeBtn) {
-    dockHomeBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
-  }
-
-  if (dockSettingsBtn) {
-    dockSettingsBtn.onclick = () => switchView(viewSettings, dockSettingsBtn);
-  }
-  if (settingsCloseBtn) {
-    settingsCloseBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
-  }
+  if (dockHomeBtn) dockHomeBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
+  if (dockSettingsBtn) dockSettingsBtn.onclick = () => switchView(viewSettings, dockSettingsBtn);
+  if (settingsCloseBtn) settingsCloseBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
 
   if (dockTasksBtn) {
     dockTasksBtn.onclick = () => {
@@ -38,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۲. مدیریت پس‌زمینه و وضعیت بلر در صفحه تنظیمات
+  // ۲. مدیریت پس‌زمینه در صفحه تنظیمات
   const bgOverlay = document.getElementById('custom-bg-overlay');
   const settingsBgFile = document.getElementById('settings-bg-file');
   const settingsBlurToggle = document.getElementById('settings-blur-toggle');
@@ -121,12 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const specialEventsData = {
-    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-9': { title: 'روز آتش‌‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-16': { title: 'روز جهانی کودک (بین‌‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
+    '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
   };
@@ -174,9 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
 
       const eventKey = `${year}-${monthIndex + 1}-${i}`;
-      if (specialEventsData[eventKey]) {
-        span.classList.add('event-green-dot');
-      }
+      if (specialEventsData[eventKey]) span.classList.add('event-green-dot');
 
       span.onclick = (e) => {
         e.stopPropagation();
@@ -189,17 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
           dateEventPopup.style.display = 'none';
         }
       };
-
       calDates.appendChild(span);
     }
   }
 
-  if (eventPopupClose) {
-    eventPopupClose.onclick = (e) => {
-      e.stopPropagation();
-      dateEventPopup.style.display = 'none';
-    };
-  }
+  if (eventPopupClose) eventPopupClose.onclick = (e) => { e.stopPropagation(); dateEventPopup.style.display = 'none'; };
 
   if (calPrevBtn) {
     calPrevBtn.onclick = (e) => {
@@ -254,9 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(() => {
       const selectedEl = pickerYearsList.querySelector(`[data-year="${selectedPickerYear}"]`);
-      if (selectedEl) {
-        pickerYearsList.scrollTop = selectedEl.offsetTop - pickerYearsList.offsetTop - 35;
-      }
+      if (selectedEl) pickerYearsList.scrollTop = selectedEl.offsetTop - pickerYearsList.offsetTop - 35;
     }, 50);
   }
 
@@ -387,9 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
       calStandardView.style.display = 'block';
     };
   }
-  if (gAddEventBtn) {
-    gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
-  }
+  if (gAddEventBtn) gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
 
   // ۷. تبدیل تاریخ
   const calConvertBtn = document.getElementById('cal-convert-btn');
@@ -470,14 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const manualCityInput = document.getElementById('manual-city-input');
   const citySaveBtn = document.getElementById('city-save-btn');
   const cityCancelBtn = document.getElementById('city-cancel-btn');
-
-  const cityDatabase = {
-    'تهران': { lat: 35.6892, lon: 51.3890 },
-    'مشهد': { lat: 36.2972, lon: 59.6067 },
-    'اصفهان': { lat: 32.6546, lon: 51.6680 },
-    'شیراز': { lat: 29.5918, lon: 52.5837 },
-    'تبریز': { lat: 38.0800, lon: 46.2919 }
-  };
 
   let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
 
@@ -777,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalCancelBtn) modalCancelBtn.onclick = () => addModal.classList.remove('active');
   renderShortcuts();
 
-  // ۱۳. سیستم تسک پیشرفته (حذف بنر، کادر درون‌خطی و چک‌باکس راست‌چین)
+  // ۱۳. سیستم تسک پیشرفته به همراه ۵ ابزار کامل (عکس ۱ تا ۱۰)
   const tabTasks = document.getElementById('tab-tasks');
   const tabNotes = document.getElementById('tab-notes');
   const emptyState = document.getElementById('empty-state');
@@ -789,6 +762,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerDesc = document.getElementById('composer-desc');
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
+
+  // متغیرهای موقت تسک در حال ایجاد
+  let draftTask = {
+    tag: '',
+    date: '',
+    time: '',
+    priority: 'none',
+    repeat: ''
+  };
 
   let todos = JSON.parse(localStorage.getItem('my_todos')) || [];
   let hideDoneTasks = false;
@@ -810,13 +792,415 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.addEventListener('click', (e) => {
-      if (!e.target.closest('#inline-task-box')) {
+      if (!e.target.closest('#inline-task-box') && !e.target.closest('.task-tool-popup')) {
         taskComposerExpanded.style.display = 'none';
         taskTriggerCollapsed.style.display = 'block';
+        closeAllToolPopups();
       }
     });
   }
 
+  function closeAllToolPopups() {
+    document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
+  }
+
+  // --- ابزار ۱: برچسب (عکس ۲) ---
+  const toolBtnTag = document.getElementById('tool-btn-tag');
+  const popupTag = document.getElementById('popup-tag');
+  const newTagInput = document.getElementById('new-tag-input');
+  const tagAddPlusBtn = document.getElementById('tag-add-plus-btn');
+  const tagsChipsList = document.getElementById('tags-chips-list');
+
+  if (toolBtnTag && popupTag) {
+    toolBtnTag.onclick = (e) => {
+      e.stopPropagation();
+      const isVisible = popupTag.style.display === 'flex';
+      closeAllToolPopups();
+      popupTag.style.display = isVisible ? 'none' : 'flex';
+    };
+  }
+
+  if (tagAddPlusBtn && newTagInput) {
+    tagAddPlusBtn.onclick = (e) => {
+      e.stopPropagation();
+      const val = newTagInput.value.trim();
+      if (!val) return;
+      draftTask.tag = val;
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip-item';
+      chip.textContent = val;
+      chip.onclick = (ev) => {
+        ev.stopPropagation();
+        draftTask.tag = val;
+        popupTag.style.display = 'none';
+      };
+      tagsChipsList.appendChild(chip);
+      newTagInput.value = '';
+      popupTag.style.display = 'none';
+    };
+  }
+
+  // --- ابزار ۲: تقویم تسک با ماه‌گردی و امروز (عکس ۳ و ۴) ---
+  const toolBtnDate = document.getElementById('tool-btn-date');
+  const popupDate = document.getElementById('popup-date');
+  const calPopUp = document.getElementById('cal-pop-up');
+  const calPopDown = document.getElementById('cal-pop-down');
+  const calPopToday = document.getElementById('cal-pop-today');
+  const taskCalMonthTitle = document.getElementById('task-cal-month-title');
+  const taskCalGrid = document.getElementById('task-cal-grid');
+  const btnDateConfirm = document.getElementById('btn-date-confirm');
+
+  let taskCalYear = 1405;
+  let taskCalMonthIdx = 6;
+  let taskCalSelectedDay = 11;
+
+  function renderTaskCalendar() {
+    if (!taskCalMonthTitle || !taskCalGrid) return;
+    taskCalMonthTitle.textContent = `${persianMonthNames[taskCalMonthIdx]} ${toFa(taskCalYear)}`;
+    taskCalGrid.innerHTML = '';
+
+    const daysCount = taskCalMonthIdx < 6 ? 31 : (taskCalMonthIdx < 11 ? 30 : 29);
+    const startOff = (taskCalMonthIdx * 2 + 1) % 7;
+
+    for (let k = 0; k < startOff; k++) {
+      taskCalGrid.appendChild(document.createElement('span'));
+    }
+
+    for (let d = 1; d <= daysCount; d++) {
+      const span = document.createElement('span');
+      span.textContent = toFa(d);
+      const dayOfWeek = (d + startOff - 1) % 7;
+      if (dayOfWeek === 6) span.className = 'holiday';
+      if (d === taskCalSelectedDay) span.classList.add('active-day');
+
+      span.onclick = (ev) => {
+        ev.stopPropagation();
+        taskCalSelectedDay = d;
+        renderTaskCalendar();
+      };
+      taskCalGrid.appendChild(span);
+    }
+  }
+
+  if (toolBtnDate && popupDate) {
+    toolBtnDate.onclick = (e) => {
+      e.stopPropagation();
+      const isVisible = popupDate.style.display === 'flex';
+      closeAllToolPopups();
+      if (!isVisible) {
+        renderTaskCalendar();
+        popupDate.style.display = 'flex';
+      }
+    };
+  }
+
+  // فلش بالا: یک ماه جلو (عکس ۳)
+  if (calPopUp) {
+    calPopUp.onclick = (e) => {
+      e.stopPropagation();
+      taskCalMonthIdx++;
+      if (taskCalMonthIdx > 11) { taskCalMonthIdx = 0; taskCalYear++; }
+      renderTaskCalendar();
+    };
+  }
+
+  // فلش پایین: یک ماه عقب (عکس ۳)
+  if (calPopDown) {
+    calPopDown.onclick = (e) => {
+      e.stopPropagation();
+      taskCalMonthIdx--;
+      if (taskCalMonthIdx < 0) { taskCalMonthIdx = 11; taskCalYear--; }
+      renderTaskCalendar();
+    };
+  }
+
+  // دکمه بازگشت به امروز (عکس ۴)
+  if (calPopToday) {
+    calPopToday.onclick = (e) => {
+      e.stopPropagation();
+      taskCalYear = 1405;
+      taskCalMonthIdx = 6;
+      taskCalSelectedDay = 9;
+      renderTaskCalendar();
+    };
+  }
+
+  if (btnDateConfirm) {
+    btnDateConfirm.onclick = (e) => {
+      e.stopPropagation();
+      draftTask.date = `${toFa(taskCalSelectedDay)} ${persianMonthNames[taskCalMonthIdx]}`;
+      popupDate.style.display = 'none';
+      toolBtnDate.classList.add('active-tool');
+    };
+  }
+
+  // --- ابزار ۳: ساعت و دقیقه با اسکرول نامرئی (عکس ۵) ---
+  const toolBtnTime = document.getElementById('tool-btn-time');
+  const popupTime = document.getElementById('popup-time');
+  const wheelHour = document.getElementById('wheel-hour');
+  const wheelMinute = document.getElementById('wheel-minute');
+  const btnTimeConfirm = document.getElementById('btn-time-confirm');
+
+  let selectedHour = '09';
+  let selectedMinute = '00';
+
+  function initTimeWheels() {
+    if (!wheelHour || !wheelMinute) return;
+    wheelHour.innerHTML = '';
+    for (let h = 0; h < 24; h++) {
+      const hStr = String(h).padStart(2, '0');
+      const div = document.createElement('div');
+      div.className = `time-num-item ${hStr === selectedHour ? 'selected' : ''}`;
+      div.textContent = toFa(hStr);
+      div.onclick = (ev) => {
+        ev.stopPropagation();
+        selectedHour = hStr;
+        initTimeWheels();
+      };
+      wheelHour.appendChild(div);
+    }
+
+    wheelMinute.innerHTML = '';
+    for (let m = 0; m < 60; m += 5) {
+      const mStr = String(m).padStart(2, '0');
+      const div = document.createElement('div');
+      div.className = `time-num-item ${mStr === selectedMinute ? 'selected' : ''}`;
+      div.textContent = toFa(mStr);
+      div.onclick = (ev) => {
+        ev.stopPropagation();
+        selectedMinute = mStr;
+        initTimeWheels();
+      };
+      wheelMinute.appendChild(div);
+    }
+  }
+
+  if (toolBtnTime && popupTime) {
+    toolBtnTime.onclick = (e) => {
+      e.stopPropagation();
+      const isVisible = popupTime.style.display === 'flex';
+      closeAllToolPopups();
+      if (!isVisible) {
+        initTimeWheels();
+        popupTime.style.display = 'flex';
+      }
+    };
+  }
+
+  if (btnTimeConfirm) {
+    btnTimeConfirm.onclick = (e) => {
+      e.stopPropagation();
+      draftTask.time = `${toFa(selectedHour)}:${toFa(selectedMinute)}`;
+      popupTime.style.display = 'none';
+      toolBtnTime.classList.add('active-tool');
+    };
+  }
+
+  // --- ابزار ۴: اولویت (عکس ۶) ---
+  const toolBtnPriority = document.getElementById('tool-btn-priority');
+  const popupPriority = document.getElementById('popup-priority');
+
+  if (toolBtnPriority && popupPriority) {
+    toolBtnPriority.onclick = (e) => {
+      e.stopPropagation();
+      const isVisible = popupPriority.style.display === 'flex';
+      closeAllToolPopups();
+      popupPriority.style.display = isVisible ? 'none' : 'flex';
+    };
+
+    popupPriority.querySelectorAll('.prio-item').forEach(el => {
+      el.onclick = (ev) => {
+        ev.stopPropagation();
+        popupPriority.querySelectorAll('.prio-item').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        draftTask.priority = el.dataset.prio;
+        popupPriority.style.display = 'none';
+        toolBtnPriority.classList.add('active-tool');
+      };
+    });
+  }
+
+  // --- ابزار ۵: تکرار هوشمند (عکس ۷ تا ۱۰) ---
+  const toolBtnRepeat = document.getElementById('tool-btn-repeat');
+  const popupRepeat = document.getElementById('popup-repeat');
+  const repeatUnitSelect = document.getElementById('repeat-unit-select');
+  const cntMinus = document.getElementById('cnt-minus');
+  const cntPlus = document.getElementById('cnt-plus');
+  const cntVal = document.getElementById('cnt-val');
+  const repeatDynamicSub = document.getElementById('repeat-dynamic-sub');
+  const btnRepeatConfirm = document.getElementById('btn-repeat-confirm');
+  const btnRepeatCancel = document.getElementById('btn-repeat-cancel');
+
+  let repeatCount = 2;
+  let repeatSelectedDays = [0]; // شنبه پیش‌فرض
+  let repeatSelectedMonthDays = [1];
+  let repeatSelectedMonths = [0];
+
+  function renderRepeatDynamicUI() {
+    if (!repeatDynamicSub) return;
+    repeatDynamicSub.innerHTML = '';
+    const unit = repeatUnitSelect.value;
+
+    if (unit === 'day') {
+      // عکس ۷: فقط شمارنده بالا
+    } else if (unit === 'week') {
+      // عکس ۸: چه روزهایی؟
+      const wrap = document.createElement('div');
+      wrap.className = 'sub-row-wrap';
+      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
+      const grid = document.createElement('div');
+      grid.className = 'weekday-repeat-grid';
+      
+      const days = [
+        { label: 'شنبه', idx: 0, full: true },
+        { label: 'ی', idx: 1 },
+        { label: 'د', idx: 2 },
+        { label: 'س', idx: 3 },
+        { label: 'چ', idx: 4 },
+        { label: 'پ', idx: 5 },
+        { label: 'ج', idx: 6 }
+      ];
+
+      days.forEach(d => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-circle-btn ${d.full ? 'full-day-name' : ''} ${repeatSelectedDays.includes(d.idx) ? 'selected' : ''}`;
+        btn.textContent = d.label;
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (repeatSelectedDays.includes(d.idx)) {
+            repeatSelectedDays = repeatSelectedDays.filter(x => x !== d.idx);
+          } else {
+            repeatSelectedDays.push(d.idx);
+          }
+          renderRepeatDynamicUI();
+        };
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
+      repeatDynamicSub.appendChild(wrap);
+
+    } else if (unit === 'month') {
+      // عکس ۹: چه روزهایی از ماه؟ (۱ تا ۳۱)
+      const wrap = document.createElement('div');
+      wrap.className = 'sub-row-wrap';
+      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
+      const grid = document.createElement('div');
+      grid.className = 'monthday-repeat-grid';
+      for (let i = 1; i <= 31; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-circle-btn ${repeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
+        btn.textContent = toFa(i);
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (repeatSelectedMonthDays.includes(i)) {
+            repeatSelectedMonthDays = repeatSelectedMonthDays.filter(x => x !== i);
+          } else {
+            repeatSelectedMonthDays.push(i);
+          }
+          renderRepeatDynamicUI();
+        };
+        grid.appendChild(btn);
+      }
+      wrap.appendChild(grid);
+      repeatDynamicSub.appendChild(wrap);
+
+    } else if (unit === 'year') {
+      // عکس ۱۰: چه ماه‌هایی؟ و چه روزهایی از ماه؟
+      const wrapMonths = document.createElement('div');
+      wrapMonths.className = 'sub-row-wrap';
+      wrapMonths.innerHTML = `<span class="sub-row-label">چه ماه‌هایی؟</span>`;
+      const mGrid = document.createElement('div');
+      mGrid.className = 'month-repeat-grid';
+      persianMonthNames.forEach((m, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-month-btn ${repeatSelectedMonths.includes(idx) ? 'selected' : ''}`;
+        btn.textContent = m;
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (repeatSelectedMonths.includes(idx)) {
+            repeatSelectedMonths = repeatSelectedMonths.filter(x => x !== idx);
+          } else {
+            repeatSelectedMonths.push(idx);
+          }
+          renderRepeatDynamicUI();
+        };
+        mGrid.appendChild(btn);
+      });
+      wrapMonths.appendChild(mGrid);
+      repeatDynamicSub.appendChild(wrapMonths);
+
+      const wrapDays = document.createElement('div');
+      wrapDays.className = 'sub-row-wrap';
+      wrapDays.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
+      const dGrid = document.createElement('div');
+      dGrid.className = 'monthday-repeat-grid';
+      for (let i = 1; i <= 31; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-circle-btn ${repeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
+        btn.textContent = toFa(i);
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (repeatSelectedMonthDays.includes(i)) {
+            repeatSelectedMonthDays = repeatSelectedMonthDays.filter(x => x !== i);
+          } else {
+            repeatSelectedMonthDays.push(i);
+          }
+          renderRepeatDynamicUI();
+        };
+        dGrid.appendChild(btn);
+      }
+      wrapDays.appendChild(dGrid);
+      repeatDynamicSub.appendChild(wrapDays);
+    }
+  }
+
+  if (toolBtnRepeat && popupRepeat) {
+    toolBtnRepeat.onclick = (e) => {
+      e.stopPropagation();
+      const isVisible = popupRepeat.style.display === 'flex';
+      closeAllToolPopups();
+      if (!isVisible) {
+        renderRepeatDynamicUI();
+        popupRepeat.style.display = 'flex';
+      }
+    };
+  }
+
+  if (repeatUnitSelect) repeatUnitSelect.onchange = () => renderRepeatDynamicUI();
+
+  if (cntMinus) {
+    cntMinus.onclick = (e) => {
+      e.stopPropagation();
+      if (repeatCount > 1) {
+        repeatCount--;
+        cntVal.textContent = toFa(repeatCount);
+      }
+    };
+  }
+
+  if (cntPlus) {
+    cntPlus.onclick = (e) => {
+      e.stopPropagation();
+      repeatCount++;
+      cntVal.textContent = toFa(repeatCount);
+    };
+  }
+
+  if (btnRepeatCancel) btnRepeatCancel.onclick = () => popupRepeat.style.display = 'none';
+
+  if (btnRepeatConfirm) {
+    btnRepeatConfirm.onclick = () => {
+      draftTask.repeat = `هر ${toFa(repeatCount)} ${repeatUnitSelect.options[repeatUnitSelect.selectedIndex].text}`;
+      popupRepeat.style.display = 'none';
+      toolBtnRepeat.classList.add('active-tool');
+    };
+  }
+
+  // --- ذخیره و رندر تسک‌ها ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -838,15 +1222,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const li = document.createElement('li');
       li.className = `task-item-card ios-glass-card ${item.done ? 'done' : ''}`;
       
+      // ساخت متادیتا (تاریخ، ساعت، برچسب، تکرار)
+      let metaHtml = '';
+      if (item.tag || item.date || item.time || item.repeat) {
+        metaHtml = `<div class="task-meta-pills">
+          ${item.tag ? `<span class="task-tag-badge">${item.tag}</span>` : ''}
+          ${item.date ? `<span class="task-meta-item">📅 ${item.date}</span>` : ''}
+          ${item.time ? `<span class="task-meta-item">⏰ ${item.time}</span>` : ''}
+          ${item.repeat ? `<span class="task-meta-item">🔄 ${item.repeat}</span>` : ''}
+        </div>`;
+      }
+
       li.innerHTML = `
+        <!-- سمت چپ: فقط دو آیکون ویرایش و حذف در مرکز عمودی (عکس ۱) -->
         <div class="task-card-left-actions">
           <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
           <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
         </div>
+
+        <!-- سمت راست: متن راست‌چین و چک‌باکس در راست (عکس ۱) -->
         <div class="task-card-right">
           <div class="task-text-stack">
             <span class="task-item-title">${item.title}</span>
             ${item.desc ? `<span class="task-item-desc">${item.desc}</span>` : ''}
+            ${metaHtml}
           </div>
           <div class="task-checkbox-custom" title="تغییر وضعیت">
             ${item.done ? '✓' : ''}
@@ -885,17 +1284,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ثبت تسک جدید
+  // ثبت نهایی تسک جدید
   if (composerSubmitBtn && composerTitle) {
     const handleCreateTask = () => {
       const t = composerTitle.value.trim();
       const d = composerDesc.value.trim();
       if (!t) return;
-      todos.push({ title: t, desc: d, done: false });
+
+      todos.push({
+        title: t,
+        desc: d,
+        done: false,
+        tag: draftTask.tag,
+        date: draftTask.date,
+        time: draftTask.time,
+        priority: draftTask.priority,
+        repeat: draftTask.repeat
+      });
+
+      // ریست کردن فرم
       composerTitle.value = '';
       composerDesc.value = '';
+      draftTask = { tag: '', date: '', time: '', priority: 'none', repeat: '' };
+      document.querySelectorAll('.composer-tool-btn').forEach(b => b.classList.remove('active-tool'));
+      closeAllToolPopups();
       taskComposerExpanded.style.display = 'none';
       taskTriggerCollapsed.style.display = 'block';
+
       saveAndRenderTodos();
     };
 
