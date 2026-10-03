@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const m = wheelMonth.value;
       const y = wheelYear.value;
       document.getElementById('res-shamsi-val').textContent = `${toFa(d)} ${persianMonthNames[m - 1]} ${toFa(y)}`;
-      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌الثانی ۱۴۴۸`;
+      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌‌الثانی ۱۴۴۸`;
       document.getElementById('res-miladi-val').textContent = `29 سپتامبر 2026`;
       document.getElementById('res-day-name').textContent = `سه‌شنبه`;
       document.getElementById('res-age-val').textContent = `۴ روز`;
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. آب‌وهوا
+  // ۸. آب‌‌وهوا
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
     if (code === 3) return 'تمام ابری 🧡';
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
-    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
+    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️️';
     return 'معتدل و آرام ⛅';
   }
 
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { title: 'پینترست', url: 'https://www.pinterest.com' },
     { title: 'یوتیوب', url: 'https://www.youtube.com' },
     { title: 'App', url: 'https://cafebazaar.ir' },
-    { title: 'آپ‌تی‌‌وی', url: 'https://uptvs.com' },
+    { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
     { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
     { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
     { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
@@ -762,13 +762,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
 
-  // پاپ‌آپ‌های سراسری
-  const popupRepeat = document.getElementById('popup-repeat');
-  const popupPriority = document.getElementById('popup-priority');
-  const popupTime = document.getElementById('popup-time');
-  const popupDate = document.getElementById('popup-date');
-  const popupTag = document.getElementById('popup-tag');
-
   // متغیرهای مودال ویرایش تسک
   const editTaskModal = document.getElementById('edit-task-modal');
   const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
@@ -785,6 +778,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const editToolTimeBtn = document.getElementById('edit-tool-time-btn');
   const editToolTagBtn = document.getElementById('edit-tool-tag-btn');
   const editToolPriorityBtn = document.getElementById('edit-tool-priority-btn');
+
+  const editPopupRepeat = document.getElementById('edit-popup-repeat');
+  const editPopupDate = document.getElementById('edit-popup-date');
+  const editPopupTime = document.getElementById('edit-popup-time');
+  const editPopupTag = document.getElementById('edit-popup-tag');
+  const editPopupPriority = document.getElementById('edit-popup-priority');
 
   const editRepeatLabel = document.getElementById('edit-repeat-label');
   const editDateLabel = document.getElementById('edit-date-label');
@@ -843,38 +842,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeAllToolPopups() {
-    [popupRepeat, popupPriority, popupTime, popupDate, popupTag].forEach(p => {
-      if (p) p.style.display = 'none';
+    document.querySelectorAll('.task-tool-popup').forEach(p => {
+      p.style.display = 'none';
     });
     if (boardDropdownMenu) boardDropdownMenu.style.display = 'none';
   }
 
-  // تنظیم موقعیت دقیق پاپ‌آپ‌ها بالای دکمه هدف (در حالت ساخت یا ویرایش)
-  function positionAndShowPopup(popupEl, targetBtn) {
-    closeAllToolPopups();
-    if (!popupEl || !targetBtn) return;
-    popupEl.style.display = 'flex';
-
-    const rect = targetBtn.getBoundingClientRect();
-    const popupWidth = popupEl.offsetWidth || 300;
-    const popupHeight = popupEl.offsetHeight || 250;
-
-    let leftPos = rect.left + (rect.width / 2) - (popupWidth / 2);
-    if (leftPos + popupWidth > window.innerWidth - 10) leftPos = window.innerWidth - popupWidth - 10;
-    if (leftPos < 10) leftPos = 10;
-
-    let topPos = rect.top - popupHeight - 10;
-    if (topPos < 10) {
-      topPos = rect.bottom + 10; // اگر بالا جا نشد زیر آن باز شود
-    }
-
-    popupEl.style.position = 'fixed';
-    popupEl.style.left = `${leftPos}px`;
-    popupEl.style.top = `${topPos}px`;
-    popupEl.style.zIndex = '100010';
-  }
-
-  // تابع باز کردن مودال ویرایش تسک
+  // باز کردن مودال ویرایش تسک
   function openEditTaskModal(index) {
     currentEditingIndex = index;
     const item = todos[index];
@@ -892,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
       repeat: item.repeat || ''
     };
 
-    // تنظیم نام زنده بورد (عکس ارسالی)
+    // تنظیم نام کپسول بورد (عکس ارسالی)
     if (editBoardLabel) {
       if (item.board === 'in_progress') editBoardLabel.textContent = '📁 در دست اقدام ⌵';
       else if (item.board === 'done') editBoardLabel.textContent = '📁 انجام شده ⌵';
@@ -927,12 +901,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۱. انتخاب وضعیت‌های سه‌گانه بورد با تغییر نام زنده کپسول
+  // منوی بورد در ویرایش تسک (عکس ۱)
   if (editBoardBtn && boardDropdownMenu) {
     editBoardBtn.onclick = (e) => {
       e.stopPropagation();
+      const isVisible = boardDropdownMenu.style.display === 'flex';
       closeAllToolPopups();
-      boardDropdownMenu.style.display = boardDropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+      boardDropdownMenu.style.display = isVisible ? 'none' : 'flex';
     };
 
     boardDropdownMenu.querySelectorAll('.board-opt-item').forEach(opt => {
@@ -949,51 +924,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۲. باز شدن اختصاصی پاپ‌آپ‌ها برای مودال ویرایش
-  if (editToolRepeatBtn) {
+  // اتصال دکمه‌های ابزار مودال ویرایش به پاپ‌آپ‌های محلی خودش (دقیقاً زیر همان دکمه باز می‌شوند)
+  function toggleEditPopup(popupEl) {
+    const isVisible = popupEl.style.display === 'flex';
+    closeAllToolPopups();
+    popupEl.style.display = isVisible ? 'none' : 'flex';
+  }
+
+  if (editToolRepeatBtn && editPopupRepeat) {
     editToolRepeatBtn.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = true;
-      renderRepeatDynamicUI();
-      positionAndShowPopup(popupRepeat, editToolRepeatBtn);
+      renderEditRepeatUI();
+      toggleEditPopup(editPopupRepeat);
     };
   }
 
-  if (editToolDateBtn) {
+  if (editToolDateBtn && editPopupDate) {
     editToolDateBtn.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = true;
-      renderTaskCalendar();
-      positionAndShowPopup(popupDate, editToolDateBtn);
+      renderEditCalendar();
+      toggleEditPopup(editPopupDate);
     };
   }
 
-  if (editToolTimeBtn) {
+  if (editToolTimeBtn && editPopupTime) {
     editToolTimeBtn.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = true;
-      initTimeWheels();
-      positionAndShowPopup(popupTime, editToolTimeBtn);
+      initEditTimeWheels();
+      toggleEditPopup(editPopupTime);
     };
   }
 
-  if (editToolTagBtn) {
+  if (editToolTagBtn && editPopupTag) {
     editToolTagBtn.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = true;
-      positionAndShowPopup(popupTag, editToolTagBtn);
+      toggleEditPopup(editPopupTag);
     };
   }
 
-  if (editToolPriorityBtn) {
+  if (editToolPriorityBtn && editPopupPriority) {
     editToolPriorityBtn.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = true;
-      positionAndShowPopup(popupPriority, editToolPriorityBtn);
+      toggleEditPopup(editPopupPriority);
     };
   }
 
-  // تایید ویرایش
+  // ذخیره نهایی ویرایش
   if (btnEditTaskSave && editTaskModal) {
     btnEditTaskSave.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -1026,6 +1002,348 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // --- منطق پاپ‌آپ‌های اختصاصی ویرایش تسک ---
+  // ۱. اولویت در ویرایش
+  if (editPopupPriority) {
+    editPopupPriority.querySelectorAll('.prio-item').forEach(el => {
+      el.onclick = (ev) => {
+        ev.stopPropagation();
+        editPopupPriority.querySelectorAll('.prio-item').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        draftTask.priority = el.dataset.prio;
+        const prioNames = { none: 'بدون اولویت', low: 'پایین', medium: 'متوسط', high: 'بالا' };
+        if (editPriorityLabel) editPriorityLabel.textContent = prioNames[el.dataset.prio];
+        editPopupPriority.style.display = 'none';
+      };
+    });
+  }
+
+  // ۲. برچسب در ویرایش
+  const editNewTagInput = document.getElementById('edit-new-tag-input');
+  const editTagAddPlusBtn = document.getElementById('edit-tag-add-plus-btn');
+  const editTagsChipsList = document.getElementById('edit-tags-chips-list');
+
+  if (editTagAddPlusBtn && editNewTagInput) {
+    editTagAddPlusBtn.onclick = (e) => {
+      e.stopPropagation();
+      const val = editNewTagInput.value.trim();
+      if (!val) return;
+      draftTask.tag = val;
+      if (editTagLabel) editTagLabel.textContent = val;
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip-item';
+      chip.textContent = val;
+      chip.onclick = (ev) => {
+        ev.stopPropagation();
+        draftTask.tag = val;
+        if (editTagLabel) editTagLabel.textContent = val;
+        editPopupTag.style.display = 'none';
+      };
+      editTagsChipsList.appendChild(chip);
+      editNewTagInput.value = '';
+      editPopupTag.style.display = 'none';
+    };
+  }
+
+  // ۳. تقویم در ویرایش
+  let editTaskCalYear = 1405;
+  let editTaskCalMonthIdx = 6;
+  let editTaskCalSelectedDay = 11;
+  const editTaskCalMonthTitle = document.getElementById('edit-task-cal-month-title');
+  const editTaskCalGrid = document.getElementById('edit-task-cal-grid');
+  const editCalPopUp = document.getElementById('edit-cal-pop-up');
+  const editCalPopDown = document.getElementById('edit-cal-pop-down');
+  const editCalPopToday = document.getElementById('edit-cal-pop-today');
+  const editBtnDateConfirm = document.getElementById('edit-btn-date-confirm');
+
+  function renderEditCalendar() {
+    if (!editTaskCalMonthTitle || !editTaskCalGrid) return;
+    editTaskCalMonthTitle.textContent = `${persianMonthNames[editTaskCalMonthIdx]} ${toFa(editTaskCalYear)}`;
+    editTaskCalGrid.innerHTML = '';
+
+    const daysCount = editTaskCalMonthIdx < 6 ? 31 : (editTaskCalMonthIdx < 11 ? 30 : 29);
+    const startOff = (editTaskCalMonthIdx * 2 + 1) % 7;
+
+    for (let k = 0; k < startOff; k++) {
+      editTaskCalGrid.appendChild(document.createElement('span'));
+    }
+
+    for (let d = 1; d <= daysCount; d++) {
+      const span = document.createElement('span');
+      span.textContent = toFa(d);
+      const dayOfWeek = (d + startOff - 1) % 7;
+      if (dayOfWeek === 6) span.className = 'holiday';
+      if (d === editTaskCalSelectedDay) span.classList.add('active-day');
+
+      span.onclick = (ev) => {
+        ev.stopPropagation();
+        editTaskCalSelectedDay = d;
+        renderEditCalendar();
+      };
+      editTaskCalGrid.appendChild(span);
+    }
+  }
+
+  if (editCalPopUp) {
+    editCalPopUp.onclick = (e) => {
+      e.stopPropagation();
+      editTaskCalMonthIdx++;
+      if (editTaskCalMonthIdx > 11) { editTaskCalMonthIdx = 0; editTaskCalYear++; }
+      renderEditCalendar();
+    };
+  }
+
+  if (editCalPopDown) {
+    editCalPopDown.onclick = (e) => {
+      e.stopPropagation();
+      editTaskCalMonthIdx--;
+      if (editTaskCalMonthIdx < 0) { editTaskCalMonthIdx = 11; editTaskCalYear--; }
+      renderEditCalendar();
+    };
+  }
+
+  if (editCalPopToday) {
+    editCalPopToday.onclick = (e) => {
+      e.stopPropagation();
+      editTaskCalYear = 1405;
+      editTaskCalMonthIdx = 6;
+      editTaskCalSelectedDay = 9;
+      renderEditCalendar();
+    };
+  }
+
+  if (editBtnDateConfirm) {
+    editBtnDateConfirm.onclick = (e) => {
+      e.stopPropagation();
+      draftTask.date = `${toFa(editTaskCalSelectedDay)} ${persianMonthNames[editTaskCalMonthIdx]}`;
+      if (editDateLabel) editDateLabel.textContent = draftTask.date;
+      editPopupDate.style.display = 'none';
+    };
+  }
+
+  // ۴. ساعت در ویرایش
+  let editSelectedHour = '13';
+  let editSelectedMinute = '15';
+  const editWheelHour = document.getElementById('edit-wheel-hour');
+  const editWheelMinute = document.getElementById('edit-wheel-minute');
+  const editBtnTimeConfirm = document.getElementById('edit-btn-time-confirm');
+
+  function initEditTimeWheels() {
+    if (!editWheelHour || !editWheelMinute) return;
+    editWheelHour.innerHTML = '';
+    editWheelMinute.innerHTML = '';
+
+    for (let h = 0; h < 24; h++) {
+      const hStr = String(h).padStart(2, '0');
+      const div = document.createElement('div');
+      div.className = `time-num-item ${hStr === editSelectedHour ? 'selected' : ''}`;
+      div.textContent = toFa(hStr);
+      div.dataset.value = hStr;
+      div.onclick = (ev) => {
+        ev.stopPropagation();
+        editSelectedHour = hStr;
+        editWheelHour.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        div.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      };
+      editWheelHour.appendChild(div);
+    }
+
+    for (let m = 0; m < 60; m += 5) {
+      const mStr = String(m).padStart(2, '0');
+      const div = document.createElement('div');
+      div.className = `time-num-item ${mStr === editSelectedMinute ? 'selected' : ''}`;
+      div.textContent = toFa(mStr);
+      div.dataset.value = mStr;
+      div.onclick = (ev) => {
+        ev.stopPropagation();
+        editSelectedMinute = mStr;
+        editWheelMinute.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        div.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      };
+      editWheelMinute.appendChild(div);
+    }
+
+    setTimeout(() => {
+      const selH = editWheelHour.querySelector(`.time-num-item[data-value="${editSelectedHour}"]`);
+      if (selH) selH.scrollIntoView({ block: 'center', behavior: 'auto' });
+      const selM = editWheelMinute.querySelector(`.time-num-item[data-value="${editSelectedMinute}"]`);
+      if (selM) selM.scrollIntoView({ block: 'center', behavior: 'auto' });
+    }, 40);
+  }
+
+  if (editBtnTimeConfirm) {
+    editBtnTimeConfirm.onclick = (e) => {
+      e.stopPropagation();
+      draftTask.time = `${toFa(editSelectedHour)}:${toFa(editSelectedMinute)}`;
+      if (editTimeLabel) editTimeLabel.textContent = draftTask.time;
+      editPopupTime.style.display = 'none';
+    };
+  }
+
+  // ۵. تکرار در ویرایش
+  let editRepeatCount = 2;
+  let editRepeatSelectedDays = [0];
+  let editRepeatSelectedMonthDays = [1];
+  let editRepeatSelectedMonths = [0];
+
+  const editRepeatUnitSelect = document.getElementById('edit-repeat-unit-select');
+  const editCntMinus = document.getElementById('edit-cnt-minus');
+  const editCntPlus = document.getElementById('edit-cnt-plus');
+  const editCntVal = document.getElementById('edit-cnt-val');
+  const editRepeatDynamicSub = document.getElementById('edit-repeat-dynamic-sub');
+  const editBtnRepeatConfirm = document.getElementById('edit-btn-repeat-confirm');
+  const editBtnRepeatCancel = document.getElementById('edit-btn-repeat-cancel');
+
+  function renderEditRepeatUI() {
+    if (!editRepeatDynamicSub) return;
+    editRepeatDynamicSub.innerHTML = '';
+    const unit = editRepeatUnitSelect.value;
+
+    if (unit === 'week') {
+      const wrap = document.createElement('div');
+      wrap.className = 'sub-row-wrap';
+      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
+      const grid = document.createElement('div');
+      grid.className = 'weekday-repeat-grid';
+      
+      const fullDays = [
+        { label: 'شنبه', idx: 0 },
+        { label: 'یکشنبه', idx: 1 },
+        { label: 'دوشنبه', idx: 2 },
+        { label: 'سه‌شنبه', idx: 3 },
+        { label: 'چهارشنبه', idx: 4 },
+        { label: 'پنج‌شنبه', idx: 5 },
+        { label: 'جمعه', idx: 6 }
+      ];
+
+      fullDays.forEach(d => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-weekday-btn ${editRepeatSelectedDays.includes(d.idx) ? 'selected' : ''}`;
+        btn.textContent = d.label;
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (editRepeatSelectedDays.includes(d.idx)) {
+            editRepeatSelectedDays = editRepeatSelectedDays.filter(x => x !== d.idx);
+          } else {
+            editRepeatSelectedDays.push(d.idx);
+          }
+          renderEditRepeatUI();
+        };
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
+      editRepeatDynamicSub.appendChild(wrap);
+
+    } else if (unit === 'month') {
+      const wrap = document.createElement('div');
+      wrap.className = 'sub-row-wrap';
+      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
+      const grid = document.createElement('div');
+      grid.className = 'monthday-repeat-grid';
+      for (let i = 1; i <= 31; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-circle-btn ${editRepeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
+        btn.textContent = toFa(i);
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (editRepeatSelectedMonthDays.includes(i)) {
+            editRepeatSelectedMonthDays = editRepeatSelectedMonthDays.filter(x => x !== i);
+          } else {
+            editRepeatSelectedMonthDays.push(i);
+          }
+          renderEditRepeatUI();
+        };
+        grid.appendChild(btn);
+      }
+      wrap.appendChild(grid);
+      editRepeatDynamicSub.appendChild(wrap);
+
+    } else if (unit === 'year') {
+      const wrapMonths = document.createElement('div');
+      wrapMonths.className = 'sub-row-wrap';
+      wrapMonths.innerHTML = `<span class="sub-row-label">چه ماه‌هایی؟</span>`;
+      const mGrid = document.createElement('div');
+      mGrid.className = 'month-repeat-grid';
+      persianMonthNames.forEach((m, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-month-btn ${editRepeatSelectedMonths.includes(idx) ? 'selected' : ''}`;
+        btn.textContent = m;
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (editRepeatSelectedMonths.includes(idx)) {
+            editRepeatSelectedMonths = editRepeatSelectedMonths.filter(x => x !== idx);
+          } else {
+            editRepeatSelectedMonths.push(idx);
+          }
+          renderEditRepeatUI();
+        };
+        mGrid.appendChild(btn);
+      });
+      wrapMonths.appendChild(mGrid);
+      editRepeatDynamicSub.appendChild(wrapMonths);
+
+      const wrapDays = document.createElement('div');
+      wrapDays.className = 'sub-row-wrap';
+      wrapDays.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
+      const dGrid = document.createElement('div');
+      dGrid.className = 'monthday-repeat-grid';
+      for (let i = 1; i <= 31; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rpt-circle-btn ${editRepeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
+        btn.textContent = toFa(i);
+        btn.onclick = (ev) => {
+          ev.stopPropagation();
+          if (editRepeatSelectedMonthDays.includes(i)) {
+            editRepeatSelectedMonthDays = editRepeatSelectedMonthDays.filter(x => x !== i);
+          } else {
+            editRepeatSelectedMonthDays.push(i);
+          }
+          renderEditRepeatUI();
+        };
+        dGrid.appendChild(btn);
+      }
+      wrapDays.appendChild(dGrid);
+      editRepeatDynamicSub.appendChild(wrapDays);
+    }
+  }
+
+  if (editRepeatUnitSelect) editRepeatUnitSelect.onchange = () => renderEditRepeatUI();
+
+  if (editCntMinus) {
+    editCntMinus.onclick = (e) => {
+      e.stopPropagation();
+      if (editRepeatCount > 1) {
+        editRepeatCount--;
+        editCntVal.textContent = toFa(editRepeatCount);
+      }
+    };
+  }
+
+  if (editCntPlus) {
+    editCntPlus.onclick = (e) => {
+      e.stopPropagation();
+      editRepeatCount++;
+      editCntVal.textContent = toFa(editRepeatCount);
+    };
+  }
+
+  if (editBtnRepeatCancel) editBtnRepeatCancel.onclick = () => editPopupRepeat.style.display = 'none';
+
+  if (editBtnRepeatConfirm) {
+    editBtnRepeatConfirm.onclick = () => {
+      const uText = editRepeatUnitSelect.options[editRepeatUnitSelect.selectedIndex].text;
+      draftTask.repeat = (editRepeatCount === 1) ? uText + 'انه' : `هر ${toFa(editRepeatCount)} ${uText}`;
+      if (editRepeatLabel) editRepeatLabel.textContent = draftTask.repeat;
+      editPopupRepeat.style.display = 'none';
+    };
+  }
+
   // --- دکمه‌های کادر تسک پایین صفحه برای ساخت تسک جدید ---
   const toolBtnRepeat = document.getElementById('tool-btn-repeat');
   const toolBtnPriority = document.getElementById('tool-btn-priority');
@@ -1033,50 +1351,57 @@ document.addEventListener('DOMContentLoaded', () => {
   const toolBtnDate = document.getElementById('tool-btn-date');
   const toolBtnTag = document.getElementById('tool-btn-tag');
 
+  const popupRepeat = document.getElementById('popup-repeat');
+  const popupPriority = document.getElementById('popup-priority');
+  const popupTime = document.getElementById('popup-time');
+  const popupDate = document.getElementById('popup-date');
+  const popupTag = document.getElementById('popup-tag');
+
+  function toggleCreatePopup(popupEl) {
+    const isVisible = popupEl.style.display === 'flex';
+    closeAllToolPopups();
+    popupEl.style.display = isVisible ? 'none' : 'flex';
+  }
+
   if (toolBtnRepeat) {
     toolBtnRepeat.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = false;
       renderRepeatDynamicUI();
-      positionAndShowPopup(popupRepeat, toolBtnRepeat);
+      toggleCreatePopup(popupRepeat);
     };
   }
 
   if (toolBtnPriority) {
     toolBtnPriority.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = false;
-      positionAndShowPopup(popupPriority, toolBtnPriority);
+      toggleCreatePopup(popupPriority);
     };
   }
 
   if (toolBtnTime) {
     toolBtnTime.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = false;
       initTimeWheels();
-      positionAndShowPopup(popupTime, toolBtnTime);
+      toggleCreatePopup(popupTime);
     };
   }
 
   if (toolBtnDate) {
     toolBtnDate.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = false;
       renderTaskCalendar();
-      positionAndShowPopup(popupDate, toolBtnDate);
+      toggleCreatePopup(popupDate);
     };
   }
 
   if (toolBtnTag) {
     toolBtnTag.onclick = (e) => {
       e.stopPropagation();
-      isEditingMode = false;
-      positionAndShowPopup(popupTag, toolBtnTag);
+      toggleCreatePopup(popupTag);
     };
   }
 
-  // منطق برچسب
+  // منطق برچسب ساخت
   const newTagInput = document.getElementById('new-tag-input');
   const tagAddPlusBtn = document.getElementById('tag-add-plus-btn');
   const tagsChipsList = document.getElementById('tags-chips-list');
@@ -1087,14 +1412,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const val = newTagInput.value.trim();
       if (!val) return;
       draftTask.tag = val;
-      if (isEditingMode && editTagLabel) editTagLabel.textContent = val;
       const chip = document.createElement('span');
       chip.className = 'tag-chip-item';
       chip.textContent = val;
       chip.onclick = (ev) => {
         ev.stopPropagation();
         draftTask.tag = val;
-        if (isEditingMode && editTagLabel) editTagLabel.textContent = val;
         popupTag.style.display = 'none';
       };
       tagsChipsList.appendChild(chip);
@@ -1103,7 +1426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // منطق تقویم
+  // منطق تقویم ساخت
   const calPopUp = document.getElementById('cal-pop-up');
   const calPopDown = document.getElementById('cal-pop-down');
   const calPopToday = document.getElementById('cal-pop-today');
@@ -1175,13 +1498,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btnDateConfirm.onclick = (e) => {
       e.stopPropagation();
       draftTask.date = `${toFa(taskCalSelectedDay)} ${persianMonthNames[taskCalMonthIdx]}`;
-      if (isEditingMode && editDateLabel) editDateLabel.textContent = draftTask.date;
       popupDate.style.display = 'none';
-      if (!isEditingMode && toolBtnDate) toolBtnDate.classList.add('active-tool');
+      if (toolBtnDate) toolBtnDate.classList.add('active-tool');
     };
   }
 
-  // منطق ساعت و دقیقه
+  // منطق ساعت و دقیقه ساخت
   const wheelHour = document.getElementById('wheel-hour');
   const wheelMinute = document.getElementById('wheel-minute');
   const btnTimeConfirm = document.getElementById('btn-time-confirm');
@@ -1234,49 +1556,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 40);
   }
 
-  function attachWheelScrollDetection(scroller, onSelect) {
-    let timeout;
-    scroller.addEventListener('scroll', () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const scrollerRect = scroller.getBoundingClientRect();
-        const centerY = scrollerRect.top + scrollerRect.height / 2;
-        let closestItem = null;
-        let minDiff = Infinity;
-        scroller.querySelectorAll('.time-num-item').forEach(item => {
-          const rect = item.getBoundingClientRect();
-          const itemCenter = rect.top + rect.height / 2;
-          const diff = Math.abs(itemCenter - centerY);
-          if (diff < minDiff) {
-            minDiff = diff;
-            closestItem = item;
-          }
-        });
-        if (closestItem) {
-          scroller.querySelectorAll('.time-num-item').forEach(el => el.classList.remove('selected'));
-          closestItem.classList.add('selected');
-          onSelect(closestItem.dataset.value);
-        }
-      }, 70);
-    });
-  }
-
-  if (wheelHour && wheelMinute) {
-    attachWheelScrollDetection(wheelHour, val => { selectedHour = val; });
-    attachWheelScrollDetection(wheelMinute, val => { selectedMinute = val; });
-  }
-
   if (btnTimeConfirm) {
     btnTimeConfirm.onclick = (e) => {
       e.stopPropagation();
       draftTask.time = `${toFa(selectedHour)}:${toFa(selectedMinute)}`;
-      if (isEditingMode && editTimeLabel) editTimeLabel.textContent = draftTask.time;
       popupTime.style.display = 'none';
-      if (!isEditingMode && toolBtnTime) toolBtnTime.classList.add('active-tool');
+      if (toolBtnTime) toolBtnTime.classList.add('active-tool');
     };
   }
 
-  // منطق اولویت
+  // اولویت ساخت
   if (popupPriority) {
     popupPriority.querySelectorAll('.prio-item').forEach(el => {
       el.onclick = (ev) => {
@@ -1284,15 +1573,13 @@ document.addEventListener('DOMContentLoaded', () => {
         popupPriority.querySelectorAll('.prio-item').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
         draftTask.priority = el.dataset.prio;
-        const prioNames = { none: 'بدون اولویت', low: 'پایین', medium: 'متوسط', high: 'بالا' };
-        if (isEditingMode && editPriorityLabel) editPriorityLabel.textContent = prioNames[el.dataset.prio];
         popupPriority.style.display = 'none';
-        if (!isEditingMode && toolBtnPriority) toolBtnPriority.classList.add('active-tool');
+        if (toolBtnPriority) toolBtnPriority.classList.add('active-tool');
       };
     });
   }
 
-  // منطق تکرار
+  // تکرار ساخت
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
   const cntMinus = document.getElementById('cnt-minus');
   const cntPlus = document.getElementById('cnt-plus');
@@ -1311,8 +1598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     repeatDynamicSub.innerHTML = '';
     const unit = repeatUnitSelect.value;
 
-    if (unit === 'day') {
-    } else if (unit === 'week') {
+    if (unit === 'week') {
       const wrap = document.createElement('div');
       wrap.className = 'sub-row-wrap';
       wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
@@ -1450,13 +1736,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRepeatConfirm.onclick = () => {
       const uText = repeatUnitSelect.options[repeatUnitSelect.selectedIndex].text;
       draftTask.repeat = (repeatCount === 1) ? uText + 'انه' : `هر ${toFa(repeatCount)} ${uText}`;
-      if (isEditingMode && editRepeatLabel) editRepeatLabel.textContent = draftTask.repeat;
       popupRepeat.style.display = 'none';
-      if (!isEditingMode && toolBtnRepeat) toolBtnRepeat.classList.add('active-tool');
+      if (toolBtnRepeat) toolBtnRepeat.classList.add('active-tool');
     };
   }
 
-  // --- رندر تسک‌ها با تضمین قطعی تیک در راست، ادیت/حذف در چپ ---
+  // --- رندر تسک‌ها با تثبیت قطعی تیک در راست، متون در کنار آن، و دکمه‌ها در چپ ---
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1481,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let metaHtml = '';
       const pills = [];
 
+      // برچسب‌های وضعیت بورد
       if (item.board === 'in_progress') {
         pills.push(`<span class="task-board-badge in-progress">● در دست اقدام</span>`);
       } else if (item.board === 'done') {
@@ -1507,6 +1793,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const prioClass = `prio-${item.priority || 'none'}`;
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
+      // ۱. تیک در لبه راست، متون در سمت چپ تیک
+      // ۲. دکمه‌های مداد و سطل زباله در منتهی‌الیه چپ
       li.innerHTML = `
         <div class="task-card-right-group">
           <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
@@ -1521,10 +1809,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="task-card-left-actions">
           <button class="task-act-btn edit-btn" title="ویرایش">✏️</button>
-          <button class="task-act-btn delete-btn" title="حذف">🗑️</button>
+          <button class="task-act-btn delete-btn" title="حذف">🗑</button>
         </div>
       `;
 
+      // تغییر وضعیت تیک
       const chk = li.querySelector('.task-checkbox-custom');
       chk.onclick = (e) => {
         e.stopPropagation();
@@ -1532,12 +1821,14 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       };
 
+      // باز شدن مودال ویرایش تسک
       const editBtn = li.querySelector('.edit-btn');
       editBtn.onclick = (e) => {
         e.stopPropagation();
         openEditTaskModal(index);
       };
 
+      // حذف تسک
       const delBtn = li.querySelector('.delete-btn');
       delBtn.onclick = (e) => {
         e.stopPropagation();
