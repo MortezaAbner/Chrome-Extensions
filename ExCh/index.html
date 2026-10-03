@@ -153,7 +153,7 @@
               <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
             </div>
 
-            <!-- پاپ‌‌آپ کوچک سال و ماه -->
+            <!-- پاپ‌آپ کوچک سال و ماه -->
             <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
               <div class="picker-columns">
                 <div class="picker-col">
@@ -257,7 +257,7 @@
                   <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
                   <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.27 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
                 </svg>
-                <span id="zarebin-logo" class="zarebin-text" style="display: none;">ذره‌بین</span>
+                <span id="zarebin-logo" class="zarebin-text" style="display: none;">ذره‌‌بین</span>
               </div>
             </div>
           </form>
@@ -315,18 +315,16 @@
               </div>
             </div>
 
-            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱) -->
+            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای (چک‌باکس در راست و ادیت/حذف در چپ) -->
             <ul class="todo-list" id="todo-list" style="display: none;"></ul>
           </div>
 
-          <!-- کادر همه‌کاره درون‌خطی تسک به همراه ۵ پاپ‌آپ ابزار -->
+          <!-- کادر همه‌کاره درون‌خطی تسک -->
           <div class="inline-task-box ios-glass-card" id="inline-task-box">
-            <!-- حالت اولیه بسته -->
             <div class="inline-task-collapsed" id="task-trigger-collapsed">
               <span>نوشتن تسک جدید</span>
             </div>
 
-            <!-- حالت باز شده درون همان کادر -->
             <div class="inline-task-expanded" id="task-composer-expanded" style="display: none;">
               <input type="text" id="composer-title" placeholder="نوشتن تسک جدید" autocomplete="off">
               <textarea id="composer-desc" placeholder="توضیحات..." rows="2"></textarea>
@@ -339,27 +337,28 @@
                   </svg>
                 </button>
                 <div class="composer-tools-row">
-                  <!-- ۱. تکرار (عکس ۷ تا ۱۰) -->
+                  <!-- ۱. تکرار (عکس ۷ تا ۱۰ با چینش راست‌به‌چپ) -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-repeat" title="تکرار">🔄</button>
                     <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
                       <div class="popup-sec-title">تکرار</div>
                       <div class="repeat-row-top">
-                        <select id="repeat-unit-select" class="custom-select-glass">
-                          <option value="day">روز</option>
-                          <option value="week">هفته</option>
-                          <option value="month">ماه</option>
-                          <option value="year">سال</option>
-                        </select>
-                        <div class="counter-box-glass">
-                          <button type="button" class="cnt-btn" id="cnt-minus">-</button>
-                          <span id="cnt-val">۲</span>
-                          <button type="button" class="cnt-btn" id="cnt-plus">+</button>
-                        </div>
                         <span class="repeat-lbl">هر چند وقت یکبار؟</span>
+                        <div class="repeat-inputs-left">
+                          <div class="counter-box-glass">
+                            <button type="button" class="cnt-btn" id="cnt-plus">+</button>
+                            <span id="cnt-val">۲</span>
+                            <button type="button" class="cnt-btn" id="cnt-minus">-</button>
+                          </div>
+                          <select id="repeat-unit-select" class="custom-select-glass">
+                            <option value="day">روز</option>
+                            <option value="week">هفته</option>
+                            <option value="month">ماه</option>
+                            <option value="year">سال</option>
+                          </select>
+                        </div>
                       </div>
 
-                      <!-- بخش زیرین پویا برای روز، هفته، ماه، سال -->
                       <div class="repeat-dynamic-sub" id="repeat-dynamic-sub"></div>
 
                       <div class="repeat-modal-actions">
@@ -369,7 +368,7 @@
                     </div>
                   </div>
 
-                  <!-- ۲. اولویت / پرچم (عکس ۶) -->
+                  <!-- ۲. اولویت / پرچم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-priority" title="اولویت">🚩</button>
                     <div class="task-tool-popup glass-blur-menu priority-popup-box" id="popup-priority" style="display: none;">
@@ -380,16 +379,18 @@
                     </div>
                   </div>
 
-                  <!-- ۳. ساعت و زمان (عکس ۵) -->
+                  <!-- ۳. ساعت و زمان دقیقاً تراز شده با دو نقطه (عکس ۵) -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-time" title="ساعت یادآوری">⏰</button>
                     <div class="task-tool-popup glass-blur-menu time-popup-box" id="popup-time" style="display: none;">
                       <div class="time-columns-wrapper">
+                        <!-- ستون ساعت در راست -->
                         <div class="time-col">
                           <span class="time-col-header">ساعت</span>
                           <div class="time-wheel-scroller" id="wheel-hour"></div>
                         </div>
                         <span class="time-colon">:</span>
+                        <!-- ستون دقیقه در چپ -->
                         <div class="time-col">
                           <span class="time-col-header">دقیقه</span>
                           <div class="time-wheel-scroller" id="wheel-minute"></div>
@@ -399,7 +400,7 @@
                     </div>
                   </div>
 
-                  <!-- ۴. تقویم (عکس ۳ و ۴) -->
+                  <!-- ۴. تقویم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-date" title="تاریخ سررسید">📅</button>
                     <div class="task-tool-popup glass-blur-menu cal-popup-box" id="popup-date" style="display: none;">
@@ -419,7 +420,7 @@
                     </div>
                   </div>
 
-                  <!-- ۵. برچسب (عکس ۲) -->
+                  <!-- ۵. برچسب -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-tag" title="برچسب">🏷️</button>
                     <div class="task-tool-popup glass-blur-menu tag-popup-box" id="popup-tag" style="display: none;">
@@ -596,14 +597,12 @@
 
   <!-- داک شیشه‌ای در پایین صفحه -->
   <footer class="bottom-floating-dock ios-glass-card" id="bottom-dock">
-    <!-- راست: لوگوی اختصاصی آبنر اکستنشن -->
     <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
       <div class="dock-abner-chip">A</div>
     </button>
 
     <div class="dock-sep"></div>
 
-    <!-- بخش وسط: آیکون‌های مینیمال تسک، خانه، تم و تنظیمات -->
     <div class="dock-center-group">
       <button class="dock-btn active" id="dock-home-btn" title="خانه (داشبورد)">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -626,14 +625,13 @@
       <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
 
     <div class="dock-sep"></div>
 
-    <!-- چپ: پروفایل کاربر -->
     <button class="dock-btn" id="dock-profile-btn" title="پروفایل">
       <div class="dock-profile-circle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
