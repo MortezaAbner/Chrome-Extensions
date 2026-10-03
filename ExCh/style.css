@@ -495,34 +495,30 @@ body {
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
 /* ========================================================
-   ساختار کارت تسک: تیک راست، ادیت/حذف چپ (تضمینی و دقیق)
+   چیدمان قطعی کارت تسک: تیک راست، ادیت/حذف چپ
    ======================================================== */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
 .task-item-card {
-  display: flex !important;
-  flex-direction: row !important; /* چینش خطی استاندارد RTL */
-  justify-content: space-between !important;
-  align-items: center !important;
-  padding: 10px 14px;
+  position: relative !important;
+  display: block !important;
+  padding: 10px 14px 10px 75px !important; /* پدینگ سمت چپ برای استقرار قطعی دکمه‌ها بدون تغییر متن */
   border-radius: 18px !important;
-  position: relative;
   transition: transform 0.15s ease, background 0.15s ease;
 }
 .task-item-card:hover {
   transform: translateY(-2px);
 }
 
-/* محفظه سمت راست: شامل مربع تیک و سپس متون */
+/* سمت راست: چک‌باکس و بلافاصله در سمت چپ آن متن‌ها */
 .task-card-right-group {
   display: flex !important;
   flex-direction: row !important;
   align-items: flex-start !important;
   gap: 12px !important;
-  flex: 1;
-  text-align: right;
-  min-width: 0;
+  width: 100% !important;
+  text-align: right !important;
 }
 
 .task-checkbox-custom {
@@ -611,7 +607,7 @@ body {
   color: #cbd5e1;
 }
 
-/* کپسول‌های وضعیت بورد */
+/* کپسول‌های وضعیت بورد (عکس ۲ و ۳) */
 .task-board-badge {
   display: inline-flex;
   align-items: center;
@@ -623,12 +619,12 @@ body {
   white-space: nowrap;
 }
 .task-board-badge.in-progress {
-  background: rgba(37, 99, 235, 0.14);
-  color: #2563eb;
+  background: rgba(37, 99, 235, 0.14) !important;
+  color: #2563eb !important;
 }
 .task-board-badge.done-badge {
-  background: rgba(16, 185, 129, 0.14);
-  color: #10b981;
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #10b981 !important;
 }
 
 /* خط‌خوردگی تسک انجام‌شده */
@@ -640,16 +636,19 @@ body {
   opacity: 0.45;
 }
 
-/* ستون سمت چپ کارت: آیکون‌های ادیت و سطل زباله در مرکز عمودی */
+/* ستون سمت چپ کارت: آیکون‌های ادیت و سطل زباله در مرکز عمودی و منتهی‌الیه چپ */
 .task-card-left-actions {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px;
+  gap: 6px !important;
   opacity: 0;
   transition: opacity 0.15s ease;
-  flex-shrink: 0;
-  margin-right: 8px;
+  z-index: 5;
 }
 .task-item-card:hover .task-card-left-actions,
 .task-item-card:active .task-card-left-actions {
@@ -1219,24 +1218,25 @@ body {
   margin-top: 4px;
 }
 
-/* پاپ‌آپ شیشه‌ای ویرایش تسک */
+/* پاپ‌آپ شیشه‌ای ویرایش تسک (عکس ۱) */
 .edit-task-card-box {
-  width: 480px !important;
-  max-width: 92%;
-  padding: 22px !important;
-  border-radius: 28px !important;
+  width: 520px !important;
+  max-width: 94%;
+  padding: 24px !important;
+  border-radius: 30px !important;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   position: relative;
 }
 .edit-task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 .edit-task-header h3 {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 850;
   color: var(--text-main);
   text-align: center;
@@ -1245,11 +1245,11 @@ body {
 .edit-task-title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 10px 14px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 12px 16px;
 }
 [data-theme="dark"] .edit-task-title-row {
   background: rgba(255, 255, 255, 0.1);
@@ -1259,7 +1259,7 @@ body {
   border: none;
   background: transparent;
   outline: none;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 850;
   color: var(--text-main);
   text-align: right;
@@ -1273,17 +1273,22 @@ body {
 }
 .edit-task-desc-area {
   width: 100%;
-  min-height: 80px;
+  min-height: 85px;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 14px 16px;
   outline: none;
   resize: vertical;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 650;
   color: var(--text-main);
   text-align: right;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.edit-task-desc-area::-webkit-scrollbar {
+  display: none;
 }
 [data-theme="dark"] .edit-task-desc-area {
   background: rgba(255, 255, 255, 0.1);
@@ -1291,58 +1296,63 @@ body {
 
 .edit-task-tools-bar {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
   position: relative;
+  margin-top: 4px;
 }
 .edit-tool-pill {
-  padding: 6px 12px;
-  border-radius: 14px;
+  padding: 7px 14px;
+  border-radius: 16px;
   border: 1px solid var(--glass-border);
   background: rgba(255, 255, 255, 0.7);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 800;
   color: var(--text-main);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  transition: all 0.15s ease;
 }
 .edit-tool-pill:hover {
   background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
 }
 
+/* منوی بازشونده بورد (عکس ۱) */
 .board-dropdown-menu {
   position: absolute;
-  bottom: calc(100% + 6px);
+  top: calc(100% + 8px);
   right: 0;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 6px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-  z-index: 100;
-  min-width: 130px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+  z-index: 100005;
+  min-width: 140px;
 }
 [data-theme="dark"] .board-dropdown-menu {
   background: rgba(20, 26, 44, 0.95);
 }
 .board-opt-item {
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.84rem;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
   font-weight: 800;
   color: var(--text-main);
   cursor: pointer;
   text-align: right;
+  transition: all 0.12s;
 }
 .board-opt-item:hover {
-  background: rgba(37, 99, 235, 0.12);
+  background: rgba(37, 99, 235, 0.14);
   color: #2563eb;
 }
 
@@ -1350,28 +1360,29 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 6px;
-  gap: 12px;
+  margin-top: 10px;
+  gap: 14px;
 }
 .btn-save-task {
   flex: 1;
   background: #2563eb;
   color: #fff;
   border: none;
-  padding: 11px 0;
-  border-radius: 16px;
-  font-size: 0.95rem;
+  padding: 12px 0;
+  border-radius: 18px;
+  font-size: 1rem;
   font-weight: 850;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 .btn-delete-task {
   flex: 1;
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
   border: 1.5px solid #fca5a5;
-  padding: 11px 0;
-  border-radius: 16px;
-  font-size: 0.95rem;
+  padding: 12px 0;
+  border-radius: 18px;
+  font-size: 1rem;
   font-weight: 850;
   cursor: pointer;
 }

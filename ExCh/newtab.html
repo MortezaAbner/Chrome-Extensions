@@ -28,7 +28,7 @@
       <div class="col col-left">
         <div class="split-widgets-row">
           
-          <!-- باکس آب‌وهوا -->
+          <!-- باکس آب‌‌وهوا -->
           <div class="ios-glass-card weather-single-card" id="weather-card">
             <div class="weather-top-row">
               <span class="weather-temp-val" id="weather-temp">۲۱°</span>
@@ -519,7 +519,7 @@
           <div class="weekly-top-center">
             <span class="pill-btn active">یادداشت‌ها 📋</span>
             <span class="pill-btn active">تسک‌ها ☑</span>
-            <span class="pill-btn">امروز ☀️️</span>
+            <span class="pill-btn">امروز ☀️</span>
           </div>
 
           <div class="weekly-nav-week">
@@ -623,7 +623,7 @@
       <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
@@ -640,7 +640,7 @@
     </button>
   </footer>
 
-  <!-- مودال ویرایش تسک (عکس ۲) -->
+  <!-- مودال شیشه‌ای کامل ویرایش تسک همراه با تمام ابزارها (عکس ۱ و ۲) -->
   <div id="edit-task-modal" class="modal-overlay">
     <div class="modal-content ios-glass-card edit-task-card-box glass-blur-menu">
       <div class="edit-task-header">
@@ -653,7 +653,9 @@
       </div>
       <textarea id="edit-task-desc-input" class="edit-task-desc-area" placeholder="توضیحات..." rows="3"></textarea>
       
+      <!-- نوار ابزار کامل ویرایش تسک دقیقاً مانند عکس ۱ و ۲ -->
       <div class="edit-task-tools-bar">
+        <!-- ۱. بورد -->
         <div class="tool-popup-wrap">
           <button type="button" class="edit-tool-pill" id="edit-board-btn">📁 بورد ⌵</button>
           <div class="board-dropdown-menu" id="board-dropdown-menu" style="display: none;">
@@ -661,6 +663,31 @@
             <div class="board-opt-item" data-board="in_progress">در دست اقدام</div>
             <div class="board-opt-item" data-board="done">انجام شده</div>
           </div>
+        </div>
+
+        <!-- ۲. تکرار -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-repeat-btn">🔄 <span id="edit-repeat-label">تکرار</span></button>
+        </div>
+
+        <!-- ۳. سررسید (تاریخ) -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-date-btn">📅 <span id="edit-date-label">سررسید</span></button>
+        </div>
+
+        <!-- ۴. ساعت -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-time-btn">⏰ <span id="edit-time-label">ساعت</span></button>
+        </div>
+
+        <!-- ۵. برچسب‌ها -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-tag-btn">🏷️ <span id="edit-tag-label">برچسب‌ها</span></button>
+        </div>
+
+        <!-- ۶. اولویت -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-priority-btn">🚩 <span id="edit-priority-label">بدون اولویت</span></button>
         </div>
       </div>
 
