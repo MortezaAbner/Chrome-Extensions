@@ -42,7 +42,7 @@
 html, body {
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* قفل کامل اسکرول صفحه اول */
+  overflow: hidden;
   position: relative;
 }
 
@@ -64,7 +64,6 @@ body {
 .bg-overlay.blurred { filter: blur(20px) brightness(0.92); transform: scale(1.04); }
 .bg-overlay.clear { filter: blur(0px) brightness(0.98); }
 
-/* ساختار نمایش صفحات SPA */
 .app-view {
   display: none;
   width: 100%;
@@ -101,7 +100,6 @@ body {
   display: flex; gap: 12px; width: 100%; position: relative; z-index: 30;
 }
 
-/* استاندارد بلر و شفافیت منوها */
 .glass-blur-menu {
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(28px) saturate(200%) !important;
@@ -117,7 +115,7 @@ body {
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* باکس آب‌وهوا */
+/* باکس آب‌‌وهوا */
 .weather-single-card {
   flex: 1.15; padding: 16px 18px; display: flex;
   flex-direction: column; justify-content: space-between; border-radius: 26px;
@@ -475,7 +473,7 @@ body {
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
 
-/* محفظه تسک با اسکرول کاملاً نامرئی (بدون اسکرول‌بار) */
+/* محفظه تسک با اسکرول کاملاً نامرئی */
 .task-body-zone {
   flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
@@ -502,10 +500,9 @@ body {
 }
 .task-item-card {
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: row-reverse !important; /* معکوس قطعی جهت قرارگیری تیک در راست و دکمه‌ها در چپ */
   justify-content: space-between !important;
   align-items: center !important;
-  direction: rtl !important;
   padding: 10px 14px;
   border-radius: 18px !important;
   position: relative;
@@ -582,7 +579,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲) */
+/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲ و ۳) */
 .task-meta-pills {
   display: flex !important;
   flex-direction: row !important;
@@ -612,6 +609,26 @@ body {
   color: #cbd5e1;
 }
 
+/* کپسول‌های وضعیت بورد (عکس ۳ و ۴) */
+.task-board-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.task-board-badge.in-progress {
+  background: rgba(37, 99, 235, 0.14);
+  color: #2563eb;
+}
+.task-board-badge.done-badge {
+  background: rgba(16, 185, 129, 0.14);
+  color: #10b981;
+}
+
 /* خط‌خوردگی تسک انجام‌شده */
 .task-item-card.done .task-item-title {
   text-decoration: line-through;
@@ -621,7 +638,7 @@ body {
   opacity: 0.45;
 }
 
-/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک */
+/* سمت چپ: آیکون‌های مداد و سطل زباله در مرکز عمودی و سایز کوچک (عکس ۱) */
 .task-card-left-actions {
   display: flex !important;
   flex-direction: row !important;
@@ -630,7 +647,7 @@ body {
   opacity: 0;
   transition: opacity 0.15s ease;
   flex-shrink: 0;
-  margin-right: 8px;
+  margin-left: 8px;
 }
 .task-item-card:hover .task-card-left-actions,
 .task-item-card:active .task-card-left-actions {
@@ -660,7 +677,7 @@ body {
   border-color: #fca5a5;
 }
 
-/* کادر نوشتن تسک درون‌خطی و حذف اسکرول‌بار تکست‌‌اریا (عکس ۱) */
+/* کادر نوشتن تسک درون‌خطی */
 .inline-task-box {
   width: 100%;
   border-radius: 24px !important;
@@ -700,7 +717,6 @@ body {
   text-align: right;
 }
 
-/* تکست‌اریا بدون اسکرول‌بار */
 .inline-task-expanded textarea {
   width: 100%;
   border: none;
@@ -711,7 +727,7 @@ body {
   font-weight: 650;
   color: var(--text-muted);
   text-align: right;
-  overflow: hidden !important; /* حذف اسکرول‌بار مزاحم */
+  overflow: hidden !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
@@ -784,7 +800,7 @@ body {
   animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ۱. پاپ‌‌آپ برچسب */
+/* ۱. پاپ‌آپ برچسب */
 .tag-popup-box {
   width: 250px;
   padding: 12px;
@@ -1202,7 +1218,166 @@ body {
 }
 
 /* ========================================================
-   بخش اصلاحی حیاتی: مخفی‌سازی قطعی مودال‌های معلق و استایل آن‌ها
+   پاپ‌آپ شیشه‌ای ویرایش تسک (عکس ۲)
+   ======================================================== */
+.edit-task-card-box {
+  width: 480px !important;
+  max-width: 92%;
+  padding: 22px !important;
+  border-radius: 28px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.edit-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.edit-task-header h3 {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: var(--text-main);
+  text-align: center;
+  flex: 1;
+}
+.edit-task-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 10px 14px;
+}
+[data-theme="dark"] .edit-task-title-row {
+  background: rgba(255, 255, 255, 0.1);
+}
+.edit-task-title-row input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 850;
+  color: var(--text-main);
+  text-align: right;
+}
+.edit-chk-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid #94a3b8;
+  flex-shrink: 0;
+}
+.edit-task-desc-area {
+  width: 100%;
+  min-height: 80px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 12px 14px;
+  outline: none;
+  resize: vertical;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--text-main);
+  text-align: right;
+}
+[data-theme="dark"] .edit-task-desc-area {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.edit-task-tools-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  position: relative;
+}
+.edit-tool-pill {
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.edit-tool-pill:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.board-dropdown-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  z-index: 100;
+  min-width: 130px;
+}
+[data-theme="dark"] .board-dropdown-menu {
+  background: rgba(20, 26, 44, 0.95);
+}
+.board-opt-item {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: right;
+}
+.board-opt-item:hover {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.edit-task-footer-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  gap: 12px;
+}
+.btn-save-task {
+  flex: 1;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 11px 0;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+.btn-delete-task {
+  flex: 1;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1.5px solid #fca5a5;
+  padding: 11px 0;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+/* ========================================================
+   بخش پنهان‌سازی قطعی مودال‌های معلق
    ======================================================== */
 .modal-overlay {
   position: fixed !important;
@@ -1213,7 +1388,7 @@ body {
   background: rgba(15, 23, 42, 0.5) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  display: none !important; /* پنهان‌سازی قطعی تا قبل از کلیک کاربر */
+  display: none !important;
   justify-content: center !important;
   align-items: center !important;
   z-index: 100000 !important;

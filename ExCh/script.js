@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌‌الثانی ۱۴۴۸' },
+    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌‌‌‌الثانی ۱۴۴۸' },
     '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
     '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
@@ -762,6 +762,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
 
+  // متغیرهای ویرایش تسک (عکس ۲)
+  const editTaskModal = document.getElementById('edit-task-modal');
+  const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
+  const editTaskTitleInput = document.getElementById('edit-task-title-input');
+  const editTaskDescInput = document.getElementById('edit-task-desc-input');
+  const editTaskChkIndicator = document.getElementById('edit-task-chk-indicator');
+  const editBoardBtn = document.getElementById('edit-board-btn');
+  const boardDropdownMenu = document.getElementById('board-dropdown-menu');
+  const btnEditTaskSave = document.getElementById('btn-edit-task-save');
+  const btnEditTaskDelete = document.getElementById('btn-edit-task-delete');
+
+  let currentEditingIndex = -1;
+  let currentEditingBoard = 'none';
+
   let draftTask = {
     tag: '',
     date: '',
@@ -797,7 +811,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // تنظیم خودکار ارتفاع تکست‌اریا بدون ایجاد اسکرول‌بار (عکس ۱)
   if (composerDesc) {
     composerDesc.addEventListener('input', function() {
       this.style.height = 'auto';
@@ -807,6 +820,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeAllToolPopups() {
     document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
+  }
+
+  // پاپ‌آپ ویرایش تسک (عکس ۲)
+  function openEditTaskModal(index) {
+    currentEditingIndex = index;
+    const item = todos[index];
+    if (!item) return;
+
+    editTaskTitleInput.value = item.title || '';
+    editTaskDescInput.value = item.desc || '';
+    currentEditingBoard = item.board || 'none';
+
+    if (item.done) {
+      editTaskChkIndicator.style.background = '#2563eb';
+      editTaskChkIndicator.style.borderColor = '#2563eb';
+    } else {
+      editTaskChkIndicator.style.background = 'transparent';
+      editTaskChkIndicator.style.borderColor = '#94a3b8';
+    }
+
+    if (boardDropdownMenu) boardDropdownMenu.style.display = 'none';
+    if (editTaskModal) editTaskModal.classList.add('active');
+  }
+
+  if (editTaskCloseBtn && editTaskModal) {
+    editTaskCloseBtn.onclick = () => editTaskModal.classList.remove('active');
+  }
+
+  if (editBoardBtn && boardDropdownMenu) {
+    editBoardBtn.onclick = (e) => {
+      e.stopPropagation();
+      boardDropdownMenu.style.display = boardDropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+    };
+
+    boardDropdownMenu.querySelectorAll('.board-opt-item').forEach(opt => {
+      opt.onclick = (ev) => {
+        ev.stopPropagation();
+        currentEditingBoard = opt.dataset.board;
+        boardDropdownMenu.style.display = 'none';
+      };
+    });
+  }
+
+  if (btnEditTaskSave && editTaskModal) {
+    btnEditTaskSave.onclick = () => {
+      if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
+        todos[currentEditingIndex].title = editTaskTitleInput.value.trim() || todos[currentEditingIndex].title;
+        todos[currentEditingIndex].desc = editTaskDescInput.value.trim();
+        todos[currentEditingIndex].board = currentEditingBoard;
+        saveAndRenderTodos();
+      }
+      editTaskModal.classList.remove('active');
+    };
+  }
+
+  if (btnEditTaskDelete && editTaskModal) {
+    btnEditTaskDelete.onclick = () => {
+      if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
+        todos.splice(currentEditingIndex, 1);
+        saveAndRenderTodos();
+      }
+      editTaskModal.classList.remove('active');
+    };
   }
 
   // --- ابزار ۱: برچسب ---
@@ -1090,9 +1166,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const unit = repeatUnitSelect.value;
 
     if (unit === 'day') {
-      // فقط شمارنده بالا
+      // حالت روز
     } else if (unit === 'week') {
-      // نام کامل روزهای هفته با دکمه‌های مجزا
       const wrap = document.createElement('div');
       wrap.className = 'sub-row-wrap';
       wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
@@ -1272,6 +1347,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // ساخت کپسول‌های متادیتا همگی در یک خط افقی و هم‌رنگ (عکس ۲ و ۳)
       let metaHtml = '';
       const pills = [];
+
+      // برچسب بورد (عکس ۳ و ۴)
+      if (item.board === 'in_progress') {
+        pills.push(`<span class="task-board-badge in-progress">● در دست اقدام</span>`);
+      } else if (item.board === 'done') {
+        pills.push(`<span class="task-board-badge done-badge">● انجام شده</span>`);
+      }
+
       if (item.date) {
         pills.push(`<span class="task-meta-pill"><span>${item.date}</span><span>📅</span></span>`);
       }
@@ -1290,7 +1373,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const prioClass = `prio-${item.priority || 'none'}`;
-      // نمایش فقط خط اول توضیحات
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
       li.innerHTML = `
@@ -1321,15 +1403,11 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       };
 
-      // ویرایش تسک
+      // باز شدن پاپ‌آپ پیشرفته ویرایش تسک (عکس ۲)
       const editBtn = li.querySelector('.edit-btn');
       editBtn.onclick = (e) => {
         e.stopPropagation();
-        const newTitle = prompt('عنوان جدید تسک:', item.title);
-        if (newTitle !== null && newTitle.trim() !== '') {
-          todos[index].title = newTitle.trim();
-          saveAndRenderTodos();
-        }
+        openEditTaskModal(index);
       };
 
       // حذف تسک
@@ -1359,7 +1437,8 @@ document.addEventListener('DOMContentLoaded', () => {
         date: draftTask.date,
         time: draftTask.time,
         priority: draftTask.priority || 'none',
-        repeat: draftTask.repeat
+        repeat: draftTask.repeat,
+        board: 'none'
       });
 
       composerTitle.value = '';
