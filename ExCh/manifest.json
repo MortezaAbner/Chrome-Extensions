@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Abner Dashboard",
-  "version": "1.22.0",
+  "version": "1.22.1",
   "description": "یک افزونه شیشه‌ای هوشمند برای مرورگر شامل آب‌وهوا، تقویم تعاملی، تایمر، تسک و میانبرها",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
