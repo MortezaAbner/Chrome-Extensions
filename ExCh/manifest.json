@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Abner Dashboard",
-  "version": "1.21.4",
+  "version": "1.21.5",
   "description": "Abner Glassmorphic Dashboard Extension",
   "chrome_url_overrides": {
     "newtab": "newtab.html"

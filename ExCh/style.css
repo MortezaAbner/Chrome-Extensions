@@ -42,7 +42,7 @@
 html, body {
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* جلوگیری کامل از اسکرول خوردن صفحه به پایین */
+  overflow: hidden; /* قفل کامل اسکرول صفحه اول */
   position: relative;
 }
 
@@ -475,7 +475,7 @@ body {
 }
 [data-theme="dark"] .pill-action-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; }
 
-/* محفظه تسک با اسکرول کاملاً نامرئی */
+/* محفظه تسک با اسکرول کاملاً نامرئی (بدون اسکرول‌بار) */
 .task-body-zone {
   flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
   padding: 8px 0; overflow-y: auto; max-height: 380px; gap: 10px;
@@ -496,7 +496,7 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* کارت تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱ و ۷) */
+/* کارت‌های تسک شیشه‌ای با چک‌باکس در راست و ادیت/حذف در چپ (عکس ۱ و ۲) */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
@@ -582,7 +582,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲ و ۳) */
+/* آیکون‌های متادیتا در یک خط افقی و هم‌رنگ (عکس ۲) */
 .task-meta-pills {
   display: flex !important;
   flex-direction: row !important;
@@ -660,7 +660,7 @@ body {
   border-color: #fca5a5;
 }
 
-/* کادر نوشتن تسک درون‌خطی و حذف اسکرول‌بار تکست‌اریا (عکس ۱) */
+/* کادر نوشتن تسک درون‌خطی و حذف اسکرول‌بار تکست‌‌اریا (عکس ۱) */
 .inline-task-box {
   width: 100%;
   border-radius: 24px !important;
@@ -700,7 +700,7 @@ body {
   text-align: right;
 }
 
-/* تکست‌اریا بدون اسکرول‌بار و تمیز */
+/* تکست‌اریا بدون اسکرول‌بار */
 .inline-task-expanded textarea {
   width: 100%;
   border: none;
@@ -784,7 +784,7 @@ body {
   animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ۱. پاپ‌آپ برچسب */
+/* ۱. پاپ‌‌آپ برچسب */
 .tag-popup-box {
   width: 250px;
   padding: 12px;
@@ -1200,6 +1200,114 @@ body {
   cursor: pointer;
   margin-top: 4px;
 }
+
+/* ========================================================
+   بخش اصلاحی حیاتی: مخفی‌سازی قطعی مودال‌های معلق و استایل آن‌ها
+   ======================================================== */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  display: none !important; /* پنهان‌سازی قطعی تا قبل از کلیک کاربر */
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 100000 !important;
+}
+
+.modal-overlay.active {
+  display: flex !important;
+}
+
+.location-modal-box {
+  width: 400px !important;
+  max-width: 92%;
+  padding: 24px !important;
+  border-radius: 30px !important;
+  gap: 16px !important;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header-title h3 { font-size: 1.2rem; font-weight: 850; color: var(--text-main); margin-bottom: 4px; }
+.modal-header-title p { font-size: 0.82rem; color: var(--text-muted); font-weight: 650; }
+.loc-options-group { display: flex; flex-direction: column; gap: 10px; }
+.loc-method-btn {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.8); cursor: pointer;
+  text-align: right; transition: transform 0.15s ease;
+}
+.loc-method-btn.primary-glass { background: rgba(239, 246, 255, 0.85); border-color: rgba(191, 219, 254, 0.9); }
+.loc-method-btn.secondary-glass { background: rgba(248, 250, 252, 0.85); }
+.loc-icon-circle {
+  width: 42px; height: 42px; border-radius: 50%; background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); display: flex; align-items: center;
+  justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+}
+[data-theme="dark"] .loc-icon-circle { background: #1e293b; }
+.loc-text-desc strong { font-size: 0.92rem; font-weight: 850; color: var(--text-main); display: block; }
+.loc-text-desc span { font-size: 0.76rem; color: var(--text-muted); font-weight: 650; }
+.loc-divider { display: flex; align-items: center; text-align: center; margin: 4px 0; }
+.loc-divider::before, .loc-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--glass-border); }
+.loc-divider span { padding: 0 10px; font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
+.manual-input-wrapper input {
+  width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); border: 1.5px solid var(--glass-border);
+  border-radius: 16px; outline: none; font-size: 0.92rem; color: var(--text-main); font-weight: 750;
+}
+.modal-buttons { display: flex; gap: 10px; margin-top: 6px; }
+.modal-btn { flex: 1; padding: 11px; border-radius: 15px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 750; }
+.modal-btn.save { background: #2563eb; color: #fff; }
+.modal-btn.cancel { background: rgba(0, 0, 0, 0.08); color: var(--text-main); }
+
+.convert-modal-box {
+  width: 380px !important;
+  max-width: 92%;
+  padding: 22px !important;
+  border-radius: 28px !important;
+}
+.convert-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.convert-modal-header h3 { font-size: 1.15rem; font-weight: 850; }
+.modal-close-icon { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-muted); font-weight: 850; }
+.convert-type-tabs { display: flex; align-items: center; gap: 8px; justify-content: flex-start; margin-bottom: 14px; }
+.type-tab-label { font-size: 0.85rem; font-weight: 800; color: var(--text-muted); margin-left: 4px; }
+.type-tab-btn {
+  background: rgba(255, 255, 255, 0.65); border: 1px solid var(--glass-border); border-radius: 12px;
+  padding: 5px 12px; font-size: 0.82rem; font-weight: 800; cursor: pointer; color: var(--text-main);
+}
+[data-theme="dark"] .type-tab-btn { background: rgba(255, 255, 255, 0.1); }
+.type-tab-btn.active { background: rgba(37, 99, 235, 0.18); color: #2563eb; border-color: rgba(37, 99, 235, 0.5); }
+.wheel-picker-container { display: flex; gap: 10px; margin-bottom: 16px; }
+.wheel-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.wheel-header { font-size: 0.82rem; font-weight: 850; text-align: center; color: var(--text-muted); }
+.custom-select-box {
+  width: 100%; padding: 10px 8px; border-radius: 14px; border: 1.5px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.85); outline: none; font-size: 0.95rem; font-weight: 850;
+  color: var(--text-main); text-align: center;
+}
+[data-theme="dark"] .custom-select-box { background: rgba(18, 24, 40, 0.85); color: #fff; }
+.convert-submit-btn {
+  width: 100%; background: #2563eb; color: #fff; border: none; border-radius: 16px;
+  padding: 12px 0; font-size: 0.95rem; font-weight: 850; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+.convert-results-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.result-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px dashed rgba(0, 0, 0, 0.12); }
+[data-theme="dark"] .result-row { border-bottom-color: rgba(255, 255, 255, 0.15); }
+.result-row .res-lbl { font-size: 0.88rem; font-weight: 800; color: var(--text-muted); }
+.result-row .res-val { font-size: 1.05rem; font-weight: 850; color: var(--text-main); }
+.result-row.day-row { justify-content: center; border-bottom: none; }
+.result-row.day-row .res-val { color: #2563eb; font-size: 1.15rem; font-weight: 900; }
+.result-row.age-row { border-top: 1px solid var(--glass-border); padding-top: 8px; }
+.convert-again-btn {
+  width: 100%; background: rgba(255, 255, 255, 0.75); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 12px 0; font-size: 0.92rem; font-weight: 850;
+  cursor: pointer; color: #2563eb; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+[data-theme="dark"] .convert-again-btn { background: rgba(255, 255, 255, 0.1); }
+.shortcut-key-n { border: 1px solid rgba(0, 0, 0, 0.25); padding: 1px 6px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
 
 /* داک شیشه‌ای در پایین صفحه */
 .bottom-floating-dock {
