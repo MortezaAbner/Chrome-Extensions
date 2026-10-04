@@ -180,7 +180,345 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveClock, 1000);
   updateLiveClock();
 
-  // ۶. سرچ‌بار
+  // ۶. تقویم گوگل ۲۴ ساعته
+  const googleCalBtn = document.getElementById('google-cal-btn');
+  const calStandardView = document.getElementById('calendar-standard-view');
+  const calGoogleView = document.getElementById('calendar-google-view');
+  const gBackToCalBtn = document.getElementById('g-back-to-cal-btn');
+  const gAddEventBtn = document.getElementById('g-add-event-btn');
+  const gPrevDayBtn = document.getElementById('g-prev-day');
+  const gNextDayBtn = document.getElementById('g-next-day');
+  const gTimeline24h = document.getElementById('g-timeline-24h');
+  const gViewDateText = document.getElementById('g-view-date-text');
+  const gViewDayText = document.getElementById('g-view-day-text');
+
+  let googleCurrentDayOffset = 0;
+
+  function updateGoogleCalendarTimeline() {
+    if (!gTimeline24h) return;
+    gTimeline24h.innerHTML = '';
+    const now = new Date();
+    now.setDate(now.getDate() + googleCurrentDayOffset);
+    
+    const dayName = persianDays[now.getDay()];
+    if (gViewDayText) gViewDayText.textContent = dayName;
+    if (gViewDateText) {
+      const mDay = 9 + googleCurrentDayOffset;
+      gViewDateText.textContent = `۱۴۰۵/۰۷/${toFa(String(mDay).padStart(2, '0'))}`;
+    }
+
+    const curHour = new Date().getHours();
+    const curMin = new Date().getMinutes();
+
+    for (let h = 0; h < 24; h++) {
+      const row = document.createElement('div');
+      const isLiveHour = (googleCurrentDayOffset === 0 && h === curHour);
+      row.className = `g-hour-row ${isLiveHour ? 'current-live-hour' : ''}`;
+      row.dataset.hour = h;
+
+      const label = document.createElement('span');
+      label.className = 'g-hour-label';
+      label.textContent = `${toFa(String(h).padStart(2, '0'))}:۰۰`;
+      row.appendChild(label);
+
+      const line = document.createElement('div');
+      line.className = 'g-hour-line';
+
+      if (isLiveHour) {
+        const liveRed = document.createElement('div');
+        liveRed.className = 'g-live-red-line';
+        liveRed.innerHTML = `<span class="g-live-badge">${toFa(String(curHour).padStart(2, '0'))}:${toFa(String(curMin).padStart(2, '0'))}</span>`;
+        line.appendChild(liveRed);
+      }
+
+      row.appendChild(line);
+      gTimeline24h.appendChild(row);
+    }
+  }
+
+  if (gNextDayBtn) {
+    gNextDayBtn.onclick = (e) => {
+      e.stopPropagation();
+      googleCurrentDayOffset++;
+      updateGoogleCalendarTimeline();
+    };
+  }
+
+  if (gPrevDayBtn) {
+    gPrevDayBtn.onclick = (e) => {
+      e.stopPropagation();
+      googleCurrentDayOffset--;
+      updateGoogleCalendarTimeline();
+    };
+  }
+
+  if (googleCalBtn && calStandardView && calGoogleView) {
+    googleCalBtn.onclick = (e) => {
+      e.stopPropagation();
+      calStandardView.style.display = 'none';
+      calGoogleView.style.display = 'flex';
+      updateGoogleCalendarTimeline();
+      const scroller = document.getElementById('g-timeline-scroller');
+      if (scroller) scroller.scrollTop = 450;
+    };
+  }
+  if (gBackToCalBtn) {
+    gBackToCalBtn.onclick = (e) => {
+      e.stopPropagation();
+      calGoogleView.style.display = 'none';
+      calStandardView.style.display = 'block';
+    };
+  }
+  if (gAddEventBtn) gAddEventBtn.onclick = () => window.open('https://calendar.google.com/calendar/r/eventedit', '_blank');
+
+  // ۷. تبدیل تاریخ
+  const calConvertBtn = document.getElementById('cal-convert-btn');
+  const dateConvertModal = document.getElementById('date-convert-modal');
+  const convertCloseBtn = document.getElementById('convert-close-btn');
+  const convertInputView = document.getElementById('convert-input-view');
+  const convertResultView = document.getElementById('convert-result-view');
+  const doConvertBtn = document.getElementById('do-convert-btn');
+  const convertAgainBtn = document.getElementById('convert-again-btn');
+  const wheelDay = document.getElementById('wheel-day-select');
+  const wheelMonth = document.getElementById('wheel-month-select');
+  const wheelYear = document.getElementById('wheel-year-select');
+
+  function initConvertSelects() {
+    if (!wheelDay || !wheelMonth || !wheelYear) return;
+    wheelDay.innerHTML = '';
+    for (let d = 1; d <= 31; d++) wheelDay.innerHTML += `<option value="${d}" ${d === 19 ? 'selected' : ''}>${toFa(d)}</option>`;
+    wheelMonth.innerHTML = '';
+    persianMonthNames.forEach((m, idx) => wheelMonth.innerHTML += `<option value="${idx + 1}" ${idx === 3 ? 'selected' : ''}>${m}</option>`);
+    wheelYear.innerHTML = '';
+    for (let y = 1300; y <= 1500; y++) wheelYear.innerHTML += `<option value="${y}" ${y === 1405 ? 'selected' : ''}>${toFa(y)}</option>`;
+  }
+  initConvertSelects();
+
+  if (calConvertBtn && dateConvertModal) {
+    calConvertBtn.onclick = (e) => {
+      e.stopPropagation();
+      convertInputView.style.display = 'block';
+      convertResultView.style.display = 'none';
+      dateConvertModal.classList.add('active');
+    };
+  }
+  if (convertCloseBtn) convertCloseBtn.onclick = () => dateConvertModal.classList.remove('active');
+
+  document.querySelectorAll('.type-tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.type-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+  });
+
+  if (doConvertBtn) {
+    doConvertBtn.onclick = () => {
+      const d = wheelDay.value;
+      const m = wheelMonth.value;
+      const y = wheelYear.value;
+      document.getElementById('res-shamsi-val').textContent = `${toFa(d)} ${persianMonthNames[m - 1]} ${toFa(y)}`;
+      document.getElementById('res-ghamari-val').textContent = `۱۷ ربیع‌‌الثانی ۱۴۴۸`;
+      document.getElementById('res-miladi-val').textContent = `29 سپتامبر 2026`;
+      document.getElementById('res-day-name').textContent = `سه‌شنبه`;
+      document.getElementById('res-age-val').textContent = `۴ روز`;
+      convertInputView.style.display = 'none';
+      convertResultView.style.display = 'block';
+    };
+  }
+
+  if (convertAgainBtn) {
+    convertAgainBtn.onclick = () => {
+      convertResultView.style.display = 'none';
+      convertInputView.style.display = 'block';
+    };
+  }
+
+  // ۸. آب‌‌وهوا
+  const cityLabel = document.getElementById('current-city-label');
+  const weatherTemp = document.getElementById('weather-temp');
+  const weatherIconContainer = document.getElementById('weather-icon-container');
+  const weatherPhrase = document.getElementById('weather-phrase');
+  const weatherRange = document.getElementById('weather-range');
+  const forecastDrawer = document.getElementById('forecast-drawer');
+  const forecastToggleBtn = document.getElementById('forecast-toggle-btn');
+  const forecastGrid = document.getElementById('forecast-grid');
+
+  const cityModal = document.getElementById('city-modal');
+  const citySelectBtn = document.getElementById('city-select-btn');
+  const autoGpsBtn = document.getElementById('auto-gps-btn');
+  const autoIpBtn = document.getElementById('auto-ip-btn');
+  const manualCityInput = document.getElementById('manual-city-input');
+  const citySaveBtn = document.getElementById('city-save-btn');
+  const cityCancelBtn = document.getElementById('city-cancel-btn');
+
+  let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
+
+  function renderWeatherAnimatedIcon(code, isDay) {
+    if (code === 0) return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) {
+      return `<div class="weather-dynamic-art rainy"><div class="art-cloud"></div><div class="art-rain-drop d1"></div><div class="art-rain-drop d2"></div><div class="art-rain-drop d3"></div></div>`;
+    }
+    return `<div class="weather-dynamic-art cloudy"><div class="art-cloud"></div></div>`;
+  }
+
+  function getWeatherPhrase(code, isDay) {
+    if (code === 0) return isDay ? 'آفتابی و دلنشین ☀' : 'شب صاف و مهتابی 🌙';
+    if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
+    if (code === 3) return 'تمام ابری 🧡';
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
+    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
+    return 'معتدل و آرام ⛅';
+  }
+
+  async function fetchRealWeather(lat, lon, cityName) {
+    try {
+      cityLabel.textContent = cityName;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const cur = data.current_weather;
+      const daily = data.daily;
+      const isDay = cur.is_day === 1;
+
+      weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
+      if (weatherIconContainer) weatherIconContainer.innerHTML = renderWeatherAnimatedIcon(cur.weathercode, isDay);
+      weatherPhrase.textContent = getWeatherPhrase(cur.weathercode, isDay);
+
+      const maxT = Math.round(daily.temperature_2m_max[0]);
+      const minT = Math.round(daily.temperature_2m_min[0]);
+      weatherRange.textContent = `${toFa(maxT)}° حداکثر . ${toFa(minT)}° حداقل`;
+
+      forecastGrid.innerHTML = '';
+      const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
+      const emojis = ['☀️', '⛅', '☁️', '🌧', '🌦'];
+      for (let i = 0; i < 5; i++) {
+        const dMax = Math.round(daily.temperature_2m_max[i]);
+        const dMin = Math.round(daily.temperature_2m_min[i]);
+        const box = document.createElement('div');
+        box.className = 'forecast-day-box';
+        box.innerHTML = `
+          <span class="forecast-day-name">${dayNames[i]}</span>
+          <div class="forecast-day-icon-box">${emojis[i % 5]}</div>
+          <span class="forecast-day-max">${toFa(dMax)}°</span>
+          <span class="forecast-day-min">${toFa(dMin)}°</span>
+        `;
+        forecastGrid.appendChild(box);
+      }
+    } catch (e) {
+      weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
+    }
+  }
+  fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+
+  if (forecastToggleBtn && forecastDrawer) {
+    forecastToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      forecastDrawer.classList.toggle('active');
+    });
+  }
+
+  if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
+  if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
+
+  // ۹. اوقات شرعی
+  const azanToggleBtn = document.getElementById('azan-toggle-btn');
+  const azanDrawer = document.getElementById('azan-drawer');
+  const azanCurrentCity = document.getElementById('azan-current-city');
+
+  async function fetchAzanTimes(lat, lon, cityName) {
+    if (azanCurrentCity) azanCurrentCity.textContent = cityName;
+    try {
+      const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=7`);
+      const data = await res.json();
+      const t = data.data.timings;
+      document.getElementById('azan-fajr').textContent = toFa(t.Fajr);
+      document.getElementById('azan-sunrise').textContent = toFa(t.Sunrise);
+      document.getElementById('azan-dhuhr').textContent = toFa(t.Dhuhr);
+      document.getElementById('azan-sunset').textContent = toFa(t.Sunset);
+      document.getElementById('azan-maghrib').textContent = toFa(t.Maghrib);
+      document.getElementById('azan-midnight').textContent = toFa(t.Midnight);
+    } catch (e) {}
+  }
+  fetchAzanTimes(activeCoords.lat, activeCoords.lon, activeCoords.name);
+
+  if (azanToggleBtn && azanDrawer) {
+    azanToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      azanDrawer.classList.toggle('active');
+      document.getElementById('timer-drawer')?.classList.remove('active');
+    });
+  }
+
+  // ۱۰. تایمر
+  const timerToggleBtn = document.getElementById('timer-toggle-btn');
+  const timerDrawer = document.getElementById('timer-drawer');
+  const timerActionMain = document.getElementById('timer-toggle-action');
+  const timerHr = document.getElementById('timer-hr');
+  const timerMin = document.getElementById('timer-min');
+  const timerSec = document.getElementById('timer-sec');
+
+  let timerInterval = null;
+  let totalRemainingSec = 0;
+
+  if (timerToggleBtn && timerDrawer) {
+    timerToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      timerDrawer.classList.toggle('active');
+      document.getElementById('azan-drawer')?.classList.remove('active');
+    });
+  }
+
+  [timerHr, timerMin, timerSec].forEach(input => {
+    if (!input) return;
+    input.addEventListener('click', (e) => e.stopPropagation());
+    input.addEventListener('input', (e) => {
+      let val = toEn(e.target.value).replace(/\D/g, '');
+      if (val.length > 2) val = val.slice(-2);
+      e.target.value = val ? toFa(val) : '';
+    });
+  });
+
+  if (timerActionMain) {
+    timerActionMain.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerActionMain.textContent = 'شروع';
+        timerActionMain.classList.remove('running');
+      } else {
+        const h = parseInt(toEn(timerHr.value), 10) || 0;
+        const m = parseInt(toEn(timerMin.value), 10) || 0;
+        const s = parseInt(toEn(timerSec.value), 10) || 0;
+        totalRemainingSec = (h * 3600) + (m * 60) + s;
+        if (totalRemainingSec <= 0) return;
+
+        timerActionMain.textContent = 'توقف';
+        timerActionMain.classList.add('running');
+
+        timerInterval = setInterval(() => {
+          totalRemainingSec--;
+          if (totalRemainingSec <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerActionMain.textContent = 'شروع';
+            timerActionMain.classList.remove('running');
+            timerHr.value = '۰۰'; timerMin.value = '۲۵'; timerSec.value = '۰۰';
+            alert('⏰ زمان تایمر به پایان رسید!');
+            return;
+          }
+          const curH = Math.floor(totalRemainingSec / 3600);
+          const curM = Math.floor((totalRemainingSec % 3600) / 60);
+          const curS = totalRemainingSec % 60;
+          timerHr.value = toFa(String(curH).padStart(2, '0'));
+          timerMin.value = toFa(String(curM).padStart(2, '0'));
+          timerSec.value = toFa(String(curS).padStart(2, '0'));
+        }, 1000);
+      }
+    });
+  }
+
+  // ۱۱. سرچ‌بار
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
   const engineSwitcher = document.getElementById('engine-switcher');
@@ -213,13 +551,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateSearchEngineUI();
 
-  // ۷. شورتکات‌ها
+  // ۱۲. شورتکات‌ها
   const shortcutsGrid = document.getElementById('shortcuts-grid');
   const defaultShortcuts = [
     { title: 'دم‌دستی', url: 'https://dastyar.io' },
-    { title: 'یوتیوب', url: 'https://www.youtube.com' },
+    { title: 'تلفنچی', url: 'https://telephonchi.com' },
+    { title: 'X', url: 'https://x.com' },
     { title: 'پینترست', url: 'https://www.pinterest.com' },
-    { title: 'دیجی‌کالا', url: 'https://www.digikala.com' }
+    { title: 'یوتیوب', url: 'https://www.youtube.com' },
+    { title: 'App', url: 'https://cafebazaar.ir' },
+    { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
+    { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
+    { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
+    { title: 'دیجی‌‌کالا', url: 'https://www.digikala.com' },
+    { title: 'دیوار', url: 'https://divar.ir' },
+    { title: 'واتساپ', url: 'https://web.whatsapp.com' }
   ];
   let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts')) || defaultShortcuts;
 
@@ -240,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderShortcuts();
 
-  // ۸. مدیریت تسک و پاپ‌آپ‌های مستقل در ویرایش
+  // ۱۳. سیستم تسک و مودال اختصاصی ویرایش
   const emptyState = document.getElementById('empty-state');
   const todoList = document.getElementById('todo-list');
   const taskTriggerCollapsed = document.getElementById('task-trigger-collapsed');
@@ -249,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerDesc = document.getElementById('composer-desc');
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
 
-  // مودال ویرایش
+  // مودال ویرایش تسک
   const editTaskModal = document.getElementById('edit-task-modal');
   const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
   const editTaskTitleInput = document.getElementById('edit-task-title-input');
@@ -356,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // بورد در ویرایش تسک
   if (editBoardBtn && boardDropdownMenu) {
     editBoardBtn.onclick = (e) => {
       e.stopPropagation();
@@ -400,6 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editToolPriorityBtn.onclick = (e) => { e.stopPropagation(); toggleLocalPopup(editPopupPriority); };
   }
 
+  // اولویت در ویرایش
   if (editPopupPriority) {
     editPopupPriority.querySelectorAll('.prio-item').forEach(el => {
       el.onclick = (ev) => {
@@ -414,6 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // برچسب در ویرایش
   const editNewTagInput = document.getElementById('edit-new-tag-input');
   const editTagAddPlusBtn = document.getElementById('edit-tag-add-plus-btn');
   if (editTagAddPlusBtn && editNewTagInput) {
@@ -428,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // ذخیره ویرایش
   if (btnEditTaskSave && editTaskModal) {
     btnEditTaskSave.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -446,6 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // حذف در ویرایش
   if (btnEditTaskDelete && editTaskModal) {
     btnEditTaskDelete.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -457,6 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // رندر کارت تسک با قفل قطعی: چک‌باکس در راست و دکمه‌ها در چپ
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -527,6 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ایجاد تسک جدید
   if (composerSubmitBtn && composerTitle) {
     const handleCreateTask = () => {
       const t = composerTitle.value.trim();
@@ -561,4 +914,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   saveAndRenderTodos();
+
+  // ثبت سرویس‌ورکر PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
 });

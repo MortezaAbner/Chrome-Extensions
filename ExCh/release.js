@@ -7,13 +7,13 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۱. همگام‌سازی مستقیم newtab به index برای خوانش آنلاین
+// ۱. همگام‌سازی newtab در index.html برای وب‌اپ آنلاین
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
   console.log('✅ newtab.html dar index.html copy shod.');
 }
 
-// ۲. افزایش خودکار شماره نسخه
+// ۲. افزایش نسخه پچ
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let [major, minor, patch] = (manifest.version || '1.0.0').split('.').map(Number);
 if (isNaN(major)) major = 1;
@@ -29,14 +29,14 @@ console.log(`🚀 Version khodkar afzayesh yaft: v${newVersion}`);
 const tagName = `v${newVersion}`;
 const customTitle = process.argv[2] || `Release ${tagName}`;
 
-// ۳. ایجاد پوشه مجزای dist برای آرشیوها
+// ۳. پوشه مجزای dist برای زیپ
 const distDir = './dist';
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
 const zipPath = `${distDir}/Chrome-Extension-${tagName}.zip`;
-const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js']
+const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js', 'app.webmanifest', 'sw.js']
   .filter(f => fs.existsSync(f))
   .join(', ');
 
@@ -45,26 +45,26 @@ try {
   execSync(`powershell Compress-Archive -Path ${targetFiles} -DestinationPath "${zipPath}" -Force`, { stdio: 'inherit' });
 } catch (e) {}
 
-// ۴. ایجاد یادداشت‌های دوزبانه ریلیز
+// ۴. یادداشت دوزبانه ریلیز
 const releaseNotes = `
 ### 🇮🇷 تغییرات نسخه ${tagName}:
-- پاک‌سازی پوشه اضافه ExCh و انتقال فایل‌های نهایی به ریشه مخزن
-- همگام‌سازی کامل index.html با طراحی جدید نیوتب
-- نگهداری منظم فایل‌های فشرده درون پوشه dist
-- تثبیت چیدمان تسک‌ها و پنجره‌های محلی ابزارها
+- بازگردانی کامل پایداری نسخه 1.29.0 همراه با تمام امکانات داشبورد
+- اتصال کامل پاپ‌آپ‌های محلی تکرار، سررسید، ساعت، برچسب‌ها و اولویت در مودال ویرایش
+- قفل دائمی چیدمان تسک با چک‌باکس در سمت راست و دکمه‌های ادیت/حذف در سمت چپ
+- ساختار هماهنگ PWA وب‌اپلیکیشن برای استفاده در موبایل
 
 ---
 
 ### 🇬🇧 Release Notes (${tagName}):
-- Cleaned up redundant ExCh directory and synced latest assets directly to repository root
-- Synchronized index.html with latest dashboard layout
-- Isolated build zip archives into dedicated dist directory
-- Stabilized task card layout and local tool popups
+- Fully restored v1.29.0 stability alongside complete dashboard feature-set
+- Integrated localized contextual popups inside the task editing modal
+- Permanently locked task card layout with right-aligned checkbox and left-aligned actions
+- Synchronized PWA webapp architecture for mobile browsers
 `;
 
 fs.writeFileSync('temp_release_notes.txt', releaseNotes.trim(), 'utf8');
 
-// ۵. کامیت، حذف پوشه تکراری از گیت و پوش تغییرات
+// ۵. پاک‌سازی پوشه تکراری ExCh از ریشه گیت و پوش تمیز
 try {
   try {
     execSync('git rm -r --cached ExCh', { stdio: 'pipe' });

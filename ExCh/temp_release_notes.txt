@@ -1,13 +1,13 @@
-### 🇮🇷 تغییرات نسخه v1.31.2:
-- پاک‌سازی پوشه اضافه ExCh و انتقال فایل‌های نهایی به ریشه مخزن
-- همگام‌سازی کامل index.html با طراحی جدید نیوتب
-- نگهداری منظم فایل‌های فشرده درون پوشه dist
-- تثبیت چیدمان تسک‌ها و پنجره‌های محلی ابزارها
+### 🇮🇷 تغییرات نسخه v1.32.1:
+- بازگردانی کامل پایداری نسخه 1.29.0 همراه با تمام امکانات داشبورد
+- اتصال کامل پاپ‌آپ‌های محلی تکرار، سررسید، ساعت، برچسب‌ها و اولویت در مودال ویرایش
+- قفل دائمی چیدمان تسک با چک‌باکس در سمت راست و دکمه‌های ادیت/حذف در سمت چپ
+- ساختار هماهنگ PWA وب‌اپلیکیشن برای استفاده در موبایل
 
 ---
 
-### 🇬🇧 Release Notes (v1.31.2):
-- Cleaned up redundant ExCh directory and synced latest assets directly to repository root
-- Synchronized index.html with latest dashboard layout
-- Isolated build zip archives into dedicated dist directory
-- Stabilized task card layout and local tool popups
+### 🇬🇧 Release Notes (v1.32.1):
+- Fully restored v1.29.0 stability alongside complete dashboard feature-set
+- Integrated localized contextual popups inside the task editing modal
+- Permanently locked task card layout with right-aligned checkbox and left-aligned actions
+- Synchronized PWA webapp architecture for mobile browsers
