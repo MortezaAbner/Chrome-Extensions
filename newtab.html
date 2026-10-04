@@ -2,93 +2,873 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تب جدید</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Abner Dashboard</title>
+  
+  <link rel="manifest" href="app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Abner">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/compass.png">
+
   <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
-  <div class="dashboard-container">
-    
-    <!-- ستون سمت راست: ساعت، تاریخ و ویجت -->
-    <div class="col col-left">
-      <div class="card weather-clock-card">
-        <div class="clock-box">
-          <div class="digital-clock" id="clock">00:00</div>
-          <div class="date-text" id="shamsi-date">چهارشنبه، ۸ مهر</div>
+  <!-- تصویر پس‌زمینه کاربر -->
+  <div id="custom-bg-overlay" class="bg-overlay"></div>
+
+  <!-- ۱. نمای اصلی داشبورد -->
+  <main id="view-dashboard" class="app-view active">
+    <div class="dashboard-container">
+      
+      <!-- ستون اول: آب‌وهوا، ساعت و تقویم -->
+      <div class="col col-left">
+        <div class="split-widgets-row">
+          
+          <!-- باکس آب‌وهوا -->
+          <div class="ios-glass-card weather-single-card" id="weather-card">
+            <div class="weather-top-row">
+              <span class="weather-temp-val" id="weather-temp">۲۱°</span>
+              <div class="weather-animated-icon" id="weather-icon-container">
+                <div class="weather-dynamic-art cloudy">
+                  <div class="art-cloud"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="weather-status-phrase" id="weather-phrase">تمام ابری 🧡</div>
+            <div class="weather-range" id="weather-range">۲۹° حداکثر . ۱۸° حداقل</div>
+            
+            <div class="weather-footer-actions">
+              <div class="location-chip" id="city-select-btn" title="تغییر شهر یا موقعیت مکانی">
+                📍 <span id="current-city-label">تهران</span>
+              </div>
+              <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
+            </div>
+
+            <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
+              <div class="forecast-days-grid" id="forecast-grid"></div>
+            </div>
+          </div>
+
+          <!-- باکس ساعت و تاریخ -->
+          <div class="ios-glass-card clock-single-card" id="clock-card">
+            <div class="clock-first-line">
+              <span class="clock-day-name" id="clock-day-label">جمعه</span>
+              <span class="digital-clock" id="clock">۲۲:۴۸</span>
+            </div>
+
+            <div class="custom-dates-stack">
+              <div class="date-custom-row" id="shamsi-row">
+                <span class="month-part">(مهر ماه)</span>
+                <span class="digits-part">۱۴۰۵/۰۷/۰۹</span>
+              </div>
+              <div class="date-custom-row" id="gregorian-row">
+                <span class="month-part">(اکتبر)</span>
+                <span class="digits-part">۲۰۲۶/۱۰/۰۲</span>
+              </div>
+              <div class="date-custom-row" id="hijri-row">
+                <span class="month-part">(ربیع‌الثانی)</span>
+                <span class="digits-part">۱۴۴۸/۰۳/۱۹</span>
+              </div>
+            </div>
+
+            <div class="clock-actions-row">
+              <span class="pill-btn compact-action-btn" id="azan-toggle-btn">اوقات شرعی ⌵</span>
+              <span class="pill-btn compact-action-btn" id="timer-toggle-btn">تایمر ⌵</span>
+            </div>
+
+            <!-- دراور اوقات شرعی -->
+            <div class="clock-drawer azan-drawer glass-blur-menu" id="azan-drawer">
+              <div class="azan-curve-container">
+                <svg class="azan-curve-svg" viewBox="0 0 320 60" preserveAspectRatio="none">
+                  <path d="M 0 52 Q 80 8, 160 22 T 320 52" fill="none" stroke="url(#azan-gradient)" stroke-width="3.5" stroke-linecap="round"/>
+                  <line x1="0" y1="38" x2="320" y2="38" stroke="rgba(255,255,255,0.45)" stroke-dasharray="3,3" stroke-width="1.2"/>
+                  <defs>
+                    <linearGradient id="azan-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#f97316" />
+                      <stop offset="50%" stop-color="#eab308" />
+                      <stop offset="100%" stop-color="#3b82f6" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="azan-times-row">
+                  <div class="azan-item"><span class="azan-t" id="azan-fajr">۰۴:۳۷</span><span class="azan-l">صبح</span></div>
+                  <div class="azan-item"><span class="azan-t" id="azan-sunrise">۰۶:۰۰</span><span class="azan-l">طلوع</span></div>
+                  <div class="azan-item"><span class="azan-t" id="azan-dhuhr">۱۱:۵۴</span><span class="azan-l">ظهر</span></div>
+                  <div class="azan-item"><span class="azan-t" id="azan-sunset">۱۷:۴۷</span><span class="azan-l">غروب</span></div>
+                  <div class="azan-item"><span class="azan-t" id="azan-maghrib">۱۸:۰۵</span><span class="azan-l">مغرب</span></div>
+                  <div class="azan-item"><span class="azan-t" id="azan-midnight">۲۳:۵۴</span><span class="azan-l">نیمه‌شب</span></div>
+                </div>
+              </div>
+              <div class="azan-footer-select">
+                <button class="azan-city-btn" id="azan-city-pick-btn">
+                  <span>📍 <span id="azan-current-city">تهران</span></span>
+                  <span class="arrow-up">⌃</span>
+                </button>
+              </div>
+              <div class="azan-city-dropdown glass-blur-menu" id="azan-city-dropdown">
+                <div class="azan-search-box">
+                  <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
+                </div>
+                <ul class="azan-city-list" id="azan-city-list"></ul>
+              </div>
+            </div>
+
+            <!-- دراور تایمر -->
+            <div class="clock-drawer timer-drawer glass-blur-menu" id="timer-drawer">
+              <div class="timer-boxes-row">
+                <div class="timer-unit">
+                  <input type="text" inputmode="numeric" maxlength="2" id="timer-sec" value="۰۰" class="timer-input" spellcheck="false" autocomplete="off">
+                  <label>ثانیه</label>
+                </div>
+                <div class="timer-unit">
+                  <input type="text" inputmode="numeric" maxlength="2" id="timer-min" value="۲۵" class="timer-input" spellcheck="false" autocomplete="off">
+                  <label>دقیقه</label>
+                </div>
+                <div class="timer-unit">
+                  <input type="text" inputmode="numeric" maxlength="2" id="timer-hr" value="۰۰" class="timer-input" spellcheck="false" autocomplete="off">
+                  <label>ساعت</label>
+                </div>
+              </div>
+              <button class="timer-action-main" id="timer-toggle-action">شروع</button>
+            </div>
+
+          </div>
         </div>
-        <div class="weather-box">
-          <span class="temp">۲۲°</span>
-          <span class="weather-desc">آفتابی و ملایم</span>
+
+        <!-- تقویم شمسی -->
+        <div class="ios-glass-card calendar-card" id="main-calendar-card">
+          <div id="calendar-standard-view">
+            <div class="cal-top-bar">
+              <button class="cal-arrow" id="cal-prev-btn" title="ماه قبل">‹</button>
+              <div class="cal-title-box" id="cal-month-header-btn">
+                <div class="cal-month-title"><span id="cal-month-text">مهر ۱۴۰۵</span> <span class="arrow-down-icon">▾</span></div>
+                <div class="cal-sub-title" id="cal-sub-text">ربیع الثانی-جمادی الاول Sep-Oct</div>
+              </div>
+              <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
+            </div>
+
+            <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
+              <div class="picker-columns">
+                <div class="picker-col">
+                  <div class="picker-label">سال</div>
+                  <div class="picker-scroll-list" id="picker-years-list"></div>
+                </div>
+                <div class="picker-col">
+                  <div class="picker-label">ماه</div>
+                  <div class="picker-scroll-list" id="picker-months-list"></div>
+                </div>
+              </div>
+              <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
+            </div>
+
+            <div class="date-event-popup glass-blur-menu" id="date-event-popup" style="display: none;">
+              <div class="event-popup-header">
+                <span class="event-title-main" id="event-popup-title">مناسبت‌های این روز</span>
+                <button class="event-close-btn" id="event-popup-close">✕</button>
+              </div>
+              <div class="event-popup-body">
+                <div class="event-badge-item" id="event-popup-text">...</div>
+                <div class="event-dates-sub" id="event-popup-dates">...</div>
+              </div>
+            </div>
+
+            <div class="cal-weekdays-full">
+              <span>شنبه</span>
+              <span>یکشنبه</span>
+              <span>دوشنبه</span>
+              <span>سه‌شنبه</span>
+              <span>چهارشنبه</span>
+              <span>پنج‌شنبه</span>
+              <span class="fri">جمعه</span>
+            </div>
+
+            <div class="cal-dates-grid" id="cal-dates"></div>
+
+            <div class="cal-footer">
+              <div class="cal-action-btn" id="cal-convert-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="convert-loop-icon">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>تبدیل تاریخ</span>
+              </div>
+              <span class="cal-footer-separator">|</span>
+              <div class="cal-action-btn" id="google-cal-btn">
+                <span>تقویم گوگل</span>
+                <span class="g-icon">G</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="calendar-google-view" class="google-view-container" style="display: none;">
+            <div class="g-view-top">
+              <div class="g-view-arrows-left">
+                <button class="g-arrow-btn" id="g-prev-day" title="روز قبل">‹</button>
+                <button class="g-arrow-btn" id="g-next-day" title="روز بعد">›</button>
+              </div>
+              <div class="g-view-date-info">
+                <span class="g-day-badge" id="g-view-day-text">جمعه</span>
+                <span id="g-view-date-text">۱۴۰۵/۰۷/۱۰</span>
+              </div>
+              <div class="g-view-right-actions">
+                <button class="g-add-event-btn" id="g-add-event-btn" title="افزودن رویداد در گوگل">+</button>
+                <img src="https://img.icons8.com/color/48/google-calendar--v2.png" class="g-cal-icon-img" alt="Google Calendar">
+              </div>
+            </div>
+
+            <div class="g-timeline-scroller" id="g-timeline-scroller">
+              <div class="g-timeline-inner" id="g-timeline-24h"></div>
+            </div>
+
+            <div class="g-view-footer">
+              <button class="g-back-btn" id="g-back-to-cal-btn" title="بازگشت به تقویم شمسی">⌵</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ستون دوم: سرچ و شورتکات‌ها -->
+      <div class="col col-center">
+        <div class="search-capsule" id="search-capsule">
+          <form id="search-form" class="search-inner" action="https://www.google.com/search" method="GET">
+            <div class="search-actions-left" id="search-tools">
+              <span class="tool-btn" id="voice-btn" title="جستجوی صوتی گوگل">🎙️</span>
+              <span class="tool-btn" id="lens-btn" title="گوگل لنز">📷</span>
+            </div>
+
+            <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
+
+            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو">
+              <span class="badge-arrow">↕</span>
+              <div id="engine-logo-container">
+                <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.27 21.36 7.35 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.27 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+                <span id="zarebin-logo" class="zarebin-text" style="display: none;">ذره‌بین</span>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="shortcuts-container" id="shortcuts-grid"></div>
+      </div>
+
+      <!-- ستون سوم: پنل تسک -->
+      <div class="col col-right">
+        <div class="ios-glass-card task-master-card" id="task-main-box">
+          
+          <div class="task-top-tabs">
+            <button class="tab-item active" id="tab-tasks">
+              <span class="tab-badge-icon">☑</span>
+              <span>تسک</span>
+            </button>
+            <button class="tab-item" id="tab-notes">
+              <span class="tab-badge-icon">📋</span>
+              <span>یادداشت</span>
+            </button>
+          </div>
+
+          <div class="task-action-pills">
+            <div class="pill-action-btn" title="بیشتر">⋯</div>
+            <div class="pill-action-btn" id="toggle-done-tasks-btn" title="پنهان/نمایش انجام شده‌ها">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </div>
+            <div class="pill-action-btn" title="فیلترها">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            </div>
+            <div class="pill-action-btn" title="مرتب‌سازی">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </div>
+          </div>
+
+          <div class="task-body-zone">
+            <div class="exact-empty-state" id="empty-state">
+              <div class="empty-halo-circle">
+                <div class="cube-check-icon">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="2" width="20" height="20" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+                    <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 class="empty-main-heading">هنوز تسکی ثبت نکردی!</h3>
+              <p class="empty-sub-heading">موضوعات پیشنهادی:</p>
+              <div class="empty-bullets">
+                <span>• کارهای روزانه</span>
+                <span>• لیست خرید</span>
+                <span>• یادآوری‌های پرداخت</span>
+              </div>
+            </div>
+
+            <ul class="todo-list" id="todo-list" style="display: none;"></ul>
+          </div>
+
+          <!-- کادر همه‌کاره درون‌خطی تسک جدید -->
+          <div class="inline-task-box ios-glass-card" id="inline-task-box">
+            <div class="inline-task-collapsed" id="task-trigger-collapsed">
+              <span>نوشتن تسک جدید</span>
+            </div>
+
+            <div class="inline-task-expanded" id="task-composer-expanded" style="display: none;">
+              <input type="text" id="composer-title" placeholder="نوشتن تسک جدید" autocomplete="off">
+              <textarea id="composer-desc" placeholder="توضیحات..." rows="2"></textarea>
+              
+              <div class="inline-composer-footer">
+                <button type="button" class="composer-submit-btn" id="composer-submit-btn" title="ثبت تسک">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                </button>
+                <div class="composer-tools-row">
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-repeat" title="تکرار">🔄</button>
+                  </div>
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-priority" title="اولویت">🚩</button>
+                  </div>
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-time" title="ساعت یادآوری">⏰</button>
+                  </div>
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-date" title="تاریخ سررسید">📅</button>
+                  </div>
+                  <div class="tool-popup-wrap">
+                    <button type="button" class="composer-tool-btn" id="tool-btn-tag" title="برچسب">🏷️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="card calendar-card">
-        <div class="calendar-header">
-          <span id="cal-month">مهر ۱۴۰۵</span>
+    </div>
+  </main>
+
+  <!-- ۲. صفحه تنظیمات -->
+  <section id="view-settings" class="app-view">
+    <div class="settings-modal-card ios-glass-card">
+      <div class="settings-card-header">
+        <button class="settings-close-icon" id="settings-close-btn" title="بستن">✕</button>
+        <div class="settings-header-title">تنظیمات › عمومی</div>
+      </div>
+
+      <div class="settings-layout-body">
+        <div class="settings-content-main">
+          <div class="settings-form-row">
+            <label class="settings-field-label">زبان<span class="sub-tip">انتخاب زبان پیش‌فرض</span></label>
+            <select class="settings-select-glass">
+              <option value="fa" selected>فارسی IR</option>
+              <option value="en">English US</option>
+            </select>
+          </div>
+
+          <div class="settings-form-row">
+            <label class="settings-field-label">موتور جستجو<span class="sub-tip">انتخاب موتور جستجوی پیش‌فرض</span></label>
+            <select class="settings-select-glass" id="settings-engine-select">
+              <option value="google" selected>گوگل G</option>
+              <option value="zarebin">ذره‌بین</option>
+            </select>
+          </div>
+
+          <div class="settings-form-row">
+            <label class="settings-field-label">شهر<span class="sub-tip">برای تنظیم آب و هوا</span></label>
+            <select class="settings-select-glass" id="settings-city-select">
+              <option value="تهران" selected>ایران، تهران</option>
+              <option value="مشهد">ایران، مشهد</option>
+              <option value="اصفهان">ایران، اصفهان</option>
+              <option value="شیراز">ایران، شیراز</option>
+              <option value="تبریز">ایران، تبریز</option>
+            </select>
+          </div>
+
+          <div class="settings-form-row">
+            <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم</span></label>
+            <div class="settings-bg-actions">
+              <label class="settings-btn-upload">
+                📁 انتخاب عکس
+                <input type="file" id="settings-bg-file" accept="image/*" style="display: none;">
+              </label>
+              <button class="settings-btn-action" id="settings-blur-toggle">✨ وضعیت بلر: <span id="settings-blur-status">مات</span></button>
+              <button class="settings-btn-action danger" id="settings-reset-bg">↺ بازنشانی</button>
+            </div>
+          </div>
         </div>
-        <div class="calendar-grid">
-          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
-          <!-- روزهای نمونه -->
-          <span class="dim">۲۸</span><span class="dim">۲۹</span><span class="dim">۳۰</span><span>۱</span><span>۲</span><span>۳</span><span class="holiday">۴</span>
-          <span>۵</span><span>۶</span><span>۷</span><span class="today">۸</span><span>۹</span><span>۱۰</span><span class="holiday">۱۱</span>
-          <span>۱۲</span><span>۱۳</span><span>۱۴</span><span>۱۵</span><span>۱۶</span><span>۱۷</span><span class="holiday">۱۸</span>
+
+        <div class="settings-sidebar-nav">
+          <div class="nav-item-glass"><span class="nav-ico">👤</span> پروفایل</div>
+          <div class="nav-item-glass"><span class="nav-ico">✨</span> دستیار پلاس</div>
+          <div class="nav-item-glass"><span class="nav-ico">💌</span> دعوت از دوستان <span class="badge-tag">۰/۳</span></div>
+          <div class="nav-item-glass"><span class="nav-ico">🖼️️</span> تصویر زمینه</div>
+          <div class="nav-item-glass"><span class="nav-ico">🎨</span> تم و رنگ</div>
+          <div class="nav-item-glass active"><span class="nav-ico">⚙️</span> عمومی</div>
+          <div class="nav-item-glass"><span class="nav-ico">📅</span> تقویم و زمان</div>
+          <div class="nav-item-glass"><span class="nav-ico">🔒</span> حریم شخصی</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item-glass"><span class="nav-ico">📣</span> تغییرات اخیر</div>
+          <div class="nav-item-glass"><span class="nav-ico">💬</span> فیدبک به ما</div>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- ستون وسط: جستجوی گوگل و میانبرها -->
-    <div class="col col-center">
-      <div class="card search-card">
-        <form action="https://www.google.com/search" method="GET" class="search-form">
-          <button type="submit" class="search-btn">🔍</button>
-          <input type="text" name="q" placeholder="جستجو در گوگل یا وارد کردن آدرس..." autofocus autocomplete="off">
-        </form>
+  <!-- ۳. صفحه تقویم هفتگی و تسک/یادداشت -->
+  <section id="view-tasks" class="app-view">
+    <div class="tasks-page-layout">
+      <div class="weekly-calendar-card ios-glass-card">
+        <div class="weekly-top-bar">
+          <button class="cal-action-btn primary-fill" id="new-event-btn-full">+ رویداد جدید</button>
+          
+          <div class="weekly-top-center">
+            <span class="pill-btn active">یادداشت‌ها 📋</span>
+            <span class="pill-btn active">تسک‌ها ☑</span>
+            <span class="pill-btn">امروز ☀</span>
+          </div>
+
+          <div class="weekly-nav-week">
+            <button class="cal-arrow" id="week-next-btn">›</button>
+            <span class="week-title-text" id="week-title-range">۴ مهر - ۱۰ مهر</span>
+            <button class="cal-arrow" id="week-prev-btn">‹</button>
+          </div>
+        </div>
+
+        <div class="weekly-grid-table">
+          <div class="weekly-header-days">
+            <div class="day-col-hdr">شنبه<span class="d-num">۴ مهر</span></div>
+            <div class="day-col-hdr">یکشنبه<span class="d-num">۵ مهر</span></div>
+            <div class="day-col-hdr">دوشنبه<span class="d-num">۶ مهر</span></div>
+            <div class="day-col-hdr">سه‌شنبه<span class="d-num">۷ مهر</span></div>
+            <div class="day-col-hdr">چهارشنبه<span class="d-num">۸ مهر</span></div>
+            <div class="day-col-hdr">پنج‌شنبه<span class="d-num">۹ مهر</span></div>
+            <div class="day-col-hdr fri active-today">جمعه<span class="d-num">۱۰ مهر</span></div>
+          </div>
+          
+          <div class="weekly-cells-body">
+            <div class="weekly-hours-column">
+              <span>۱۷:۰۰</span>
+              <span>۱۸:۰۰</span>
+              <span>۱۹:۰۰</span>
+              <span>۲۰:۰۰</span>
+              <span>۲۱:۰۰</span>
+              <span>۲۲:۰۰</span>
+              <span>۲۳:۰۰</span>
+            </div>
+            <div class="weekly-canvas-grid">
+              <div class="grid-line-hour"></div>
+              <div class="grid-line-hour"></div>
+              <div class="grid-line-hour"></div>
+              <div class="grid-line-hour"></div>
+              <div class="grid-line-hour current-live-hour">
+                <div class="g-live-red-line"><span class="g-live-badge">۲۱:۰۵</span></div>
+              </div>
+              <div class="grid-line-hour"></div>
+              <div class="grid-line-hour"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="card shortcuts-card">
-        <div class="shortcuts-grid" id="shortcuts-grid">
-          <a href="https://www.youtube.com" class="shortcut-item">
-            <div class="shortcut-icon youtube">▶</div>
-            <span>یوتیوب</span>
-          </a>
-          <a href="https://web.whatsapp.com" class="shortcut-item">
-            <div class="shortcut-icon whatsapp">💬</div>
-            <span>واتساپ</span>
-          </a>
-          <a href="https://www.pinterest.com" class="shortcut-item">
-            <div class="shortcut-icon pinterest">📌</div>
-            <span>پینترست</span>
-          </a>
-          <a href="https://x.com" class="shortcut-item">
-            <div class="shortcut-icon x">𝕏</div>
-            <span>توییتر</span>
-          </a>
-          <a href="https://www.digikala.com" class="shortcut-item">
-            <div class="shortcut-icon digikala">🛍</div>
-            <span>دیجی‌کالا</span>
-          </a>
-          <a href="https://divar.ir" class="shortcut-item">
-            <div class="shortcut-icon divar">🏠</div>
-            <span>دیوار</span>
-          </a>
+      <div class="tasks-side-card ios-glass-card">
+        <div class="task-top-tabs">
+          <button class="tab-item active" id="full-tab-tasks">☑ تسک</button>
+          <button class="tab-item" id="full-tab-notes">📋 یادداشت</button>
+        </div>
+
+        <div class="task-body-zone">
+          <div class="exact-empty-state">
+            <div class="empty-halo-circle">
+              <div class="cube-check-icon">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+                  <path d="M7 12L10.5 15.5L17 9" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="empty-main-heading">هنوز تسکی ثبت نکردی!</h3>
+            <p class="empty-sub-heading">کارهای روزانه • لیست خرید • یادآوری</p>
+          </div>
+        </div>
+
+        <div class="task-input-bottom">
+          <input type="text" id="full-new-todo" placeholder="نوشتن تسک جدید" autocomplete="off">
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- ستون سمت چپ: تسک‌ها و یادداشت روزانه -->
-    <div class="col col-right">
-      <div class="card todo-card">
-        <div class="todo-header">
-          <h3>✅ چک‌لیست و تسک‌ها</h3>
-        </div>
-        <ul class="todo-list" id="todo-list"></ul>
-        <div class="todo-input-box">
-          <input type="text" id="new-todo" placeholder="نوشتن تسک جدید و فشردن Enter...">
-        </div>
-      </div>
+  <!-- داک شناور پایین صفحه -->
+  <footer class="bottom-floating-dock ios-glass-card" id="bottom-dock">
+    <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
+      <div class="dock-abner-chip">A</div>
+    </button>
+
+    <div class="dock-sep"></div>
+
+    <div class="dock-center-group">
+      <button class="dock-btn active" id="dock-home-btn" title="خانه (داشبورد)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5l9-7.5 9 7.5v10.5a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 20z"></path>
+          <polyline points="9 21 9 12 15 12 15 21"></polyline>
+        </svg>
+      </button>
+
+      <button class="dock-btn" id="dock-tasks-btn" title="تسک‌ها">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"></polyline>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+      </button>
+
+      <button class="dock-btn theme-dock-pill" id="theme-toggle-btn" title="تغییر شب/روز">
+        <span id="theme-icon">🌙</span>
+      </button>
+
+      <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3.2"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
     </div>
 
+    <div class="dock-sep"></div>
+
+    <button class="dock-btn" id="dock-profile-btn" title="پروفایل">
+      <div class="dock-profile-circle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="8" r="4.2"></circle>
+          <path d="M4.5 20c0-3.5 3.3-6.5 7.5-6.5s7.5 3 7.5 6.5"></path>
+        </svg>
+      </div>
+    </button>
+  </footer>
+
+  <!-- مودال شیشه‌ای کامل ویرایش تسک (پاپ‌آپ‌ها مستقیماً زیر هر دکمه باز می‌شوند) -->
+  <div id="edit-task-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card edit-task-card-box glass-blur-menu">
+      <div class="edit-task-header">
+        <button class="modal-close-icon" id="edit-task-close-btn">✕</button>
+        <h3>ویرایش تسک</h3>
+      </div>
+      <div class="edit-task-title-row">
+        <input type="text" id="edit-task-title-input" placeholder="عنوان تسک...">
+        <div class="edit-chk-box" id="edit-task-chk-indicator"></div>
+      </div>
+      <textarea id="edit-task-desc-input" class="edit-task-desc-area" placeholder="توضیحات..." rows="3"></textarea>
+      
+      <!-- نوار ابزار کامل ویرایش تسک -->
+      <div class="edit-task-tools-bar">
+        <!-- ۱. بورد -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-board-btn"><span id="edit-board-label">📁 بورد ⌵</span></button>
+          <div class="board-dropdown-menu" id="board-dropdown-menu" style="display: none;">
+            <div class="board-opt-item" data-board="none">پیش‌فرض</div>
+            <div class="board-opt-item" data-board="in_progress">در دست اقدام</div>
+            <div class="board-opt-item" data-board="done">انجام شده</div>
+          </div>
+        </div>
+
+        <!-- ۲. تکرار -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-repeat-btn">🔄 <span id="edit-repeat-label">تکرار</span></button>
+          <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="edit-popup-repeat" style="display: none;">
+            <div class="popup-sec-title">تکرار</div>
+            <div class="repeat-row-top">
+              <span class="repeat-lbl">هر چند وقت یکبار؟</span>
+              <div class="repeat-inputs-left">
+                <div class="counter-box-glass">
+                  <button type="button" class="cnt-btn" id="edit-cnt-plus">+</button>
+                  <span id="edit-cnt-val">۲</span>
+                  <button type="button" class="cnt-btn" id="edit-cnt-minus">-</button>
+                </div>
+                <select id="edit-repeat-unit-select" class="custom-select-glass">
+                  <option value="day">روز</option>
+                  <option value="week">هفته</option>
+                  <option value="month">ماه</option>
+                  <option value="year">سال</option>
+                </select>
+              </div>
+            </div>
+            <div class="repeat-dynamic-sub" id="edit-repeat-dynamic-sub"></div>
+            <div class="repeat-modal-actions">
+              <button type="button" class="btn-repeat-confirm" id="edit-btn-repeat-confirm">تایید ✓</button>
+              <button type="button" class="btn-repeat-cancel" id="edit-btn-repeat-cancel">بیخیال</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ۳. سررسید (تاریخ) -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-date-btn">📅 <span id="edit-date-label">سررسید</span></button>
+          <div class="task-tool-popup glass-blur-menu cal-popup-box" id="edit-popup-date" style="display: none;">
+            <div class="task-cal-header">
+              <div class="task-cal-arrows">
+                <button type="button" class="cal-pop-arrow" id="edit-cal-pop-up" title="ماه بعد">⌃</button>
+                <button type="button" class="cal-pop-arrow" id="edit-cal-pop-down" title="ماه قبل">⌄</button>
+                <button type="button" class="cal-pop-today-btn" id="edit-cal-pop-today">امروز</button>
+              </div>
+              <span class="task-cal-title" id="edit-task-cal-month-title">مهر ۱۴۰۵</span>
+            </div>
+            <div class="task-cal-weekdays">
+              <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span class="fri">جمعه</span>
+            </div>
+            <div class="task-cal-grid" id="edit-task-cal-grid"></div>
+            <button type="button" class="btn-popup-blue" id="edit-btn-date-confirm">تایید</button>
+          </div>
+        </div>
+
+        <!-- ۴. ساعت -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-time-btn">⏰ <span id="edit-time-label">ساعت</span></button>
+          <div class="task-tool-popup glass-blur-menu time-popup-box" id="edit-popup-time" style="display: none;">
+            <div class="time-columns-wrapper">
+              <div class="time-col">
+                <span class="time-col-header">ساعت</span>
+                <div class="time-wheel-scroller" id="edit-wheel-hour"></div>
+              </div>
+              <span class="time-colon">:</span>
+              <div class="time-col">
+                <span class="time-col-header">دقیقه</span>
+                <div class="time-wheel-scroller" id="edit-wheel-minute"></div>
+              </div>
+            </div>
+            <button type="button" class="btn-popup-blue" id="edit-btn-time-confirm">تایید</button>
+          </div>
+        </div>
+
+        <!-- ۵. برچسب‌ها -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-tag-btn">🏷️ <span id="edit-tag-label">برچسب‌ها</span></button>
+          <div class="task-tool-popup glass-blur-menu tag-popup-box" id="edit-popup-tag" style="display: none;">
+            <div class="tag-input-row">
+              <input type="text" id="edit-new-tag-input" placeholder="نام برچسب...">
+              <button type="button" class="tag-add-plus" id="edit-tag-add-plus-btn">+</button>
+            </div>
+            <div class="tags-chips-list" id="edit-tags-chips-list">
+              <span class="tag-chip-item">افزودن برچسب جدید</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ۶. اولویت -->
+        <div class="tool-popup-wrap">
+          <button type="button" class="edit-tool-pill" id="edit-tool-priority-btn">🚩 <span id="edit-priority-label">بدون اولویت</span></button>
+          <div class="task-tool-popup glass-blur-menu priority-popup-box" id="edit-popup-priority" style="display: none;">
+            <div class="prio-item active" data-prio="none"><span>بدون اولویت</span><span class="prio-dot gray"></span></div>
+            <div class="prio-item" data-prio="low"><span>پایین</span><span class="prio-dot green"></span></div>
+            <div class="prio-item" data-prio="medium"><span>متوسط</span><span class="prio-dot orange"></span></div>
+            <div class="prio-item" data-prio="high"><span>بالا</span><span class="prio-dot red"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-task-footer-btns">
+        <button type="button" class="btn-save-task" id="btn-edit-task-save">تایید</button>
+        <button type="button" class="btn-delete-task" id="btn-edit-task-delete">حذف 🗑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- پاپ‌آپ‌های مستقل کادر تسک پایین صفحه برای ساخت تسک جدید -->
+  <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
+    <div class="popup-sec-title">تکرار</div>
+    <div class="repeat-row-top">
+      <span class="repeat-lbl">هر چند وقت یکبار؟</span>
+      <div class="repeat-inputs-left">
+        <div class="counter-box-glass">
+          <button type="button" class="cnt-btn" id="cnt-plus">+</button>
+          <span id="cnt-val">۲</span>
+          <button type="button" class="cnt-btn" id="cnt-minus">-</button>
+        </div>
+        <select id="repeat-unit-select" class="custom-select-glass">
+          <option value="day">روز</option>
+          <option value="week">هفته</option>
+          <option value="month">ماه</option>
+          <option value="year">سال</option>
+        </select>
+      </div>
+    </div>
+    <div class="repeat-dynamic-sub" id="repeat-dynamic-sub"></div>
+    <div class="repeat-modal-actions">
+      <button type="button" class="btn-repeat-confirm" id="btn-repeat-confirm">تایید ✓</button>
+      <button type="button" class="btn-repeat-cancel" id="btn-repeat-cancel">بیخیال</button>
+    </div>
+  </div>
+
+  <div class="task-tool-popup glass-blur-menu priority-popup-box" id="popup-priority" style="display: none;">
+    <div class="prio-item active" data-prio="none"><span>بدون اولویت</span><span class="prio-dot gray"></span></div>
+    <div class="prio-item" data-prio="low"><span>پایین</span><span class="prio-dot green"></span></div>
+    <div class="prio-item" data-prio="medium"><span>متوسط</span><span class="prio-dot orange"></span></div>
+    <div class="prio-item" data-prio="high"><span>بالا</span><span class="prio-dot red"></span></div>
+  </div>
+
+  <div class="task-tool-popup glass-blur-menu time-popup-box" id="popup-time" style="display: none;">
+    <div class="time-columns-wrapper">
+      <div class="time-col">
+        <span class="time-col-header">ساعت</span>
+        <div class="time-wheel-scroller" id="wheel-hour"></div>
+      </div>
+      <span class="time-colon">:</span>
+      <div class="time-col">
+        <span class="time-col-header">دقیقه</span>
+        <div class="time-wheel-scroller" id="wheel-minute"></div>
+      </div>
+    </div>
+    <button type="button" class="btn-popup-blue" id="btn-time-confirm">تایید</button>
+  </div>
+
+  <div class="task-tool-popup glass-blur-menu cal-popup-box" id="popup-date" style="display: none;">
+    <div class="task-cal-header">
+      <div class="task-cal-arrows">
+        <button type="button" class="cal-pop-arrow" id="cal-pop-up" title="ماه بعد">⌃</button>
+        <button type="button" class="cal-pop-arrow" id="cal-pop-down" title="ماه قبل">⌄</button>
+        <button type="button" class="cal-pop-today-btn" id="cal-pop-today">امروز</button>
+      </div>
+      <span class="task-cal-title" id="task-cal-month-title">مهر ۱۴۰۵</span>
+    </div>
+    <div class="task-cal-weekdays">
+      <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span class="fri">جمعه</span>
+    </div>
+    <div class="task-cal-grid" id="task-cal-grid"></div>
+    <button type="button" class="btn-popup-blue" id="btn-date-confirm">تایید</button>
+  </div>
+
+  <div class="task-tool-popup glass-blur-menu tag-popup-box" id="popup-tag" style="display: none;">
+    <div class="tag-input-row">
+      <input type="text" id="new-tag-input" placeholder="نام برچسب...">
+      <button type="button" class="tag-add-plus" id="tag-add-plus-btn">+</button>
+    </div>
+    <div class="tags-chips-list" id="tags-chips-list">
+      <span class="tag-chip-item">افزودن برچسب جدید</span>
+    </div>
+  </div>
+
+  <!-- مودال تبدیل تاریخ -->
+  <div id="date-convert-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card convert-modal-box glass-blur-menu">
+      <div class="convert-modal-header">
+        <button class="modal-close-icon" id="convert-close-btn">✕</button>
+        <h3>تبدیل تاریخ</h3>
+      </div>
+
+      <div id="convert-input-view">
+        <div class="convert-type-tabs">
+          <span class="type-tab-label">تاریخ مبدا:</span>
+          <button class="type-tab-btn active" data-type="shamsi">شمسی</button>
+          <button class="type-tab-btn" data-type="ghamari">قمری</button>
+          <button class="type-tab-btn" data-type="miladi">میلادی</button>
+        </div>
+
+        <div class="wheel-picker-container">
+          <div class="wheel-col">
+            <div class="wheel-header">روز</div>
+            <select id="wheel-day-select" class="custom-select-box"></select>
+          </div>
+          <div class="wheel-col">
+            <div class="wheel-header">ماه</div>
+            <select id="wheel-month-select" class="custom-select-box"></select>
+          </div>
+          <div class="wheel-col">
+            <div class="wheel-header">سال</div>
+            <select id="wheel-year-select" class="custom-select-box"></select>
+          </div>
+        </div>
+
+        <button class="convert-submit-btn" id="do-convert-btn">تبدیل کردن ↩</button>
+      </div>
+
+      <div id="convert-result-view" style="display: none;">
+        <div class="convert-results-list">
+          <div class="result-row">
+            <span class="res-lbl">شمسی</span>
+            <span class="res-val" id="res-shamsi-val">۷ مهر ۱۴۰۵</span>
+          </div>
+          <div class="result-row">
+            <span class="res-lbl">قمری</span>
+            <span class="res-val" id="res-ghamari-val">۱۷ ربیع‌الثانی ۱۴۴۸</span>
+          </div>
+          <div class="result-row">
+            <span class="res-lbl">میلادی</span>
+            <span class="res-val" id="res-miladi-val">29 سپتامبر 2026</span>
+          </div>
+          <div class="result-row day-row">
+            <span class="res-val" id="res-day-name">سه‌شنبه</span>
+          </div>
+          <div class="result-row age-row">
+            <span class="res-lbl">فاصله زمانی (سن)</span>
+            <span class="res-val" id="res-age-val">۴ روز</span>
+          </div>
+        </div>
+
+        <button class="convert-again-btn" id="convert-again-btn">
+          <span class="shortcut-key-n">N</span> تبدیل تاریخ جدید
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال تنظیم موقعیت مکانی آب‌وهوا -->
+  <div id="city-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card location-modal-box glass-blur-menu">
+      <div class="modal-header-title">
+        <h3>📍 تنظیم موقعیت مکانی آب‌وهوا</h3>
+        <p>روش دریافت وضعیت آب‌وهوای خود را انتخاب کنید:</p>
+      </div>
+
+      <div class="loc-options-group">
+        <button id="auto-gps-btn" class="loc-method-btn primary-glass">
+          <div class="loc-icon-circle">🎯</div>
+          <div class="loc-text-desc">
+            <strong>موقعیت‌یابی زنده دستگاه (GPS)</strong>
+            <span>دریافت مختصات آنلاین با سوییچ هوشمند خودکار</span>
+          </div>
+        </button>
+
+        <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
+          <div class="loc-icon-circle">🌐</div>
+          <div class="loc-text-desc">
+            <strong>تشخیص موقعیت مکانی با آی‌‌پی</strong>
+            <span>سریع، بدون نیاز به مجوز سیستم</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="loc-divider">
+        <span>یا جستجوی دستی شهر</span>
+      </div>
+
+      <div class="manual-input-wrapper">
+        <input type="text" id="manual-city-input" placeholder="نام شهر را تایپ کنید (مثلاً: تهران، مشهد، شیراز)">
+      </div>
+
+      <div class="modal-buttons">
+        <button id="city-save-btn" class="modal-btn save">تأیید و ذخیره</button>
+        <button id="city-cancel-btn" class="modal-btn cancel">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال افزودن شورتکات -->
+  <div id="add-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card glass-blur-menu">
+      <h3>افزودن میانبر</h3>
+      <input type="text" id="modal-site-title" placeholder="نام میانبر">
+      <input type="text" id="modal-site-url" placeholder="آدرس سایت">
+      <div class="modal-buttons">
+        <button id="modal-save-btn" class="modal-btn save">افزودن</button>
+        <button id="modal-cancel-btn" class="modal-btn cancel">انصراف</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
