@@ -12,38 +12,48 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۱. همگام‌سازی مستقیم newtab به index.html
+// ۱. همگام‌سازی newtab.html در index.html
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
   console.log('✅ newtab.html dar index.html copy shod.');
 }
 
-// ۲. افزایش هوشمند شماره نسخه
+// ۲. بررسی تگ‌های محلی و سرور برای جلوگیری از خطای tag already exists
+let existingTags = [];
+try {
+  existingTags = execSync('git tag', { encoding: 'utf8' }).split('\n').map(t => t.trim()).filter(Boolean);
+} catch (e) {}
+
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-let [major, minor, patch] = (manifest.version || '1.32.2').split('.').map(Number);
+let [major, minor, patch] = (manifest.version || '1.32.4').split('.').map(Number);
 if (isNaN(major)) major = 1;
 if (isNaN(minor)) minor = 32;
-if (isNaN(patch)) patch = 2;
+if (isNaN(patch)) patch = 4;
 
-patch += 1;
-const newVersion = `${major}.${minor}.${patch}`;
+// افزایش هوشمند تا رسیدن به تگی که تکراری نباشد
+let newVersion = '';
+let tagName = '';
+do {
+  patch += 1;
+  newVersion = `${major}.${minor}.${patch}`;
+  tagName = `v${newVersion}`;
+} while (existingTags.includes(tagName));
+
 manifest.version = newVersion;
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
 console.log(`🚀 Version khodkar afzayesh yaft be: v${newVersion}`);
 
-const tagName = `v${newVersion}`;
-
-// دریافت عنوان انگلیسی و متن خلاصه فارسی از پارامترهای ترمینال
+// پارامترهای ورودی ترمینال
 const titleEn = process.argv[2] || `Release ${tagName}`;
-const descFa = process.argv[3] || 'به‌روزرسانی آب‌وهوا، تایمر و استایل شیشه‌ای داشبورد';
+const descFa = process.argv[3] || 'به‌روزرسانی استایل‌های شیشه‌ای و ابزارهای داشبورد';
 
-// ۳. پاک‌سازی فایل‌های زیپ قدیمی از پوشه dist و ساخت زیپ نسخه جاری
+// ۳. پاک‌سازی پوشه dist و ساخت زیپ نسخه جدید
 const distDir = './dist';
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 } else {
-  const existingFiles = fs.readdirSync(distDir);
-  for (const file of existingFiles) {
+  const files = fs.readdirSync(distDir);
+  for (const file of files) {
     if (file.endsWith('.zip')) {
       fs.unlinkSync(path.join(distDir, file));
     }
@@ -60,12 +70,12 @@ try {
   execSync(`powershell Compress-Archive -Path ${targetFiles} -DestinationPath "${zipPath}" -Force`, { stdio: 'inherit' });
 } catch (e) {}
 
-// ۴. ایجاد یادداشت‌های ریلیز دوزبانه رسمی گیت‌هاب
+// ۴. ایجاد یادداشت دوزبانه
 const releaseNotes = `
 ### 🇮🇷 تغییرات نسخه ${tagName}:
 - ${descFa}
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
-- فعال‌‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
+- فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
 - بسته‌شدن خودکار و هوشمند دراورها هنگام کلیک یا اسکرول
 
@@ -81,32 +91,26 @@ const releaseNotes = `
 
 fs.writeFileSync('temp_release_notes.txt', releaseNotes.trim(), 'utf8');
 
-// ۵. کامیت، همگام‌سازی امن، تگ و انتشار Release رسمی
+// ۵. کامیت، تگ و ارسال به گیت‌هاب
 try {
   try {
     execSync('git rm -r --cached ExCh', { stdio: 'ignore' });
   } catch (e) {}
 
-  // کامیت کردن تغییرات جاری محلی
   execSync('git add .', { stdio: 'inherit' });
   execSync(`git commit -m "chore(release): ${tagName} - ${titleEn}"`, { stdio: 'inherit' });
 
-  // همگام‌سازی تغییرات سرور پس از کامیت محلی برای جلوگیری از خطای unstaged changes
   try {
     execSync('git pull origin main --rebase', { stdio: 'inherit' });
-  } catch (pullErr) {
-    console.log('Sync anjam shod.');
-  }
+  } catch (e) {}
 
-  // ثبت تگ و ارسال به مخزن
   execSync(`git tag -a ${tagName} -m "Release ${tagName}"`, { stdio: 'inherit' });
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
 
-  // انتشار رسمی در صفحه Releases گیت‌هاب
   try {
     execSync(`gh release create "${tagName}" "${zipPath}" --title "Abner Extension ${tagName} - ${titleEn}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
-    console.log(`\n🎉 Release ${tagName} ba movafaghiat dar GitHub sabt va montasher shod!`);
+    console.log(`\n🎉 Release ${tagName} ba movafaghiat dar GitHub sabt shod!`);
   } catch (ghErr) {
     console.log('GitHub CLI release skip shod.');
   }
