@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. آب‌‌وهوا
+  // ۸. آب‌‌وهوا و تنظیمات کامل موقعیت مکانی
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -466,13 +466,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
     if (code === 3) return 'تمام ابری 🧡';
     if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
-    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️️';
+    if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
     return 'معتدل و آرام ⛅';
   }
 
   async function fetchRealWeather(lat, lon, cityName) {
     try {
-      cityLabel.textContent = cityName;
+      if (cityLabel) cityLabel.textContent = cityName;
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
       const res = await fetch(url);
       const data = await res.json();
@@ -480,32 +480,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const daily = data.daily;
       const isDay = cur.is_day === 1;
 
-      weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
+      if (weatherTemp) weatherTemp.textContent = `${toFa(Math.round(cur.temperature))}°`;
       if (weatherIconContainer) weatherIconContainer.innerHTML = renderWeatherAnimatedIcon(cur.weathercode, isDay);
-      weatherPhrase.textContent = getWeatherPhrase(cur.weathercode, isDay);
+      if (weatherPhrase) weatherPhrase.textContent = getWeatherPhrase(cur.weathercode, isDay);
 
       const maxT = Math.round(daily.temperature_2m_max[0]);
       const minT = Math.round(daily.temperature_2m_min[0]);
-      weatherRange.textContent = `${toFa(maxT)}° حداکثر . ${toFa(minT)}° حداقل`;
+      if (weatherRange) weatherRange.textContent = `${toFa(maxT)}° حداکثر . ${toFa(minT)}° حداقل`;
 
-      forecastGrid.innerHTML = '';
-      const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
-      const emojis = ['☀️', '⛅', '☁️', '🌧', '🌦'];
-      for (let i = 0; i < 5; i++) {
-        const dMax = Math.round(daily.temperature_2m_max[i]);
-        const dMin = Math.round(daily.temperature_2m_min[i]);
-        const box = document.createElement('div');
-        box.className = 'forecast-day-box';
-        box.innerHTML = `
-          <span class="forecast-day-name">${dayNames[i]}</span>
-          <div class="forecast-day-icon-box">${emojis[i % 5]}</div>
-          <span class="forecast-day-max">${toFa(dMax)}°</span>
-          <span class="forecast-day-min">${toFa(dMin)}°</span>
-        `;
-        forecastGrid.appendChild(box);
+      if (forecastGrid) {
+        forecastGrid.innerHTML = '';
+        const dayNames = ['امروز', 'فردا', 'پس‌فردا', '۴ روز بعد', '۵ روز بعد'];
+        const emojis = ['☀️', '⛅', '☁️', '🌧', '🌦'];
+        for (let i = 0; i < 5; i++) {
+          const dMax = Math.round(daily.temperature_2m_max[i]);
+          const dMin = Math.round(daily.temperature_2m_min[i]);
+          const box = document.createElement('div');
+          box.className = 'forecast-day-box';
+          box.innerHTML = `
+            <span class="forecast-day-name">${dayNames[i]}</span>
+            <div class="forecast-day-icon-box">${emojis[i % 5]}</div>
+            <span class="forecast-day-max">${toFa(dMax)}°</span>
+            <span class="forecast-day-min">${toFa(dMin)}°</span>
+          `;
+          forecastGrid.appendChild(box);
+        }
       }
+      fetchAzanTimes(lat, lon, cityName);
     } catch (e) {
-      weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
+      if (weatherPhrase) weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
     }
   }
   fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
@@ -517,8 +520,111 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
-  if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
+  // رویدادهای باز شدن و گزینه‌های پنجره موقعیت مکانی
+  if (citySelectBtn && cityModal) {
+    citySelectBtn.onclick = (e) => {
+      e.stopPropagation();
+      cityModal.classList.add('active');
+    };
+  }
+
+  if (cityCancelBtn && cityModal) {
+    cityCancelBtn.onclick = () => cityModal.classList.remove('active');
+  }
+
+  // ۱. موقعیت‌یابی زنده GPS
+  if (autoGpsBtn) {
+    autoGpsBtn.onclick = () => {
+      if (!navigator.geolocation) {
+        alert('مرورگر شما از موقعیت‌یابی پشتیبانی نمی‌کند.');
+        return;
+      }
+      autoGpsBtn.style.opacity = '0.6';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          autoGpsBtn.style.opacity = '1';
+          activeCoords = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            name: 'موقعیت فعلی'
+          };
+          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+          cityModal.classList.remove('active');
+        },
+        () => {
+          autoGpsBtn.style.opacity = '1';
+          alert('امکان دسترسی به GPS وجود ندارد. دسترسی موقعیت مکانی را بررسی کنید.');
+        },
+        { timeout: 10000 }
+      );
+    };
+  }
+
+  // ۲. تشخیص موقعیت مکانی بر اساس آی‌پی
+  if (autoIpBtn) {
+    autoIpBtn.onclick = async () => {
+      autoIpBtn.style.opacity = '0.6';
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        autoIpBtn.style.opacity = '1';
+        if (data.latitude && data.longitude) {
+          activeCoords = {
+            lat: data.latitude,
+            lon: data.longitude,
+            name: data.city || 'منطقه شما'
+          };
+          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+          cityModal.classList.remove('active');
+        } else {
+          alert('خطا در دریافت اطلاعات آی‌پی.');
+        }
+      } catch (e) {
+        autoIpBtn.style.opacity = '1';
+        alert('ارتباط با سرور آی‌پی برقرار نشد.');
+      }
+    };
+  }
+
+  // ۳. جستجوی دستی شهر و دکمه تأیید
+  if (citySaveBtn && manualCityInput) {
+    citySaveBtn.onclick = async () => {
+      const cityName = manualCityInput.value.trim();
+      if (!cityName) return;
+      citySaveBtn.textContent = 'در حال جستجو...';
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=fa&format=json`);
+        const data = await res.json();
+        citySaveBtn.textContent = 'تأیید و ذخیره';
+        if (data.results && data.results.length > 0) {
+          const loc = data.results[0];
+          activeCoords = {
+            lat: loc.latitude,
+            lon: loc.longitude,
+            name: loc.name
+          };
+          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+          manualCityInput.value = '';
+          cityModal.classList.remove('active');
+        } else {
+          alert('شهر مورد نظر پیدا نشد! لطفاً نام شهر را دقیق‌تر وارد کنید.');
+        }
+      } catch (err) {
+        citySaveBtn.textContent = 'تأیید و ذخیره';
+        alert('خطا در جستجوی شهر.');
+      }
+    };
+
+    manualCityInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        citySaveBtn.click();
+      }
+    });
+  }
 
   // ۹. اوقات شرعی
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
@@ -539,7 +645,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('azan-midnight').textContent = toFa(t.Midnight);
     } catch (e) {}
   }
-  fetchAzanTimes(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
   if (azanToggleBtn && azanDrawer) {
     azanToggleBtn.addEventListener('click', (e) => {
@@ -866,7 +971,6 @@ document.addEventListener('DOMContentLoaded', () => {
       repeat: item.repeat || ''
     };
 
-    // تنظیم نام کپسول بورد (عکس ارسالی)
     if (editBoardLabel) {
       if (item.board === 'in_progress') editBoardLabel.textContent = '📁 در دست اقدام ⌵';
       else if (item.board === 'done') editBoardLabel.textContent = '📁 انجام شده ⌵';
@@ -901,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // منوی بورد در ویرایش تسک (عکس ۱)
+  // منوی بورد در ویرایش تسک
   if (editBoardBtn && boardDropdownMenu) {
     editBoardBtn.onclick = (e) => {
       e.stopPropagation();
@@ -924,7 +1028,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // اتصال دکمه‌های ابزار مودال ویرایش به پاپ‌آپ‌های محلی خودش (دقیقاً زیر همان دکمه باز می‌شوند)
   function toggleEditPopup(popupEl) {
     const isVisible = popupEl.style.display === 'flex';
     closeAllToolPopups();
@@ -1002,7 +1105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- منطق پاپ‌آپ‌های اختصاصی ویرایش تسک ---
   // ۱. اولویت در ویرایش
   if (editPopupPriority) {
     editPopupPriority.querySelectorAll('.prio-item').forEach(el => {
@@ -1793,8 +1895,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const prioClass = `prio-${item.priority || 'none'}`;
       const firstLineDesc = item.desc ? item.desc.split('\n')[0].trim() : '';
 
-      // ۱. تیک در لبه راست، متون در سمت چپ تیک
-      // ۲. دکمه‌های مداد و سطل زباله در منتهی‌الیه چپ
       li.innerHTML = `
         <div class="task-card-right-group">
           <div class="task-checkbox-custom ${prioClass}" title="تغییر وضعیت">
@@ -1813,7 +1913,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // تغییر وضعیت تیک
       const chk = li.querySelector('.task-checkbox-custom');
       chk.onclick = (e) => {
         e.stopPropagation();
@@ -1821,14 +1920,12 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       };
 
-      // باز شدن مودال ویرایش تسک
       const editBtn = li.querySelector('.edit-btn');
       editBtn.onclick = (e) => {
         e.stopPropagation();
         openEditTaskModal(index);
       };
 
-      // حذف تسک
       const delBtn = li.querySelector('.delete-btn');
       delBtn.onclick = (e) => {
         e.stopPropagation();
