@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abner-pwa-v1';
+const CACHE_NAME = 'abner-pwa-v100';
 const ASSETS = [
   './',
   './index.html',
@@ -30,6 +30,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // همیشه ابتدا تلاش برای دریافت مستقیم از شبکه، در صورت قطعی اینترنت خواندن از حافظه کش
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {

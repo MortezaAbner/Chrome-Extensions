@@ -1,6 +1,8 @@
 {
+  "id": "abner-dashboard-pwa",
   "name": "Abner Dashboard",
   "short_name": "Abner",
+  "description": "داشبورد شیشه‌ای ابری شامل تقویم، آب و هوا و تسک",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
