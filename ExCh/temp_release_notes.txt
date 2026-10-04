@@ -1,11 +1,11 @@
 ### 🇮🇷 توضیحات فارسی:
-- Fix Weather Modal Glass Styling and Activate GPSتوضیحات
+- Overhaul Weather, Prayer Times and Timer Interactionsتوضیحات
 - تثبیت کامل ساختار افزونه دسکتاپ و پاپ‌آپ‌های محلی
 - همگام‌سازی ریشه مخزن با جدیدترین تغییرات داشبورد شیشه‌ای
 
 ---
 
 ### 🇬🇧 English Release Notes:
-- Fix Weather Modal Glass Styling and Activate GPSتوضیحات
+- Overhaul Weather, Prayer Times and Timer Interactionsتوضیحات
 - Fully stabilized desktop extension architecture and local context popups
 - Synchronized repository root with the latest glassmorphic dashboard build

@@ -3,6 +3,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
   const toEn = n => String(n).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
+  // تابع سراسری برای بستن تمام پنجره‌ها و دراورهای باز
+  function closeAllDrawersAndPopups() {
+    document.getElementById('forecast-drawer')?.classList.remove('active');
+    document.getElementById('azan-drawer')?.classList.remove('active');
+    document.getElementById('timer-drawer')?.classList.remove('active');
+    document.getElementById('azan-city-dropdown')?.classList.remove('active');
+    document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
+    document.getElementById('month-year-picker')?.classList.remove('active');
+    const boardMenu = document.getElementById('board-dropdown-menu');
+    if (boardMenu) boardMenu.style.display = 'none';
+  }
+
+  // بستن پنجره‌ها با کلیک روی پس‌زمینه یا اسکرول صفحه
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('#weather-card') && 
+        !e.target.closest('#clock-card') && 
+        !e.target.closest('#main-calendar-card') && 
+        !e.target.closest('#inline-task-box') && 
+        !e.target.closest('#edit-task-modal') &&
+        !e.target.closest('.context-menu') &&
+        !e.target.closest('.shortcut-box')) {
+      closeAllDrawersAndPopups();
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    closeAllDrawersAndPopups();
+  }, { passive: true });
+
   // ۱. کنترل ناوبری داخلی SPA
   const viewDashboard = document.getElementById('view-dashboard');
   const viewSettings = document.getElementById('view-settings');
@@ -14,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const settingsCloseBtn = document.getElementById('settings-close-btn');
 
   function switchView(activeView, activeBtn) {
+    closeAllDrawersAndPopups();
     [viewDashboard, viewSettings, viewTasks].forEach(v => v.classList.remove('active'));
     activeView.classList.add('active');
     document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
@@ -31,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۲. مدیریت پس‌زمینه در صفحه تنظیمات
+  // ۲. مدیریت پس‌زمینه
   const bgOverlay = document.getElementById('custom-bg-overlay');
   const settingsBgFile = document.getElementById('settings-bg-file');
   const settingsBlurToggle = document.getElementById('settings-blur-toggle');
@@ -245,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (calMonthHeaderBtn && monthYearPicker) {
     calMonthHeaderBtn.onclick = (e) => {
       e.stopPropagation();
+      closeAllDrawersAndPopups();
       selectedPickerYear = currentYear;
       selectedPickerMonth = currentMonthIndex;
       initPickerLists();
@@ -355,6 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (googleCalBtn && calStandardView && calGoogleView) {
     googleCalBtn.onclick = (e) => {
       e.stopPropagation();
+      closeAllDrawersAndPopups();
       calStandardView.style.display = 'none';
       calGoogleView.style.display = 'flex';
       updateGoogleCalendarTimeline();
@@ -397,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (calConvertBtn && dateConvertModal) {
     calConvertBtn.onclick = (e) => {
       e.stopPropagation();
+      closeAllDrawersAndPopups();
       convertInputView.style.display = 'block';
       convertResultView.style.display = 'none';
       dateConvertModal.classList.add('active');
@@ -433,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۸. آب‌‌وهوا و تنظیمات کامل موقعیت مکانی
+  // ۸. سیستم آب‌وهوا و آیکون متحرک روز و شب
   const cityLabel = document.getElementById('current-city-label');
   const weatherTemp = document.getElementById('weather-temp');
   const weatherIconContainer = document.getElementById('weather-icon-container');
@@ -454,19 +488,34 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
 
   function renderWeatherAnimatedIcon(code, isDay) {
-    if (code === 0) return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
-    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) {
+    // شب صاف
+    if (!isDay && (code === 0 || code === 1)) {
+      return `<div class="weather-dynamic-art night-clear"><div class="art-moon"></div></div>`;
+    }
+    // روز صاف
+    if (code === 0) {
+      return `<div class="weather-dynamic-art sunny"><div class="art-sun"></div></div>`;
+    }
+    // بارانی یا رگبار
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) {
       return `<div class="weather-dynamic-art rainy"><div class="art-cloud"></div><div class="art-rain-drop d1"></div><div class="art-rain-drop d2"></div><div class="art-rain-drop d3"></div></div>`;
     }
+    // برفی یا تگرگ
+    if ([71, 73, 75, 77, 85, 86].includes(code)) {
+      return `<div class="weather-dynamic-art snowy"><div class="art-cloud"></div><div class="art-snow-flake s1">❄</div><div class="art-snow-flake s2">❄</div></div>`;
+    }
+    // ابری یا نیمه ابری
     return `<div class="weather-dynamic-art cloudy"><div class="art-cloud"></div></div>`;
   }
 
   function getWeatherPhrase(code, isDay) {
     if (code === 0) return isDay ? 'آفتابی و دلنشین ☀' : 'شب صاف و مهتابی 🌙';
-    if ([1, 2].includes(code)) return 'کمی تا نیمه‌ابری 🌤️';
-    if (code === 3) return 'تمام ابری 🧡';
-    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
+    if ([1, 2].includes(code)) return isDay ? 'کمی تا نیمه‌ابری 🌤️' : 'شب کمی ابری ☁️';
+    if (code === 3) return 'تمام ابری ☁️';
+    if ([45, 48].includes(code)) return 'مه‌آلود و غبارآلود 🌫️';
+    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧️';
     if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
+    if ([95, 96, 99].includes(code)) return 'رعد و برق و تگرگ ⛈️';
     return 'معتدل و آرام ⛅';
   }
 
@@ -513,17 +562,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
 
+  // پیش‌بینی ۵ روزه (عکس ۳)
   if (forecastToggleBtn && forecastDrawer) {
     forecastToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      forecastDrawer.classList.toggle('active');
+      const isActive = forecastDrawer.classList.contains('active');
+      closeAllDrawersAndPopups();
+      if (!isActive) forecastDrawer.classList.add('active');
     });
   }
 
-  // رویدادهای باز شدن و گزینه‌های پنجره موقعیت مکانی
+  // رویدادهای باز شدن و گزینه‌های پنجره موقعیت مکانی (عکس ۲)
   if (citySelectBtn && cityModal) {
     citySelectBtn.onclick = (e) => {
       e.stopPropagation();
+      closeAllDrawersAndPopups();
       cityModal.classList.add('active');
     };
   }
@@ -532,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cityCancelBtn.onclick = () => cityModal.classList.remove('active');
   }
 
-  // ۱. موقعیت‌یابی زنده GPS
+  // موقعیت‌یابی زنده GPS
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
       if (!navigator.geolocation) {
@@ -546,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
           activeCoords = {
             lat: pos.coords.latitude,
             lon: pos.coords.longitude,
-            name: 'موقعیت فعلی'
+            name: 'موقعیت شما'
           };
           localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
           fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
@@ -554,14 +607,14 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         () => {
           autoGpsBtn.style.opacity = '1';
-          alert('امکان دسترسی به GPS وجود ندارد. دسترسی موقعیت مکانی را بررسی کنید.');
+          alert('امکان دریافت موقعیت مکانی وجود ندارد. دسترسی GPS را بررسی نمایید.');
         },
         { timeout: 10000 }
       );
     };
   }
 
-  // ۲. تشخیص موقعیت مکانی بر اساس آی‌پی
+  // تشخیص با آی‌پی
   if (autoIpBtn) {
     autoIpBtn.onclick = async () => {
       autoIpBtn.style.opacity = '0.6';
@@ -579,16 +632,16 @@ document.addEventListener('DOMContentLoaded', () => {
           fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
           cityModal.classList.remove('active');
         } else {
-          alert('خطا در دریافت اطلاعات آی‌پی.');
+          alert('دریافت موقعیت از طریق آی‌پی با خطا مواجه شد.');
         }
       } catch (e) {
         autoIpBtn.style.opacity = '1';
-        alert('ارتباط با سرور آی‌پی برقرار نشد.');
+        alert('خطا در اتصال به سرور مکان‌یاب آی‌پی.');
       }
     };
   }
 
-  // ۳. جستجوی دستی شهر و دکمه تأیید
+  // جستجوی دستی شهر
   if (citySaveBtn && manualCityInput) {
     citySaveBtn.onclick = async () => {
       const cityName = manualCityInput.value.trim();
@@ -610,11 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
           manualCityInput.value = '';
           cityModal.classList.remove('active');
         } else {
-          alert('شهر مورد نظر پیدا نشد! لطفاً نام شهر را دقیق‌تر وارد کنید.');
+          alert('شهر مورد نظر پیدا نشد! نام شهر را دقیق وارد کنید.');
         }
       } catch (err) {
         citySaveBtn.textContent = 'تأیید و ذخیره';
-        alert('خطا در جستجوی شهر.');
+        alert('خطا در اتصال به سرور جستجوی شهر.');
       }
     };
 
@@ -626,10 +679,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۹. اوقات شرعی
+  // ۹. اوقات شرعی و منوی انتخاب شهر (عکس ۴)
   const azanToggleBtn = document.getElementById('azan-toggle-btn');
   const azanDrawer = document.getElementById('azan-drawer');
   const azanCurrentCity = document.getElementById('azan-current-city');
+  const azanCityPickBtn = document.getElementById('azan-city-pick-btn');
+  const azanCityDropdown = document.getElementById('azan-city-dropdown');
+  const azanCitySearchInput = document.getElementById('azan-city-search-input');
+  const azanCityList = document.getElementById('azan-city-list');
+
+  const popularCities = [
+    { name: 'تهران', lat: 35.6892, lon: 51.3890 },
+    { name: 'مشهد', lat: 36.2972, lon: 59.6067 },
+    { name: 'اصفهان', lat: 32.6546, lon: 51.6680 },
+    { name: 'شیراز', lat: 29.5918, lon: 52.5837 },
+    { name: 'تبریز', lat: 38.0800, lon: 46.2919 },
+    { name: 'قم', lat: 34.6401, lon: 50.8764 },
+    { name: 'اهواز', lat: 31.3183, lon: 48.6706 },
+    { name: 'کرج', lat: 35.8327, lon: 50.9915 },
+    { name: 'کرمانشاه', lat: 34.3142, lon: 47.0650 },
+    { name: 'رشت', lat: 37.2808, lon: 49.5832 },
+    { name: 'یزد', lat: 31.8974, lon: 54.3569 }
+  ];
+
+  function renderAzanCities(filterText = '') {
+    if (!azanCityList) return;
+    azanCityList.innerHTML = '';
+    const filtered = popularCities.filter(c => c.name.includes(filterText));
+    filtered.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c.name;
+      li.onclick = (e) => {
+        e.stopPropagation();
+        activeCoords = { lat: c.lat, lon: c.lon, name: c.name };
+        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+        fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+        azanCityDropdown.classList.remove('active');
+      };
+      azanCityList.appendChild(li);
+    });
+  }
+
+  if (azanCityPickBtn && azanCityDropdown) {
+    azanCityPickBtn.onclick = (e) => {
+      e.stopPropagation();
+      renderAzanCities();
+      azanCityDropdown.classList.toggle('active');
+    };
+  }
+
+  if (azanCitySearchInput) {
+    azanCitySearchInput.oninput = (e) => {
+      renderAzanCities(e.target.value.trim());
+    };
+    azanCitySearchInput.onclick = e => e.stopPropagation();
+  }
 
   async function fetchAzanTimes(lat, lon, cityName) {
     if (azanCurrentCity) azanCurrentCity.textContent = cityName;
@@ -649,12 +753,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (azanToggleBtn && azanDrawer) {
     azanToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      azanDrawer.classList.toggle('active');
-      document.getElementById('timer-drawer')?.classList.remove('active');
+      const isActive = azanDrawer.classList.contains('active');
+      closeAllDrawersAndPopups();
+      if (!isActive) azanDrawer.classList.add('active');
     });
   }
 
-  // ۱۰. تایمر
+  // ۱۰. تایمر همراه با اسکرول ماوس (عکس ۵)
   const timerToggleBtn = document.getElementById('timer-toggle-btn');
   const timerDrawer = document.getElementById('timer-drawer');
   const timerActionMain = document.getElementById('timer-toggle-action');
@@ -668,17 +773,39 @@ document.addEventListener('DOMContentLoaded', () => {
   if (timerToggleBtn && timerDrawer) {
     timerToggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      timerDrawer.classList.toggle('active');
-      document.getElementById('azan-drawer')?.classList.remove('active');
+      const isActive = timerDrawer.classList.contains('active');
+      closeAllDrawersAndPopups();
+      if (!isActive) timerDrawer.classList.add('active');
     });
   }
 
-  [timerHr, timerMin, timerSec].forEach(input => {
+  // اسکرول و تایپ اعداد تایمر
+  [
+    { input: timerSec, max: 59 },
+    { input: timerMin, max: 59 },
+    { input: timerHr, max: 99 }
+  ].forEach(({ input, max }) => {
     if (!input) return;
     input.addEventListener('click', (e) => e.stopPropagation());
+
+    // کم و زیاد کردن با چرخ ماوس
+    input.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      let currentVal = parseInt(toEn(input.value), 10) || 0;
+      if (e.deltaY < 0) {
+        currentVal = currentVal < max ? currentVal + 1 : 0;
+      } else {
+        currentVal = currentVal > 0 ? currentVal - 1 : max;
+      }
+      input.value = toFa(String(currentVal).padStart(2, '0'));
+    });
+
+    // تایپ دستی
     input.addEventListener('input', (e) => {
       let val = toEn(e.target.value).replace(/\D/g, '');
       if (val.length > 2) val = val.slice(-2);
+      if (parseInt(val, 10) > max) val = String(max);
       e.target.value = val ? toFa(val) : '';
     });
   });
@@ -822,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.more-btn').forEach(b => {
       b.onclick = (e) => {
         e.stopPropagation();
-        document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
+        closeAllDrawersAndPopups();
         const m = document.getElementById(`menu-${b.dataset.index}`);
         if (m) m.classList.toggle('active');
       };
@@ -867,7 +994,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const composerSubmitBtn = document.getElementById('composer-submit-btn');
   const toggleDoneBtn = document.getElementById('toggle-done-tasks-btn');
 
-  // متغیرهای مودال ویرایش تسک
   const editTaskModal = document.getElementById('edit-task-modal');
   const editTaskCloseBtn = document.getElementById('edit-task-close-btn');
   const editTaskTitleInput = document.getElementById('edit-task-title-input');
@@ -902,16 +1028,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentEditingIndex = -1;
   let currentEditingBoard = 'none';
 
-  let draftTask = {
-    tag: '',
-    date: '',
-    time: '',
-    priority: 'none',
-    repeat: ''
-  };
-
+  let draftTask = { tag: '', date: '', time: '', priority: 'none', repeat: '' };
   let isEditingMode = false;
-
   let todos = JSON.parse(localStorage.getItem('my_todos')) || [];
   let hideDoneTasks = false;
 
@@ -925,18 +1043,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (taskTriggerCollapsed && taskComposerExpanded) {
     taskTriggerCollapsed.onclick = (e) => {
       e.stopPropagation();
+      closeAllDrawersAndPopups();
       taskTriggerCollapsed.style.display = 'none';
       taskComposerExpanded.style.display = 'flex';
       composerTitle.focus();
     };
-
-    window.addEventListener('click', (e) => {
-      if (!e.target.closest('#inline-task-box') && !e.target.closest('.task-tool-popup') && !e.target.closest('#edit-task-modal')) {
-        taskComposerExpanded.style.display = 'none';
-        taskTriggerCollapsed.style.display = 'block';
-        closeAllToolPopups();
-      }
-    });
   }
 
   if (composerDesc) {
@@ -946,14 +1057,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function closeAllToolPopups() {
-    document.querySelectorAll('.task-tool-popup').forEach(p => {
-      p.style.display = 'none';
-    });
-    if (boardDropdownMenu) boardDropdownMenu.style.display = 'none';
-  }
-
-  // باز کردن مودال ویرایش تسک
   function openEditTaskModal(index) {
     currentEditingIndex = index;
     const item = todos[index];
@@ -993,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', () => {
       editTaskChkIndicator.style.borderColor = '#94a3b8';
     }
 
-    closeAllToolPopups();
+    closeAllDrawersAndPopups();
     if (editTaskModal) editTaskModal.classList.add('active');
   }
 
@@ -1001,16 +1104,15 @@ document.addEventListener('DOMContentLoaded', () => {
     editTaskCloseBtn.onclick = () => {
       editTaskModal.classList.remove('active');
       isEditingMode = false;
-      closeAllToolPopups();
+      closeAllDrawersAndPopups();
     };
   }
 
-  // منوی بورد در ویرایش تسک
   if (editBoardBtn && boardDropdownMenu) {
     editBoardBtn.onclick = (e) => {
       e.stopPropagation();
       const isVisible = boardDropdownMenu.style.display === 'flex';
-      closeAllToolPopups();
+      closeAllDrawersAndPopups();
       boardDropdownMenu.style.display = isVisible ? 'none' : 'flex';
     };
 
@@ -1030,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function toggleEditPopup(popupEl) {
     const isVisible = popupEl.style.display === 'flex';
-    closeAllToolPopups();
+    closeAllDrawersAndPopups();
     popupEl.style.display = isVisible ? 'none' : 'flex';
   }
 
@@ -1072,7 +1174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ذخیره نهایی ویرایش
   if (btnEditTaskSave && editTaskModal) {
     btnEditTaskSave.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -1087,12 +1188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       }
       isEditingMode = false;
-      closeAllToolPopups();
+      closeAllDrawersAndPopups();
       editTaskModal.classList.remove('active');
     };
   }
 
-  // حذف در ویرایش
   if (btnEditTaskDelete && editTaskModal) {
     btnEditTaskDelete.onclick = () => {
       if (currentEditingIndex > -1 && todos[currentEditingIndex]) {
@@ -1100,12 +1200,11 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRenderTodos();
       }
       isEditingMode = false;
-      closeAllToolPopups();
+      closeAllDrawersAndPopups();
       editTaskModal.classList.remove('active');
     };
   }
 
-  // ۱. اولویت در ویرایش
   if (editPopupPriority) {
     editPopupPriority.querySelectorAll('.prio-item').forEach(el => {
       el.onclick = (ev) => {
@@ -1120,7 +1219,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ۲. برچسب در ویرایش
   const editNewTagInput = document.getElementById('edit-new-tag-input');
   const editTagAddPlusBtn = document.getElementById('edit-tag-add-plus-btn');
   const editTagsChipsList = document.getElementById('edit-tags-chips-list');
@@ -1147,7 +1245,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۳. تقویم در ویرایش
   let editTaskCalYear = 1405;
   let editTaskCalMonthIdx = 6;
   let editTaskCalSelectedDay = 11;
@@ -1223,7 +1320,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۴. ساعت در ویرایش
   let editSelectedHour = '13';
   let editSelectedMinute = '15';
   const editWheelHour = document.getElementById('edit-wheel-hour');
@@ -1284,7 +1380,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ۵. تکرار در ویرایش
   let editRepeatCount = 2;
   let editRepeatSelectedDays = [0];
   let editRepeatSelectedMonthDays = [1];
@@ -1446,7 +1541,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- دکمه‌های کادر تسک پایین صفحه برای ساخت تسک جدید ---
+  // دکمه‌های کادر تسک پایین صفحه برای ساخت تسک جدید
   const toolBtnRepeat = document.getElementById('tool-btn-repeat');
   const toolBtnPriority = document.getElementById('tool-btn-priority');
   const toolBtnTime = document.getElementById('tool-btn-time');
@@ -1461,14 +1556,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function toggleCreatePopup(popupEl) {
     const isVisible = popupEl.style.display === 'flex';
-    closeAllToolPopups();
+    closeAllDrawersAndPopups();
     popupEl.style.display = isVisible ? 'none' : 'flex';
   }
 
   if (toolBtnRepeat) {
     toolBtnRepeat.onclick = (e) => {
       e.stopPropagation();
-      renderRepeatDynamicUI();
       toggleCreatePopup(popupRepeat);
     };
   }
@@ -1483,7 +1577,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (toolBtnTime) {
     toolBtnTime.onclick = (e) => {
       e.stopPropagation();
-      initTimeWheels();
       toggleCreatePopup(popupTime);
     };
   }
@@ -1491,7 +1584,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (toolBtnDate) {
     toolBtnDate.onclick = (e) => {
       e.stopPropagation();
-      renderTaskCalendar();
       toggleCreatePopup(popupDate);
     };
   }
@@ -1503,7 +1595,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // منطق برچسب ساخت
   const newTagInput = document.getElementById('new-tag-input');
   const tagAddPlusBtn = document.getElementById('tag-add-plus-btn');
   const tagsChipsList = document.getElementById('tags-chips-list');
@@ -1528,7 +1619,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // منطق تقویم ساخت
   const calPopUp = document.getElementById('cal-pop-up');
   const calPopDown = document.getElementById('cal-pop-down');
   const calPopToday = document.getElementById('cal-pop-today');
@@ -1605,7 +1695,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // منطق ساعت و دقیقه ساخت
   const wheelHour = document.getElementById('wheel-hour');
   const wheelMinute = document.getElementById('wheel-minute');
   const btnTimeConfirm = document.getElementById('btn-time-confirm');
@@ -1667,7 +1756,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // اولویت ساخت
   if (popupPriority) {
     popupPriority.querySelectorAll('.prio-item').forEach(el => {
       el.onclick = (ev) => {
@@ -1681,138 +1769,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // تکرار ساخت
   const repeatUnitSelect = document.getElementById('repeat-unit-select');
   const cntMinus = document.getElementById('cnt-minus');
   const cntPlus = document.getElementById('cnt-plus');
   const cntVal = document.getElementById('cnt-val');
-  const repeatDynamicSub = document.getElementById('repeat-dynamic-sub');
   const btnRepeatConfirm = document.getElementById('btn-repeat-confirm');
   const btnRepeatCancel = document.getElementById('btn-repeat-cancel');
 
   let repeatCount = 2;
-  let repeatSelectedDays = [0];
-  let repeatSelectedMonthDays = [1];
-  let repeatSelectedMonths = [0];
-
-  function renderRepeatDynamicUI() {
-    if (!repeatDynamicSub) return;
-    repeatDynamicSub.innerHTML = '';
-    const unit = repeatUnitSelect.value;
-
-    if (unit === 'week') {
-      const wrap = document.createElement('div');
-      wrap.className = 'sub-row-wrap';
-      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی؟</span>`;
-      const grid = document.createElement('div');
-      grid.className = 'weekday-repeat-grid';
-      
-      const fullDays = [
-        { label: 'شنبه', idx: 0 },
-        { label: 'یکشنبه', idx: 1 },
-        { label: 'دوشنبه', idx: 2 },
-        { label: 'سه‌شنبه', idx: 3 },
-        { label: 'چهارشنبه', idx: 4 },
-        { label: 'پنج‌شنبه', idx: 5 },
-        { label: 'جمعه', idx: 6 }
-      ];
-
-      fullDays.forEach(d => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `rpt-weekday-btn ${repeatSelectedDays.includes(d.idx) ? 'selected' : ''}`;
-        btn.textContent = d.label;
-        btn.onclick = (ev) => {
-          ev.stopPropagation();
-          if (repeatSelectedDays.includes(d.idx)) {
-            repeatSelectedDays = repeatSelectedDays.filter(x => x !== d.idx);
-          } else {
-            repeatSelectedDays.push(d.idx);
-          }
-          renderRepeatDynamicUI();
-        };
-        grid.appendChild(btn);
-      });
-      wrap.appendChild(grid);
-      repeatDynamicSub.appendChild(wrap);
-
-    } else if (unit === 'month') {
-      const wrap = document.createElement('div');
-      wrap.className = 'sub-row-wrap';
-      wrap.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
-      const grid = document.createElement('div');
-      grid.className = 'monthday-repeat-grid';
-      for (let i = 1; i <= 31; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `rpt-circle-btn ${repeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
-        btn.textContent = toFa(i);
-        btn.onclick = (ev) => {
-          ev.stopPropagation();
-          if (repeatSelectedMonthDays.includes(i)) {
-            repeatSelectedMonthDays = repeatSelectedMonthDays.filter(x => x !== i);
-          } else {
-            repeatSelectedMonthDays.push(i);
-          }
-          renderRepeatDynamicUI();
-        };
-        grid.appendChild(btn);
-      }
-      wrap.appendChild(grid);
-      repeatDynamicSub.appendChild(wrap);
-
-    } else if (unit === 'year') {
-      const wrapMonths = document.createElement('div');
-      wrapMonths.className = 'sub-row-wrap';
-      wrapMonths.innerHTML = `<span class="sub-row-label">چه ماه‌هایی؟</span>`;
-      const mGrid = document.createElement('div');
-      mGrid.className = 'month-repeat-grid';
-      persianMonthNames.forEach((m, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `rpt-month-btn ${repeatSelectedMonths.includes(idx) ? 'selected' : ''}`;
-        btn.textContent = m;
-        btn.onclick = (ev) => {
-          ev.stopPropagation();
-          if (repeatSelectedMonths.includes(idx)) {
-            repeatSelectedMonths = repeatSelectedMonths.filter(x => x !== idx);
-          } else {
-            repeatSelectedMonths.push(idx);
-          }
-          renderRepeatDynamicUI();
-        };
-        mGrid.appendChild(btn);
-      });
-      wrapMonths.appendChild(mGrid);
-      repeatDynamicSub.appendChild(wrapMonths);
-
-      const wrapDays = document.createElement('div');
-      wrapDays.className = 'sub-row-wrap';
-      wrapDays.innerHTML = `<span class="sub-row-label">چه روزهایی از ماه؟</span>`;
-      const dGrid = document.createElement('div');
-      dGrid.className = 'monthday-repeat-grid';
-      for (let i = 1; i <= 31; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `rpt-circle-btn ${repeatSelectedMonthDays.includes(i) ? 'selected' : ''}`;
-        btn.textContent = toFa(i);
-        btn.onclick = (ev) => {
-          ev.stopPropagation();
-          if (repeatSelectedMonthDays.includes(i)) {
-            repeatSelectedMonthDays = repeatSelectedMonthDays.filter(x => x !== i);
-          } else {
-            repeatSelectedMonthDays.push(i);
-          }
-          renderRepeatDynamicUI();
-        };
-        dGrid.appendChild(btn);
-      }
-      wrapDays.appendChild(dGrid);
-      repeatDynamicSub.appendChild(wrapDays);
-    }
-  }
-
-  if (repeatUnitSelect) repeatUnitSelect.onchange = () => renderRepeatDynamicUI();
 
   if (cntMinus) {
     cntMinus.onclick = (e) => {
@@ -1843,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- رندر تسک‌ها با تثبیت قطعی تیک در راست، متون در کنار آن، و دکمه‌ها در چپ ---
+  // رندر تسک‌ها با تثبیت قطعی تیک در راست، متون در کنار آن، و دکمه‌ها در چپ
   function saveAndRenderTodos() {
     localStorage.setItem('my_todos', JSON.stringify(todos));
     if (!todoList || !emptyState) return;
@@ -1868,7 +1832,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let metaHtml = '';
       const pills = [];
 
-      // برچسب‌های وضعیت بورد
       if (item.board === 'in_progress') {
         pills.push(`<span class="task-board-badge in-progress">● در دست اقدام</span>`);
       } else if (item.board === 'done') {
@@ -1961,7 +1924,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (composerDesc) composerDesc.style.height = 'auto';
       draftTask = { tag: '', date: '', time: '', priority: 'none', repeat: '' };
       document.querySelectorAll('.composer-tool-btn').forEach(b => b.classList.remove('active-tool'));
-      closeAllToolPopups();
+      closeAllDrawersAndPopups();
       taskComposerExpanded.style.display = 'none';
       taskTriggerCollapsed.style.display = 'block';
 
