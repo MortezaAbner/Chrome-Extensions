@@ -17,7 +17,7 @@
   --text-main: #0f172a;
   --text-muted: #334155;
   --accent-color: #2563eb;
-  --pill-bg: rgba(255, 255, 255, 0.75);
+  --pill-bg: rgba(255, 255, 255, 0.25);
   --blue-badge: #2563eb;
   --temp-max-color: #ea580c;
   --temp-min-color: #0284c7;
@@ -33,7 +33,7 @@
   --text-main: #f8fafc;
   --text-muted: #cbd5e1;
   --accent-color: #38bdf8;
-  --pill-bg: rgba(255, 255, 255, 0.18);
+  --pill-bg: rgba(255, 255, 255, 0.12);
   --blue-badge: #60a5fa;
   --temp-max-color: #fb923c;
   --temp-min-color: #38bdf8;
@@ -100,22 +100,23 @@ body {
   display: flex; gap: 12px; width: 100%; position: relative; z-index: 30;
 }
 
+/* پنجره‌های پاپ‌آپ شیشه‌ای مشترک */
 .glass-blur-menu {
-  background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(28px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(40px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
   border-radius: 24px !important;
 }
 
 [data-theme="dark"] .glass-blur-menu {
-  background: rgba(18, 24, 40, 0.9) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+  background: rgba(20, 26, 44, 0.65) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* باکس آب‌وهوا */
+/* باکس آب‌‌وهوا */
 .weather-single-card {
   flex: 1.15; padding: 16px 18px; display: flex;
   flex-direction: column; justify-content: space-between; border-radius: 26px;
@@ -125,6 +126,8 @@ body {
 .weather-temp-val { font-size: 2.85rem; font-weight: 850; color: #7c3aed; line-height: 1; letter-spacing: -1px; }
 [data-theme="dark"] .weather-temp-val { color: #a78bfa; }
 .weather-animated-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+
+/* آیکون متحرک پیشرفته روز و شب */
 .weather-dynamic-art { position: relative; width: 44px; height: 44px; }
 .weather-dynamic-art.sunny .art-sun {
   width: 32px; height: 32px; background: #fbbf24; border-radius: 50%;
@@ -134,6 +137,10 @@ body {
 @keyframes sunPulse {
   0% { transform: scale(0.92); filter: drop-shadow(0 0 4px #f59e0b); }
   100% { transform: scale(1.08); filter: drop-shadow(0 0 14px #fbbf24); }
+}
+.weather-dynamic-art.night-clear .art-moon {
+  width: 30px; height: 30px; border-radius: 50%; box-shadow: 5px 5px 0 0 #fde047;
+  position: absolute; top: 4px; left: 6px; transform: rotate(-25deg);
 }
 .weather-dynamic-art.cloudy .art-cloud {
   width: 36px; height: 22px; background: #94a3b8; border-radius: 20px;
@@ -161,23 +168,39 @@ body {
   50% { opacity: 1; }
   100% { transform: translateY(8px); opacity: 0; }
 }
+.weather-dynamic-art.snowy .art-cloud { width: 34px; height: 20px; background: #cbd5e1; border-radius: 20px; position: absolute; top: 8px; left: 5px; }
+.weather-dynamic-art.snowy .art-cloud::before { content: ''; position: absolute; top: -9px; left: 6px; width: 16px; height: 16px; background: #cbd5e1; border-radius: 50%; }
+.weather-dynamic-art.snowy .art-snow-flake {
+  position: absolute; bottom: 2px; font-size: 10px; color: #38bdf8; animation: rainDrop 1.8s infinite linear;
+}
+.art-snow-flake.s1 { left: 10px; animation-delay: 0s; }
+.art-snow-flake.s2 { left: 22px; animation-delay: 0.7s; }
+
 .weather-status-phrase { font-size: 1.15rem; font-weight: 850; margin: 4px 0 2px 0; color: var(--text-main); }
 .weather-range { font-size: 0.9rem; font-weight: 750; color: var(--text-muted); }
 .weather-footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 8px; }
 
+/* کپسول‌های شیشه‌ای یکدست */
 .location-chip, .forecast-pill, .compact-action-btn {
-  background: var(--pill-bg); border: 1px solid var(--glass-border); border-radius: 14px;
-  padding: 5px 12px; font-size: 0.8rem; font-weight: 750; color: var(--text-main);
+  background: var(--pill-bg) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  padding: 5px 12px; font-size: 0.82rem; font-weight: 750; color: var(--text-main);
   cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.15s ease; white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); white-space: nowrap;
 }
 .location-chip:hover, .forecast-pill:hover, .compact-action-btn:hover {
-  transform: scale(1.04); background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.38) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
 }
 [data-theme="dark"] .location-chip:hover, [data-theme="dark"] .forecast-pill:hover, [data-theme="dark"] .compact-action-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.22) !important;
 }
 
+/* پنجره پیش‌بینی شیشه‌ای با پس‌زمینه شفاف */
 .forecast-drawer {
   position: absolute; top: calc(100% + 8px); right: 0; width: 205%; padding: 12px; display: none; z-index: 9999;
   animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -185,10 +208,11 @@ body {
 .forecast-drawer.active { display: block; }
 .forecast-days-grid { display: flex; gap: 8px; justify-content: space-between; }
 .forecast-day-box {
-  flex: 1; background: rgba(255, 255, 255, 0.65); border: 1px solid rgba(255, 255, 255, 0.9);
+  flex: 1; background: rgba(255, 255, 255, 0.35); border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: 18px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 5px;
 }
-[data-theme="dark"] .forecast-day-box { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); }
+[data-theme="dark"] .forecast-day-box { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); }
 .forecast-day-name { font-size: 0.78rem; color: var(--text-main); font-weight: 850; }
 .forecast-day-icon-box { font-size: 1.45rem; }
 .forecast-day-max { font-size: 1.05rem; font-weight: 850; color: var(--temp-max-color); }
@@ -213,6 +237,7 @@ body {
 .clock-actions-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
 .compact-action-btn { flex: 1; }
 
+/* پنجره اوقات شرعی و منوی مخفی اسکرول شهر */
 .clock-drawer {
   position: absolute; top: calc(100% + 8px); left: 0; width: 205%; padding: 12px 14px; display: none; z-index: 9999;
   animation: slideDownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -223,44 +248,59 @@ body {
 .azan-times-row { position: relative; z-index: 2; display: flex; justify-content: space-between; width: 100%; }
 .azan-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .azan-t {
-  font-size: 0.8rem; font-weight: 850; color: #1e3a8a; background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px); padding: 1px 5px; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 850; color: #1e3a8a; background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px); padding: 1px 6px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.7);
 }
-[data-theme="dark"] .azan-t { color: #93c5fd; background: rgba(15, 23, 42, 0.85); }
+[data-theme="dark"] .azan-t { color: #93c5fd; background: rgba(15, 23, 42, 0.6); border-color: rgba(255, 255, 255, 0.15); }
 .azan-l { font-size: 0.72rem; color: var(--text-muted); font-weight: 750; }
 .azan-footer-select { display: flex; justify-content: center; position: relative; margin-top: 2px; }
 .azan-city-btn {
-  background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px;
+  background: var(--pill-bg); border: 1px solid var(--glass-border); border-radius: 16px;
   padding: 4px 14px; font-size: 0.8rem; font-weight: 750; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px;
 }
 .azan-city-dropdown {
-  position: absolute; bottom: calc(100% + 4px); right: 20px; left: 20px;
-  padding: 8px; display: none; flex-direction: column; max-height: 190px; z-index: 10005;
+  position: absolute; bottom: calc(100% + 6px); right: 10px; left: 10px;
+  padding: 10px; display: none; flex-direction: column; max-height: 200px; z-index: 10005;
 }
 .azan-city-dropdown.active { display: flex; }
 .azan-search-box input {
   width: 100%; padding: 8px 12px; border: 1px solid var(--glass-border); border-radius: 12px; outline: none; font-size: 0.82rem;
-  background: rgba(255, 255, 255, 0.85); font-weight: 700;
+  background: rgba(255, 255, 255, 0.65); font-weight: 700; color: var(--text-main);
 }
+[data-theme="dark"] .azan-search-box input { background: rgba(0, 0, 0, 0.3); }
+
+/* لیست اسکرولی بدون نمایش اسکرول‌بار */
 .azan-city-list {
   list-style: none; overflow-y: auto; margin-top: 6px; max-height: 130px; display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.azan-city-list::-webkit-scrollbar {
+  display: none !important;
 }
 .azan-city-list li {
   padding: 6px 10px; font-size: 0.8rem; font-weight: 750; cursor: pointer; border-radius: 8px; text-align: right; color: var(--text-main);
 }
-.azan-city-list li:hover { background: rgba(37, 99, 235, 0.15); color: #2563eb; }
+.azan-city-list li:hover { background: rgba(37, 99, 235, 0.18); color: #2563eb; }
 
+/* پنجره تایمر با قابلیت اسکرول چرخ ماوس */
 .timer-boxes-row { display: flex; gap: 12px; justify-content: center; align-items: center; margin: 4px 0; }
 .timer-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .timer-input {
-  width: 66px; height: 52px; background: rgba(255, 255, 255, 0.75); border: 1.5px solid rgba(255, 255, 255, 0.95);
-  border-radius: 16px; text-align: center; font-size: 1.45rem; font-weight: 850; color: var(--text-main); outline: none; cursor: text;
+  width: 66px; height: 52px; background: rgba(255, 255, 255, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px; text-align: center; font-size: 1.45rem; font-weight: 850; color: var(--text-main); outline: none; cursor: pointer;
+  transition: all 0.15s;
 }
+[data-theme="dark"] .timer-input { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); }
+.timer-input:focus { border-color: #2563eb; background: rgba(255, 255, 255, 0.7); }
 .timer-unit label { font-size: 0.75rem; color: var(--text-muted); font-weight: 750; }
 .timer-action-main {
   background: #2563eb; color: #ffffff; border: none; border-radius: 16px;
   padding: 10px 0; font-size: 0.95rem; font-weight: 750; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: transform 0.15s;
 }
+.timer-action-main:hover { transform: scale(1.02); }
 .timer-action-main.running { background: #ef4444; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
 
 /* تقویم شمسی */
@@ -494,9 +534,7 @@ body {
 .empty-sub-heading { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
 .empty-bullets { display: flex; flex-direction: column; gap: 3px; font-size: 0.84rem; color: var(--text-muted); font-weight: 700; }
 
-/* ========================================================
-   چیدمان قطعی کارت تسک: تیک راست، ادیت/حذف چپ
-   ======================================================== */
+/* چیدمان قطعی کارت تسک: تیک راست، ادیت/حذف چپ */
 .todo-list {
   list-style: none; display: flex; flex-direction: column; gap: 10px; width: 100%;
 }
@@ -786,7 +824,7 @@ body {
 /* پنجره‌های پاپ‌آپ ابزارهای تسک */
 .task-tool-popup {
   position: absolute;
-  top: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   right: 0;
   z-index: 100010;
   border-radius: 24px !important;
@@ -1315,7 +1353,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* منوی بازشونده بورد */
 .board-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -1380,18 +1417,16 @@ body {
   cursor: pointer;
 }
 
-/* ========================================================
-   اصلاح اختصاصی پنجره موقعیت مکانی آب‌وهوا با استایل شیشه‌ای کامل
-   ======================================================== */
+/* پنجره مودال موقعیت مکانی آب‌وهوا با استایل شیشه‌ای کامل */
 .modal-overlay {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(15, 23, 42, 0.45) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: rgba(15, 23, 42, 0.35) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
   display: none !important;
   justify-content: center !important;
   align-items: center !important;
@@ -1410,16 +1445,16 @@ body {
   gap: 16px !important;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
   backdrop-filter: blur(40px) saturate(220%) !important;
   -webkit-backdrop-filter: blur(40px) saturate(220%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
 }
 
 [data-theme="dark"] .location-modal-box {
-  background: rgba(20, 26, 44, 0.85) !important;
-  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(20, 26, 44, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65) !important;
 }
 
@@ -1455,17 +1490,17 @@ body {
   gap: 14px;
   padding: 14px 16px;
   border-radius: 20px;
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
   cursor: pointer;
   text-align: right;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.35);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
 }
 
 .loc-method-btn:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.65);
   box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
   border-color: #3b82f6;
 }
@@ -1480,8 +1515,8 @@ body {
 }
 
 .loc-method-btn.primary-glass {
-  background: rgba(239, 246, 255, 0.85);
-  border-color: rgba(191, 219, 254, 0.95);
+  background: rgba(239, 246, 255, 0.45);
+  border-color: rgba(191, 219, 254, 0.8);
 }
 [data-theme="dark"] .loc-method-btn.primary-glass {
   background: rgba(30, 58, 138, 0.3);
@@ -1492,7 +1527,7 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
@@ -1544,24 +1579,23 @@ body {
 .manual-input-wrapper input {
   width: 100%;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
   border-radius: 18px;
   outline: none;
   font-size: 0.92rem;
   color: var(--text-main);
   font-weight: 750;
   text-align: right;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 [data-theme="dark"] .manual-input-wrapper input {
-  background: rgba(18, 24, 40, 0.85);
+  background: rgba(18, 24, 40, 0.65);
   border-color: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
 .manual-input-wrapper input:focus {
   border-color: #2563eb;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .modal-buttons {
