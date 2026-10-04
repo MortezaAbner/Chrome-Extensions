@@ -3,6 +3,65 @@ document.addEventListener('DOMContentLoaded', () => {
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
   const toEn = n => String(n).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
+  // سیستم صوتی آلارم تایمر
+  let alarmAudioCtx = null;
+  let alarmInterval = null;
+
+  function playAlarmBeep() {
+    try {
+      if (!alarmAudioCtx) alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = alarmAudioCtx.createOscillator();
+      const gain = alarmAudioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, alarmAudioCtx.currentTime);
+      gain.gain.setValueAtTime(0.15, alarmAudioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, alarmAudioCtx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(alarmAudioCtx.destination);
+      osc.start();
+      osc.stop(alarmAudioCtx.currentTime + 0.4);
+    } catch (e) {}
+  }
+
+  function startAlarmSound() {
+    playAlarmBeep();
+    alarmInterval = setInterval(playAlarmBeep, 900);
+  }
+
+  function stopAlarmSound() {
+    if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
+  }
+
+  function closeAllDrawersAndPopups() {
+    document.getElementById('forecast-drawer')?.classList.remove('active');
+    document.getElementById('azan-drawer')?.classList.remove('active');
+    document.getElementById('timer-drawer')?.classList.remove('active');
+    document.getElementById('azan-city-dropdown')?.classList.remove('active');
+    document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
+    document.getElementById('month-year-picker')?.classList.remove('active');
+    document.getElementById('date-event-popup')?.setAttribute('style', 'display: none;');
+    const bm = document.getElementById('board-dropdown-menu');
+    if (bm) bm.style.display = 'none';
+  }
+
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('#weather-card') && 
+        !e.target.closest('#clock-card') && 
+        !e.target.closest('#main-calendar-card') && 
+        !e.target.closest('#inline-task-box') && 
+        !e.target.closest('#edit-task-modal') &&
+        !e.target.closest('#city-modal') &&
+        !e.target.closest('#timer-alarm-modal') &&
+        !e.target.closest('.context-menu') &&
+        !e.target.closest('.shortcut-box')) {
+      closeAllDrawersAndPopups();
+    }
+  });
+
+  window.addEventListener('scroll', () => closeAllDrawersAndPopups(), { passive: true });
+
+
   // تابع سراسری برای بستن تمام پنجره‌ها و دراورهای باز
   function closeAllDrawersAndPopups() {
     document.getElementById('forecast-drawer')?.classList.remove('active');
@@ -144,16 +203,24 @@ document.addEventListener('DOMContentLoaded', () => {
     'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
   ];
 
+  
   const specialEventsData = {
-    '1405-7-9': { title: 'روز آتش‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
-    '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌‌الثانی ۱۴۴۸' },
-    '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
+    '1405-7-1': { title: 'آغاز سال تحصیلی و بازگشایی مدارس (ایران)', gDate: '23 Sep 2026', hDate: '۱۱ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-5': { title: 'روز جهانی گردشگری (توریسم)', gDate: '27 Sep 2026', hDate: '۱۵ ربیع‌الثانی ۱۴۴۸', major: false },
+    '1405-7-7': { title: 'روز آتش‌نشانی و ایمنی / بزرگداشت شمس تبریزی', gDate: '29 Sep 2026', hDate: '۱۷ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-8': { title: 'روز بزرگداشت مولوی', gDate: '30 Sep 2026', hDate: '۱۸ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-9': { title: 'روز جهانی ترجمه و مترجم', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸', major: false },
+    '1405-7-10': { title: 'روز جهانی سالمندان', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸', major: false },
+    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸', major: false },
+    '1405-7-13': { title: 'روز نیروی انتظامی جمهوری اسلامی ایران', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-14': { title: 'روز جهانی معلم / روز دامپزشکی', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸', major: false },
+    '1405-7-16': { title: 'روز جهانی کودک / ولادت امام حسن عسکری (ع)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-18': { title: 'وفات حضرت معصومه (س)', gDate: '10 Oct 2026', hDate: '۲۸ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-20': { title: 'روز بزرگداشت حافظ شیرازی / روز جهانی دختر', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸', major: true },
+    '1405-7-23': { title: 'روز جهانی استاندارد / روز عصای سفید', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸', major: false },
+    '1405-7-26': { title: 'روز تربیت بدنی و ورزش', gDate: '18 Oct 2026', hDate: '۶ جمادی‌الاول ۱۴۴۸', major: true }
   };
+
 
   let currentYear = 1405;
   let currentMonthIndex = 6;
@@ -197,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
 
       const eventKey = `${year}-${monthIndex + 1}-${i}`;
-      if (specialEventsData[eventKey]) span.classList.add('event-green-dot');
+      if (specialEventsData[eventKey] && specialEventsData[eventKey].major) span.classList.add('event-green-dot');
 
       span.onclick = (e) => {
         e.stopPropagation();
@@ -292,6 +359,18 @@ document.addEventListener('DOMContentLoaded', () => {
       currentMonthIndex = selectedPickerMonth;
       renderCalendar(currentYear, currentMonthIndex);
       monthYearPicker.classList.remove('active');
+
+  const pickerTodayBtn = document.getElementById('picker-today-btn');
+  if (pickerTodayBtn) {
+    pickerTodayBtn.onclick = (e) => {
+      e.stopPropagation();
+      currentYear = 1405;
+      currentMonthIndex = 6;
+      renderCalendar(currentYear, currentMonthIndex);
+      monthYearPicker.classList.remove('active');
+    };
+  }
+
     };
   }
   renderCalendar(currentYear, currentMonthIndex);
@@ -585,7 +664,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cityCancelBtn.onclick = () => cityModal.classList.remove('active');
   }
 
-  // موقعیت‌یابی زنده GPS
+  
+  // موقعیت‌یابی زنده GPS با قابلیت درخواست مجدد مجوز
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
       if (!navigator.geolocation) {
@@ -599,44 +679,63 @@ document.addEventListener('DOMContentLoaded', () => {
           activeCoords = {
             lat: pos.coords.latitude,
             lon: pos.coords.longitude,
-            name: 'موقعیت شما'
+            name: 'موقعیت دستگاه'
           };
           localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
           fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
           cityModal.classList.remove('active');
         },
-        () => {
+        (err) => {
           autoGpsBtn.style.opacity = '1';
-          alert('امکان دریافت موقعیت مکانی وجود ندارد. دسترسی GPS را بررسی نمایید.');
+          if (err.code === 1) {
+            alert('دسترسی به موقعیت مکانی رد شد. برای استفاده مجدد، دسترسی لوکیشن را در نوار آدرس مرورگر فعال کنید یا دوباره کلیک کنید.');
+          } else {
+            alert('خطا در دریافت مختصات GPS دستگاه.');
+          }
         },
-        { timeout: 10000 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     };
   }
 
-  // تشخیص با آی‌پی
+  // تشخیص موقعیت بر اساس آی‌پی با سرورهای پشتیبان بدون تحریم
   if (autoIpBtn) {
     autoIpBtn.onclick = async () => {
+      const confirmAccess = confirm('آیا اجازه می‌دهید موقعیت تقریبی شما از طریق آی‌پی اینترنت دریافت شود؟');
+      if (!confirmAccess) return;
+
       autoIpBtn.style.opacity = '0.6';
+      let fetched = false;
+
+      // سرور ۱: ipapi.co
       try {
         const res = await fetch('https://ipapi.co/json/');
         const data = await res.json();
-        autoIpBtn.style.opacity = '1';
         if (data.latitude && data.longitude) {
-          activeCoords = {
-            lat: data.latitude,
-            lon: data.longitude,
-            name: data.city || 'منطقه شما'
-          };
-          localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
-          fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
-          cityModal.classList.remove('active');
-        } else {
-          alert('دریافت موقعیت از طریق آی‌پی با خطا مواجه شد.');
+          activeCoords = { lat: data.latitude, lon: data.longitude, name: data.city || 'منطقه شما' };
+          fetched = true;
         }
-      } catch (e) {
-        autoIpBtn.style.opacity = '1';
-        alert('خطا در اتصال به سرور مکان‌یاب آی‌پی.');
+      } catch (e) {}
+
+      // سرور ۲ (پشتیبان در صورت بروز خطا در اولی): ipwho.is
+      if (!fetched) {
+        try {
+          const res = await fetch('https://ipwho.is/');
+          const data = await res.json();
+          if (data.success && data.latitude && data.longitude) {
+            activeCoords = { lat: data.latitude, lon: data.longitude, name: data.city || 'منطقه شما' };
+            fetched = true;
+          }
+        } catch (e) {}
+      }
+
+      autoIpBtn.style.opacity = '1';
+      if (fetched) {
+        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+        fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
+        cityModal.classList.remove('active');
+      } else {
+        alert('خطا در ارتباط با سرورهای تشخیص آی‌پی. اتصال اینترنت خود را بررسی کنید یا نام شهر را دستی جستجو نمایید.');
       }
     };
   }
@@ -836,7 +935,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timerActionMain.textContent = 'شروع';
             timerActionMain.classList.remove('running');
             timerHr.value = '۰۰'; timerMin.value = '۲۵'; timerSec.value = '۰۰';
-            alert('⏰ زمان تایمر به پایان رسید!');
+            startAlarmSound();
+            if (timerAlarmModal) timerAlarmModal.classList.add('active');
             return;
           }
           const curH = Math.floor(totalRemainingSec / 3600);
@@ -1037,6 +1137,16 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleDoneBtn.onclick = () => {
       hideDoneTasks = !hideDoneTasks;
       saveAndRenderTodos();
+
+  const timerAlarmModal = document.getElementById('timer-alarm-modal');
+  const timerAlarmDismissBtn = document.getElementById('timer-alarm-dismiss-btn');
+  if (timerAlarmDismissBtn && timerAlarmModal) {
+    timerAlarmDismissBtn.onclick = () => {
+      stopAlarmSound();
+      timerAlarmModal.classList.remove('active');
+    };
+  }
+
     };
   }
 
