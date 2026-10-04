@@ -1,13 +1,11 @@
-### 🇮🇷 تغییرات نسخه v1.32.1:
-- بازگردانی کامل پایداری نسخه 1.29.0 همراه با تمام امکانات داشبورد
-- اتصال کامل پاپ‌آپ‌های محلی تکرار، سررسید، ساعت، برچسب‌ها و اولویت در مودال ویرایش
-- قفل دائمی چیدمان تسک با چک‌باکس در سمت راست و دکمه‌های ادیت/حذف در سمت چپ
-- ساختار هماهنگ PWA وب‌اپلیکیشن برای استفاده در موبایل
+### 🇮🇷 توضیحات فارسی:
+- Fix Weather Modal Glass Styling and Activate GPSتوضیحات
+- تثبیت کامل ساختار افزونه دسکتاپ و پاپ‌آپ‌های محلی
+- همگام‌سازی ریشه مخزن با جدیدترین تغییرات داشبورد شیشه‌ای
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.1):
-- Fully restored v1.29.0 stability alongside complete dashboard feature-set
-- Integrated localized contextual popups inside the task editing modal
-- Permanently locked task card layout with right-aligned checkbox and left-aligned actions
-- Synchronized PWA webapp architecture for mobile browsers
+### 🇬🇧 English Release Notes:
+- Fix Weather Modal Glass Styling and Activate GPSتوضیحات
+- Fully stabilized desktop extension architecture and local context popups
+- Synchronized repository root with the latest glassmorphic dashboard build
