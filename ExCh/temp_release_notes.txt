@@ -1,11 +1,15 @@
-### 🇮🇷 توضیحات فارسی:
-- Overhaul Weather, Prayer Times and Timer Interactionsتوضیحات
-- تثبیت کامل ساختار افزونه دسکتاپ و پاپ‌آپ‌های محلی
-- همگام‌سازی ریشه مخزن با جدیدترین تغییرات داشبورد شیشه‌ای
+### 🇮🇷 توضیحات و تغییرات نسخه v1.32.4:
+- هماهنگ‌سازی کپسول‌های آب‌وهوا و ساعت در تم روز و شب با پس‌زمینه شیشه‌ای مات
+- فعال‌سازی دریافت موقعیت زنده دستگاه، آی‌پی و جستجوی شهر با کلید اینتر
+- شفاف‌سازی پیش‌زمینه پیش‌بینی ۵ روزه، اوقات شرعی و تایمر
+- افزودن قابلیت اسکرول چرخ ماوس برای تغییر مقادیر ثانیه، دقیقه و ساعت تایمر
+- حل مشکل بسته نشدن خودکار دراورها هنگام اسکرول یا کلیک در فضای خالی
 
 ---
 
-### 🇬🇧 English Release Notes:
-- Overhaul Weather, Prayer Times and Timer Interactionsتوضیحات
-- Fully stabilized desktop extension architecture and local context popups
-- Synchronized repository root with the latest glassmorphic dashboard build
+### 🇬🇧 English Release Notes (v1.32.4):
+- Synchronized weather and clock footer pill buttons with unified glass aesthetics
+- Enabled device GPS, IP geolocation, and Enter-key triggered city search
+- Translucent frosted glass redesign for 5-day forecast, prayer times, and timer drawers
+- Added mouse-wheel increment and decrement support for timer units
+- Implemented backdrop dismissal and mutual drawer closure on click or scroll
