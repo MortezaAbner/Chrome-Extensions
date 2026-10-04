@@ -1,15 +1,14 @@
 --- a/newtab.html
 +++ b/newtab.html
-@@ -107,7 +107,7 @@
-               </div>
-               <div class="azan-city-dropdown glass-blur-menu" id="azan-city-dropdown">
-                 <div class="azan-search-box">
--                  <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
-+                  <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور در جهان...">
+@@ -148,6 +148,7 @@
                  </div>
-                 <ul class="azan-city-list" id="azan-city-list"></ul>
                </div>
-@@ -588,6 +588,18 @@
+               <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
++              <button class="picker-today-btn" id="picker-today-btn">برو به امروز 📍</button>
+             </div>
+ 
+             <!-- پاپ‌آپ رویدادهای روز -->
+@@ -588,6 +589,18 @@
      </div>
    </div>
  
@@ -22,7 +21,7 @@
 +        <p>مدت زمان مشخص‌شده شما با موفقیت سپری شد.</p>
 +      </div>
 +      <div class="modal-buttons">
-+        <button id="timer-alarm-dismiss-btn" class="modal-btn save">متوجه شدم ✓</button>
++        <button id="timer-alarm-dismiss-btn" class="modal-btn save">تأیید و بستن ✓</button>
 +      </div>
 +    </div>
 +  </div>
@@ -58,7 +57,7 @@
 -  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
 -  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
 -  border-radius: 24px !important;
-+  background: rgba(255, 255, 255, 0.72) !important;
++  background: rgba(255, 255, 255, 0.75) !important;
 +  backdrop-filter: blur(55px) saturate(240%) !important;
 +  -webkit-backdrop-filter: blur(55px) saturate(240%) !important;
 +  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
@@ -70,14 +69,14 @@
 -  background: rgba(18, 24, 40, 0.9) !important;
 -  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
 -  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65) !important;
-+  background: rgba(15, 21, 37, 0.82) !important;
++  background: rgba(15, 21, 37, 0.85) !important;
 +  backdrop-filter: blur(55px) saturate(240%) !important;
 +  -webkit-backdrop-filter: blur(55px) saturate(240%) !important;
 +  border: 1.5px solid rgba(255, 255, 255, 0.24) !important;
 +  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65) !important;
  }
  
- /* باکس آب‌وهوا */
+ /* باکس آب‌‌وهوا */
 @@ -102,6 +102,10 @@
    0% { transform: scale(0.92); filter: drop-shadow(0 0 4px #f59e0b); }
    100% { transform: scale(1.08); filter: drop-shadow(0 0 14px #fbbf24); }
@@ -126,7 +125,6 @@
  }
  [data-theme="dark"] .location-chip:hover, [data-theme="dark"] .forecast-pill:hover, [data-theme="dark"] .compact-action-btn:hover {
    background: rgba(255, 255, 255, 0.22) !important;
- }
 @@ -147,9 +162,10 @@
  .forecast-drawer.active { display: block; }
  .forecast-days-grid { display: flex; gap: 8px; justify-content: space-between; }
@@ -140,7 +138,22 @@
 +[data-theme="dark"] .forecast-day-box { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
  .forecast-day-name { font-size: 0.78rem; color: var(--text-main); font-weight: 850; }
  .forecast-day-icon-box { font-size: 1.45rem; }
-@@ -194,9 +210,9 @@
+@@ -176,6 +192,15 @@
+   background: #2563eb; color: #fff; border: none; border-radius: 12px;
+   padding: 8px 0; font-size: 0.88rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+ }
++.picker-today-btn {
++  background: rgba(255, 255, 255, 0.4); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 12px;
++  padding: 6px 0; font-size: 0.82rem; font-weight: 800; cursor: pointer; margin-top: 5px;
++}
++.picker-today-btn:hover {
++  background: rgba(37, 99, 235, 0.18);
++  color: #2563eb;
++}
+ 
+ .date-event-popup {
+   position: absolute; top: 42px; left: 16px; right: 16px; padding: 12px 14px;
+@@ -194,9 +219,9 @@
  .azan-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
  .azan-t {
 -  font-size: 0.8rem; font-weight: 850; color: #1e3a8a; background: rgba(255, 255, 255, 0.85);
@@ -152,7 +165,7 @@
 +[data-theme="dark"] .azan-t { color: #93c5fd; background: rgba(15, 23, 42, 0.7); border-color: rgba(255, 255, 255, 0.2); }
  .azan-l { font-size: 0.72rem; color: var(--text-muted); font-weight: 750; }
  .azan-footer-select { display: flex; justify-content: center; position: relative; margin-top: 2px; }
-@@ -216,7 +232,12 @@
+@@ -216,7 +241,12 @@
  }
  .azan-city-list {
 -  list-style: none; overflow-y: auto; margin-top: 6px; max-height: 130px; display: flex; flex-direction: column; gap: 2px;
@@ -164,7 +177,7 @@
 +  display: none !important;
  }
  .azan-city-list li {
-@@ -226,9 +247,11 @@
+@@ -226,9 +256,11 @@
  .timer-boxes-row { display: flex; gap: 12px; justify-content: center; align-items: center; margin: 4px 0; }
  .timer-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
  .timer-input {
@@ -178,6 +191,39 @@
 +[data-theme="dark"] .timer-input { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
 +.timer-input:focus { border-color: #2563eb; background: rgba(255, 255, 255, 0.85); }
  .timer-unit label { font-size: 0.75rem; color: var(--text-muted); font-weight: 750; }
+@@ -628,10 +660,11 @@
+ .modal-overlay {
+   position: fixed !important;
+   top: 0 !important;
+   left: 0 !important;
+   width: 100vw !important;
+   height: 100vh !important;
+-  background: rgba(15, 23, 42, 0.5) !important;
+-  backdrop-filter: blur(20px) !important;
+-  -webkit-backdrop-filter: blur(20px) !important;
++  background: rgba(15, 23, 42, 0.38) !important;
++  backdrop-filter: blur(35px) saturate(220%) !important;
++  -webkit-backdrop-filter: blur(35px) saturate(220%) !important;
+   display: none !important;
+   justify-content: center !important;
+   align-items: center !important;
+@@ -647,6 +680,16 @@
+   border-radius: 30px !important;
+   gap: 16px !important;
+   display: flex;
+   flex-direction: column;
++  background: rgba(255, 255, 255, 0.75) !important;
++  backdrop-filter: blur(55px) saturate(240%) !important;
++  -webkit-backdrop-filter: blur(55px) saturate(240%) !important;
++  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
++  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
++}
++
++[data-theme="dark"] .location-modal-box {
++  background: rgba(20, 26, 44, 0.85) !important;
++  border-color: rgba(255, 255, 255, 0.22) !important;
+ }
+ .modal-header-title h3 { font-size: 1.2rem; font-weight: 850; color: var(--text-main); margin-bottom: 4px; }
 --- a/script.js
 +++ b/script.js
 @@ -3,6 +3,60 @@
@@ -227,6 +273,7 @@
 +    document.querySelectorAll('.task-tool-popup').forEach(p => p.style.display = 'none');
 +    document.querySelectorAll('.context-menu').forEach(m => m.classList.remove('active'));
 +    document.getElementById('month-year-picker')?.classList.remove('active');
++    document.getElementById('date-event-popup')?.setAttribute('style', 'display: none;');
 +    const boardMenu = document.getElementById('board-dropdown-menu');
 +    if (boardMenu) boardMenu.style.display = 'none';
 +  }
@@ -250,7 +297,107 @@
 +  }, { passive: true });
 +
    // ۱. کنترل ناوبری داخلی SPA
-@@ -198,17 +252,30 @@
+@@ -79,14 +133,52 @@
+   const monthSubTitles = [
+     'رمضان-شوال Mar-Apr', 'شوال-ذی القعده Apr-May', 'ذی القعده-ذی الحجه May-Jun',
+     'ذی الحجه-محرم Jun-Jul', 'محرم-صفر Jul-Aug', 'صفر-ربیع الاول Aug-Sep',
+     'ربیع الثانی-جمادی الاول Sep-Oct', 'جمادی الاول-جمادی الثانی Oct-Nov',
+     'جمادی الثانی-رجب Nov-Dec', 'رجب-شعبان Dec-Jan', 'شعبان-رمضان Jan-Feb', 'رمضان-شوال Feb-Mar'
+   ];
+ 
++  // تقویم جامع مناسبت‌ها (مهم‌ها تگ major دارند و دایره سبز دریافت می‌کنند)
+   const specialEventsData = {
+-    '1405-7-9': { title: 'روز آتش‌‌نشانی و ایمنی (شمسی) / روز جهانی ترجمه (میلادی)', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-10': { title: 'روز بزرگداشت مولوی (شمسی) / روز جهانی سالمندان (میلادی)', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی (شمسی) / روز جهانی حیوانات (میلادی)', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-13': { title: 'روز نیروی انتظامی (شمسی) 🍮 روز رول دارچینی (میلادی)', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-14': { title: 'روز دامپزشکی (شمسی) / روز جهانی معلمان (میلادی)', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-16': { title: 'روز جهانی کودک (بین‌المللی) / ولادت امام حسن عسکری (ع) (قمری)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-20': { title: 'روز بزرگداشت حافظ (شمسی) / روز جهانی دختر (میلادی)', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸' },
+-    '1405-7-23': { title: 'روز جهانی استاندارد (میلادی) / روز نابینایان (عصای سفید)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸' }
++    '1405-7-1': { title: 'آغاز سال تحصیلی و بازگشایی مدارس (ایران)', gDate: '23 Sep 2026', hDate: '۱۱ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-5': { title: 'روز جهانی گردشگری (توریسم)', gDate: '27 Sep 2026', hDate: '۱۵ ربیع‌الثانی ۱۴۴۸', major: false },
++    '1405-7-7': { title: 'روز آتش‌نشانی و ایمنی / بزرگداشت شمس تبریزی', gDate: '29 Sep 2026', hDate: '۱۷ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-8': { title: 'روز بزرگداشت مولوی (جلال‌الدین محمد بلخی)', gDate: '30 Sep 2026', hDate: '۱۸ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-9': { title: 'روز جهانی ترجمه و مترجم', gDate: '1 Oct 2026', hDate: '۱۹ ربیع‌الثانی ۱۴۴۸', major: false },
++    '1405-7-10': { title: 'روز جهانی سالمندان', gDate: '2 Oct 2026', hDate: '۲۰ ربیع‌الثانی ۱۴۴۸', major: false },
++    '1405-7-12': { title: 'روز همبستگی با کودکان فلسطینی', gDate: '4 Oct 2026', hDate: '۲۲ ربیع‌الثانی ۱۴۴۸', major: false },
++    '1405-7-13': { title: 'روز نیروی انتظامی جمهوری اسلامی ایران', gDate: '5 Oct 2026', hDate: '۲۳ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-14': { title: 'روز جهانی معلم / روز دامپزشکی', gDate: '6 Oct 2026', hDate: '۲۴ ربیع‌الثانی ۱۴۴۸', major: false },
++    '1405-7-16': { title: 'روز جهانی کودک / ولادت امام حسن عسکری (ع)', gDate: '8 Oct 2026', hDate: '۲۶ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-18': { title: 'وفات حضرت فاطمه معصومه (س)', gDate: '10 Oct 2026', hDate: '۲۸ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-20': { title: 'روز بزرگداشت حافظ شیرازی / روز جهانی دختر', gDate: '12 Oct 2026', hDate: '۳۰ ربیع‌الثانی ۱۴۴۸', major: true },
++    '1405-7-23': { title: 'روز جهانی استاندارد / روز جهانی عصای سفید (نابینایان)', gDate: '15 Oct 2026', hDate: '۳ جمادی‌الاول ۱۴۴۸', major: false },
++    '1405-7-24': { title: 'روز ملی پارالمپیک', gDate: '16 Oct 2026', hDate: '۴ جمادی‌الاول ۱۴۴۸', major: false },
++    '1405-7-26': { title: 'روز تربیت بدنی و ورزش', gDate: '18 Oct 2026', hDate: '۶ جمادی‌الاول ۱۴۴۸', major: true },
++    '1405-7-29': { title: 'روز ملی صادرات', gDate: '21 Oct 2026', hDate: '۹ جمادی‌الاول ۱۴۴۸', major: false }
+   };
+ 
++  const baseRealToday = { year: 1405, month: 6, day: 9 };
+   let currentYear = 1405;
+   let currentMonthIndex = 6;
+ 
+@@ -107,6 +199,7 @@
+   const pickerMonthsList = document.getElementById('picker-months-list');
+   const pickerConfirmBtn = document.getElementById('picker-confirm-btn');
++  const pickerTodayBtn = document.getElementById('picker-today-btn');
+   const dateEventPopup = document.getElementById('date-event-popup');
+   const eventPopupText = document.getElementById('event-popup-text');
+   const eventPopupDates = document.getElementById('event-popup-dates');
+@@ -128,14 +221,17 @@
+     for (let i = 1; i <= daysInMonth; i++) {
+       const span = document.createElement('span');
+       span.textContent = toFa(i);
+       const dayOfWeek = (i + startOffset - 1) % 7;
+       if (dayOfWeek === 6) span.className = 'fri holiday';
+-      if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
++      if (year === baseRealToday.year && monthIndex === baseRealToday.month && i === baseRealToday.day) {
++        span.className = 'today-circle';
++      }
+ 
+       const eventKey = `${year}-${monthIndex + 1}-${i}`;
+-      if (specialEventsData[eventKey]) span.classList.add('event-green-dot');
++      if (specialEventsData[eventKey] && specialEventsData[eventKey].major) {
++        span.classList.add('event-green-dot');
++      }
+ 
+       span.onclick = (e) => {
+         e.stopPropagation();
+         if (specialEventsData[eventKey]) {
+           const ev = specialEventsData[eventKey];
+           eventPopupText.textContent = ev.title;
+           eventPopupDates.textContent = `${ev.hDate} / ${ev.gDate}`;
+           dateEventPopup.style.display = 'flex';
+         } else {
+           dateEventPopup.style.display = 'none';
+         }
+       };
+       calDates.appendChild(span);
+     }
+   }
+ 
+   if (eventPopupClose) eventPopupClose.onclick = (e) => { e.stopPropagation(); dateEventPopup.style.display = 'none'; };
+@@ -192,6 +288,18 @@
+     pickerConfirmBtn.onclick = (e) => {
+       e.stopPropagation();
+       currentYear = selectedPickerYear;
+       currentMonthIndex = selectedPickerMonth;
+       renderCalendar(currentYear, currentMonthIndex);
+       monthYearPicker.classList.remove('active');
+     };
+   }
++
++  if (pickerTodayBtn) {
++    pickerTodayBtn.onclick = (e) => {
++      e.stopPropagation();
++      currentYear = baseRealToday.year;
++      currentMonthIndex = baseRealToday.month;
++      renderCalendar(currentYear, currentMonthIndex);
++      monthYearPicker.classList.remove('active');
++    };
++  }
+   renderCalendar(currentYear, currentMonthIndex);
+@@ -198,17 +332,30 @@
    let activeCoords = JSON.parse(localStorage.getItem('weather_coords')) || { lat: 35.6892, lon: 51.3890, name: 'تهران' };
  
    function renderWeatherAnimatedIcon(code, isDay) {
@@ -274,14 +421,14 @@
 -    if (code === 3) return 'تمام ابری 🧡';
 -    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧';
 +    if ([1, 2].includes(code)) return isDay ? 'کمی تا نیمه‌ابری 🌤️' : 'شب کمی ابری ☁️';
-+    if (code === 3) return 'تمام ابری ☁️';
++    if (code === 3) return 'تمام ابری ☁';
 +    if ([45, 48].includes(code)) return 'مه‌آلود و غبارآلود 🌫️';
 +    if ([51, 53, 55, 61, 63, 65, 80, 81].includes(code)) return 'بارانی و با طراوت 🌧️';
      if ([71, 73, 75, 85].includes(code)) return 'برفی و زمستانی ❄️';
 +    if ([95, 96, 99].includes(code)) return 'رعد و برق و تگرگ ⛈️';
      return 'معتدل و آرام ⛅';
    }
-@@ -250,7 +317,8 @@
+@@ -250,7 +397,8 @@
          forecastGrid.appendChild(box);
        }
      }
@@ -289,7 +436,7 @@
    } catch (e) {
      if (weatherPhrase) weatherPhrase.textContent = 'خطا در اتصال به سرور هواشناسی';
    }
-@@ -260,13 +328,19 @@
+@@ -260,13 +408,19 @@
    if (forecastToggleBtn && forecastDrawer) {
      forecastToggleBtn.addEventListener('click', (e) => {
        e.stopPropagation();
@@ -300,14 +447,16 @@
      });
    }
  
-   if (citySelectBtn) citySelectBtn.onclick = () => cityModal.classList.add('active');
-   if (cityCancelBtn) cityCancelBtn.onclick = () => cityModal.classList.remove('active');
+   if (citySelectBtn && cityModal) {
+     citySelectBtn.onclick = (e) => {
+       e.stopPropagation();
++      closeAllDrawersAndPopups();
+       cityModal.classList.add('active');
+     };
+   }
  
-+  // موقعیت‌یابی زنده GPS
-   if (autoGpsBtn) {
-     autoGpsBtn.onclick = () => {
-       if (!navigator.geolocation) {
-@@ -350,6 +424,47 @@
+   if (cityCancelBtn && cityModal) {
+@@ -350,6 +504,45 @@
    const azanCurrentCity = document.getElementById('azan-current-city');
    const azanCityPickBtn = document.getElementById('azan-city-pick-btn');
    const azanCityDropdown = document.getElementById('azan-city-dropdown');
@@ -334,9 +483,7 @@
 +          li.textContent = `${loc.name}${country}`;
 +          li.onclick = (e) => {
 +            e.stopPropagation();
-+            activeCoords = { lat: loc.latitude, lon: loc.longitude, name: loc.name };
-+            localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
-+            fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
++            fetchAzanTimes(loc.latitude, loc.longitude, loc.name);
 +            azanCityDropdown.classList.remove('active');
 +          };
 +          azanCityList.appendChild(li);
@@ -350,7 +497,19 @@
 +  }
 +
    function renderDefaultAzanCities() {
-@@ -375,12 +490,27 @@
+@@ -364,8 +557,7 @@
+       const li = document.createElement('li');
+       li.textContent = c.name;
+       li.onclick = (e) => {
+         e.stopPropagation();
+-        activeCoords = { lat: c.lat, lon: c.lon, name: c.name };
+-        localStorage.setItem('weather_coords', JSON.stringify(activeCoords));
+-        fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
++        fetchAzanTimes(c.lat, c.lon, c.name);
+         azanCityDropdown.classList.remove('active');
+       };
+       azanCityList.appendChild(li);
+@@ -375,12 +567,27 @@
    if (azanCityPickBtn && azanCityDropdown) {
      azanCityPickBtn.onclick = (e) => {
        e.stopPropagation();
@@ -367,7 +526,7 @@
        azanSearchTimer = setTimeout(() => searchWorldCitiesForAzan(val), 350);
      };
    }
-@@ -402,8 +532,9 @@
+@@ -402,8 +609,9 @@
    if (azanToggleBtn && azanDrawer) {
      azanToggleBtn.addEventListener('click', (e) => {
        e.stopPropagation();
@@ -379,7 +538,7 @@
      });
    }
  
-@@ -415,15 +546,47 @@
+@@ -415,15 +623,47 @@
    const timerHr = document.getElementById('timer-hr');
    const timerMin = document.getElementById('timer-min');
    const timerSec = document.getElementById('timer-sec');
@@ -431,7 +590,7 @@
      input.addEventListener('input', (e) => {
        let val = toEn(e.target.value).replace(/\D/g, '');
        if (val.length > 2) val = val.slice(-2);
-@@ -459,6 +622,8 @@
+@@ -459,6 +699,8 @@
              timerActionMain.textContent = 'شروع';
              timerActionMain.classList.remove('running');
              timerHr.value = '۰۰'; timerMin.value = '۲۵'; timerSec.value = '۰۰';
@@ -441,12 +600,3 @@
              return;
            }
            const curH = Math.floor(totalRemainingSec / 3600);
---- a/manifest.json
-+++ b/manifest.json
-@@ -3,7 +3,7 @@
-   "manifest_version": 3,
-   "name": "Abner Dashboard",
--  "version": "1.28.0",
-+  "version": "1.32.4",
-   "description": "داشبورد شیشه‌ای نیوتب شامل تقویم، ساعت، آب‌وهوا و تسک",
-   "chrome_url_overrides": {

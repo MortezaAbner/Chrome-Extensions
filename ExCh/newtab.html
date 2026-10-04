@@ -113,7 +113,7 @@
               </div>
               <div class="azan-city-dropdown glass-blur-menu" id="azan-city-dropdown">
                 <div class="azan-search-box">
-                  <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور...">
+                  <input type="text" id="azan-city-search-input" placeholder="جستجوی شهر یا کشور در جهان...">
                 </div>
                 <ul class="azan-city-list" id="azan-city-list"></ul>
               </div>
@@ -166,6 +166,7 @@
                 </div>
               </div>
               <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
+              <button class="picker-today-btn" id="picker-today-btn">برو به امروز 📍</button>
             </div>
 
             <!-- پاپ‌آپ رویدادهای روز -->
@@ -871,6 +872,21 @@
       <div class="modal-buttons">
         <button id="city-save-btn" class="modal-btn save">تأیید و ذخیره</button>
         <button id="city-cancel-btn" class="modal-btn cancel">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- مودال شیشه‌ای پایان زمان تایمر -->
+  <div id="timer-alarm-modal" class="modal-overlay">
+    <div class="modal-content ios-glass-card location-modal-box glass-blur-menu" style="text-align: center; gap: 18px;">
+      <div class="modal-header-title">
+        <div style="font-size: 3rem; margin-bottom: 6px;">⏰</div>
+        <h3 style="justify-content: center;">زمان تایمر به پایان رسید!</h3>
+        <p>مدت زمان مشخص‌شده شما با موفقیت سپری شد.</p>
+      </div>
+      <div class="modal-buttons">
+        <button id="timer-alarm-dismiss-btn" class="modal-btn save">تأیید و بستن ✓</button>
       </div>
     </div>
   </div>
