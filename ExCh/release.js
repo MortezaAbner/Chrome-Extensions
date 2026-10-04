@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// تنظیم پشتیبانی ترمینال از انکودینگ UTF-8
 try {
   execSync('chcp 65001', { stdio: 'ignore' });
 } catch (e) {}
@@ -13,18 +12,18 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۱. همگام‌سازی تضمینی newtab.html با index.html
+// ۱. همگام‌سازی مستقیم newtab به index.html
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
-  console.log('✅ newtab.html ba movafaghiat dar index.html copy shod.');
+  console.log('✅ newtab.html dar index.html copy shod.');
 }
 
-// ۲. افزایش خودکار شماره نسخه پچ
+// ۲. افزایش هوشمند شماره نسخه
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-let [major, minor, patch] = (manifest.version || '1.0.0').split('.').map(Number);
+let [major, minor, patch] = (manifest.version || '1.32.2').split('.').map(Number);
 if (isNaN(major)) major = 1;
-if (isNaN(minor)) minor = 0;
-if (isNaN(patch)) patch = 0;
+if (isNaN(minor)) minor = 32;
+if (isNaN(patch)) patch = 2;
 
 patch += 1;
 const newVersion = `${major}.${minor}.${patch}`;
@@ -34,17 +33,17 @@ console.log(`🚀 Version khodkar afzayesh yaft be: v${newVersion}`);
 
 const tagName = `v${newVersion}`;
 
-// دریافت توضیحات ورودی انگلیسی و فارسی از دستور ترمینال
+// دریافت عنوان انگلیسی و متن خلاصه فارسی از پارامترهای ترمینال
 const titleEn = process.argv[2] || `Release ${tagName}`;
-const descFa = process.argv[3] || 'به‌روزرسانی استایل‌ها و ابزارهای داشبورد';
+const descFa = process.argv[3] || 'به‌روزرسانی آب‌وهوا، تایمر و استایل شیشه‌ای داشبورد';
 
-// ۳. مدیریت پوشه dist: پاک‌سازی تمام زیپ‌های قدیمی و نگه‌داری تنها فایل نسخه جدید
+// ۳. پاک‌سازی فایل‌های زیپ قدیمی از پوشه dist و ساخت زیپ نسخه جاری
 const distDir = './dist';
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 } else {
-  const files = fs.readdirSync(distDir);
-  for (const file of files) {
+  const existingFiles = fs.readdirSync(distDir);
+  for (const file of existingFiles) {
     if (file.endsWith('.zip')) {
       fs.unlinkSync(path.join(distDir, file));
     }
@@ -56,56 +55,58 @@ const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 
   .filter(f => fs.existsSync(f))
   .join(', ');
 
-console.log(`📦 Sakhte archive jadid: ${zipPath}...`);
+console.log(`📦 Sakhte archive jadid dar dist: ${zipPath}...`);
 try {
   execSync(`powershell Compress-Archive -Path ${targetFiles} -DestinationPath "${zipPath}" -Force`, { stdio: 'inherit' });
 } catch (e) {}
 
-// ۴. ایجاد یادداشت دوزبانه استاندارد مطابق قالب گیت‌هاب
+// ۴. ایجاد یادداشت‌های ریلیز دوزبانه رسمی گیت‌هاب
 const releaseNotes = `
 ### 🇮🇷 تغییرات نسخه ${tagName}:
 - ${descFa}
-- اصلاح استایل شیشه‌ای کپسول‌ها و پس‌زمینه شفاف پیش‌‌بینی ۵ روزه
-- اتصال کامل موقعیت‌یابی زنده GPS، آی‌پی و جستجوی Open-Meteo
-- افزودن قابلیت اسکرول چرخ ماوس به فیلدهای ساعت، دقیقه و ثانیه تایمر
-- بسته شدن خودکار دراورها هنگام اسکرول یا کلیک بیرونی
+- مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
+- فعال‌‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
+- افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
+- بسته‌شدن خودکار و هوشمند دراورها هنگام کلیک یا اسکرول
 
 ---
 
 ### 🇬🇧 Release Notes (${tagName}):
 - ${titleEn}
-- Unified frosted glass aesthetic across light/dark modes for footer pills
-- Live GPS geocoding, IP lookup, and Enter-key triggered city search enabled
-- Added mouse-wheel increment/decrement for timer hours, minutes, and seconds
-- Implemented backdrop dismissal and mutual drawer closure on click or scroll
+- Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
+- Enabled native device GPS geocoding, IP lookup, and interactive city search
+- Added mouse-wheel increment and decrement support for timer fields
+- Intelligent backdrop dismissal for drawers on backdrop click or window scroll
 `;
 
 fs.writeFileSync('temp_release_notes.txt', releaseNotes.trim(), 'utf8');
 
-// ۵. کامیت تغییرات، همگام‌سازی امن و ارسال به گیت‌هاب
+// ۵. کامیت، همگام‌سازی امن، تگ و انتشار Release رسمی
 try {
-  // اگر پوشه اضافه در گیت وجود داشته باشد از کش خارج می‌شود
   try {
     execSync('git rm -r --cached ExCh', { stdio: 'ignore' });
   } catch (e) {}
 
+  // کامیت کردن تغییرات جاری محلی
   execSync('git add .', { stdio: 'inherit' });
   execSync(`git commit -m "chore(release): ${tagName} - ${titleEn}"`, { stdio: 'inherit' });
 
-  // همگام‌سازی شاخه پس از کامیت فایل‌ها جهت جلوگیری از ارور unstaged changes
+  // همگام‌سازی تغییرات سرور پس از کامیت محلی برای جلوگیری از خطای unstaged changes
   try {
     execSync('git pull origin main --rebase', { stdio: 'inherit' });
-  } catch (e) {
+  } catch (pullErr) {
     console.log('Sync anjam shod.');
   }
 
+  // ثبت تگ و ارسال به مخزن
   execSync(`git tag -a ${tagName} -m "Release ${tagName}"`, { stdio: 'inherit' });
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
 
+  // انتشار رسمی در صفحه Releases گیت‌هاب
   try {
     execSync(`gh release create "${tagName}" "${zipPath}" --title "Abner Extension ${tagName} - ${titleEn}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
-    console.log(`\n🎉 Release ${tagName} ba movafaghiat dar GitHub sabt shod!`);
+    console.log(`\n🎉 Release ${tagName} ba movafaghiat dar GitHub sabt va montasher shod!`);
   } catch (ghErr) {
     console.log('GitHub CLI release skip shod.');
   }

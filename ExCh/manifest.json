@@ -1,10 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Abner Dashboard",
-  "version": "1.28.2",
-  "description": "Abner Glassmorphic Dashboard Extension",
+  "version": "1.32.3",
+  "description": "داشبورد شیشه‌ای نیوتب شامل تقویم، ساعت، آب‌وهوا و تسک",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
+  },
+  "action": {
+    "default_title": "Abner Dashboard"
   },
   "permissions": [
     "storage"
