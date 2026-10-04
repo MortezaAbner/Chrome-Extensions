@@ -7,21 +7,13 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-// ۱. همگام‌سازی تضمینی newtab.html در index.html برای وب‌اپ گیت‌هاب پیجز
+// ۱. همگام‌سازی مستقیم newtab به index برای خوانش آنلاین
 if (fs.existsSync('./newtab.html')) {
   fs.copyFileSync('./newtab.html', './index.html');
-  console.log('✅ newtab.html ba movafaghiat dar index.html copy shod.');
+  console.log('✅ newtab.html dar index.html copy shod.');
 }
 
-const titleArg = process.argv[2] || 'PWA Support and Full WebApp Synchronization';
-const notesArg = process.argv[3] || 'فعال‌سازی استاندارد PWA وب‌اپ، اصلاح مانیفست و سرویس‌ورکر برای نصب روی موبایل و دسکتاپ';
-
-// ۲. دریافت آخرین تغییرات آنلاین گیت‌هاب
-try {
-  execSync('git pull --rebase origin main', { stdio: 'pipe' });
-} catch (e) {}
-
-// ۳. ارتقای هوشمند نسخه
+// ۲. افزایش خودکار شماره نسخه
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let [major, minor, patch] = (manifest.version || '1.0.0').split('.').map(Number);
 if (isNaN(major)) major = 1;
@@ -32,39 +24,68 @@ patch += 1;
 const newVersion = `${major}.${minor}.${patch}`;
 manifest.version = newVersion;
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
-console.log(`🚀 Version ertegha yaft be: v${newVersion}`);
+console.log(`🚀 Version khodkar afzayesh yaft: v${newVersion}`);
 
 const tagName = `v${newVersion}`;
-const releaseTitle = `Abner Extension ${tagName} - ${titleArg}`;
-const zipName = `Chrome-Extension-${tagName}.zip`;
+const customTitle = process.argv[2] || `Release ${tagName}`;
 
-// ۴. فشرده‌سازی فایل‌های افزونه
-console.log(`📦 Dar hal sakhte: ${zipName}...`);
-const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js', 'app.webmanifest', 'sw.js']
+// ۳. ایجاد پوشه مجزای dist برای آرشیوها
+const distDir = './dist';
+if (!fs.existsSync(distDir)) {
+  fs.mkdirSync(distDir, { recursive: true });
+}
+
+const zipPath = `${distDir}/Chrome-Extension-${tagName}.zip`;
+const targetFiles = ['manifest.json', 'newtab.html', 'index.html', 'style.css', 'script.js']
   .filter(f => fs.existsSync(f))
   .join(', ');
 
-const zipCmd = `powershell Compress-Archive -Path ${targetFiles} -DestinationPath ${zipName} -Force`;
+console.log(`📦 Sakhte archive dar dist: ${zipPath}...`);
 try {
-  execSync(zipCmd, { stdio: 'inherit' });
+  execSync(`powershell Compress-Archive -Path ${targetFiles} -DestinationPath "${zipPath}" -Force`, { stdio: 'inherit' });
 } catch (e) {}
 
-// ۵. کامیت و پوش به گیت‌هاب
+// ۴. ایجاد یادداشت‌های دوزبانه ریلیز
+const releaseNotes = `
+### 🇮🇷 تغییرات نسخه ${tagName}:
+- پاک‌سازی پوشه اضافه ExCh و انتقال فایل‌های نهایی به ریشه مخزن
+- همگام‌سازی کامل index.html با طراحی جدید نیوتب
+- نگهداری منظم فایل‌های فشرده درون پوشه dist
+- تثبیت چیدمان تسک‌ها و پنجره‌های محلی ابزارها
+
+---
+
+### 🇬🇧 Release Notes (${tagName}):
+- Cleaned up redundant ExCh directory and synced latest assets directly to repository root
+- Synchronized index.html with latest dashboard layout
+- Isolated build zip archives into dedicated dist directory
+- Stabilized task card layout and local tool popups
+`;
+
+fs.writeFileSync('temp_release_notes.txt', releaseNotes.trim(), 'utf8');
+
+// ۵. کامیت، حذف پوشه تکراری از گیت و پوش تغییرات
 try {
+  try {
+    execSync('git rm -r --cached ExCh', { stdio: 'pipe' });
+  } catch (e) {}
+
   execSync('git add .', { stdio: 'inherit' });
-  execSync(`git commit -m "chore(release): ${tagName} - ${titleArg}"`, { stdio: 'inherit' });
-  execSync(`git tag -a ${tagName} -m "${releaseTitle}"`, { stdio: 'inherit' });
+  execSync(`git commit -m "chore(release): ${tagName} - ${customTitle}"`, { stdio: 'inherit' });
+  execSync(`git tag -a ${tagName} -m "Release ${tagName}"`, { stdio: 'inherit' });
   execSync('git push origin main', { stdio: 'inherit' });
   execSync('git push origin --tags', { stdio: 'inherit' });
 
   try {
-    fs.writeFileSync('temp_release_notes.txt', notesArg, 'utf8');
-    execSync(`gh release create "${tagName}" "${zipName}" --title "${releaseTitle}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
-    if (fs.existsSync('temp_release_notes.txt')) {
-      fs.unlinkSync('temp_release_notes.txt');
-    }
-    console.log(`\n🎉 Release ${tagName} montasher shod!`);
-  } catch (ghErr) {}
+    execSync(`gh release create "${tagName}" "${zipPath}" --title "Abner Extension ${tagName} - ${customTitle}" --notes-file temp_release_notes.txt`, { stdio: 'inherit' });
+    console.log(`\n🎉 Release ${tagName} ba movafaghiat dar GitHub sabt shod!`);
+  } catch (ghErr) {
+    console.log('GitHub CLI release skip shod.');
+  }
 } catch (err) {
-  console.error('Khata dar sync git:', err.message);
+  console.error('Khata dar Git:', err.message);
+} finally {
+  if (fs.existsSync('temp_release_notes.txt')) {
+    fs.unlinkSync('temp_release_notes.txt');
+  }
 }

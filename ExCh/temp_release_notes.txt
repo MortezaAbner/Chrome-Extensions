@@ -1,1 +1,13 @@
-تنظیم ساختار وب‌اپلیکیشن استاندارد، اصلاح اسکوپ مانیفست و پشتیبانی کامل شیشه‌ای از مرورگرهای موبایلتوضیح
+### 🇮🇷 تغییرات نسخه v1.31.2:
+- پاک‌سازی پوشه اضافه ExCh و انتقال فایل‌های نهایی به ریشه مخزن
+- همگام‌سازی کامل index.html با طراحی جدید نیوتب
+- نگهداری منظم فایل‌های فشرده درون پوشه dist
+- تثبیت چیدمان تسک‌ها و پنجره‌های محلی ابزارها
+
+---
+
+### 🇬🇧 Release Notes (v1.31.2):
+- Cleaned up redundant ExCh directory and synced latest assets directly to repository root
+- Synchronized index.html with latest dashboard layout
+- Isolated build zip archives into dedicated dist directory
+- Stabilized task card layout and local tool popups
