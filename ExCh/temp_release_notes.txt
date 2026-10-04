@@ -1,15 +1,15 @@
-### 🇮🇷 توضیحات و تغییرات نسخه v1.28.1:
-- هماهنگ‌سازی کپسول‌های آب‌وهوا و ساعت در تم روز و شب با پس‌زمینه شیشه‌ای مات
-- فعال‌سازی دریافت موقعیت زنده دستگاه، آی‌پی و جستجوی شهر با کلید اینتر
-- شفاف‌سازی پیش‌زمینه پیش‌بینی ۵ روزه، اوقات شرعی و تایمر
-- افزودن قابلیت اسکرول چرخ ماوس برای تغییر مقادیر ثانیه، دقیقه و ساعت تایمر
-- حل مشکل بسته نشدن خودکار دراورها هنگام اسکرول یا کلیک در فضای خالی
+### 🇮🇷 تغییرات نسخه v1.28.2:
+- اصلاح شیشه‌ای پنجره موقعیت آب‌وهوا، پیش‌بینی و کنترل چرخش تایمرتوضیحات
+- اصلاح استایل شیشه‌ای کپسول‌ها و پس‌زمینه شفاف پیش‌‌بینی ۵ روزه
+- اتصال کامل موقعیت‌یابی زنده GPS، آی‌پی و جستجوی Open-Meteo
+- افزودن قابلیت اسکرول چرخ ماوس به فیلدهای ساعت، دقیقه و ثانیه تایمر
+- بسته شدن خودکار دراورها هنگام اسکرول یا کلیک بیرونی
 
 ---
 
-### 🇬🇧 English Release Notes (v1.28.1):
-- Synchronized weather and clock footer pill buttons with unified glass aesthetics
-- Enabled device GPS, IP geolocation, and Enter-key triggered city search
-- Translucent frosted glass redesign for 5-day forecast, prayer times, and timer drawers
-- Added mouse-wheel increment and decrement support for timer units
+### 🇬🇧 Release Notes (v1.28.2):
+- Overhaul Weather Modal and Timer Controls
+- Unified frosted glass aesthetic across light/dark modes for footer pills
+- Live GPS geocoding, IP lookup, and Enter-key triggered city search enabled
+- Added mouse-wheel increment/decrement for timer hours, minutes, and seconds
 - Implemented backdrop dismissal and mutual drawer closure on click or scroll
