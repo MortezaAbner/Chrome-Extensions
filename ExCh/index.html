@@ -20,7 +20,7 @@
   <!-- تصویر پس‌زمینه کاربر -->
   <div id="custom-bg-overlay" class="bg-overlay"></div>
 
-  <!-- ۱. نمای اصلی داشبورد -->
+  <!-- ۱. نمای اصلی داشبورد (صفحه خانه) -->
   <main id="view-dashboard" class="app-view active">
     <div class="dashboard-container">
       
@@ -49,6 +49,7 @@
               <div class="pill-btn forecast-pill" id="forecast-toggle-btn">پیش‌بینی ⌵</div>
             </div>
 
+            <!-- پنل پیش‌بینی -->
             <div class="forecast-drawer glass-blur-menu" id="forecast-drawer">
               <div class="forecast-days-grid" id="forecast-grid"></div>
             </div>
@@ -152,6 +153,7 @@
               <button class="cal-arrow" id="cal-next-btn" title="ماه بعد">›</button>
             </div>
 
+            <!-- پاپ‌آپ کوچک سال و ماه -->
             <div class="month-year-picker-modal glass-blur-menu" id="month-year-picker">
               <div class="picker-columns">
                 <div class="picker-col">
@@ -166,6 +168,7 @@
               <button class="picker-confirm-btn" id="picker-confirm-btn">نمایش مهر ۱۴۰۵</button>
             </div>
 
+            <!-- پاپ‌آپ رویدادهای روز -->
             <div class="date-event-popup glass-blur-menu" id="date-event-popup" style="display: none;">
               <div class="event-popup-header">
                 <span class="event-title-main" id="event-popup-title">مناسبت‌های این روز</span>
@@ -177,11 +180,12 @@
               </div>
             </div>
 
+            <!-- نام روزهای هفته -->
             <div class="cal-weekdays-full">
               <span>شنبه</span>
               <span>یکشنبه</span>
               <span>دوشنبه</span>
-              <span>سه‌شنبه</span>
+              <span>سه‌‌شنبه</span>
               <span>چهارشنبه</span>
               <span>پنج‌شنبه</span>
               <span class="fri">جمعه</span>
@@ -204,6 +208,7 @@
             </div>
           </div>
 
+          <!-- نمای تقویم گوگل ۲۴ ساعته -->
           <div id="calendar-google-view" class="google-view-container" style="display: none;">
             <div class="g-view-top">
               <div class="g-view-arrows-left">
@@ -232,7 +237,7 @@
 
       </div>
 
-      <!-- ستون دوم: سرچ و شورتکات‌ها -->
+      <!-- ستون دوم: سرچ‌بار و میانبرها -->
       <div class="col col-center">
         <div class="search-capsule" id="search-capsule">
           <form id="search-form" class="search-inner" action="https://www.google.com/search" method="GET">
@@ -243,7 +248,7 @@
 
             <input type="text" id="search-input" name="q" placeholder="جستجو در گوگل..." autofocus autocomplete="off">
 
-            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو">
+            <div class="engine-badge" id="engine-switcher" title="کلیک برای تغییر موتور جستجو بین گوگل و ذره‌بین">
               <span class="badge-arrow">↕</span>
               <div id="engine-logo-container">
                 <svg id="google-logo" viewBox="0 0 24 24" width="18" height="18">
@@ -261,7 +266,7 @@
         <div class="shortcuts-container" id="shortcuts-grid"></div>
       </div>
 
-      <!-- ستون سوم: پنل تسک -->
+      <!-- ستون سوم: پنل تسک بدون بنر و با ادغام درون کادر ورودی -->
       <div class="col col-right">
         <div class="ios-glass-card task-master-card" id="task-main-box">
           
@@ -289,7 +294,9 @@
             </div>
           </div>
 
+          <!-- بدنه تسک بدون بنر -->
           <div class="task-body-zone">
+            <!-- وضعیت خالی تسک -->
             <div class="exact-empty-state" id="empty-state">
               <div class="empty-halo-circle">
                 <div class="cube-check-icon">
@@ -308,10 +315,11 @@
               </div>
             </div>
 
+            <!-- لیست تسک‌های ثبت‌شده شیشه‌ای -->
             <ul class="todo-list" id="todo-list" style="display: none;"></ul>
           </div>
 
-          <!-- کادر همه‌کاره درون‌خطی تسک جدید -->
+          <!-- کادر همه‌کاره درون‌خطی تسک -->
           <div class="inline-task-box ios-glass-card" id="inline-task-box">
             <div class="inline-task-collapsed" id="task-trigger-collapsed">
               <span>نوشتن تسک جدید</span>
@@ -329,18 +337,27 @@
                   </svg>
                 </button>
                 <div class="composer-tools-row">
+                  <!-- ۱. تکرار -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-repeat" title="تکرار">🔄</button>
                   </div>
+
+                  <!-- ۲. اولویت / پرچم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-priority" title="اولویت">🚩</button>
                   </div>
+
+                  <!-- ۳. ساعت و زمان -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-time" title="ساعت یادآوری">⏰</button>
                   </div>
+
+                  <!-- ۴. تقویم -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-date" title="تاریخ سررسید">📅</button>
                   </div>
+
+                  <!-- ۵. برچسب -->
                   <div class="tool-popup-wrap">
                     <button type="button" class="composer-tool-btn" id="tool-btn-tag" title="برچسب">🏷️</button>
                   </div>
@@ -355,7 +372,7 @@
     </div>
   </main>
 
-  <!-- ۲. صفحه تنظیمات -->
+  <!-- ۲. صفحه جدید شیشه‌ای تنظیمات -->
   <section id="view-settings" class="app-view">
     <div class="settings-modal-card ios-glass-card">
       <div class="settings-card-header">
@@ -393,7 +410,7 @@
           </div>
 
           <div class="settings-form-row">
-            <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم</span></label>
+            <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از هارد یا ریست</span></label>
             <div class="settings-bg-actions">
               <label class="settings-btn-upload">
                 📁 انتخاب عکس
@@ -409,7 +426,7 @@
           <div class="nav-item-glass"><span class="nav-ico">👤</span> پروفایل</div>
           <div class="nav-item-glass"><span class="nav-ico">✨</span> دستیار پلاس</div>
           <div class="nav-item-glass"><span class="nav-ico">💌</span> دعوت از دوستان <span class="badge-tag">۰/۳</span></div>
-          <div class="nav-item-glass"><span class="nav-ico">🖼️️</span> تصویر زمینه</div>
+          <div class="nav-item-glass"><span class="nav-ico">🖼️</span> تصویر زمینه</div>
           <div class="nav-item-glass"><span class="nav-ico">🎨</span> تم و رنگ</div>
           <div class="nav-item-glass active"><span class="nav-ico">⚙️</span> عمومی</div>
           <div class="nav-item-glass"><span class="nav-ico">📅</span> تقویم و زمان</div>
@@ -422,7 +439,7 @@
     </div>
   </section>
 
-  <!-- ۳. صفحه تقویم هفتگی و تسک/یادداشت -->
+  <!-- ۳. صفحه جدید شیشه‌ای تقویم هفتگی و تسک/یادداشت -->
   <section id="view-tasks" class="app-view">
     <div class="tasks-page-layout">
       <div class="weekly-calendar-card ios-glass-card">
@@ -432,7 +449,7 @@
           <div class="weekly-top-center">
             <span class="pill-btn active">یادداشت‌ها 📋</span>
             <span class="pill-btn active">تسک‌ها ☑</span>
-            <span class="pill-btn">امروز ☀</span>
+            <span class="pill-btn">امروز ☀️</span>
           </div>
 
           <div class="weekly-nav-week">
@@ -506,7 +523,7 @@
     </div>
   </section>
 
-  <!-- داک شناور پایین صفحه -->
+  <!-- داک شیشه‌ای در پایین صفحه -->
   <footer class="bottom-floating-dock ios-glass-card" id="bottom-dock">
     <button class="dock-btn logo-dock-btn" id="dock-abner-logo" title="Abner Extension">
       <div class="dock-abner-chip">A</div>
@@ -536,7 +553,7 @@
       <button class="dock-btn" id="dock-settings-btn" title="تنظیمات">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83 2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
     </div>
@@ -566,7 +583,7 @@
       </div>
       <textarea id="edit-task-desc-input" class="edit-task-desc-area" placeholder="توضیحات..." rows="3"></textarea>
       
-      <!-- نوار ابزار کامل ویرایش تسک -->
+      <!-- نوار ابزار کامل ویرایش تسک (هر دکمه والد پاپ‌آپ خودش است) -->
       <div class="edit-task-tools-bar">
         <!-- ۱. بورد -->
         <div class="tool-popup-wrap">
@@ -679,7 +696,7 @@
     </div>
   </div>
 
-  <!-- پاپ‌آپ‌های مستقل کادر تسک پایین صفحه برای ساخت تسک جدید -->
+  <!-- پاپ‌آپ‌های مستقل کادر تسک داشبورد (پایین صفحه) -->
   <div class="task-tool-popup glass-blur-menu repeat-popup-box" id="popup-repeat" style="display: none;">
     <div class="popup-sec-title">تکرار</div>
     <div class="repeat-row-top">
@@ -837,7 +854,7 @@
         <button id="auto-ip-btn" class="loc-method-btn secondary-glass">
           <div class="loc-icon-circle">🌐</div>
           <div class="loc-text-desc">
-            <strong>تشخیص موقعیت مکانی با آی‌‌پی</strong>
+            <strong>تشخیص موقعیت مکانی با آی‌پی</strong>
             <span>سریع، بدون نیاز به مجوز سیستم</span>
           </div>
         </button>

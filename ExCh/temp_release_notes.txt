@@ -1,4 +1,4 @@
-### 🇮🇷 توضیحات و تغییرات نسخه v1.32.4:
+### 🇮🇷 توضیحات و تغییرات نسخه v1.28.1:
 - هماهنگ‌سازی کپسول‌های آب‌وهوا و ساعت در تم روز و شب با پس‌زمینه شیشه‌ای مات
 - فعال‌سازی دریافت موقعیت زنده دستگاه، آی‌پی و جستجوی شهر با کلید اینتر
 - شفاف‌سازی پیش‌زمینه پیش‌بینی ۵ روزه، اوقات شرعی و تایمر
@@ -7,7 +7,7 @@
 
 ---
 
-### 🇬🇧 English Release Notes (v1.32.4):
+### 🇬🇧 English Release Notes (v1.28.1):
 - Synchronized weather and clock footer pill buttons with unified glass aesthetics
 - Enabled device GPS, IP geolocation, and Enter-key triggered city search
 - Translucent frosted glass redesign for 5-day forecast, prayer times, and timer drawers
