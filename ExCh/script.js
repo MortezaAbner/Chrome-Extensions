@@ -3160,3 +3160,217 @@ updateDynamicGlassBlur(50, 50);
 
   setInterval(bindToAllShortcutCards, 1500);
 })();
+
+
+// ========================================================
+// لاجیک مستقل میانبرها برگرفته از ساختار دستیار
+// ========================================================
+(function initDastyarShortcutModule() {
+  let selectedIndices = new Set();
+
+  // ۱. نوار اقدام پایینی
+  let bar = document.getElementById('dastyar-bulk-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'dastyar-bulk-bar';
+    bar.innerHTML = `
+      <span class="bulk-btn-close" id="dastyar-bar-cancel">✕</span>
+      <span class="bulk-btn-del" id="dastyar-bar-delete">حذف 🗑️</span>
+      <span style="opacity:0.3">|</span>
+      <span>مورد انتخاب شده</span>
+      <span class="count-pill" id="dastyar-bar-count">۰</span>
+    `;
+    document.body.appendChild(bar);
+
+    document.getElementById('dastyar-bar-cancel')?.addEventListener('click', resetAllSelections);
+    document.getElementById('dastyar-bar-delete')?.addEventListener('click', deleteBatchShortcuts);
+  }
+
+  function syncBarState() {
+    const countEl = document.getElementById('dastyar-bar-count');
+    if (!countEl) return;
+    const count = selectedIndices.size;
+    countEl.textContent = count;
+    if (count > 0) {
+      bar.classList.add('active');
+    } else {
+      bar.classList.remove('active');
+    }
+  }
+
+  function resetAllSelections() {
+    selectedIndices.clear();
+    document.querySelectorAll('.shortcut-item, .shortcut-card').forEach(el => {
+      el.classList.remove('is-selected');
+    });
+    syncBarState();
+  }
+
+  function deleteBatchShortcuts() {
+    if (selectedIndices.size === 0) return;
+    let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+    list = list.filter((_, idx) => !selectedIndices.has(idx.toString()));
+    localStorage.setItem('user_shortcuts', JSON.stringify(list));
+    resetAllSelections();
+    if (typeof renderShortcuts === 'function') renderShortcuts();
+    else location.reload();
+  }
+
+  // ۲. پاپ‌آپ ویرایش یا افزودن شیشه‌ای
+  window.openDastyarShortcutModal = function(index, existingData) {
+    const isEdit = existingData !== undefined && existingData !== null;
+    let overlay = document.getElementById('dastyar-modal-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'dastyar-modal-overlay';
+      overlay.className = 'modal-overlay-custom';
+      document.body.appendChild(overlay);
+    }
+
+    const titleVal = isEdit ? (existingData.title || existingData.name || '') : '';
+    const urlVal = isEdit ? (existingData.url || '') : '';
+
+    overlay.innerHTML = `
+      <div class="glass-shortcut-modal">
+        <h3>${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر'}</h3>
+        <input id="ds-modal-title" type="text" placeholder="نام میانبر" value="${titleVal}">
+        <input id="ds-modal-url" type="text" placeholder="آدرس سایت (مثلا: https://example.com)" value="${urlVal}">
+        <div class="glass-modal-actions">
+          <button class="glass-btn-confirm" id="ds-modal-confirm">${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
+          <button class="glass-btn-cancel" id="ds-modal-cancel">انصراف</button>
+        </div>
+      </div>
+    `;
+
+    overlay.classList.add('active');
+
+    document.getElementById('ds-modal-cancel').onclick = () => {
+      overlay.classList.remove('active');
+    };
+
+    document.getElementById('ds-modal-confirm').onclick = () => {
+      const title = document.getElementById('ds-modal-title').value.trim();
+      let url = document.getElementById('ds-modal-url').value.trim();
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+      let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+      if (isEdit && list[index]) {
+        list[index].title = title || url;
+        list[index].name = title || url;
+        list[index].url = url;
+      } else {
+        list.push({ title: title || url, name: title || url, url: url });
+      }
+      localStorage.setItem('user_shortcuts', JSON.stringify(list));
+      overlay.classList.remove('active');
+      if (typeof renderShortcuts === 'function') renderShortcuts();
+      else location.reload();
+    };
+  };
+
+  // ۳. ایجاد و مدیریت منوی گزینه‌های سه‌نقطه
+  window.openDastyarContextMenu = function(e, index, itemEl, data) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    document.querySelectorAll('.dastyar-context-menu').forEach(m => m.remove());
+
+    const isSelected = selectedIndices.has(index.toString());
+    const menu = document.createElement('div');
+    menu.className = 'dastyar-context-menu';
+
+    menu.innerHTML = `
+      <div class="item-row" id="act-open"><span>باز کردن</span> <span>🔗</span></div>
+      <div class="item-row" id="act-open-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
+      <div class="item-row" id="act-toggle-select"><span>${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>${isSelected ? '✕' : '☑'}</span></div>
+      <hr>
+      <div class="item-row" id="act-edit"><span>ویرایش</span> <span>✏</span></div>
+      <div class="item-row" id="act-copy"><span>کپی لینک</span> <span>📋</span></div>
+      <hr>
+      <div class="item-row danger" id="act-del"><span>حذف</span> <span>🗑️</span></div>
+    `;
+
+    document.body.appendChild(menu);
+
+    const rect = itemEl.getBoundingClientRect();
+    menu.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+    menu.style.left = Math.max(12, rect.left + window.scrollX - 35) + 'px';
+
+    menu.querySelector('#act-open').onclick = () => {
+      window.location.href = data.url;
+      menu.remove();
+    };
+    menu.querySelector('#act-open-tab').onclick = () => {
+      window.open(data.url, '_blank');
+      menu.remove();
+    };
+    menu.querySelector('#act-toggle-select').onclick = () => {
+      if (isSelected) {
+        selectedIndices.delete(index.toString());
+        itemEl.classList.remove('is-selected');
+      } else {
+        selectedIndices.add(index.toString());
+        itemEl.classList.add('is-selected');
+      }
+      syncBarState();
+      menu.remove();
+    };
+    menu.querySelector('#act-edit').onclick = () => {
+      menu.remove();
+      window.openDastyarShortcutModal(index, data);
+    };
+    menu.querySelector('#act-copy').onclick = () => {
+      navigator.clipboard.writeText(data.url);
+      menu.remove();
+    };
+    menu.querySelector('#act-del').onclick = () => {
+      menu.remove();
+      let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+      list.splice(index, 1);
+      localStorage.setItem('user_shortcuts', JSON.stringify(list));
+      selectedIndices.delete(index.toString());
+      syncBarState();
+      if (typeof renderShortcuts === 'function') renderShortcuts();
+      else location.reload();
+    };
+
+    const docDismiss = (ev) => {
+      if (!menu.contains(ev.target)) {
+        menu.remove();
+        document.removeEventListener('click', docDismiss);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', docDismiss), 40);
+  };
+
+  // ۴. اتصال خودکار به تمام آیتم‌ها و دکمه افزودن (+)
+  function bindDastyarElements() {
+    const addBtn = document.querySelector('.add-shortcut-btn, #add-shortcut-btn, [data-action="add-shortcut"]');
+    if (addBtn && !addBtn.dataset.dastyarBound) {
+      addBtn.dataset.dastyarBound = 'true';
+      addBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openDastyarShortcutModal();
+      };
+    }
+
+    const shortcutCards = document.querySelectorAll('.shortcut-item, .shortcut-card');
+    let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+
+    shortcutCards.forEach((card, idx) => {
+      const moreIcon = card.querySelector('.shortcut-more-btn, .more-btn, [data-action="more"]');
+      const itemData = list[idx] || { title: card.innerText.trim(), url: card.getAttribute('href') || '#' };
+
+      if (moreIcon && !moreIcon.dataset.dastyarBound) {
+        moreIcon.dataset.dastyarBound = 'true';
+        moreIcon.onclick = (e) => window.openDastyarContextMenu(e, idx, card, itemData);
+      }
+      if (!card.dataset.contextBound) {
+        card.dataset.contextBound = 'true';
+        card.oncontextmenu = (e) => window.openDastyarContextMenu(e, idx, card, itemData);
+      }
+    });
+  }
+
+  setInterval(bindDastyarElements, 1000);
+})();

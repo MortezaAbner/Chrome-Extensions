@@ -2758,3 +2758,206 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 4px 0;
 }
+
+
+/* ========================================================
+   استایل شیشه‌ای مودال‌ها و منوی میانبرها برگرفته از دستیار
+======================================================== */
+.modal-overlay-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay-custom.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.glass-shortcut-modal {
+  width: 90%;
+  max-width: 380px;
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%);
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  direction: rtl;
+  font-family: inherit;
+}
+[data-theme="dark"] .glass-shortcut-modal {
+  background: rgba(15, 23, 42, 0.35);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.glass-shortcut-modal h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.glass-shortcut-modal input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+}
+.glass-shortcut-modal input:focus {
+  border-color: #3b82f6;
+}
+
+.glass-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.glass-btn-confirm {
+  flex: 1;
+  padding: 11px;
+  border-radius: 14px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.glass-btn-confirm:hover { opacity: 0.9; }
+
+.glass-btn-cancel {
+  flex: 1;
+  padding: 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* تیک انتخاب میانبر */
+.shortcut-item.is-selected {
+  outline: 2px solid #3b82f6 !important;
+  border-radius: 18px !important;
+  position: relative;
+}
+.shortcut-item.is-selected::after {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #3b82f6;
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+/* نوار انتخاب دسته‌جمعی */
+#dastyar-bulk-bar {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 99999;
+  color: #fff;
+  direction: rtl;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+#dastyar-bulk-bar.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+#dastyar-bulk-bar .count-pill {
+  background: #3b82f6;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+#dastyar-bulk-bar .bulk-btn-del {
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#dastyar-bulk-bar .bulk-btn-close {
+  cursor: pointer;
+  opacity: 0.6;
+}
+#dastyar-bulk-bar .bulk-btn-close:hover { opacity: 1; }
+
+/* منوی بازشونده ۳ نقطه */
+.dastyar-context-menu {
+  position: absolute;
+  z-index: 100005;
+  background: rgba(28, 25, 23, 0.88);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 6px;
+  min-width: 165px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+  direction: rtl;
+}
+.dastyar-context-menu .item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.dastyar-context-menu .item-row:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dastyar-context-menu .item-row.danger {
+  color: #ef4444;
+}
+.dastyar-context-menu hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
