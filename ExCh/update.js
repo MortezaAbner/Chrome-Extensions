@@ -3,86 +3,53 @@ const fs = require('fs');
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  const targetedBlurSeparation = `
-      // کنترل تفکیک‌شده بلر داشبورد (شامل مکان) و پاپ‌آپ‌ها (پیش‌بینی، اوقات شرعی، تایمر)
-      let styleTag = document.getElementById('live-custom-blur-style');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.id = 'live-custom-blur-style';
-        document.head.appendChild(styleTag);
-      }
+  // ۱. حذف هرگونه alert در دکمه تأیید ماتی و بستن قطعی پاپ‌آپ تنظیمات
+  const fixedSaveHandler = `
+    if (btnSave) {
+      btnSave.onclick = (e) => {
+        if (e) e.stopPropagation();
+        if (typeof slD !== 'undefined' && slD) persistentDash = slD.value;
+        if (typeof slP !== 'undefined' && slP) persistentPopup = slP.value;
+        if (typeof sDash !== 'undefined' && sDash) savedD = sDash.value;
+        if (typeof sPopup !== 'undefined' && sPopup) savedP = sPopup.value;
+        if (typeof sliderDash !== 'undefined' && sliderDash) committedDash = sliderDash.value;
+        if (typeof sliderPopup !== 'undefined' && sliderPopup) committedPopup = sliderPopup.value;
 
-      styleTag.textContent = \`
-        /* ۱. داشبورد اصلی و پاپ‌آپ/دکمه مکان */
-        .ios-glass-card,
-        .weather-card,
-        .clock-card,
-        .calendar-card,
-        .task-card,
-        .quick-actions-bar,
-        .dock-container,
-        .task-item-card,
-        .stat-card,
-        .location-modal-box,
-        .location-chip,
-        #weather-city-btn,
-        #location-search-modal {
-          backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
-          -webkit-backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
-          background: rgba(255, 255, 255, 0.06) !important;
-        }
-        [data-theme="dark"] .ios-glass-card,
-        [data-theme="dark"] .weather-card,
-        [data-theme="dark"] .clock-card,
-        [data-theme="dark"] .calendar-card,
-        [data-theme="dark"] .task-card,
-        [data-theme="dark"] .dock-container,
-        [data-theme="dark"] .task-item-card,
-        [data-theme="dark"] .location-modal-box,
-        [data-theme="dark"] .location-chip,
-        [data-theme="dark"] #weather-city-btn,
-        [data-theme="dark"] #location-search-modal {
-          background: rgba(15, 23, 42, 0.15) !important;
-        }
+        const finalDash = (typeof sDash !== 'undefined' && sDash) ? sDash.value : ((typeof slD !== 'undefined' && slD) ? slD.value : (typeof sliderDash !== 'undefined' && sliderDash ? sliderDash.value : '25'));
+        const finalPopup = (typeof sPopup !== 'undefined' && sPopup) ? sPopup.value : ((typeof slP !== 'undefined' && slP) ? slP.value : (typeof sliderPopup !== 'undefined' && sliderPopup ? sliderPopup.value : '65'));
 
-        /* ۲. پاپ‌آپ‌ها: پیش‌بینی، اوقات شرعی، تایمر و تنظیمات */
-        .glass-blur-menu,
-        .forecast-drawer,
-        #forecast-drawer,
-        .clock-drawer,
-        #timer-drawer,
-        #azan-drawer,
-        .azan-city-dropdown,
-        .month-year-picker-modal,
-        .date-event-popup,
-        .task-tool-popup,
-        .task-modal-box,
-        .task-edit-modal,
-        .settings-modal-card,
-        .modal-overlay .modal-card,
-        .app-view.modal-overlay {
-          backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, 0.08) !important;
-        }
-        [data-theme="dark"] .glass-blur-menu,
-        [data-theme="dark"] .forecast-drawer,
-        [data-theme="dark"] #forecast-drawer,
-        [data-theme="dark"] .clock-drawer,
-        [data-theme="dark"] #timer-drawer,
-        [data-theme="dark"] #azan-drawer,
-        [data-theme="dark"] .task-modal-box,
-        [data-theme="dark"] .task-edit-modal,
-        [data-theme="dark"] .settings-modal-card,
-        [data-theme="dark"] .modal-overlay .modal-card {
-          background: rgba(15, 23, 42, 0.22) !important;
-        }
-      \`;
-`;
+        localStorage.setItem('user_dash_blur_pct', finalDash);
+        localStorage.setItem('user_popup_blur_pct', finalPopup);
+        localStorage.setItem('blur_dash_val', finalDash);
+        localStorage.setItem('blur_popup_val', finalPopup);
+        localStorage.setItem('cfg_dash_blur', finalDash);
+        localStorage.setItem('cfg_popup_blur', finalPopup);
 
-  // فقط جایگزینی بلوک تزریق استایل بدون دستکاری بقیه فایل
-  js = js.replace(/let styleTag = document\.getElementById\('live-custom-blur-style'\);[\s\S]*?settings-modal-card\s*\{[\s\S]*?\}\s*`;/g, targetedBlurSeparation.trim());
+        if (typeof setLiveBlur === 'function') setLiveBlur(finalDash, finalPopup);
+        if (typeof applyBlurStyles === 'function') applyBlurStyles(finalDash, finalPopup);
+        if (typeof onSliderDrag === 'function') onSliderDrag();
+
+        // بستن کامل پاپ‌آپ تنظیمات بدون نمایش پیام
+        const settingsView = document.getElementById('view-settings');
+        if (settingsView) {
+          settingsView.classList.remove('active');
+        }
+        const dashView = document.getElementById('view-dashboard');
+        if (dashView) {
+          dashView.classList.add('active');
+        }
+        const dockHome = document.getElementById('dock-home-btn');
+        if (dockHome) {
+          dockHome.classList.add('active');
+        }
+      };
+    }
+  `;
+
+  // پاک کردن آلرت و جایگزینی با بستن سریع
+  js = js.replace(/if\s*\(btnSave\)\s*\{[\s\S]*?alert\([^)]*\);?[\s\S]*?\};?\s*\}/, fixedSaveHandler.trim());
+  js = js.replace(/if\s*\(btnSave\)\s*\{[\s\S]*?modalSettings\.classList\.remove\('active'\);[\s\S]*?\};?\s*\}/, fixedSaveHandler.trim());
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ تفکیک ماتی پاپ‌آپ مکان با پیش‌بینی، اوقات شرعی و تایمر در script.js اعمال شد.');
+  console.log('✅ آلرت تایید ماتی حذف شد و بستن خودکار پاپ‌آپ بدون پیام اضافه شد.');
 }

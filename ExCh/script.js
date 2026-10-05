@@ -2527,159 +2527,42 @@ document.addEventListener('DOMContentLoaded', () => {
   onSliderDrag();
 
   if (btnSave) {
-    btnSave.onclick = () => {
-      persistentDash = slD.value;
-      persistentPopup = slP.value;
-      localStorage.setItem('user_dash_blur_pct', persistentDash);
-      localStorage.setItem('user_popup_blur_pct', persistentPopup);
-      onSliderDrag();
-      alert('میزان ماتی با موفقیت در سیستم ثبت شد ✓');
-    };
-  }
-
-  if (btnCancel) {
-    btnCancel.onclick = () => {
-      if (slD) slD.value = persistentDash;
-      if (slP) slP.value = persistentPopup;
-      onSliderDrag();
-    };
-  }
-
-
-  
-
-
-  // ========================================================
-  // موتور پایدار ماتی زنده، درصد فارسی و بستن پاپ‌آپ
-  // ========================================================
-  (function initBulletproofBlur() {
-    const sDash = document.getElementById('slider-dash-blur');
-    const sPopup = document.getElementById('slider-popup-blur');
-    const lDash = document.getElementById('val-dash-blur');
-    const lPopup = document.getElementById('val-popup-blur');
-    const btnSave = document.getElementById('blur-save-btn');
-    const btnCancel = document.getElementById('blur-cancel-btn');
-    const modalSettings = document.getElementById('view-settings');
-
-    // تابع مستقل تبدیل عدد به فارسی بدون وابستگی
-    function formatFaPercent(num) {
-      const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-      return '٪' + String(num).replace(/\d/g, d => farsiDigits[d]);
-    }
-
-    let savedD = localStorage.getItem('blur_dash_val') || '25';
-    let savedP = localStorage.getItem('blur_popup_val') || '65';
-
-    function setLiveBlur(dVal, pVal) {
-      const d = parseInt(dVal, 10);
-      const p = parseInt(pVal, 10);
-
-      // آپدیت متن درصد در همان لحظه حرکت اسلایدر
-      if (lDash) lDash.textContent = formatFaPercent(d);
-      if (lPopup) lPopup.textContent = formatFaPercent(p);
-
-      const dPx = (d * 0.7).toFixed(1);
-      const pPx = (p * 0.95).toFixed(1);
-
-      // کنترل شفافیت و بلر بدون تداخل
-      // کنترل شفافیت شیشه کریستالی (حفظ بافت شیشه بدون کدر شدن رنگ)
-      const dAlpha = (0.05 + (d / 100 * 0.10)).toFixed(2);
-      const pAlpha = (0.08 + (p / 100 * 0.12)).toFixed(2);
-
-      // کنترل بلر خالص و شیشه کریستالی بدون هیچ‌گونه لایه سفید یا کدر
-      let styleTag = document.getElementById('live-custom-blur-style');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.id = 'live-custom-blur-style';
-        document.head.appendChild(styleTag);
-      }
-
-      styleTag.textContent = `
-        /* ۱. اعمال بلر بر تمامی کارت‌های اصلی داشبورد، آب‌وهوا، ساعت، تقویم و تسک‌ها */
-        .ios-glass-card,
-        .weather-card,
-        .clock-card,
-        .calendar-card,
-        .task-card,
-        .quick-actions-bar,
-        .dock-container,
-        .task-item-card,
-        .stat-card {
-          backdrop-filter: blur(${dPx}px) saturate(160%) !important;
-          -webkit-backdrop-filter: blur(${dPx}px) saturate(160%) !important;
-          background: rgba(255, 255, 255, 0.06) !important;
-        }
-        [data-theme="dark"] .ios-glass-card,
-        [data-theme="dark"] .weather-card,
-        [data-theme="dark"] .clock-card,
-        [data-theme="dark"] .calendar-card,
-        [data-theme="dark"] .task-card,
-        [data-theme="dark"] .dock-container,
-        [data-theme="dark"] .task-item-card {
-          background: rgba(15, 23, 42, 0.15) !important;
-        }
-
-        /* ۲. اعمال بلر بر تمامی پاپ‌آپ‌ها، دراورها، ویرایش تسک و پنجره‌های تنظیمات */
-        .glass-blur-menu,
-        .forecast-drawer,
-        .clock-drawer,
-        .azan-city-dropdown,
-        .month-year-picker-modal,
-        .date-event-popup,
-        .task-tool-popup,
-        .task-modal-box,
-        .task-edit-modal,
-        .location-modal-box,
-        .settings-modal-card,
-        .modal-overlay .modal-card,
-        .app-view.modal-overlay {
-          backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, 0.08) !important;
-        }
-        [data-theme="dark"] .glass-blur-menu,
-        [data-theme="dark"] .forecast-drawer,
-        [data-theme="dark"] .clock-drawer,
-        [data-theme="dark"] .task-modal-box,
-        [data-theme="dark"] .task-edit-modal,
-        [data-theme="dark"] .settings-modal-card,
-        [data-theme="dark"] .modal-overlay .modal-card {
-          background: rgba(15, 23, 42, 0.22) !important;
-        }
-      `;
-    }
-
-    // متصل کردن رویداد مستقیم کشیدن اسلایدر (input)
-    if (sDash) {
-      sDash.value = savedD;
-      sDash.addEventListener('input', () => {
-        setLiveBlur(sDash.value, sPopup ? sPopup.value : savedP);
-      });
-    }
-
-    if (sPopup) {
-      sPopup.value = savedP;
-      sPopup.addEventListener('input', () => {
-        setLiveBlur(sDash ? sDash.value : savedD, sPopup.value);
-      });
-    }
-
-    // اعمال مقدار ذخیره شده در شروع
-    setLiveBlur(savedD, savedP);
-
-    // دکمه تأیید ماتی: ذخیره دائمی و بستن پاپ‌آپ
-    if (btnSave) {
       btnSave.onclick = (e) => {
-        e.stopPropagation();
-        savedD = sDash ? sDash.value : savedD;
-        savedP = sPopup ? sPopup.value : savedP;
-        localStorage.setItem('blur_dash_val', savedD);
-        localStorage.setItem('blur_popup_val', savedP);
-        setLiveBlur(savedD, savedP);
+        if (e) e.stopPropagation();
+        if (typeof slD !== 'undefined' && slD) persistentDash = slD.value;
+        if (typeof slP !== 'undefined' && slP) persistentPopup = slP.value;
+        if (typeof sDash !== 'undefined' && sDash) savedD = sDash.value;
+        if (typeof sPopup !== 'undefined' && sPopup) savedP = sPopup.value;
+        if (typeof sliderDash !== 'undefined' && sliderDash) committedDash = sliderDash.value;
+        if (typeof sliderPopup !== 'undefined' && sliderPopup) committedPopup = sliderPopup.value;
 
-        if (modalSettings) modalSettings.classList.remove('active');
-        document.getElementById('view-dashboard')?.classList.add('active');
-        document.getElementById('dock-home-btn')?.classList.add('active');
+        const finalDash = (typeof sDash !== 'undefined' && sDash) ? sDash.value : ((typeof slD !== 'undefined' && slD) ? slD.value : (typeof sliderDash !== 'undefined' && sliderDash ? sliderDash.value : '25'));
+        const finalPopup = (typeof sPopup !== 'undefined' && sPopup) ? sPopup.value : ((typeof slP !== 'undefined' && slP) ? slP.value : (typeof sliderPopup !== 'undefined' && sliderPopup ? sliderPopup.value : '65'));
+
+        localStorage.setItem('user_dash_blur_pct', finalDash);
+        localStorage.setItem('user_popup_blur_pct', finalPopup);
+        localStorage.setItem('blur_dash_val', finalDash);
+        localStorage.setItem('blur_popup_val', finalPopup);
+        localStorage.setItem('cfg_dash_blur', finalDash);
+        localStorage.setItem('cfg_popup_blur', finalPopup);
+
+        if (typeof setLiveBlur === 'function') setLiveBlur(finalDash, finalPopup);
+        if (typeof applyBlurStyles === 'function') applyBlurStyles(finalDash, finalPopup);
+        if (typeof onSliderDrag === 'function') onSliderDrag();
+
+        // بستن کامل پاپ‌آپ تنظیمات بدون نمایش پیام
+        const settingsView = document.getElementById('view-settings');
+        if (settingsView) {
+          settingsView.classList.remove('active');
+        }
+        const dashView = document.getElementById('view-dashboard');
+        if (dashView) {
+          dashView.classList.add('active');
+        }
+        const dockHome = document.getElementById('dock-home-btn');
+        if (dockHome) {
+          dockHome.classList.add('active');
+        }
       };
     }
 
