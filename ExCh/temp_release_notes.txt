@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.50:
-- ایجاد پوشه modules و استقرار ماژول مستقل میانبرها همراه با استایل شیشه‌ای متصل به بلر
+### 🇮🇷 تغییرات نسخه v1.32.51:
+- رفع کامل خطای سینتکس script.js و فعال‌سازی ماژول مستقل میانبرها
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.50):
-- Create Isolated Shortcuts Module with Dynamic Glassmorphism
+### 🇬🇧 Release Notes (v1.32.51):
+- Fix Unexpected identifier window SyntaxError in script.js
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
