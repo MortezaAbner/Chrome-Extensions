@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.18:
-- افزودن پالت رنگ اصلی و RGB، اسلایدرهای ماتی صفر تا صد، اسکرول‌بار شیشه‌ای و امکان آپلود فونت دلخواه
+### 🇮🇷 تغییرات نسخه v1.32.19:
+- انتقال پس‌زمینه به تب اختصاصی، اتصال کامل تب تم و رنگ و رفع مشکل جابه‌جایی منوهای تنظیمات
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.18):
-- Advanced Theme Customization: Custom Frosted Blur, Accent Color, and Font Upload
+### 🇬🇧 Release Notes (v1.32.19):
+- Separate Wallpaper Tab and Fix Settings Navigation
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

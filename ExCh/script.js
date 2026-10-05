@@ -177,6 +177,32 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             localStorage.setItem('custom_bg', event.target.result);
             applyBackgroundConfig();
+
+  // مدیریت تب‌های سایدبار تنظیمات
+  function initSettingsTabs() {
+    const navItems = document.querySelectorAll('.settings-sidebar-nav .nav-item-glass');
+    const tabPanes = document.querySelectorAll('.settings-tab-pane');
+    const headerLabel = document.getElementById('settings-header-label');
+
+    navItems.forEach(item => {
+      item.onclick = (e) => {
+        e.stopPropagation();
+        const tab = item.dataset.tab;
+        navItems.forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+
+        tabPanes.forEach(p => p.classList.remove('active'));
+        const targetPane = document.getElementById('pane-' + tab);
+        if (targetPane) targetPane.classList.add('active');
+
+        if (headerLabel) {
+          headerLabel.textContent = 'تنظیمات › ' + item.textContent.trim();
+        }
+      };
+    });
+  }
+  initSettingsTabs();
+
           } catch (err) {
             alert('حجم عکس بالاست!');
           }
