@@ -1,0 +1,138 @@
+
+/* ========================================================
+   استایل ماژولار شیشه‌ای آب‌وهوا و ساعت متصل به اسلایدر
+======================================================== */
+.ds-weather-widget-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 14px;
+  direction: rtl;
+  user-select: none;
+  font-family: inherit;
+  margin-bottom: 20px;
+}
+
+.ds-weather-card {
+  flex: 1;
+  max-width: 250px;
+  min-width: 210px;
+  padding: 16px 14px 12px 14px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--dash-glass-bg) !important;
+  backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.ds-weather-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+/* بخش هدر و مقادیر اصلی */
+.ds-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ds-time-val, .ds-temp-val {
+  font-size: 38px;
+  font-weight: 800;
+  color: #3b82f6;
+  line-height: 1;
+}
+
+.ds-day-title {
+  font-size: 19px;
+  font-weight: bold;
+  color: #1f2937;
+}
+[data-theme="dark"] .ds-day-title {
+  color: #f3f4f6;
+}
+
+.ds-weather-icon-top {
+  font-size: 34px;
+  opacity: 0.85;
+}
+
+/* اطلاعات میانی (تاریخ‌ها و وضعیت آب‌وهوا) */
+.ds-dates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 6px 0 12px 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+[data-theme="dark"] .ds-dates-list {
+  color: #9ca3af;
+}
+
+.ds-date-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ds-weather-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 12px 0;
+}
+
+.ds-condition-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1f2937;
+}
+[data-theme="dark"] .ds-condition-row {
+  color: #f3f4f6;
+}
+
+.ds-temp-range {
+  font-size: 13px;
+  color: #4b5563;
+}
+[data-theme="dark"] .ds-temp-range {
+  color: #9ca3af;
+}
+
+/* دکمه‌های کپسولی پایین کارت‌ها */
+.ds-card-pill-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ds-pill-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--dash-glass-border);
+  background: rgba(255, 255, 255, calc(var(--dash-glass-opacity) + 0.15));
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+.ds-pill-btn:hover {
+  background: rgba(255, 255, 255, calc(var(--dash-glass-opacity) + 0.28));
+  transform: scale(1.02);
+}
