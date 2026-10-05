@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.60:
-- افزودن قابلیت ساخت پوشه و بوکمارک نامحدود با منوی ویرایش، جابجایی دسته‌ای و طراحی شیشه‌ای آبنر
+### 🇮🇷 تغییرات نسخه v1.32.61:
+- ایجاد پوشه modules/calendar و راه‌اندازی ماژول مستقل تقویم فارسی با استایل شیشه‌ای زنده آبنر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.60):
-- Enable Unlimited Bookmarks and Dynamic Folder Management for Abner
+### 🇬🇧 Release Notes (v1.32.61):
+- Create Isolated Abner Calendar Module
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
