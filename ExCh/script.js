@@ -1138,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts')) || defaultShortcuts;
 
-  function renderShortcuts() {
+  function disabled_renderShortcuts() {
     if (!shortcutsGrid) return;
     shortcutsGrid.innerHTML = '';
     shortcuts.forEach((item, index) => {

@@ -1,8 +1,8 @@
 
 /* ========================================================
-   استایل شیشه‌ای ماژول بوکمارک دستیار (شبکه ۱۲تایی)
+   استایل شیشه‌ای شبکه بوکمارک و منوی ۶ حالته آبنر
 ======================================================== */
-.ds-bookmarks-grid {
+.ab-bookmarks-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
@@ -15,12 +15,12 @@
 }
 
 @media (min-width: 992px) {
-  .ds-bookmarks-grid {
+  .ab-bookmarks-grid {
     grid-template-columns: repeat(6, 1fr);
   }
 }
 
-.ds-bookmark-box {
+.ab-bookmark-box {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -30,26 +30,26 @@
   padding: 12px 8px;
   border-radius: 20px;
   cursor: pointer;
-  background: var(--dash-glass-bg) !important;
-  backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
-  border: 1px solid var(--dash-glass-border) !important;
+  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   transition: transform 0.15s ease, filter 0.2s ease, background 0.2s ease;
 }
 
-.ds-bookmark-box:hover {
+.ab-bookmark-box:hover {
   transform: translateY(-2px);
   filter: brightness(1.15);
 }
 
-/* خانه شاخص دم‌دستی برگرفته از سورس */
-.ds-bookmark-box.is-damdasti {
-  border: 1px dashed rgba(59, 130, 246, 0.5) !important;
-  background: rgba(59, 130, 246, calc(var(--dash-glass-opacity) + 0.08)) !important;
+/* خانه شاخص دم‌دستی */
+.ab-bookmark-box.is-damdasti {
+  border: 1px dashed rgba(59, 130, 246, 0.6) !important;
+  background: rgba(59, 130, 246, calc(var(--dash-glass-opacity, 0.12) + 0.1)) !important;
 }
 
-.ds-box-icon {
+.ab-box-icon {
   width: 44px;
   height: 44px;
   display: flex;
@@ -59,13 +59,13 @@
   color: #fff;
   margin-bottom: 6px;
 }
-.ds-box-icon img {
+.ab-box-icon img {
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
-.ds-box-title {
+.ab-box-title {
   font-size: 13px;
   font-weight: 500;
   color: #fff;
@@ -77,29 +77,27 @@
 }
 
 /* دکمه سه نقطه گزینه‌ها */
-.ds-box-dots {
+.ab-box-dots {
   position: absolute;
   top: 6px;
   left: 6px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
   cursor: pointer;
   padding: 2px 4px;
   border-radius: 6px;
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  z-index: 5;
 }
-.ds-bookmark-box:hover .ds-box-dots { opacity: 1; }
-.ds-box-dots:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+.ab-box-dots:hover { background: rgba(255, 255, 255, 0.25); color: #fff; }
 
-/* کارت انتخاب شده */
-.ds-bookmark-box.is-selected {
+/* کارت انتخاب شده برای مدیریت */
+.ab-bookmark-box.is-selected {
   outline: 2px solid #3b82f6 !important;
-  background: rgba(59, 130, 246, 0.25) !important;
+  background: rgba(59, 130, 246, 0.28) !important;
 }
-.ds-bookmark-box.is-selected::after {
+.ab-bookmark-box.is-selected::after {
   content: "✓";
   position: absolute;
   top: 6px;
@@ -114,24 +112,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
-/* کانتکست منوی شیشه‌ای ۶ گزینه‌ای */
-.ds-context-menu {
+/* منوی ۶ حالته شیشه‌ای آبنر */
+.ab-context-menu {
   position: fixed;
-  z-index: 1000000;
-  width: 175px;
-  background: var(--dash-menu-bg) !important;
-  backdrop-filter: blur(var(--dash-blur-px)) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(180%) !important;
-  border: 1px solid var(--dash-glass-border) !important;
+  z-index: 9999999;
+  width: 185px;
+  background: var(--dash-menu-bg, rgba(28, 22, 26, 0.92)) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.22)) !important;
   border-radius: 18px !important;
   padding: 6px !important;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6) !important;
   direction: rtl !important;
   color: #fff !important;
+  font-family: inherit !important;
+  user-select: none !important;
 }
-.ds-menu-item {
+
+.ab-menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -141,25 +143,26 @@
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.ds-menu-item:hover { background: rgba(255, 255, 255, 0.12); }
-.ds-menu-item.danger { color: #ef4444; }
+.ab-menu-item:hover { background: rgba(255, 255, 255, 0.15); }
+.ab-menu-item.danger { color: #ef4444; }
 
-.ds-submenu-trigger { position: relative; }
-.ds-submenu-box {
+.ab-submenu-trigger { position: relative; }
+.ab-submenu-box {
   display: none;
   position: absolute;
   right: 100%;
   top: 0;
   margin-right: 6px;
   width: 140px;
-  background: var(--dash-menu-bg);
-  backdrop-filter: blur(var(--dash-blur-px));
-  border: 1px solid var(--dash-glass-border);
+  background: var(--dash-menu-bg, rgba(28, 22, 26, 0.95));
+  backdrop-filter: blur(var(--dash-blur-px, 20px));
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2));
   border-radius: 14px;
   padding: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
-.ds-submenu-trigger:hover .ds-submenu-box { display: block; }
-.ds-submenu-row {
+.ab-submenu-trigger:hover .ab-submenu-box { display: block; }
+.ab-submenu-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -167,18 +170,18 @@
   border-radius: 8px;
   font-size: 12px;
 }
-.ds-submenu-row.active { color: #60a5fa; }
+.ab-submenu-row.active { color: #60a5fa; }
 
-/* نوار انتخاب دسته‌جمعی شناور */
-.ds-bulk-bar {
+/* نوار انتخاب دسته‌جمعی */
+.ab-bulk-bar {
   position: fixed;
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%) translateY(30px);
-  background: var(--dash-menu-bg);
-  backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
-  border: 1px solid var(--dash-glass-border);
+  background: var(--dash-menu-bg, rgba(15, 23, 42, 0.9));
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2));
   border-radius: 9999px;
   padding: 8px 20px;
   display: flex;
@@ -191,12 +194,12 @@
   pointer-events: none;
   transition: all 0.25s ease;
 }
-.ds-bulk-bar.visible {
+.ab-bulk-bar.visible {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
-.ds-bulk-counter {
+.ab-bulk-counter {
   background: #3b82f6;
   width: 22px;
   height: 22px;
@@ -207,50 +210,50 @@
   font-size: 12px;
   font-weight: bold;
 }
-.ds-bulk-del { color: #ef4444; cursor: pointer; }
-.ds-bulk-close { cursor: pointer; opacity: 0.7; }
+.ab-bulk-del { color: #ef4444; cursor: pointer; }
+.ab-bulk-close { cursor: pointer; opacity: 0.7; }
 
-/* پاپ‌آپ شیشه‌ای ویرایش/افزودن */
-.ds-modal-overlay {
+/* پاپ‌‌آپ شیشه‌ای افزودن/ویرایش */
+.ab-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000000;
+  z-index: 10000000;
   direction: rtl;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
 }
-.ds-modal-overlay.active { opacity: 1; pointer-events: auto; }
-.ds-glass-modal {
+.ab-modal-overlay.active { opacity: 1; pointer-events: auto; }
+.ab-glass-modal {
   width: 90%;
   max-width: 360px;
   padding: 22px;
   border-radius: 22px;
-  background: var(--dash-glass-bg) !important;
-  backdrop-filter: blur(var(--dash-blur-px)) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(170%) !important;
-  border: 1px solid var(--dash-glass-border);
+  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.15)) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.25));
   color: #fff;
 }
-.ds-glass-modal h3 { margin: 0 0 14px 0; font-size: 15px; }
-.ds-glass-modal input {
+.ab-glass-modal h3 { margin: 0 0 14px 0; font-size: 15px; }
+.ab-glass-modal input {
   width: 100%;
   padding: 10px 14px;
   margin-bottom: 10px;
   border-radius: 12px;
-  border: 1px solid var(--dash-glass-border);
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2));
+  background: rgba(0, 0, 0, 0.35);
   color: #fff;
   box-sizing: border-box;
 }
-.ds-modal-actions { display: flex; gap: 10px; margin-top: 6px; }
-.ds-btn-save {
+.ab-modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+.ab-btn-save {
   flex: 1; padding: 10px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
 }
-.ds-btn-cancel {
-  flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.15); border: 1px solid var(--dash-glass-border); color: #fff; border-radius: 12px; cursor: pointer;
+.ab-btn-cancel {
+  flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.15); border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2)); color: #fff; border-radius: 12px; cursor: pointer;
 }

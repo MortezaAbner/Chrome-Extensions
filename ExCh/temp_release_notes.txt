@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.55:
-- ایجاد پوشه اختصاصی modules/bookmark و پیاده‌سازی شبکه ۱۲تایی با جایگاه دم‌دستی و بلر شیشه‌ای زنده
+### 🇮🇷 تغییرات نسخه v1.32.56:
+- فعال‌سازی قطعی منوی ۶ گزینه‌ای آبنر، حذف رندرهای قدیمی و استقرار شبکه بوکمارک شیشه‌ای
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.55):
-- Create Isolated Bookmark Module with 12-slot Dastyar Grid
+### 🇬🇧 Release Notes (v1.32.56):
+- Activate Abner 6-Option Context Menu and 12-Slot Bookmarks Grid
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

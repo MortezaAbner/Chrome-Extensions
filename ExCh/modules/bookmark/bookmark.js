@@ -1,8 +1,9 @@
 
 /**
- * ماژول مستقل شبکه بوکمارک‌های دستیار
+ * ماژول مستقل بوکمارک‌های آبنر
+ * شامل شبکه ۱۲تایی، منوی ۶ حالته راست‌کلیک و پاپ‌آپ شیشه‌ای
  */
-(function initBookmarkModule() {
+(function initAbnerBookmark() {
   const STORAGE_KEY = 'shortcuts';
   const MAX_SLOTS = 11;
   let selectedIndices = new Set();
@@ -39,27 +40,27 @@
   }
 
   function ensureBulkBar() {
-    let bar = document.getElementById('ds-bulk-bar');
+    let bar = document.getElementById('ab-bulk-bar');
     if (!bar) {
       bar = document.createElement('div');
-      bar.id = 'ds-bulk-bar';
-      bar.className = 'ds-bulk-bar';
+      bar.id = 'ab-bulk-bar';
+      bar.className = 'ab-bulk-bar';
       bar.innerHTML = `
-        <span class="ds-bulk-close" id="ds-bulk-close">✕</span>
-        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑</span>
+        <span class="ab-bulk-close" id="ab-bulk-close">✕</span>
+        <span class="ab-bulk-del" id="ab-bulk-del">حذف 🗑</span>
         <span style="opacity:0.3">|</span>
         <span>مورد انتخاب شده</span>
-        <span class="ds-bulk-counter" id="ds-bulk-counter">۰</span>
+        <span class="ab-bulk-counter" id="ab-bulk-counter">۰</span>
       `;
       document.body.appendChild(bar);
 
-      document.getElementById('ds-bulk-close').onclick = () => {
+      document.getElementById('ab-bulk-close').onclick = () => {
         selectedIndices.clear();
-        document.querySelectorAll('.ds-bookmark-box').forEach(c => c.classList.remove('is-selected'));
+        document.querySelectorAll('.ab-bookmark-box').forEach(c => c.classList.remove('is-selected'));
         updateBulkBar();
       };
 
-      document.getElementById('ds-bulk-del').onclick = () => {
+      document.getElementById('ab-bulk-del').onclick = () => {
         let list = getBookmarks();
         list = list.filter((_, idx) => !selectedIndices.has(idx));
         selectedIndices.clear();
@@ -73,7 +74,7 @@
   function updateBulkBar() {
     const bar = ensureBulkBar();
     const count = selectedIndices.size;
-    const counterEl = document.getElementById('ds-bulk-counter');
+    const counterEl = document.getElementById('ab-bulk-counter');
     if (counterEl) counterEl.textContent = count;
     if (count > 0) bar.classList.add('visible');
     else bar.classList.remove('visible');
@@ -81,30 +82,30 @@
 
   function openEditModal(index = null, item = null) {
     const isEdit = index !== null && item !== null;
-    document.getElementById('ds-modal-overlay')?.remove();
+    document.getElementById('ab-modal-overlay')?.remove();
 
     const overlay = document.createElement('div');
-    overlay.id = 'ds-modal-overlay';
-    overlay.className = 'ds-modal-overlay active';
+    overlay.id = 'ab-modal-overlay';
+    overlay.className = 'ab-modal-overlay active';
 
     overlay.innerHTML = `
-      <div class="ds-glass-modal">
-        <h3>${isEdit ? 'ویرایش بوکمارک' : 'افزودن بوکمارک جدید'}</h3>
-        <input type="text" id="ds-inp-title" placeholder="نام بوکمارک" value="${isEdit ? (item.title || '') : ''}">
-        <input type="text" id="ds-inp-url" placeholder="آدرس سایت (مثلاً: https://example.com)" value="${isEdit ? (item.url || '') : ''}">
-        <div class="ds-modal-actions">
-          <button class="ds-btn-save" id="ds-btn-save">${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
-          <button class="ds-btn-cancel" id="ds-btn-cancel">انصراف</button>
+      <div class="ab-glass-modal">
+        <h3>${isEdit ? 'ویرایش بوکمارک آبنر' : 'افزودن بوکمارک به آبنر'}</h3>
+        <input type="text" id="ab-inp-title" placeholder="نام بوکمارک" value="${isEdit ? (item.title || '') : ''}">
+        <input type="text" id="ab-inp-url" placeholder="آدرس سایت (مثلاً: https://example.com)" value="${isEdit ? (item.url || '') : ''}">
+        <div class="ab-modal-actions">
+          <button class="ab-btn-save" id="ab-btn-save">${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
+          <button class="ab-btn-cancel" id="ab-btn-cancel">انصراف</button>
         </div>
       </div>
     `;
 
     document.body.appendChild(overlay);
 
-    document.getElementById('ds-btn-cancel').onclick = () => overlay.remove();
-    document.getElementById('ds-btn-save').onclick = () => {
-      const title = document.getElementById('ds-inp-title').value.trim();
-      let url = document.getElementById('ds-inp-url').value.trim();
+    document.getElementById('ab-btn-cancel').onclick = () => overlay.remove();
+    document.getElementById('ab-btn-save').onclick = () => {
+      const title = document.getElementById('ab-inp-title').value.trim();
+      let url = document.getElementById('ab-inp-url').value.trim();
       if (!url) return;
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
 
@@ -119,44 +120,48 @@
     };
   }
 
-  function openMenu(e, index, item, card) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    document.querySelectorAll('.ds-context-menu').forEach(m => m.remove());
+  // ایجاد منوی ۶ حالته آبنر
+  function openContextMenu(e, index, item, card) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    document.querySelectorAll('.ab-context-menu').forEach(m => m.remove());
 
     const isSelected = selectedIndices.has(index);
     const menu = document.createElement('div');
-    menu.className = 'ds-context-menu';
+    menu.className = 'ab-context-menu';
 
     menu.innerHTML = `
-      <div class="ds-menu-item" id="act-open"><span>باز کردن</span> <span>🔗</span></div>
-      <div class="ds-menu-item" id="act-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
-      <div class="ds-menu-item" id="act-select"><span>${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>${isSelected ? '✕' : '☑'}</span></div>
-      <div class="ds-menu-item" id="act-edit"><span>ویرایش</span> <span>✏</span></div>
-      <div class="ds-menu-item ds-submenu-trigger">
+      <div class="ab-menu-item" id="ab-act-open"><span>باز کردن</span> <span>🔗</span></div>
+      <div class="ab-menu-item" id="ab-act-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
+      <div class="ab-menu-item" id="ab-act-select"><span>${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>${isSelected ? '✕' : '☑'}</span></div>
+      <div class="ab-menu-item" id="ab-act-edit"><span>ویرایش</span> <span>✏</span></div>
+      <div class="ab-menu-item ab-submenu-trigger">
         <span style="font-size:11px;opacity:0.6;">‹</span>
         <div style="display:flex;align-items:center;gap:8px;"><span>انتقال به</span> <span>📁</span></div>
-        <div class="ds-submenu-box">
-          <div class="ds-submenu-row active"><span>✓</span> <div style="display:flex;gap:6px;"><span>صفحه اصلی</span> <span>🏠</span></div></div>
-          <div class="ds-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>دم دستی</span> <span>📁</span></div></div>
+        <div class="ab-submenu-box">
+          <div class="ab-submenu-row active"><span>✓</span> <div style="display:flex;gap:6px;"><span>صفحه اصلی</span> <span>🏠</span></div></div>
+          <div class="ab-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>دم دستی</span> <span>📁</span></div></div>
         </div>
       </div>
-      <div class="ds-menu-item" id="act-copy"><span>کپی لینک</span> <span>📋</span></div>
-      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.12);margin:4px 0;">
-      <div class="ds-menu-item danger" id="act-del"><span>حذف</span> <span>🗑️</span></div>
+      <div class="ab-menu-item" id="ab-act-copy"><span>کپی لینک</span> <span>📋</span></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.15);margin:4px 0;">
+      <div class="ab-menu-item danger" id="ab-act-del"><span>حذف</span> <span>🗑️</span></div>
     `;
 
     document.body.appendChild(menu);
 
     let left = e ? e.clientX : card.getBoundingClientRect().left;
     let top = e ? e.clientY : card.getBoundingClientRect().bottom + 5;
-    if (left + 180 > window.innerWidth) left = window.innerWidth - 185;
-    if (top + 280 > window.innerHeight) top = window.innerHeight - 285;
+    if (left + 190 > window.innerWidth) left = window.innerWidth - 195;
+    if (top + 285 > window.innerHeight) top = window.innerHeight - 290;
     menu.style.left = left + 'px';
     menu.style.top = top + 'px';
 
-    menu.querySelector('#act-open').onclick = () => { window.location.href = item.url; menu.remove(); };
-    menu.querySelector('#act-tab').onclick = () => { window.open(item.url, '_blank'); menu.remove(); };
-    menu.querySelector('#act-select').onclick = () => {
+    menu.querySelector('#ab-act-open').onclick = () => { window.location.href = item.url; menu.remove(); };
+    menu.querySelector('#ab-act-tab').onclick = () => { window.open(item.url, '_blank'); menu.remove(); };
+    menu.querySelector('#ab-act-select').onclick = () => {
       if (isSelected) {
         selectedIndices.delete(index);
         card.classList.remove('is-selected');
@@ -167,9 +172,9 @@
       updateBulkBar();
       menu.remove();
     };
-    menu.querySelector('#act-edit').onclick = () => { menu.remove(); openEditModal(index, item); };
-    menu.querySelector('#act-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
-    menu.querySelector('#act-del').onclick = () => {
+    menu.querySelector('#ab-act-edit').onclick = () => { menu.remove(); openEditModal(index, item); };
+    menu.querySelector('#ab-act-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
+    menu.querySelector('#ab-act-del').onclick = () => {
       menu.remove();
       let list = getBookmarks();
       list.splice(index, 1);
@@ -178,13 +183,13 @@
       updateBulkBar();
     };
 
-    const docClick = (ev) => {
+    const docDismiss = (ev) => {
       if (!menu.contains(ev.target)) {
         menu.remove();
-        document.removeEventListener('click', docClick);
+        document.removeEventListener('click', docDismiss);
       }
     };
-    setTimeout(() => document.addEventListener('click', docClick), 40);
+    setTimeout(() => document.addEventListener('click', docDismiss), 40);
   }
 
   function render() {
@@ -193,35 +198,35 @@
 
     container.innerHTML = '';
     const grid = document.createElement('div');
-    grid.className = 'ds-bookmarks-grid';
+    grid.className = 'ab-bookmarks-grid';
 
-    // ۱. خانه شاخص: دم دستی
+    // خانه شاخص: دم دستی
     const damDastiBox = document.createElement('div');
-    damDastiBox.className = 'ds-bookmark-box is-damdasti';
+    damDastiBox.className = 'ab-bookmark-box is-damdasti';
     damDastiBox.innerHTML = `
-      <div class="ds-box-icon" style="font-size:24px;">⋮⋮⋮</div>
-      <span class="ds-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
+      <div class="ab-box-icon" style="font-size:24px;">⋮⋮⋮</div>
+      <span class="ab-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
     `;
-    damDastiBox.onclick = () => alert('پوشه دسترسی سریع دم‌دستی');
+    damDastiBox.onclick = () => alert('پوشه دسترسی سریع «دم دستی» در آبنر');
     grid.appendChild(damDastiBox);
 
     const list = getBookmarks();
 
-    // ۲. نمایش بوکمارک‌های ذخیره‌شده
+    // رندر کارت‌های فعال
     list.forEach((item, index) => {
       const card = document.createElement('div');
-      card.className = 'ds-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
+      card.className = 'ab-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
 
       card.innerHTML = `
-        <button class="ds-box-dots" title="گزینه‌ها">⋮</button>
-        <div class="ds-box-icon">
+        <button class="ab-box-dots" title="گزینه‌ها">⋮</button>
+        <div class="ab-box-icon">
           <img src="${getFavicon(item.url)}" onerror="this.style.opacity='0'" alt="">
         </div>
-        <span class="ds-box-title">${item.title}</span>
+        <span class="ab-box-title">${item.title}</span>
       `;
 
       card.onclick = (e) => {
-        if (e.target.closest('.ds-box-dots')) return;
+        if (e.target.closest('.ab-box-dots')) return;
         if (selectedIndices.size > 0) {
           if (selectedIndices.has(index)) {
             selectedIndices.delete(index);
@@ -236,21 +241,21 @@
         window.location.href = item.url;
       };
 
-      const dots = card.querySelector('.ds-box-dots');
-      dots.onclick = (e) => openMenu(e, index, item, card);
-      card.oncontextmenu = (e) => openMenu(e, index, item, card);
+      const dots = card.querySelector('.ab-box-dots');
+      dots.onclick = (e) => openContextMenu(e, index, item, card);
+      card.oncontextmenu = (e) => openContextMenu(e, index, item, card);
 
       grid.appendChild(card);
     });
 
-    // ۳. تکمیل ظرفیت ۱۱ تایی با دکمه‌های +
+    // پر کردن جایگاه‌های باقیمانده تا ۱۱ خانه با علامت +
     const emptyCount = Math.max(0, MAX_SLOTS - list.length);
     for (let i = 0; i < emptyCount; i++) {
       const addBox = document.createElement('div');
-      addBox.className = 'ds-bookmark-box';
+      addBox.className = 'ab-bookmark-box';
       addBox.innerHTML = `
-        <div class="ds-box-icon" style="font-size:28px;opacity:0.4;">+</div>
-        <span class="ds-box-title" style="opacity:0.4;">افزودن</span>
+        <div class="ab-box-icon" style="font-size:28px;opacity:0.4;">+</div>
+        <span class="ab-box-title" style="opacity:0.4;">افزودن</span>
       `;
       addBox.onclick = () => openEditModal();
       grid.appendChild(addBox);
@@ -259,6 +264,8 @@
     container.appendChild(grid);
   }
 
+  // لود با اولویت بالا و جایگزینی کامل
+  window.renderAbnerBookmarks = render;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
   } else {
