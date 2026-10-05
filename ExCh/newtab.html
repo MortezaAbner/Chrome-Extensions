@@ -374,109 +374,86 @@
   </main>
 
   <!-- ۲. صفحه جدید شیشه‌ای تنظیمات -->
-  <section id="view-settings" class="app-view">
-    <div class="settings-modal-card ios-glass-card">
+    <!-- ۲. مودال تنظیمات -->
+  <section id="view-settings" class="modal-overlay">
+    <div class="settings-modal-card ios-glass-card glass-blur-menu">
       <div class="settings-card-header">
         <button class="settings-close-icon" id="settings-close-btn" title="بستن">✕</button>
-        <div class="settings-header-title">تنظیمات › عمومی</div>
+        <div class="settings-header-title" id="settings-header-label">تنظیمات › عمومی</div>
       </div>
 
       <div class="settings-layout-body">
-        
-        <div class="settings-content-main" id="settings-tab-general">
-          <div class="settings-form-row">
-            <label class="settings-field-label">زبان<span class="sub-tip">انتخاب زبان پیش‌فرض</span></label>
-            <select class="settings-select-glass">
-              <option value="fa" selected>فارسی IR</option>
-              <option value="en">English US</option>
-            </select>
-          </div>
-
-          <div class="settings-form-row">
-            <label class="settings-field-label">موتور جستجو<span class="sub-tip">انتخاب موتور جستجوی پیش‌فرض</span></label>
-            <select class="settings-select-glass" id="settings-engine-select">
-              <option value="google" selected>گوگل G</option>
-              <option value="zarebin">ذره‌بین</option>
-            </select>
-          </div>
-
-          <div class="settings-form-row">
-            <label class="settings-field-label">شهر<span class="sub-tip">برای تنظیم آب و هوا</span></label>
-            <select class="settings-select-glass" id="settings-city-select">
-              <option value="تهران" selected>ایران، تهران</option>
-              <option value="مشهد">ایران، مشهد</option>
-              <option value="اصفهان">ایران، اصفهان</option>
-              <option value="شیراز">ایران، شیراز</option>
-              <option value="تبریز">ایران، تبریز</option>
-            </select>
-          </div>
+        <div class="settings-sidebar-nav">
+          <div class="nav-item-glass active" data-tab="general"><span class="nav-ico">⚙️</span> عمومی</div>
+          <div class="nav-item-glass" data-tab="theme"><span class="nav-ico">🎨</span> تم و رنگ</div>
+          <div class="nav-item-glass" data-tab="calendar"><span class="nav-ico">📅</span> تقویم و زمان</div>
+          <div class="nav-item-glass" data-tab="privacy"><span class="nav-ico">🔒</span> حریم شخصی</div>
+          <div class="nav-divider"></div>
+          <div class="nav-item-glass" data-tab="changes"><span class="nav-ico">📣</span> تغییرات اخیر</div>
+          <div class="nav-item-glass" data-tab="feedback"><span class="nav-ico">💬</span> فیدبک به ما</div>
         </div>
 
-        <!-- تب اختصاصی تم و رنگ و تنظیم مات‌شدگی شیشه‌ای -->
-        <div class="settings-content-main" id="settings-tab-theme" style="display: none;">
-          <div class="settings-form-row">
-            <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم یا ریست</span></label>
-            <div class="settings-bg-actions">
-              <label class="settings-btn-upload">
-                📁 انتخاب عکس
-                <input type="file" id="settings-bg-file" accept="image/*" style="display: none;">
-              </label>
-              <button class="settings-btn-action" id="settings-blur-toggle">✨ وضعیت بلر: <span id="settings-blur-status">مات</span></button>
-              <button class="settings-btn-action danger" id="settings-reset-bg">↺ بازنشانی</button>
+        <div class="settings-content-container">
+          <!-- تب عمومی -->
+          <div class="settings-tab-pane active" id="pane-general">
+            <div class="settings-form-row">
+              <label class="settings-field-label">زبان<span class="sub-tip">انتخاب زبان پیش‌فرض</span></label>
+              <select class="settings-select-glass">
+                <option value="fa" selected>فارسی IR</option>
+                <option value="en">English US</option>
+              </select>
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">موتور جستجو<span class="sub-tip">انتخاب موتور جستجوی پیش‌فرض</span></label>
+              <select class="settings-select-glass" id="settings-engine-select">
+                <option value="google" selected>گوگل G</option>
+                <option value="zarebin">ذره‌بین</option>
+              </select>
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">شهر<span class="sub-tip">برای تنظیم آب و هوا</span></label>
+              <select class="settings-select-glass" id="settings-city-select">
+                <option value="تهران" selected>ایران، تهران</option>
+                <option value="مشهد">ایران، مشهد</option>
+                <option value="اصفهان">ایران، اصفهان</option>
+                <option value="شیراز">ایران، شیراز</option>
+                <option value="تبریز">ایران، تبریز</option>
+              </select>
             </div>
           </div>
 
-          <div class="settings-form-row">
-            <label class="settings-field-label">
-              مات‌شدگی داشبورد اصلی
-              <span class="sub-tip">تنظیم میزان تاری کارت‌های ساعت، تقویم و تسک: <strong id="val-dash-blur">۲۵px</strong></span>
-            </label>
-            <input type="range" id="slider-dash-blur" min="0" max="60" value="25" class="glass-slider">
+          <!-- تب تم و رنگ -->
+          <div class="settings-tab-pane" id="pane-theme">
+            <div class="settings-form-row">
+              <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم یا ریست</span></label>
+              <div class="settings-bg-actions">
+                <label class="settings-btn-upload">
+                  📁 انتخاب عکس
+                  <input type="file" id="settings-bg-file" accept="image/*" style="display: none;">
+                </label>
+                <button class="settings-btn-action" id="settings-blur-toggle">✨ وضعیت بلر: <span id="settings-blur-status">مات</span></button>
+                <button class="settings-btn-action danger" id="settings-reset-bg">↺ بازنشانی</button>
+              </div>
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">
+                میزان مات‌شدگی داشبورد
+                <span class="sub-tip">تنظیم تاری کارت‌های ساعت، تقویم و تسک: <strong id="val-dash-blur">۲۵px</strong></span>
+              </label>
+              <input type="range" id="slider-dash-blur" min="0" max="60" value="25" class="glass-slider">
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">
+                میزان مات‌شدگی پاپ‌آپ‌ها
+                <span class="sub-tip">تنظیم تاری دراور پیش‌بینی، اوقات شرعی و مودال‌ها: <strong id="val-popup-blur">۶۵px</strong></span>
+              </label>
+              <input type="range" id="slider-popup-blur" min="10" max="90" value="65" class="glass-slider">
+            </div>
           </div>
-
-          <div class="settings-form-row">
-            <label class="settings-field-label">
-              مات‌شدگی و پوشانندگی پاپ‌آپ‌ها
-              <span class="sub-tip">تنظیم تاری و پوشش پیش‌بینی، اوقات شرعی و تایمر: <strong id="val-popup-blur">۶۵px</strong></span>
-            </label>
-            <input type="range" id="slider-popup-blur" min="10" max="90" value="65" class="glass-slider">
-          </div>
-        </div>
-
-
-          <div class="settings-form-row">
-            <label class="settings-field-label">موتور جستجو<span class="sub-tip">انتخاب موتور جستجوی پیش‌فرض</span></label>
-            <select class="settings-select-glass" id="settings-engine-select">
-              <option value="google" selected>گوگل G</option>
-              <option value="zarebin">ذره‌بین</option>
-            </select>
-          </div>
-
-          <div class="settings-form-row">
-            <label class="settings-field-label">شهر<span class="sub-tip">برای تنظیم آب و هوا</span></label>
-            <select class="settings-select-glass" id="settings-city-select">
-              <option value="تهران" selected>ایران، تهران</option>
-              <option value="مشهد">ایران، مشهد</option>
-              <option value="اصفهان">ایران، اصفهان</option>
-              <option value="شیراز">ایران، شیراز</option>
-              <option value="تبریز">ایران، تبریز</option>
-            </select>
-          </div>
-
-          </div></div>
-
-        <div class="settings-sidebar-nav">
-          <div class="nav-item-glass"><span class="nav-ico">👤</span> پروفایل</div>
-          <div class="nav-item-glass"><span class="nav-ico">✨</span> دستیار پلاس</div>
-          <div class="nav-item-glass"><span class="nav-ico">💌</span> دعوت از دوستان <span class="badge-tag">۰/۳</span></div>
-          <div class="nav-item-glass"><span class="nav-ico">🖼️</span> تصویر زمینه</div>
-          <div class="nav-item-glass" id="nav-btn-theme"><span class="nav-ico">🎨</span> تم و رنگ</div>
-          <div class="nav-item-glass active" id="nav-btn-general"><span class="nav-ico">⚙️</span> عمومی</div>
-          <div class="nav-item-glass"><span class="nav-ico">📅</span> تقویم و زمان</div>
-          <div class="nav-item-glass"><span class="nav-ico">🔒</span> حریم شخصی</div>
-          <div class="nav-divider"></div>
-          <div class="nav-item-glass"><span class="nav-ico">📣</span> تغییرات اخیر</div>
-          <div class="nav-item-glass"><span class="nav-ico">💬</span> فیدبک به ما</div>
         </div>
       </div>
     </div>

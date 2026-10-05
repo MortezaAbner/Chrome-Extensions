@@ -134,8 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (dockHomeBtn) dockHomeBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
-  if (dockSettingsBtn) dockSettingsBtn.onclick = () => switchView(viewSettings, dockSettingsBtn);
-  if (settingsCloseBtn) settingsCloseBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
+  if (dockSettingsBtn) dockSettingsBtn.onclick = (e) => {
+      e.stopPropagation();
+      closeAllDrawersAndPopups();
+      viewSettings.classList.add('active');
+    };
+  if (settingsCloseBtn) settingsCloseBtn.onclick = () => viewSettings.classList.remove('active');
 
   if (dockTasksBtn) {
     dockTasksBtn.onclick = () => {
@@ -173,6 +177,77 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             localStorage.setItem('custom_bg', event.target.result);
             applyBackgroundConfig();
+
+  let storedShortcuts = JSON.parse(localStorage.getItem('my_shortcuts'));
+  if (storedShortcuts && storedShortcuts.some(s => s.title === 'دم‌دستی' || s.title === 'دیجی‌موویز ۲')) {
+    localStorage.removeItem('my_shortcuts');
+  }
+
+
+  // مدیریت تب‌های پاپ‌آپ تنظیمات
+  const navItems = document.querySelectorAll('.settings-sidebar-nav .nav-item-glass');
+  const tabPanes = document.querySelectorAll('.settings-tab-pane');
+  const headerLabel = document.getElementById('settings-header-label');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const tab = item.dataset.tab;
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      tabPanes.forEach(p => p.classList.remove('active'));
+      const activePane = document.getElementById('pane-' + tab);
+      if (activePane) activePane.classList.add('active');
+
+      if (headerLabel) {
+        headerLabel.textContent = 'تنظیمات › ' + item.textContent.trim();
+      }
+    });
+  });
+
+  // کنترل اسلایدرهای مات‌شدگی دستی
+  const sliderDashBlur = document.getElementById('slider-dash-blur');
+  const sliderPopupBlur = document.getElementById('slider-popup-blur');
+  const valDashBlur = document.getElementById('val-dash-blur');
+  const valPopupBlur = document.getElementById('val-popup-blur');
+
+  function updateDynamicBlur() {
+    const dashVal = localStorage.getItem('dash_blur_val') || '25';
+    const popupVal = localStorage.getItem('popup_blur_val') || '65';
+
+    if (sliderDashBlur) sliderDashBlur.value = dashVal;
+    if (sliderPopupBlur) sliderPopupBlur.value = popupVal;
+    if (valDashBlur) valDashBlur.textContent = toFa(dashVal) + 'px';
+    if (valPopupBlur) valPopupBlur.textContent = toFa(popupVal) + 'px';
+
+    document.querySelectorAll('.ios-glass-card:not(.settings-modal-card)').forEach(card => {
+      card.style.setProperty('backdrop-filter', 'blur(' + dashVal + 'px) saturate(200%)', 'important');
+      card.style.setProperty('-webkit-backdrop-filter', 'blur(' + dashVal + 'px) saturate(200%)', 'important');
+    });
+
+    const popups = '.glass-blur-menu, .forecast-drawer, .clock-drawer, .azan-city-dropdown, .month-year-picker-modal, .date-event-popup, .task-tool-popup, .location-modal-box, .settings-modal-card';
+    document.querySelectorAll(popups).forEach(pop => {
+      pop.style.setProperty('backdrop-filter', 'blur(' + popupVal + 'px) saturate(240%)', 'important');
+      pop.style.setProperty('-webkit-backdrop-filter', 'blur(' + popupVal + 'px) saturate(240%)', 'important');
+    });
+  }
+
+  if (sliderDashBlur) {
+    sliderDashBlur.oninput = (e) => {
+      localStorage.setItem('dash_blur_val', e.target.value);
+      updateDynamicBlur();
+    };
+  }
+
+  if (sliderPopupBlur) {
+    sliderPopupBlur.oninput = (e) => {
+      localStorage.setItem('popup_blur_val', e.target.value);
+      updateDynamicBlur();
+    };
+  }
+
+  updateDynamicBlur();
+
 
   // مدیریت تب تم و رنگ و اسلایدرهای کنترل مات‌‌شدگی شیشه
   const navBtnGeneral = document.getElementById('nav-btn-general');
@@ -1138,16 +1213,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalTitle = document.getElementById('modal-site-title');
   const modalUrl = document.getElementById('modal-site-url');
 
-  const defaultShortcuts = [
-    { title: 'دم‌دستی', url: 'https://dastyar.io' },
+    const defaultShortcuts = [
+    { title: 'تلگرام', url: 'https://web.telegram.org' },
     { title: 'تلفنچی', url: 'https://telephonchi.com' },
     { title: 'X', url: 'https://x.com' },
     { title: 'پینترست', url: 'https://www.pinterest.com' },
     { title: 'یوتیوب', url: 'https://www.youtube.com' },
     { title: 'App', url: 'https://cafebazaar.ir' },
     { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
-    { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
-    { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
+    { title: 'اینستاگرام', url: 'https://www.instagram.com' },
+    { title: 'تردز', url: 'https://www.threads.net' },
     { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
     { title: 'دیوار', url: 'https://divar.ir' },
     { title: 'واتساپ', url: 'https://web.whatsapp.com' }

@@ -2047,3 +2047,95 @@ body {
 .glass-slider::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
+
+
+/* رفع به هم ریختگی و استایل مودال شیشه‌ای تنظیمات */
+#view-settings.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(35px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(35px) saturate(200%) !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+#view-settings.modal-overlay.active {
+  display: flex !important;
+}
+
+.settings-modal-card {
+  width: 760px;
+  max-width: 92vw;
+  max-height: 85vh;
+  border-radius: 32px !important;
+  display: flex;
+  flex-direction: column;
+  padding: 24px !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden;
+}
+
+.settings-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-layout-body {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 20px;
+  margin-top: 16px;
+  min-height: 380px;
+  overflow-y: auto;
+}
+
+.settings-sidebar-nav {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 1px solid var(--glass-border);
+  padding-left: 12px;
+}
+
+.nav-item-glass {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+.nav-item-glass:hover, .nav-item-glass.active {
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--text-main);
+}
+[data-theme="dark"] .nav-item-glass:hover, [data-theme="dark"] .nav-item-glass.active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.settings-content-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-left: 6px;
+}
+
+.settings-tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+.settings-tab-pane.active {
+  display: flex;
+}
