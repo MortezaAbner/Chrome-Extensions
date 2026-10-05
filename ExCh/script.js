@@ -2517,3 +2517,116 @@ document.addEventListener('DOMContentLoaded', () => {
     setMode(savedMode);
   }
   setupThemeModeTicks();
+
+
+  // ========================================================
+  // موتور قطعی ماتی صفر تا صد (کنترل همزمان بلر و غلظت رنگ)
+  // ========================================================
+  function applyAbsoluteBlurEngine(dPercent, pPercent) {
+    let styleElem = document.getElementById('engine-absolute-blur');
+    if (!styleElem) {
+      styleElem = document.createElement('style');
+      styleElem.id = 'engine-absolute-blur';
+      document.head.appendChild(styleElem);
+    }
+
+    const dP = Math.max(0, Math.min(100, parseInt(dPercent, 10)));
+    const pP = Math.max(0, Math.min(100, parseInt(pPercent, 10)));
+
+    // محاسبه پیکسل بلر (از ۰px تا ۵۰px برای داشبورد و تا ۸۰px برای پاپ‌آپ)
+    const dBlurPx = (dP * 0.5).toFixed(1);
+    const pBlurPx = (pP * 0.8).toFixed(1);
+
+    // محاسبه غلظت رنگ شیشه بر اساس درصد (از شفاف ۰.۰۵ تا غلیظ ۰.۹۲)
+    const dAlphaLight = (0.05 + (dP / 100) * 0.55).toFixed(2);
+    const dAlphaDark = (0.10 + (dP / 100) * 0.65).toFixed(2);
+
+    const pAlphaLight = (0.25 + (pP / 100) * 0.65).toFixed(2);
+    const pAlphaDark = (0.35 + (pP / 100) * 0.60).toFixed(2);
+
+    styleElem.textContent = `
+      /* داشبورد اصلی */
+      .ios-glass-card:not(.settings-modal-card) {
+        backdrop-filter: blur(${dBlurPx}px) saturate(190%) !important;
+        -webkit-backdrop-filter: blur(${dBlurPx}px) saturate(190%) !important;
+        background: rgba(255, 255, 255, ${dAlphaLight}) !important;
+      }
+      [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
+        background: rgba(15, 23, 42, ${dAlphaDark}) !important;
+      }
+
+      /* پاپ‌آپ‌ها، دراورها و مودال تنظیمات */
+      .glass-blur-menu,
+      .forecast-drawer,
+      .clock-drawer,
+      .azan-city-dropdown,
+      .month-year-picker-modal,
+      .date-event-popup,
+      .task-tool-popup,
+      .location-modal-box,
+      .settings-modal-card {
+        backdrop-filter: blur(${pBlurPx}px) saturate(220%) !important;
+        -webkit-backdrop-filter: blur(${pBlurPx}px) saturate(220%) !important;
+        background: rgba(255, 255, 255, ${pAlphaLight}) !important;
+      }
+      [data-theme="dark"] .glass-blur-menu,
+      [data-theme="dark"] .forecast-drawer,
+      [data-theme="dark"] .clock-drawer,
+      [data-theme="dark"] .settings-modal-card {
+        background: rgba(15, 21, 37, ${pAlphaDark}) !important;
+      }
+    `;
+  }
+
+  // متصل کردن اسلایدرهای صفحه
+  const slD = document.getElementById('slider-dash-blur');
+  const slP = document.getElementById('slider-popup-blur');
+  const lblD = document.getElementById('val-dash-blur');
+  const lblP = document.getElementById('val-popup-blur');
+  const btnSave = document.getElementById('blur-save-btn');
+  const btnCancel = document.getElementById('blur-cancel-btn');
+
+  let persistentDash = localStorage.getItem('user_dash_blur_pct') || '25';
+  let persistentPopup = localStorage.getItem('user_popup_blur_pct') || '65';
+
+  function onSliderDrag() {
+    const dVal = slD ? slD.value : persistentDash;
+    const pVal = slP ? slP.value : persistentPopup;
+
+    if (lblD) lblD.textContent = toFa(dVal) + '٪';
+    if (lblP) lblP.textContent = toFa(pVal) + '٪';
+
+    // اعمال آنی در همان لحظه کشیدن اسلایدر حتی روی خود کادر تنظیمات
+    applyAbsoluteBlurEngine(dVal, pVal);
+  }
+
+  if (slD) {
+    slD.value = persistentDash;
+    slD.oninput = onSliderDrag;
+  }
+  if (slP) {
+    slP.value = persistentPopup;
+    slP.oninput = onSliderDrag;
+  }
+
+  // اعمال مقدار اولیه
+  onSliderDrag();
+
+  if (btnSave) {
+    btnSave.onclick = () => {
+      persistentDash = slD.value;
+      persistentPopup = slP.value;
+      localStorage.setItem('user_dash_blur_pct', persistentDash);
+      localStorage.setItem('user_popup_blur_pct', persistentPopup);
+      onSliderDrag();
+      alert('میزان ماتی با موفقیت در سیستم ثبت شد ✓');
+    };
+  }
+
+  if (btnCancel) {
+    btnCancel.onclick = () => {
+      if (slD) slD.value = persistentDash;
+      if (slP) slP.value = persistentPopup;
+      onSliderDrag();
+    };
+  }
