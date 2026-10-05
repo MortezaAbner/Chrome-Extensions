@@ -1,0 +1,18 @@
+
+/* ========================================================
+   متغیرهای سراسری سیستم شیشه‌ای (ماتی + شفافیت متغیر)
+======================================================== */
+:root {
+  --dash-blur-px: 20px;
+  --dash-glass-opacity: 0.12;
+  --dash-glass-border-opacity: 0.18;
+  --dash-glass-bg: rgba(255, 255, 255, var(--dash-glass-opacity));
+  --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-opacity));
+  --dash-menu-bg: rgba(28, 22, 26, calc(var(--dash-glass-opacity) + 0.72));
+}
+
+[data-theme="dark"] {
+  --dash-glass-bg: rgba(15, 23, 42, calc(var(--dash-glass-opacity) + 0.15));
+  --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-opacity));
+  --dash-menu-bg: rgba(20, 16, 22, calc(var(--dash-glass-opacity) + 0.78));
+}
