@@ -1,4 +1,4 @@
-### 🇮🇷 تغییرات نسخه v1.32.9:
+### 🇮🇷 تغییرات نسخه v1.32.10:
 - همگام‌سازی زنده تاریخ تقویم و کارت‌ها با تاریخ واقعی سیستم دستگاه
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
@@ -7,7 +7,7 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.9):
+### 🇬🇧 Release Notes (v1.32.10):
 - Sync Calendar and Dashboard Dates with System Real-Time Clock
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search

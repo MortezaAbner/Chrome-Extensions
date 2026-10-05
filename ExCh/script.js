@@ -1,3 +1,26 @@
+
+  // محاسبه دقیق تاریخ امروز سیستم در تقویم خورشیدی
+  function getLivePersianDate() {
+    const now = new Date();
+    try {
+      const parts = new Intl.DateTimeFormat('en-US-u-ca-persian', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).formatToParts(now);
+
+      let y = 1405, m = 7, d = 1;
+      parts.forEach(p => {
+        if (p.type === 'year') y = parseInt(p.value, 10);
+        if (p.type === 'month') m = parseInt(p.value, 10);
+        if (p.type === 'day') d = parseInt(p.value, 10);
+      });
+      return { year: y, monthIndex: m - 1, day: d };
+    } catch (e) {
+      return { year: 1405, monthIndex: 6, day: 9 };
+    }
+  }
+
 document.addEventListener('DOMContentLoaded', () => {
 
   const toFa = n => String(n).replace(/\d/g, d => ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d]);
@@ -286,7 +309,10 @@ document.addEventListener('DOMContentLoaded', () => {
       span.textContent = toFa(i);
       const dayOfWeek = (i + startOffset - 1) % 7;
       if (dayOfWeek === 6) span.className = 'fri holiday';
-      if (year === 1405 && monthIndex === 6 && i === 9) span.className = 'today-circle';
+      const liveToday = getLivePersianDate();
+      if (year === liveToday.year && monthIndex === liveToday.monthIndex && i === liveToday.day) {
+        span.className = 'today-circle';
+      }
 
       const eventKey = `${year}-${monthIndex + 1}-${i}`;
       if (specialEventsData[eventKey] && specialEventsData[eventKey].major) span.classList.add('event-green-dot');
@@ -389,8 +415,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (pickerTodayBtn) {
     pickerTodayBtn.onclick = (e) => {
       e.stopPropagation();
-      currentYear = 1405;
-      currentMonthIndex = 6;
+      const freshNow = getLivePersianDate();
+      currentYear = freshNow.year;
+      currentMonthIndex = freshNow.monthIndex;
       renderCalendar(currentYear, currentMonthIndex);
       monthYearPicker.classList.remove('active');
     };
