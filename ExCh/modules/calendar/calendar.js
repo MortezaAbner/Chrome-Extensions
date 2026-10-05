@@ -8,7 +8,9 @@
     'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
   ];
 
-  // مقادیر پیش‌فرض تاریخ جاری شمسی
+  // حروف مخفف روزهای هفته زیر اعداد (می‌تواند مناسبت یا نام روز باشد)
+  const daySubLabels = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+
   let state = {
     year: 1405,
     month: 7, // مهر
@@ -28,9 +30,13 @@
   }
 
   function renderCalendar() {
-    let container = document.getElementById('abner-calendar-container') || document.querySelector('.calendar-section');
+    // حذف قطعی تقویم‌های اضافی احتمالی در صفحه
+    document.querySelectorAll('.calendar-section, .right-column .Calendar, #ab-calendar-container-extra').forEach(el => {
+      if (el.id !== 'abner-calendar-container') el.remove();
+    });
+
+    let container = document.getElementById('abner-calendar-container');
     if (!container) {
-      // ایجاد در ستون راست در صورت نبودن کانتینر
       container = document.createElement('div');
       container.id = 'abner-calendar-container';
       const rightCol = document.querySelector('.right-column') || document.body;
@@ -40,13 +46,17 @@
     const monthDays = getDaysInMonth(state.month);
     const monthName = persianMonths[state.month - 1];
 
-    let daysHtml = '';
+    let cellsHtml = '';
     for (let d = 1; d <= monthDays; d++) {
       const isToday = (d === state.day && state.month === 7 && state.year === 1405);
       const isSelected = (d === state.selectedDay);
-      daysHtml += `
-        <div class="ab-calendar-day ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" data-day="${d}">
-          ${toPersianDigits(d)}
+      // انتخاب یک متن یا حرف نمایشی زیر اعداد برای تطابق با درخواست شما
+      const subText = daySubLabels[(d - 1) % 7];
+
+      cellsHtml += `
+        <div class="ab-calendar-day-cell ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" data-day="${d}">
+          <span class="ab-calendar-day-num">${toPersianDigits(d)}</span>
+          <span class="ab-calendar-day-sub">${subText}</span>
         </div>
       `;
     }
@@ -58,16 +68,24 @@
           <span class="ab-calendar-title">${monthName} ${toPersianDigits(state.year)}</span>
           <button class="ab-calendar-nav-btn" id="ab-cal-next">›</button>
         </div>
+        <div class="ab-calendar-subtitle">ربيع‌الثاني . جمادی‌الثانی . اول-مهر</div>
+        
         <div class="ab-calendar-weekdays">
-          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+          <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span>جمعه</span>
         </div>
+        
         <div class="ab-calendar-days-grid">
-          ${daysHtml}
+          ${cellsHtml}
+        </div>
+
+        <div class="ab-calendar-footer">
+          <button class="ab-cal-footer-btn" id="ab-cal-today">📅 تقویم گوگل</button>
+          <button class="ab-cal-footer-btn" id="ab-cal-convert">🔄 تبدیل تاریخ</button>
         </div>
       </div>
     `;
 
-    // تعویض ماه
+    // دکمه‌های ناوبری ماه‌های قبل و بعد
     document.getElementById('ab-cal-prev').onclick = () => {
       if (state.month > 1) state.month--;
       else { state.month = 12; state.year--; }
@@ -79,8 +97,8 @@
       renderCalendar();
     };
 
-    // انتخاب روز
-    container.querySelectorAll('.ab-calendar-day').forEach(el => {
+    // کلیک روی روزها
+    container.querySelectorAll('.ab-calendar-day-cell').forEach(el => {
       el.onclick = () => {
         state.selectedDay = parseInt(el.getAttribute('data-day'));
         renderCalendar();
@@ -88,6 +106,7 @@
     });
   }
 
+  window.renderAbnerCalendar = renderCalendar;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderCalendar);
   } else {
