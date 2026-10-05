@@ -2054,3 +2054,163 @@ body {
 .settings-content-main {
   flex: 1 !important;
 }
+
+
+/* ==========================================
+   ۱. اسکرول‌بار اختصاصی و شیک مطابق عکس ۲
+   ========================================== */
+* {
+  scrollbar-width: none; /* پنهان‌سازی اسکرول در تمام صفحه */
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* اسکرول‌بار فقط در پنجره تنظیمات و بخش‌های داخلی */
+.settings-content-container,
+.settings-layout-body,
+.settings-tab-pane {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent !important;
+}
+.settings-content-container::-webkit-scrollbar,
+.settings-layout-body::-webkit-scrollbar,
+.settings-tab-pane::-webkit-scrollbar {
+  display: block !important;
+  width: 5px !important;
+}
+.settings-content-container::-webkit-scrollbar-track,
+.settings-layout-body::-webkit-scrollbar-track,
+.settings-tab-pane::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.settings-content-container::-webkit-scrollbar-thumb,
+.settings-layout-body::-webkit-scrollbar-thumb,
+.settings-tab-pane::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 10px !important;
+}
+[data-theme="dark"] .settings-content-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================
+   ۲. پالت تم، رنگ اصلی و اسلایدرهای ماتی
+   ========================================== */
+.theme-modes-grid, .theme-colors-grid {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 10px;
+}
+.theme-mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+.mode-circle-preview {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.theme-mode-btn.active .mode-circle-preview {
+  border-color: var(--accent-color);
+  transform: scale(1.08);
+}
+
+.color-palette-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.color-palette-circle.active {
+  border-color: #fff;
+  transform: scale(1.12);
+  box-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
+.color-picker-wrapper {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px dashed rgba(255,255,255,0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.color-picker-wrapper input[type="color"] {
+  position: absolute;
+  top: -10px; left: -10px;
+  width: 60px; height: 60px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* فونت‌های انتخابی و دکمه آپلود فونت شخصی */
+.font-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.font-card-item {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 12px 6px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.font-card-item:hover, .font-card-item.active {
+  border-color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.45);
+}
+.font-card-sample { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
+.font-card-name { font-size: 0.72rem; color: var(--text-muted); }
+
+.font-card-upload {
+  background: rgba(37, 99, 235, 0.12);
+  border: 1.5px dashed var(--accent-color);
+  color: var(--accent-color);
+}
+.font-card-upload:hover {
+  background: rgba(37, 99, 235, 0.22);
+}
+
+/* اعمال رنگ داینامیک اکسنت روی المان‌های شاخص */
+.today-circle,
+.task-mode-btn.active,
+.picker-confirm-btn,
+.modal-btn.save,
+.quick-task-btn {
+  background: var(--accent-color) !important;
+  box-shadow: 0 4px 14px var(--accent-color) !important;
+}
