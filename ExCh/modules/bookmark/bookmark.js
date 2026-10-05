@@ -1,32 +1,47 @@
 
 /**
- * ماژول مستقل بوکمارک‌های آبنر
- * شامل شبکه ۱۲تایی، منوی ۶ حالته راست‌کلیک و پاپ‌آپ شیشه‌ای
+ * ماژول مستقل بوکمارک‌های گروهی آبنر
  */
-(function initAbnerBookmark() {
-  const STORAGE_KEY = 'shortcuts';
+(function initAbnerBookmarks() {
+  const STORAGE_KEY = 'abner_bookmarks_data';
   const MAX_SLOTS = 11;
   let selectedIndices = new Set();
+  let currentFolder = 'all';
 
-  function getBookmarks() {
+  function getData() {
     try {
-      const data = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('user_shortcuts');
-      const list = JSON.parse(data);
-      if (Array.isArray(list) && list.length > 0) return list;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
     } catch(e) {}
-    return [
-      { title: 'گوگل', url: 'https://www.google.com' },
-      { title: 'یوتیوب', url: 'https://www.youtube.com' },
-      { title: 'تلگرام', url: 'https://web.telegram.org' },
-      { title: 'اینستاگرام', url: 'https://www.instagram.com' },
-      { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
-      { title: 'دیوار', url: 'https://divar.ir' }
+    
+    // مهاجرت داده‌های ساده قبلی یا ایجاد حالت پیش‌فرض
+    let oldList = [];
+    try {
+      oldList = JSON.parse(localStorage.getItem('shortcuts') || localStorage.getItem('user_shortcuts') || '[]');
+    } catch(e) {}
+
+    const defaultItems = (Array.isArray(oldList) && oldList.length > 0) ? oldList.map(item => ({ ...item, folder: 'all' })) : [
+      { title: 'گوگل', url: 'https://www.google.com', folder: 'all' },
+      { title: 'یوتیوب', url: 'https://www.youtube.com', folder: 'all' },
+      { title: 'تلگرام', url: 'https://web.telegram.org', folder: 'all' },
+      { title: 'اینستاگرام', url: 'https://www.instagram.com', folder: 'all' },
+      { title: 'دیجی‌کالا', url: 'https://www.digikala.com', folder: 'all' },
+      { title: 'دیوار', url: 'https://divar.ir', folder: 'all' }
     ];
+
+    return {
+      folders: [
+        { id: 'all', title: 'صفحه اصلی' },
+        { id: 'work', title: 'دم دستی' }
+      ],
+      items: defaultItems
+    };
   }
 
-  function saveBookmarks(list) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    localStorage.setItem('user_shortcuts', JSON.stringify(list));
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // پشتیبانی معکوس برای سازگاری دیگر بخش‌ها
+    localStorage.setItem('shortcuts', JSON.stringify(data.items));
     render();
   }
 
@@ -61,10 +76,16 @@
       };
 
       document.getElementById('ab-bulk-del').onclick = () => {
-        let list = getBookmarks();
-        list = list.filter((_, idx) => !selectedIndices.has(idx));
+        const data = getData();
+        const activeItems = data.items.filter(it => currentFolder === 'all' || it.folder === currentFolder);
+        const toDeleteUrls = new Set();
+        selectedIndices.forEach(idx => {
+          if (activeItems[idx]) toDeleteUrls.add(activeItems[idx].url);
+        });
+
+        data.items = data.items.filter(it => !toDeleteUrls.has(it.url));
         selectedIndices.clear();
-        saveBookmarks(list);
+        saveData(data);
         updateBulkBar();
       };
     }
@@ -80,6 +101,37 @@
     else bar.classList.remove('visible');
   }
 
+  function openFolderModal() {
+    document.getElementById('ab-modal-overlay')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'ab-modal-overlay';
+    overlay.className = 'ab-modal-overlay active';
+
+    overlay.innerHTML = `
+      <div class="ab-glass-modal">
+        <h3>ساخت پوشه بوکمارک جدید در آبنر</h3>
+        <input type="text" id="ab-folder-inp" placeholder="نام پوشه (مثلاً: ابزارها، کار، دانشگاه)">
+        <div class="ab-modal-actions">
+          <button class="ab-btn-save" id="ab-btn-save-folder">ایجاد پوشه</button>
+          <button class="ab-btn-cancel" id="ab-btn-cancel-folder">انصراف</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById('ab-btn-cancel-folder').onclick = () => overlay.remove();
+    document.getElementById('ab-btn-save-folder').onclick = () => {
+      const name = document.getElementById('ab-folder-inp').value.trim();
+      if (!name) return;
+      const data = getData();
+      const id = 'f_' + Date.now();
+      data.folders.push({ id, title: name });
+      currentFolder = id;
+      overlay.remove();
+      saveData(data);
+    };
+  }
+
   function openEditModal(index = null, item = null) {
     const isEdit = index !== null && item !== null;
     document.getElementById('ab-modal-overlay')?.remove();
@@ -92,14 +144,13 @@
       <div class="ab-glass-modal">
         <h3>${isEdit ? 'ویرایش بوکمارک آبنر' : 'افزودن بوکمارک به آبنر'}</h3>
         <input type="text" id="ab-inp-title" placeholder="نام بوکمارک" value="${isEdit ? (item.title || '') : ''}">
-        <input type="text" id="ab-inp-url" placeholder="آدرس سایت (مثلاً: https://example.com)" value="${isEdit ? (item.url || '') : ''}">
+        <input type="text" id="ab-inp-url" placeholder="آدرس سایت" value="${isEdit ? (item.url || '') : ''}">
         <div class="ab-modal-actions">
           <button class="ab-btn-save" id="ab-btn-save">${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
           <button class="ab-btn-cancel" id="ab-btn-cancel">انصراف</button>
         </div>
       </div>
     `;
-
     document.body.appendChild(overlay);
 
     document.getElementById('ab-btn-cancel').onclick = () => overlay.remove();
@@ -109,28 +160,44 @@
       if (!url) return;
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
 
-      let list = getBookmarks();
+      const data = getData();
       if (isEdit) {
-        list[index] = { title: title || url, url };
+        const itemIdx = data.items.findIndex(it => it.url === item.url);
+        if (itemIdx !== -1) {
+          data.items[itemIdx].title = title || url;
+          data.items[itemIdx].url = url;
+        }
       } else {
-        list.push({ title: title || url, url });
+        data.items.push({
+          title: title || url,
+          url: url,
+          folder: currentFolder === 'all' ? 'all' : currentFolder
+        });
       }
       overlay.remove();
-      saveBookmarks(list);
+      saveData(data);
     };
   }
 
-  // ایجاد منوی ۶ حالته آبنر
   function openContextMenu(e, index, item, card) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    if (e) { e.preventDefault(); e.stopPropagation(); }
     document.querySelectorAll('.ab-context-menu').forEach(m => m.remove());
 
     const isSelected = selectedIndices.has(index);
+    const data = getData();
     const menu = document.createElement('div');
     menu.className = 'ab-context-menu';
+
+    let foldersHtml = '';
+    data.folders.forEach(f => {
+      const isCur = (item.folder || 'all') === f.id;
+      foldersHtml += `
+        <div class="ab-submenu-row ${isCur ? 'active' : ''}" data-fid="${f.id}">
+          <span>${isCur ? '✓' : ''}</span>
+          <span>${f.title}</span>
+        </div>
+      `;
+    });
 
     menu.innerHTML = `
       <div class="ab-menu-item" id="ab-act-open"><span>باز کردن</span> <span>🔗</span></div>
@@ -139,17 +206,15 @@
       <div class="ab-menu-item" id="ab-act-edit"><span>ویرایش</span> <span>✏</span></div>
       <div class="ab-menu-item ab-submenu-trigger">
         <span style="font-size:11px;opacity:0.6;">‹</span>
-        <div style="display:flex;align-items:center;gap:8px;"><span>انتقال به</span> <span>📁</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span>انتقال به پوشه</span> <span>📁</span></div>
         <div class="ab-submenu-box">
-          <div class="ab-submenu-row active"><span>✓</span> <div style="display:flex;gap:6px;"><span>صفحه اصلی</span> <span>🏠</span></div></div>
-          <div class="ab-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>دم دستی</span> <span>📁</span></div></div>
+          ${foldersHtml}
         </div>
       </div>
       <div class="ab-menu-item" id="ab-act-copy"><span>کپی لینک</span> <span>📋</span></div>
       <hr style="border:none;border-top:1px solid rgba(255,255,255,0.15);margin:4px 0;">
       <div class="ab-menu-item danger" id="ab-act-del"><span>حذف</span> <span>🗑️</span></div>
     `;
-
     document.body.appendChild(menu);
 
     let left = e ? e.clientX : card.getBoundingClientRect().left;
@@ -176,12 +241,25 @@
     menu.querySelector('#ab-act-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
     menu.querySelector('#ab-act-del').onclick = () => {
       menu.remove();
-      let list = getBookmarks();
-      list.splice(index, 1);
+      const currentData = getData();
+      currentData.items = currentData.items.filter(it => it.url !== item.url);
       selectedIndices.delete(index);
-      saveBookmarks(list);
+      saveData(currentData);
       updateBulkBar();
     };
+
+    menu.querySelectorAll('.ab-submenu-row').forEach(row => {
+      row.onclick = () => {
+        const targetFid = row.getAttribute('data-fid');
+        const currentData = getData();
+        const itemIdx = currentData.items.findIndex(it => it.url === item.url);
+        if (itemIdx !== -1) {
+          currentData.items[itemIdx].folder = targetFid;
+          saveData(currentData);
+        }
+        menu.remove();
+      };
+    });
 
     const docDismiss = (ev) => {
       if (!menu.contains(ev.target)) {
@@ -193,27 +271,67 @@
   }
 
   function render() {
-    let container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid') || document.getElementById('bookmarks-container');
-    if (!container) return;
+    let container = document.getElementById('bookmarks-container') || document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
+    
+    // اگر کانتینر در HTML وجود نداشت، آن را به شکل خودکار در صفحه ایجاد می‌کنیم
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'bookmarks-container';
+      const mainSection = document.querySelector('main') || document.body;
+      mainSection.appendChild(container);
+    }
 
     container.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ab-bookmarks-wrapper';
+
+    const data = getData();
+
+    // رندر تب‌های پوشه‌ها
+    const tabsRow = document.createElement('div');
+    tabsRow.className = 'ab-folder-tabs';
+
+    data.folders.forEach(f => {
+      const tab = document.createElement('div');
+      tab.className = 'ab-folder-tab' + (currentFolder === f.id ? ' active' : '');
+      tab.innerHTML = `<span>📁</span> <span>${f.title}</span>`;
+      tab.onclick = () => {
+        currentFolder = f.id;
+        selectedIndices.clear();
+        updateBulkBar();
+        render();
+      };
+      tabsRow.appendChild(tab);
+    });
+
+    const addFolderBtn = document.createElement('button');
+    addFolderBtn.className = 'ab-add-folder-btn';
+    addFolderBtn.textContent = '+ پوشه جدید';
+    addFolderBtn.onclick = openFolderModal;
+    tabsRow.appendChild(addFolderBtn);
+
+    wrapper.appendChild(tabsRow);
+
+    // رندر شبکه کارت‌ها
     const grid = document.createElement('div');
     grid.className = 'ab-bookmarks-grid';
 
-    // خانه شاخص: دم دستی
+    // خانه شاخص دم دستی
     const damDastiBox = document.createElement('div');
     damDastiBox.className = 'ab-bookmark-box is-damdasti';
     damDastiBox.innerHTML = `
-      <div class="ab-box-icon" style="font-size:24px;">⋮⋮⋮</div>
+      <div class="ab-box-icon">⋮⋮⋮</div>
       <span class="ab-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
     `;
-    damDastiBox.onclick = () => alert('پوشه دسترسی سریع «دم دستی» در آبنر');
+    damDastiBox.onclick = () => {
+      currentFolder = 'work';
+      render();
+    };
     grid.appendChild(damDastiBox);
 
-    const list = getBookmarks();
+    const activeList = data.items.filter(it => currentFolder === 'all' || it.folder === currentFolder);
 
-    // رندر کارت‌های فعال
-    list.forEach((item, index) => {
+    activeList.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'ab-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
 
@@ -248,8 +366,8 @@
       grid.appendChild(card);
     });
 
-    // پر کردن جایگاه‌های باقیمانده تا ۱۱ خانه با علامت +
-    const emptyCount = Math.max(0, MAX_SLOTS - list.length);
+    // پر کردن جایگاه‌های خالی با +
+    const emptyCount = Math.max(0, MAX_SLOTS - activeList.length);
     for (let i = 0; i < emptyCount; i++) {
       const addBox = document.createElement('div');
       addBox.className = 'ab-bookmark-box';
@@ -261,10 +379,10 @@
       grid.appendChild(addBox);
     }
 
-    container.appendChild(grid);
+    wrapper.appendChild(grid);
+    container.appendChild(wrapper);
   }
 
-  // لود با اولویت بالا و جایگزینی کامل
   window.renderAbnerBookmarks = render;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
