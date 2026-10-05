@@ -1,4 +1,14 @@
 
+// تعریف تابع ماتی برای رفع ارور applyAbsoluteBlurEngine is not defined
+function applyAbsoluteBlurEngine(dashPct, popupPct) {
+  if (typeof setLiveBlur === 'function') {
+    setLiveBlur(dashPct, popupPct);
+  } else if (typeof applyBlurStyles === 'function') {
+    applyBlurStyles(dashPct, popupPct);
+  }
+}
+
+
 function toFa(num) {
   if (num === null || num === undefined) return '';
   return String(num).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
