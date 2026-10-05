@@ -1,13 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-const shortcutsDir = path.join(__dirname, 'modules', 'shortcuts');
-if (!fs.existsSync(shortcutsDir)) fs.mkdirSync(shortcutsDir, { recursive: true });
+// ۱. ساخت پوشه اختصاصی bookmark در مسیر modules
+const bookmarkDir = path.join(__dirname, 'modules', 'bookmark');
+if (!fs.existsSync(bookmarkDir)) {
+  fs.mkdirSync(bookmarkDir, { recursive: true });
+  console.log('📁 پوشه modules/bookmark ساخته شد.');
+}
 
-// ۱. ساخت استایل شیشه‌ای کامل بوکمارک‌ها (modules/shortcuts/shortcuts.css)
-const shortcutsCss = `
+// ۲. ساخت استایل شیشه‌ای اختصاصی بوکمارک (modules/bookmark/bookmark.css)
+const bookmarkCss = `
 /* ========================================================
-   استایل شیشه‌ای شبکه بوکمارک‌های دستیار (شبکه ۱۲ تایی)
+   استایل شیشه‌ای ماژول بوکمارک دستیار (شبکه ۱۲تایی)
 ======================================================== */
 .ds-bookmarks-grid {
   display: grid;
@@ -42,21 +46,20 @@ const shortcutsCss = `
   -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border) !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.15s ease, filter 0.2s ease, background 0.2s ease;
 }
 
 .ds-bookmark-box:hover {
   transform: translateY(-2px);
-  filter: brightness(1.12);
+  filter: brightness(1.15);
 }
 
-/* کارت شاخص دم‌دستی */
+/* خانه شاخص دم‌دستی برگرفته از سورس */
 .ds-bookmark-box.is-damdasti {
-  border: 1px dashed rgba(59, 130, 246, 0.45) !important;
+  border: 1px dashed rgba(59, 130, 246, 0.5) !important;
   background: rgba(59, 130, 246, calc(var(--dash-glass-opacity) + 0.08)) !important;
 }
 
-/* آیکون کارت */
 .ds-box-icon {
   width: 44px;
   height: 44px;
@@ -73,7 +76,6 @@ const shortcutsCss = `
   object-fit: contain;
 }
 
-/* عنوان کارت */
 .ds-box-title {
   font-size: 13px;
   font-weight: 500;
@@ -103,7 +105,7 @@ const shortcutsCss = `
 .ds-bookmark-box:hover .ds-box-dots { opacity: 1; }
 .ds-box-dots:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
 
-/* کارت انتخاب شده برای مدیریت */
+/* کارت انتخاب شده */
 .ds-bookmark-box.is-selected {
   outline: 2px solid #3b82f6 !important;
   background: rgba(59, 130, 246, 0.25) !important;
@@ -219,7 +221,7 @@ const shortcutsCss = `
 .ds-bulk-del { color: #ef4444; cursor: pointer; }
 .ds-bulk-close { cursor: pointer; opacity: 0.7; }
 
-/* پاپ‌آپ شیشه‌ای افزودن/ویرایش */
+/* پاپ‌آپ شیشه‌ای ویرایش/افزودن */
 .ds-modal-overlay {
   position: fixed;
   inset: 0;
@@ -264,21 +266,20 @@ const shortcutsCss = `
   flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.15); border: 1px solid var(--dash-glass-border); color: #fff; border-radius: 12px; cursor: pointer;
 }
 `;
-fs.writeFileSync(path.join(shortcutsDir, 'shortcuts.css'), shortcutsCss, 'utf8');
-console.log('✅ استایل شیشه‌ای بوکمارک‌ها در modules/shortcuts/shortcuts.css ثبت شد.');
+fs.writeFileSync(path.join(bookmarkDir, 'bookmark.css'), bookmarkCss, 'utf8');
+console.log('✅ فایل modules/bookmark/bookmark.css ساخته شد.');
 
-// ۲. منطق جاوااسکریپت مستقل بوکمارک‌ها (modules/shortcuts/shortcuts.js)
-const shortcutsJs = `
+// ۳. ساخت منطق جاوااسکریپت بوکمارک (modules/bookmark/bookmark.js)
+const bookmarkJs = `
 /**
  * ماژول مستقل شبکه بوکمارک‌های دستیار
- * برگرفته از کامپوننت Bookmarks.jsx
  */
-(function() {
+(function initBookmarkModule() {
   const STORAGE_KEY = 'shortcuts';
-  const MAX_SLOTS = 11; // ۱۱ جایگاه افزوده به علاوه خانه دم دستی
+  const MAX_SLOTS = 11;
   let selectedIndices = new Set();
 
-  function getShortcuts() {
+  function getBookmarks() {
     try {
       const data = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('user_shortcuts');
       const list = JSON.parse(data);
@@ -294,7 +295,7 @@ const shortcutsJs = `
     ];
   }
 
-  function saveShortcuts(list) {
+  function saveBookmarks(list) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     localStorage.setItem('user_shortcuts', JSON.stringify(list));
     render();
@@ -317,7 +318,7 @@ const shortcutsJs = `
       bar.className = 'ds-bulk-bar';
       bar.innerHTML = \`
         <span class="ds-bulk-close" id="ds-bulk-close">✕</span>
-        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑️️</span>
+        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑</span>
         <span style="opacity:0.3">|</span>
         <span>مورد انتخاب شده</span>
         <span class="ds-bulk-counter" id="ds-bulk-counter">۰</span>
@@ -331,10 +332,10 @@ const shortcutsJs = `
       };
 
       document.getElementById('ds-bulk-del').onclick = () => {
-        let list = getShortcuts();
+        let list = getBookmarks();
         list = list.filter((_, idx) => !selectedIndices.has(idx));
         selectedIndices.clear();
-        saveShortcuts(list);
+        saveBookmarks(list);
         updateBulkBar();
       };
     }
@@ -360,9 +361,9 @@ const shortcutsJs = `
 
     overlay.innerHTML = \`
       <div class="ds-glass-modal">
-        <h3>\${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر جدید'}</h3>
-        <input type="text" id="ds-inp-title" placeholder="نام میانبر" value="\${isEdit ? (item.title || '') : ''}">
-        <input type="text" id="ds-inp-url" placeholder="آدرس سایت" value="\${isEdit ? (item.url || '') : ''}">
+        <h3>\${isEdit ? 'ویرایش بوکمارک' : 'افزودن بوکمارک جدید'}</h3>
+        <input type="text" id="ds-inp-title" placeholder="نام بوکمارک" value="\${isEdit ? (item.title || '') : ''}">
+        <input type="text" id="ds-inp-url" placeholder="آدرس سایت (مثلاً: https://example.com)" value="\${isEdit ? (item.url || '') : ''}">
         <div class="ds-modal-actions">
           <button class="ds-btn-save" id="ds-btn-save">\${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
           <button class="ds-btn-cancel" id="ds-btn-cancel">انصراف</button>
@@ -379,14 +380,14 @@ const shortcutsJs = `
       if (!url) return;
       if (!/^https?:\\/\\//i.test(url)) url = 'https://' + url;
 
-      let list = getShortcuts();
+      let list = getBookmarks();
       if (isEdit) {
         list[index] = { title: title || url, url };
       } else {
         list.push({ title: title || url, url });
       }
       overlay.remove();
-      saveShortcuts(list);
+      saveBookmarks(list);
     };
   }
 
@@ -408,7 +409,7 @@ const shortcutsJs = `
         <div style="display:flex;align-items:center;gap:8px;"><span>انتقال به</span> <span>📁</span></div>
         <div class="ds-submenu-box">
           <div class="ds-submenu-row active"><span>✓</span> <div style="display:flex;gap:6px;"><span>صفحه اصلی</span> <span>🏠</span></div></div>
-          <div class="ds-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>App</span> <span>📁</span></div></div>
+          <div class="ds-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>دم دستی</span> <span>📁</span></div></div>
         </div>
       </div>
       <div class="ds-menu-item" id="act-copy"><span>کپی لینک</span> <span>📋</span></div>
@@ -442,10 +443,10 @@ const shortcutsJs = `
     menu.querySelector('#act-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
     menu.querySelector('#act-del').onclick = () => {
       menu.remove();
-      let list = getShortcuts();
+      let list = getBookmarks();
       list.splice(index, 1);
       selectedIndices.delete(index);
-      saveShortcuts(list);
+      saveBookmarks(list);
       updateBulkBar();
     };
 
@@ -459,26 +460,26 @@ const shortcutsJs = `
   }
 
   function render() {
-    let container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
+    let container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid') || document.getElementById('bookmarks-container');
     if (!container) return;
 
     container.innerHTML = '';
     const grid = document.createElement('div');
     grid.className = 'ds-bookmarks-grid';
 
-    // ۱. خانه شاخص: «دم دستی» برگرفته از سورس ری‌اکت
+    // ۱. خانه شاخص: دم دستی
     const damDastiBox = document.createElement('div');
     damDastiBox.className = 'ds-bookmark-box is-damdasti';
     damDastiBox.innerHTML = \`
       <div class="ds-box-icon" style="font-size:24px;">⋮⋮⋮</div>
       <span class="ds-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
     \`;
-    damDastiBox.onclick = () => alert('پوشه دسترسی سریع «دم دستی»');
+    damDastiBox.onclick = () => alert('پوشه دسترسی سریع دم‌دستی');
     grid.appendChild(damDastiBox);
 
-    const list = getShortcuts();
+    const list = getBookmarks();
 
-    // ۲. رندر میانبرهای پر شده
+    // ۲. نمایش بوکمارک‌های ذخیره‌شده
     list.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'ds-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
@@ -514,9 +515,9 @@ const shortcutsJs = `
       grid.appendChild(card);
     });
 
-    // ۳. پر کردن جایگاه‌های خالی تا سقف ۱۱ کارت با آیکون +
-    const emptySlots = Math.max(0, MAX_SLOTS - list.length);
-    for (let i = 0; i < emptySlots; i++) {
+    // ۳. تکمیل ظرفیت ۱۱ تایی با دکمه‌های +
+    const emptyCount = Math.max(0, MAX_SLOTS - list.length);
+    for (let i = 0; i < emptyCount; i++) {
       const addBox = document.createElement('div');
       addBox.className = 'ds-bookmark-box';
       addBox.innerHTML = \`
@@ -537,20 +538,25 @@ const shortcutsJs = `
   }
 })();
 `;
-fs.writeFileSync(path.join(shortcutsDir, 'shortcuts.js'), shortcutsJs, 'utf8');
-console.log('✅ ماژول بوکمارک‌ها در modules/shortcuts/shortcuts.js ثبت شد.');
+fs.writeFileSync(path.join(bookmarkDir, 'bookmark.js'), bookmarkJs, 'utf8');
+console.log('✅ فایل modules/bookmark/bookmark.js ساخته شد.');
 
-// ۳. اتصال به فایل‌های HTML
+// ۴. اتصال ماژول بوکمارک به index.html و newtab.html
 ['./index.html', './newtab.html'].forEach(filePath => {
   if (fs.existsSync(filePath)) {
     let html = fs.readFileSync(filePath, 'utf8');
-    if (!html.includes('modules/shortcuts/shortcuts.css')) {
-      html = html.replace('</head>', '  <link rel="stylesheet" href="modules/shortcuts/shortcuts.css">\n</head>');
+    
+    // جایگزینی ارجاعات قبلی shortcuts با bookmark
+    html = html.replace('modules/shortcuts/shortcuts.css', 'modules/bookmark/bookmark.css');
+    html = html.replace('modules/shortcuts/shortcuts.js', 'modules/bookmark/bookmark.js');
+
+    if (!html.includes('modules/bookmark/bookmark.css')) {
+      html = html.replace('</head>', '  <link rel="stylesheet" href="modules/bookmark/bookmark.css">\n</head>');
     }
-    if (!html.includes('modules/shortcuts/shortcuts.js')) {
-      html = html.replace('</body>', '  <script src="modules/shortcuts/shortcuts.js"></script>\n</body>');
+    if (!html.includes('modules/bookmark/bookmark.js')) {
+      html = html.replace('</body>', '  <script src="modules/bookmark/bookmark.js"></script>\n</body>');
     }
     fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`🔗 ماژول بوکمارک‌ها به ${filePath} متصل شد.`);
+    console.log(`🔗 ماژول bookmark به ${filePath} متصل شد.`);
   }
 });
