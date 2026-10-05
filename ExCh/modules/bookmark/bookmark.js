@@ -1,6 +1,6 @@
 
 /**
- * ماژول مستقل بوکمارک‌های گروهی آبنر
+ * ماژول بوکمارک گروهی آبنر با تزریق مستقیم در ستون وسط زیر سرچ‌بار
  */
 (function initAbnerBookmarks() {
   const STORAGE_KEY = 'abner_bookmarks_data';
@@ -13,8 +13,7 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) return JSON.parse(saved);
     } catch(e) {}
-    
-    // مهاجرت داده‌های ساده قبلی یا ایجاد حالت پیش‌فرض
+
     let oldList = [];
     try {
       oldList = JSON.parse(localStorage.getItem('shortcuts') || localStorage.getItem('user_shortcuts') || '[]');
@@ -40,7 +39,6 @@
 
   function saveData(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    // پشتیبانی معکوس برای سازگاری دیگر بخش‌ها
     localStorage.setItem('shortcuts', JSON.stringify(data.items));
     render();
   }
@@ -110,7 +108,7 @@
     overlay.innerHTML = `
       <div class="ab-glass-modal">
         <h3>ساخت پوشه بوکمارک جدید در آبنر</h3>
-        <input type="text" id="ab-folder-inp" placeholder="نام پوشه (مثلاً: ابزارها، کار، دانشگاه)">
+        <input type="text" id="ab-folder-inp" placeholder="نام پوشه (مثلاً: ابزارها، کار)">
         <div class="ab-modal-actions">
           <button class="ab-btn-save" id="ab-btn-save-folder">ایجاد پوشه</button>
           <button class="ab-btn-cancel" id="ab-btn-cancel-folder">انصراف</button>
@@ -271,15 +269,26 @@
   }
 
   function render() {
-    let container = document.getElementById('bookmarks-container') || document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
-    
-    // اگر کانتینر در HTML وجود نداشت، آن را به شکل خودکار در صفحه ایجاد می‌کنیم
+    // ۱. یافتن یا ساخت کانتینر در ستون مرکزی زیر سرچ‌‌بار
+    let container = document.getElementById('abner-center-bookmarks');
     if (!container) {
       container = document.createElement('div');
-      container.id = 'bookmarks-container';
-      const mainSection = document.querySelector('main') || document.body;
-      mainSection.appendChild(container);
+      container.id = 'abner-center-bookmarks';
+
+      // سرچ‌بار یا ستون وسط صفحه را پیدا کرده و بعد از آن تزریق می‌کنیم
+      const searchBox = document.querySelector('.search-container') || document.querySelector('.search-box') || document.querySelector('#search-input')?.closest('div') || document.querySelector('.center-column');
+      if (searchBox && searchBox.parentNode) {
+        searchBox.parentNode.insertBefore(container, searchBox.nextSibling);
+      } else {
+        (document.querySelector('main') || document.body).appendChild(container);
+      }
     }
+
+    // پاک‌سازی کانتینرهای کناری قدیمی
+    const oldContainers = document.querySelectorAll('#shortcuts-container, .shortcuts-grid, #bookmarks-container');
+    oldContainers.forEach(el => {
+      if (el !== container) el.innerHTML = '';
+    });
 
     container.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -287,7 +296,7 @@
 
     const data = getData();
 
-    // رندر تب‌های پوشه‌ها
+    // رندر تب‌ها
     const tabsRow = document.createElement('div');
     tabsRow.className = 'ab-folder-tabs';
 
@@ -312,7 +321,7 @@
 
     wrapper.appendChild(tabsRow);
 
-    // رندر شبکه کارت‌ها
+    // رندر شبکه کارت‌های مربعی متقارن
     const grid = document.createElement('div');
     grid.className = 'ab-bookmarks-grid';
 
@@ -366,14 +375,14 @@
       grid.appendChild(card);
     });
 
-    // پر کردن جایگاه‌های خالی با +
+    // پر کردن خانه‌های خالی با + تا رسیدن به سقف ۱۱ کارت
     const emptyCount = Math.max(0, MAX_SLOTS - activeList.length);
     for (let i = 0; i < emptyCount; i++) {
       const addBox = document.createElement('div');
       addBox.className = 'ab-bookmark-box';
       addBox.innerHTML = `
-        <div class="ab-box-icon" style="font-size:28px;opacity:0.4;">+</div>
-        <span class="ab-box-title" style="opacity:0.4;">افزودن</span>
+        <div class="ab-box-icon" style="font-size:26px;opacity:0.35;">+</div>
+        <span class="ab-box-title" style="opacity:0.35;">افزودن</span>
       `;
       addBox.onclick = () => openEditModal();
       grid.appendChild(addBox);

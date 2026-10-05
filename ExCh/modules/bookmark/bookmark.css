@@ -1,11 +1,11 @@
 
 /* ========================================================
-   استایل شیشه‌ای بوکمارک‌های مربعی و وسط‌چین آبنر
+   استایل شیشه‌ای بوکمارک‌های مربعی مرکز صفحه آبنر
 ======================================================== */
 .ab-bookmarks-wrapper {
   width: 100%;
-  max-width: 660px;
-  margin: 20px auto 30px auto !important;
+  max-width: 580px;
+  margin: 18px auto 26px auto !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,16 +13,16 @@
   direction: rtl;
   user-select: none;
   font-family: inherit;
-  z-index: 10;
+  z-index: 20;
 }
 
-/* تب‌ها و پوشه‌های بالای بوکمارک به صورت وسط‌چین */
+/* تب‌های پوشه‌ها */
 .ab-folder-tabs {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 14px;
   width: 100%;
   flex-wrap: wrap;
 }
@@ -31,9 +31,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 5px 14px;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   background: rgba(255, 255, 255, calc(var(--dash-glass-opacity, 0.12) + 0.05)) !important;
@@ -53,9 +53,9 @@
 }
 
 .ab-add-folder-btn {
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12px;
   border: 1px dashed var(--dash-glass-border, rgba(255, 255, 255, 0.35));
   background: rgba(0, 0, 0, 0.15);
   color: rgba(255, 255, 255, 0.8);
@@ -70,8 +70,8 @@
 /* شبکه بوکمارک‌های متقارن مربعی */
 .ab-bookmarks-grid {
   display: grid;
-  grid-template-columns: repeat(6, 88px) !important;
-  grid-auto-rows: 88px !important;
+  grid-template-columns: repeat(6, 82px) !important;
+  grid-auto-rows: 82px !important;
   gap: 12px !important;
   justify-content: center !important;
   width: 100%;
@@ -85,15 +85,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .ab-bookmarks-grid {
-    grid-template-columns: repeat(3, 72px) !important;
-    grid-auto-rows: 72px !important;
-    gap: 8px !important;
-  }
-}
-
-/* فرم کاملاً مربعی برای هر کارت بوکمارک */
+/* ابعاد مربعی کامل برای هر کارت */
 .ab-bookmark-box {
   position: relative;
   display: flex;
@@ -116,37 +108,36 @@
 }
 
 .ab-bookmark-box:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-2px) scale(1.02);
   filter: brightness(1.15);
 }
 
-/* خانه شاخص دم دستی به فرم مربعی */
 .ab-bookmark-box.is-damdasti {
   border: 1px dashed rgba(59, 130, 246, 0.7) !important;
   background: rgba(59, 130, 246, calc(var(--dash-glass-opacity, 0.12) + 0.12)) !important;
 }
 
 .ab-box-icon {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   color: #fff;
   margin-bottom: 2px;
 }
 .ab-box-icon img {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 
 .ab-box-title {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   color: #fff;
-  max-width: 72px;
+  max-width: 68px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -192,7 +183,7 @@
   justify-content: center;
 }
 
-/* منوی ۶ حالته آبنر */
+/* منوی ۶ گزینه‌ای آبنر */
 .ab-context-menu {
   position: fixed;
   z-index: 9999999;
@@ -207,6 +198,7 @@
   direction: rtl !important;
   color: #fff !important;
   font-family: inherit !important;
+  user-select: none !important;
 }
 .ab-menu-item {
   display: flex;
@@ -245,7 +237,7 @@
   font-size: 12px;
   cursor: pointer;
 }
-.ab-submenu-row:hover { background: rgba(255, 255, 255, 0.12); }
+.ab-submenu-row:hover { background: rgba(255,255,255,0.12); }
 .ab-submenu-row.active { color: #60a5fa; }
 
 /* نوار انتخاب دسته‌جمعی */

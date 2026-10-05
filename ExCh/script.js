@@ -1,3 +1,4 @@
+function renderShortcuts() { if (window.renderAbnerBookmarks) window.renderAbnerBookmarks(); }
 // تعریف تابع ماتی برای رفع ارور applyAbsoluteBlurEngine is not defined
 function applyAbsoluteBlurEngine(dashPct, popupPct) {
   if (typeof setLiveBlur === 'function') {
