@@ -1,4 +1,10 @@
 
+function toFa(num) {
+  if (num === null || num === undefined) return '';
+  return String(num).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+
   // محاسبه دقیق تاریخ امروز سیستم در تقویم خورشیدی
   function getLivePersianDate() {
     const now = new Date();
