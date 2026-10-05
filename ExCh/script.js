@@ -222,8 +222,33 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
 
-  let currentYear = 1405;
-  let currentMonthIndex = 6;
+  
+  // محاسبه خودکار تاریخ زنده سیستم بر اساس تقویم شمسی
+  function getLiveSystemDate() {
+    const now = new Date();
+    try {
+      const parts = new Intl.DateTimeFormat('en-US-u-ca-persian', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).formatToParts(now);
+
+      let y = 1405, m = 7, d = 9;
+      parts.forEach(p => {
+        if (p.type === 'year') y = parseInt(p.value, 10);
+        if (p.type === 'month') m = parseInt(p.value, 10);
+        if (p.type === 'day') d = parseInt(p.value, 10);
+      });
+      return { year: y, monthIndex: m - 1, day: d };
+    } catch (e) {
+      return { year: 1405, monthIndex: 6, day: 9 };
+    }
+  }
+
+  const baseRealToday = getLiveSystemDate();
+  let currentYear = baseRealToday.year;
+  let currentMonthIndex = baseRealToday.monthIndex;
+
 
   const calMonthText = document.getElementById('cal-month-text');
   const calSubText = document.getElementById('cal-sub-text');
@@ -389,6 +414,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dayElem) dayElem.textContent = persianDays[now.getDay()];
   }
   setInterval(updateLiveClock, 1000);
+  
+    // همگام‌سازی استک تاریخ با سیستم
+    try {
+      const now = new Date();
+      const shamsiStr = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+      const shamsiMonthName = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { month: 'long' }).format(now);
+      const shamsiRow = document.getElementById('shamsi-row');
+      if (shamsiRow) {
+        shamsiRow.innerHTML = `<span class="month-part">(${shamsiMonthName})</span><span class="digits-part">${shamsiStr}</span>`;
+      }
+
+      const miladiStr = new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+      const miladiMonthName = new Intl.DateTimeFormat('fa-IR', { month: 'long' }).format(now);
+      const gregorianRow = document.getElementById('gregorian-row');
+      if (gregorianRow) {
+        gregorianRow.innerHTML = `<span class="month-part">(${miladiMonthName})</span><span class="digits-part">${miladiStr}</span>`;
+      }
+    } catch (err) {}
+
   updateLiveClock();
 
   // ۶. تقویم گوگل ۲۴ ساعته
