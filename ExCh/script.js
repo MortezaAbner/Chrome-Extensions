@@ -2425,78 +2425,71 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       styleTag.textContent = `
-        /* ۱. داشبورد اصلی و پاپ‌آپ/دکمه مکان */
+
+        /* ۱. داشبورد: بار سرچ، میانبرها (حتی میانبرهای جدید یا حذفی) و کارت‌ها */
         .ios-glass-card,
         .weather-card,
         .clock-card,
         .calendar-card,
         .task-card,
-        .quick-actions-bar,
-        .dock-container,
-        .task-item-card,
-        .stat-card,
+        .search-bar-container,
+        .search-box,
+        .google-search-bar,
+        .shortcuts-grid,
+        .shortcut-item,
+        .shortcut-btn,
+        .shortcut-card,
+        .add-shortcut-btn,
         .location-modal-box,
-        .location-chip,
         #weather-city-btn,
-        #location-search-modal {
+        .location-chip {
           backdrop-filter: blur(${dPx}px) saturate(160%) !important;
           -webkit-backdrop-filter: blur(${dPx}px) saturate(160%) !important;
-          background: rgba(255, 255, 255, 0.06) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
         }
-        [data-theme="dark"] .ios-glass-card,
-        [data-theme="dark"] .weather-card,
-        [data-theme="dark"] .clock-card,
-        [data-theme="dark"] .calendar-card,
-        [data-theme="dark"] .task-card,
-        [data-theme="dark"] .dock-container,
-        [data-theme="dark"] .task-item-card,
-        [data-theme="dark"] .location-modal-box,
-        [data-theme="dark"] .location-chip,
-        [data-theme="dark"] #weather-city-btn,
-        [data-theme="dark"] #location-search-modal {
-          background: rgba(15, 23, 42, 0.15) !important;
+        [data-theme="dark"] .search-bar-container,
+        [data-theme="dark"] .search-box,
+        [data-theme="dark"] .google-search-bar,
+        [data-theme="dark"] .shortcut-item,
+        [data-theme="dark"] .shortcut-btn,
+        [data-theme="dark"] .shortcut-card,
+        [data-theme="dark"] .add-shortcut-btn {
+          background: rgba(15, 23, 42, 0.20) !important;
         }
+  
 
-        /* ۲. پاپ‌آپ‌ها: پیش‌بینی، اوقات شرعی، تایمر و تنظیمات */
-        #forecast-btn,
-        #azan-btn,
-        #timer-btn,
-        .widget-action-chip,
-        .forecast-toggle-btn,
-        .azan-toggle-btn,
-        .timer-toggle-btn,
-        .location-chip:not(#weather-city-btn),
-        .glass-blur-menu,
+        /* ۲. پاپ‌آپ‌ها و منوهای کشویی پیش‌بینی، اوقات شرعی، تایمر */
         .forecast-drawer,
         #forecast-drawer,
+        .forecast-drawer-content,
         .clock-drawer,
         #timer-drawer,
         #azan-drawer,
+        .azan-drawer-content,
+        .timer-drawer-content,
+        .drawer-panel,
+        .glass-blur-menu,
         .azan-city-dropdown,
-        .month-year-picker-modal,
-        .date-event-popup,
-        .task-tool-popup,
-        .task-modal-box,
-        .task-edit-modal,
         .settings-modal-card,
-        .modal-overlay .modal-card,
-        .app-view.modal-overlay {
+        #forecast-btn,
+        #azan-btn,
+        #timer-btn {
           backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
           -webkit-backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, 0.08) !important;
+          background: rgba(255, 255, 255, 0.10) !important;
         }
-        [data-theme="dark"] .glass-blur-menu,
         [data-theme="dark"] .forecast-drawer,
         [data-theme="dark"] #forecast-drawer,
+        [data-theme="dark"] .forecast-drawer-content,
         [data-theme="dark"] .clock-drawer,
         [data-theme="dark"] #timer-drawer,
         [data-theme="dark"] #azan-drawer,
-        [data-theme="dark"] .task-modal-box,
-        [data-theme="dark"] .task-edit-modal,
-        [data-theme="dark"] .settings-modal-card,
-        [data-theme="dark"] .modal-overlay .modal-card {
-          background: rgba(15, 23, 42, 0.22) !important;
+        [data-theme="dark"] .azan-drawer-content,
+        [data-theme="dark"] .timer-drawer-content,
+        [data-theme="dark"] .drawer-panel {
+          background: rgba(15, 23, 42, 0.25) !important;
         }
+  
       `;
   }
 
