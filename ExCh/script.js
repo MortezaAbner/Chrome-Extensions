@@ -2484,8 +2484,8 @@ document.addEventListener('DOMContentLoaded', () => {
         #forecast-btn,
         #azan-btn,
         #timer-btn {
-          backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
+          
+          -webkit-
           background: rgba(255, 255, 255, 0.10) !important;
         }
         [data-theme="dark"] .forecast-drawer,
@@ -2644,8 +2644,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .settings-modal-card,
         .modal-overlay .modal-card,
         .app-view.modal-overlay {
-          backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(${popupPx}px) saturate(180%) !important;
+          
+          -webkit-
           background: rgba(255, 255, 255, 0.08) !important;
         }
         [data-theme="dark"] .glass-blur-menu,
