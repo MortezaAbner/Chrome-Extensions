@@ -2839,3 +2839,38 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   })();
+
+
+  // تابع اختصاصی بستن پنجره تنظیمات
+  function triggerCloseSettings() {
+    // روش ۱: شبیه‌سازی کلیک روی دکمه ضربدر بستن
+    const closeBtn = document.querySelector('.settings-modal-close, #close-settings-btn, .modal-close-btn, [data-close-modal]');
+    if (closeBtn) {
+      closeBtn.click();
+      return;
+    }
+    // روش ۲: حذف کلاس اکتیو از مودال تنظیمات
+    const sModal = document.querySelector('.settings-modal-card, #settings-modal, #view-settings, .settings-modal-overlay');
+    if (sModal) {
+      sModal.classList.remove('active');
+      sModal.style.display = 'none';
+    }
+    const dView = document.getElementById('view-dashboard');
+    if (dView) {
+      dView.classList.add('active');
+      dView.style.display = '';
+    }
+  }
+
+  // رویداد تایید ماتی
+  document.getElementById('blur-save-btn')?.addEventListener('click', function(e) {
+    if (e) e.stopPropagation();
+    triggerCloseSettings();
+  }, true);
+
+  // رویداد انصراف ماتی
+  document.getElementById('blur-cancel-btn')?.addEventListener('click', function(e) {
+    if (e) e.stopPropagation();
+    triggerCloseSettings();
+  }, true);
+  

@@ -2620,3 +2620,11 @@ body {
   border: 1.5px solid #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
+
+/* اطمینان از اعمال بلر شفاف روی شورت‌کات‌ها و کشویی‌ها */
+.shortcut-item, .shortcut-card, .shortcut-btn, .add-shortcut-btn {
+  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.08)) !important;
+}
+.forecast-drawer, .clock-drawer, #timer-drawer, #azan-drawer {
+  background: var(--popup-glass-bg, rgba(255, 255, 255, 0.12)) !important;
+}
