@@ -135,7 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (dockHomeBtn) dockHomeBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
   if (dockSettingsBtn) dockSettingsBtn.onclick = () => switchView(viewSettings, dockSettingsBtn);
-  if (settingsCloseBtn) settingsCloseBtn.onclick = () => switchView(viewDashboard, dockHomeBtn);
+  if (settingsCloseBtn) settingsCloseBtn.onclick = () => {
+      document.getElementById('view-settings')?.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
+    };
 
   if (dockTasksBtn) {
     dockTasksBtn.onclick = () => {
@@ -1071,19 +1075,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalUrl = document.getElementById('modal-site-url');
 
   const defaultShortcuts = [
-    { title: 'دم‌دستی', url: 'https://dastyar.io' },
+    { title: 'تلگرام', url: 'https://web.telegram.org' },
     { title: 'تلفنچی', url: 'https://telephonchi.com' },
     { title: 'X', url: 'https://x.com' },
     { title: 'پینترست', url: 'https://www.pinterest.com' },
     { title: 'یوتیوب', url: 'https://www.youtube.com' },
     { title: 'App', url: 'https://cafebazaar.ir' },
     { title: 'آپ‌تی‌وی', url: 'https://uptvs.com' },
-    { title: 'دیجی‌مووی', url: 'https://digimovie.top' },
-    { title: 'دیجی‌موویز ۲', url: 'https://digimovie.top' },
+    { title: 'اینستاگرام', url: 'https://www.instagram.com' },
+    { title: 'تردز', url: 'https://www.threads.net' },
     { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
     { title: 'دیوار', url: 'https://divar.ir' },
     { title: 'واتساپ', url: 'https://web.whatsapp.com' }
   ];
+
+  
+  if (localStorage.getItem('sc_ver_tag') !== 'v11') {
+    localStorage.removeItem('my_shortcuts');
+    localStorage.setItem('sc_ver_tag', 'v11');
+  }
 
   let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts')) || defaultShortcuts;
 
