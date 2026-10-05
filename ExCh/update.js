@@ -186,4 +186,122 @@ if (fs.existsSync('./script.js')) {
 
   fs.writeFileSync('./script.js', js, 'utf8');
   console.log('✅ موتور جامع ماتی شیشه به script.js تزریق شد.');
+}const fs = require('fs');
+
+// ۱. فقط اصلاح ابعاد پاپ‌آپ تنظیمات و اسکرول‌‌بار در style.css
+if (fs.existsSync('./style.css')) {
+  let css = fs.readFileSync('./style.css', 'utf8');
+
+  const targetedFixesCss = `
+/* رفع کشیدگی پاپ‌آپ تنظیمات */
+#view-settings.app-view.active {
+  display: flex !important;
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.settings-modal-card {
+  width: 800px !important;
+  max-width: 94vw !important;
+  max-height: 86vh !important;
+  margin: auto !important;
+  border-radius: 28px !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden !important;
+  direction: rtl !important;
+}
+.settings-layout-body {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px !important;
+  max-height: 60vh !important;
+  overflow: hidden !important;
+  direction: rtl !important;
+}
+.settings-sidebar-nav {
+  width: 190px !important;
+  flex-shrink: 0 !important;
+}
+.settings-content-main,
+.settings-content-container {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
+
+/* اسکرول‌بار مینیمال و شیک */
+* { scrollbar-width: none; }
+*::-webkit-scrollbar { display: none; }
+.settings-content-main::-webkit-scrollbar,
+.settings-content-container::-webkit-scrollbar {
+  display: block !important;
+  width: 5px !important;
+}
+.settings-content-main::-webkit-scrollbar-thumb,
+.settings-content-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 10px !important;
+}
+`;
+
+  if (!css.includes('/* رفع کشیدگی پاپ‌آپ تنظیمات */')) {
+    css += '\n' + targetedFixesCss;
+    fs.writeFileSync('./style.css', css, 'utf8');
+    console.log('✅ استایل پاپ‌آپ و اسکرول‌بار در style.css اصلاح شد.');
+  }
+}
+
+// ۲. فقط جایگزینی لینک‌های میانبر در script.js
+if (fs.existsSync('./script.js')) {
+  let js = fs.readFileSync('./script.js', 'utf8');
+
+  // تعویض دم‌دستی با تلگرام
+  js = js.replace(/\{\s*title:\s*['"]دم‌دستی['"],\s*url:\s*['"][^'"]+['"]\s*\}/, "{ title: 'تلگرام', url: 'https://web.telegram.org' }");
+
+  // تعویض دیجی‌موویز با اینستاگرام و تردز
+  js = js.replace(/\{\s*title:\s*['"]دیجی‌مووی['"],\s*url:\s*['"][^'"]+['"]\s*\}/, "{ title: 'اینستاگرام', url: 'https://www.instagram.com' }");
+  js = js.replace(/\{\s*title:\s*['"]دیجی‌موویز ۲['"],\s*url:\s*['"][^'"]+['"]\s*\}/, "{ title: 'تردز', url: 'https://www.threads.net' }");
+
+  // اصلاح لینک واتساپ
+  js = js.replace(/\{\s*title:\s*['"]واتساپ['"],\s*url:\s*['"][^'"]+['"]\s*\}/, "{ title: 'واتساپ', url: 'https://web.whatsapp.com' }");
+
+  // بستن پاپ‌آپ تنظیمات با ضربدر و با کلیک روی بیرون
+  js = js.replace(
+    /settingsCloseBtn\.onclick = \(\) => switchView\(viewDashboard, dockHomeBtn\);/,
+    `settingsCloseBtn.onclick = () => {
+      document.getElementById('view-settings')?.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
+    };
+    const modalSettingsOverlay = document.getElementById('view-settings');
+    if (modalSettingsOverlay) {
+      modalSettingsOverlay.onclick = (e) => {
+        if (e.target === modalSettingsOverlay) {
+          modalSettingsOverlay.classList.remove('active');
+          document.getElementById('view-dashboard')?.classList.add('active');
+          document.getElementById('dock-home-btn')?.classList.add('active');
+        }
+      };
+    }`
+  );
+
+  // پاک کردن کش شورتکات‌ها برای اعمال سریع
+  if (!js.includes('sc_reset_flag_v12')) {
+    const scReset = `
+  if (localStorage.getItem('sc_flag') !== 'v12') {
+    localStorage.removeItem('my_shortcuts');
+    localStorage.setItem('sc_flag', 'v12');
+  }
+`;
+    js = js.replace('let shortcuts = JSON.parse(localStorage.getItem(\'my_shortcuts\'))', `${scReset}\n  let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts'))`);
+  }
+
+  fs.writeFileSync('./script.js', js, 'utf8');
+  console.log('✅ میانبرها و رویدادهای بستن پاپ‌آپ اصلاح شدند.');
 }
