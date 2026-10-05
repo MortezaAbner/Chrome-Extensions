@@ -1,19 +1,12 @@
 
 /**
- * ماژول مستقل میانبرهای دستیار
+ * ماژول مستقل شبکه بوکمارک‌های دستیار
+ * برگرفته از کامپوننت Bookmarks.jsx
  */
 (function() {
   const STORAGE_KEY = 'shortcuts';
+  const MAX_SLOTS = 11; // ۱۱ جایگاه افزوده به علاوه خانه دم دستی
   let selectedIndices = new Set();
-
-  const defaultList = [
-    { title: 'گوگل', url: 'https://www.google.com' },
-    { title: 'یوتیوب', url: 'https://www.youtube.com' },
-    { title: 'تلگرام', url: 'https://web.telegram.org' },
-    { title: 'اینستاگرام', url: 'https://www.instagram.com' },
-    { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
-    { title: 'دیوار', url: 'https://divar.ir' }
-  ];
 
   function getShortcuts() {
     try {
@@ -21,7 +14,14 @@
       const list = JSON.parse(data);
       if (Array.isArray(list) && list.length > 0) return list;
     } catch(e) {}
-    return defaultList;
+    return [
+      { title: 'گوگل', url: 'https://www.google.com' },
+      { title: 'یوتیوب', url: 'https://www.youtube.com' },
+      { title: 'تلگرام', url: 'https://web.telegram.org' },
+      { title: 'اینستاگرام', url: 'https://www.instagram.com' },
+      { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
+      { title: 'دیوار', url: 'https://divar.ir' }
+    ];
   }
 
   function saveShortcuts(list) {
@@ -47,7 +47,7 @@
       bar.className = 'ds-bulk-bar';
       bar.innerHTML = `
         <span class="ds-bulk-close" id="ds-bulk-close">✕</span>
-        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑️</span>
+        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑️️</span>
         <span style="opacity:0.3">|</span>
         <span>مورد انتخاب شده</span>
         <span class="ds-bulk-counter" id="ds-bulk-counter">۰</span>
@@ -56,7 +56,7 @@
 
       document.getElementById('ds-bulk-close').onclick = () => {
         selectedIndices.clear();
-        document.querySelectorAll('.ds-shortcut-card').forEach(c => c.classList.remove('is-selected'));
+        document.querySelectorAll('.ds-bookmark-box').forEach(c => c.classList.remove('is-selected'));
         updateBulkBar();
       };
 
@@ -90,7 +90,7 @@
 
     overlay.innerHTML = `
       <div class="ds-glass-modal">
-        <h3>${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر'}</h3>
+        <h3>${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر جدید'}</h3>
         <input type="text" id="ds-inp-title" placeholder="نام میانبر" value="${isEdit ? (item.title || '') : ''}">
         <input type="text" id="ds-inp-url" placeholder="آدرس سایت" value="${isEdit ? (item.url || '') : ''}">
         <div class="ds-modal-actions">
@@ -189,26 +189,40 @@
   }
 
   function render() {
-    const container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
+    let container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
     if (!container) return;
 
     container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'ds-bookmarks-grid';
+
+    // ۱. خانه شاخص: «دم دستی» برگرفته از سورس ری‌اکت
+    const damDastiBox = document.createElement('div');
+    damDastiBox.className = 'ds-bookmark-box is-damdasti';
+    damDastiBox.innerHTML = `
+      <div class="ds-box-icon" style="font-size:24px;">⋮⋮⋮</div>
+      <span class="ds-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
+    `;
+    damDastiBox.onclick = () => alert('پوشه دسترسی سریع «دم دستی»');
+    grid.appendChild(damDastiBox);
+
     const list = getShortcuts();
 
+    // ۲. رندر میانبرهای پر شده
     list.forEach((item, index) => {
       const card = document.createElement('div');
-      card.className = 'ds-shortcut-card' + (selectedIndices.has(index) ? ' is-selected' : '');
+      card.className = 'ds-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
 
       card.innerHTML = `
-        <button class="ds-dots-btn" title="گزینه‌ها">⋮</button>
-        <div class="ds-icon-wrapper">
+        <button class="ds-box-dots" title="گزینه‌ها">⋮</button>
+        <div class="ds-box-icon">
           <img src="${getFavicon(item.url)}" onerror="this.style.opacity='0'" alt="">
         </div>
-        <span class="ds-title">${item.title}</span>
+        <span class="ds-box-title">${item.title}</span>
       `;
 
       card.onclick = (e) => {
-        if (e.target.closest('.ds-dots-btn')) return;
+        if (e.target.closest('.ds-box-dots')) return;
         if (selectedIndices.size > 0) {
           if (selectedIndices.has(index)) {
             selectedIndices.delete(index);
@@ -223,21 +237,27 @@
         window.location.href = item.url;
       };
 
-      const dots = card.querySelector('.ds-dots-btn');
+      const dots = card.querySelector('.ds-box-dots');
       dots.onclick = (e) => openMenu(e, index, item, card);
       card.oncontextmenu = (e) => openMenu(e, index, item, card);
 
-      container.appendChild(card);
+      grid.appendChild(card);
     });
 
-    const addCard = document.createElement('div');
-    addCard.className = 'ds-shortcut-card ds-add-card';
-    addCard.innerHTML = `
-      <div class="ds-icon-wrapper" style="font-size:26px;color:#fff;">+</div>
-      <span class="ds-title" style="opacity:0.8;">افزودن</span>
-    `;
-    addCard.onclick = () => openEditModal();
-    container.appendChild(addCard);
+    // ۳. پر کردن جایگاه‌های خالی تا سقف ۱۱ کارت با آیکون +
+    const emptySlots = Math.max(0, MAX_SLOTS - list.length);
+    for (let i = 0; i < emptySlots; i++) {
+      const addBox = document.createElement('div');
+      addBox.className = 'ds-bookmark-box';
+      addBox.innerHTML = `
+        <div class="ds-box-icon" style="font-size:28px;opacity:0.4;">+</div>
+        <span class="ds-box-title" style="opacity:0.4;">افزودن</span>
+      `;
+      addBox.onclick = () => openEditModal();
+      grid.appendChild(addBox);
+    }
+
+    container.appendChild(grid);
   }
 
   if (document.readyState === 'loading') {

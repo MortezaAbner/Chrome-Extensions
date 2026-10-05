@@ -1,286 +1,556 @@
 const fs = require('fs');
 const path = require('path');
 
-// ۱. ساخت پوشه اختصاصی آب‌وهوا
-const weatherDir = path.join(__dirname, 'modules', 'weather');
-if (!fs.existsSync(weatherDir)) {
-  fs.mkdirSync(weatherDir, { recursive: true });
-  console.log('📁 پوشه modules/weather ساخته شد.');
-}
+const shortcutsDir = path.join(__dirname, 'modules', 'shortcuts');
+if (!fs.existsSync(shortcutsDir)) fs.mkdirSync(shortcutsDir, { recursive: true });
 
-// ۲. استایل شیشه‌ای کامل متصل به اسلایدر بلر و شفافیت (modules/weather/weather.css)
-const weatherCss = `
+// ۱. ساخت استایل شیشه‌ای کامل بوکمارک‌ها (modules/shortcuts/shortcuts.css)
+const shortcutsCss = `
 /* ========================================================
-   استایل ماژولار شیشه‌ای آب‌وهوا و ساعت متصل به اسلایدر
+   استایل شیشه‌ای شبکه بوکمارک‌های دستیار (شبکه ۱۲ تایی)
 ======================================================== */
-.ds-weather-widget-container {
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 14px;
+.ds-bookmarks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 24px auto;
   direction: rtl;
   user-select: none;
   font-family: inherit;
-  margin-bottom: 20px;
 }
 
-.ds-weather-card {
-  flex: 1;
-  max-width: 250px;
-  min-width: 210px;
-  padding: 16px 14px 12px 14px;
-  border-radius: 24px;
+@media (min-width: 992px) {
+  .ds-bookmarks-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.ds-bookmark-box {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  padding: 12px 8px;
+  border-radius: 20px;
+  cursor: pointer;
   background: var(--dash-glass-bg) !important;
   backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, background 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.ds-weather-card:hover {
+.ds-bookmark-box:hover {
   transform: translateY(-2px);
-  filter: brightness(1.08);
+  filter: brightness(1.12);
 }
 
-/* بخش هدر و مقادیر اصلی */
-.ds-card-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+/* کارت شاخص دم‌دستی */
+.ds-bookmark-box.is-damdasti {
+  border: 1px dashed rgba(59, 130, 246, 0.45) !important;
+  background: rgba(59, 130, 246, calc(var(--dash-glass-opacity) + 0.08)) !important;
 }
 
-.ds-time-val, .ds-temp-val {
-  font-size: 38px;
-  font-weight: 800;
-  color: #3b82f6;
-  line-height: 1;
-}
-
-.ds-day-title {
-  font-size: 19px;
-  font-weight: bold;
-  color: #1f2937;
-}
-[data-theme="dark"] .ds-day-title {
-  color: #f3f4f6;
-}
-
-.ds-weather-icon-top {
-  font-size: 34px;
-  opacity: 0.85;
-}
-
-/* اطلاعات میانی (تاریخ‌ها و وضعیت آب‌وهوا) */
-.ds-dates-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin: 6px 0 12px 0;
-  font-size: 13px;
-  color: #4b5563;
-}
-[data-theme="dark"] .ds-dates-list {
-  color: #9ca3af;
-}
-
-.ds-date-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.ds-weather-status-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin: 6px 0 12px 0;
-}
-
-.ds-condition-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #1f2937;
-}
-[data-theme="dark"] .ds-condition-row {
-  color: #f3f4f6;
-}
-
-.ds-temp-range {
-  font-size: 13px;
-  color: #4b5563;
-}
-[data-theme="dark"] .ds-temp-range {
-  color: #9ca3af;
-}
-
-/* دکمه‌های کپسولی پایین کارت‌ها */
-.ds-card-pill-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.ds-pill-btn {
-  flex: 1;
-  padding: 6px 10px;
-  border-radius: 9999px;
-  font-size: 12.5px;
-  font-weight: 600;
-  border: 1px solid var(--dash-glass-border);
-  background: rgba(255, 255, 255, calc(var(--dash-glass-opacity) + 0.15));
-  color: inherit;
-  cursor: pointer;
+/* آیکون کارت */
+.ds-box-icon {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  transition: all 0.15s ease;
+  font-size: 26px;
+  color: #fff;
+  margin-bottom: 6px;
 }
-.ds-pill-btn:hover {
-  background: rgba(255, 255, 255, calc(var(--dash-glass-opacity) + 0.28));
-  transform: scale(1.02);
+.ds-box-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* عنوان کارت */
+.ds-box-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  max-width: 84px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* دکمه سه نقطه گزینه‌ها */
+.ds-box-dots {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.ds-bookmark-box:hover .ds-box-dots { opacity: 1; }
+.ds-box-dots:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+
+/* کارت انتخاب شده برای مدیریت */
+.ds-bookmark-box.is-selected {
+  outline: 2px solid #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.25) !important;
+}
+.ds-bookmark-box.is-selected::after {
+  content: "✓";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #3b82f6;
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* کانتکست منوی شیشه‌ای ۶ گزینه‌ای */
+.ds-context-menu {
+  position: fixed;
+  z-index: 1000000;
+  width: 175px;
+  background: var(--dash-menu-bg) !important;
+  backdrop-filter: blur(var(--dash-blur-px)) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(180%) !important;
+  border: 1px solid var(--dash-glass-border) !important;
+  border-radius: 18px !important;
+  padding: 6px !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+  direction: rtl !important;
+  color: #fff !important;
+}
+.ds-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.ds-menu-item:hover { background: rgba(255, 255, 255, 0.12); }
+.ds-menu-item.danger { color: #ef4444; }
+
+.ds-submenu-trigger { position: relative; }
+.ds-submenu-box {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  margin-right: 6px;
+  width: 140px;
+  background: var(--dash-menu-bg);
+  backdrop-filter: blur(var(--dash-blur-px));
+  border: 1px solid var(--dash-glass-border);
+  border-radius: 14px;
+  padding: 6px;
+}
+.ds-submenu-trigger:hover .ds-submenu-box { display: block; }
+.ds-submenu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.ds-submenu-row.active { color: #60a5fa; }
+
+/* نوار انتخاب دسته‌جمعی شناور */
+.ds-bulk-bar {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: var(--dash-menu-bg);
+  backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border);
+  border-radius: 9999px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 999999;
+  color: #fff;
+  direction: rtl;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+.ds-bulk-bar.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.ds-bulk-counter {
+  background: #3b82f6;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+.ds-bulk-del { color: #ef4444; cursor: pointer; }
+.ds-bulk-close { cursor: pointer; opacity: 0.7; }
+
+/* پاپ‌آپ شیشه‌ای افزودن/ویرایش */
+.ds-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000000;
+  direction: rtl;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.ds-modal-overlay.active { opacity: 1; pointer-events: auto; }
+.ds-glass-modal {
+  width: 90%;
+  max-width: 360px;
+  padding: 22px;
+  border-radius: 22px;
+  background: var(--dash-glass-bg) !important;
+  backdrop-filter: blur(var(--dash-blur-px)) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(170%) !important;
+  border: 1px solid var(--dash-glass-border);
+  color: #fff;
+}
+.ds-glass-modal h3 { margin: 0 0 14px 0; font-size: 15px; }
+.ds-glass-modal input {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--dash-glass-border);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  box-sizing: border-box;
+}
+.ds-modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+.ds-btn-save {
+  flex: 1; padding: 10px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+}
+.ds-btn-cancel {
+  flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.15); border: 1px solid var(--dash-glass-border); color: #fff; border-radius: 12px; cursor: pointer;
 }
 `;
-fs.writeFileSync(path.join(weatherDir, 'weather.css'), weatherCss, 'utf8');
-console.log('✅ استایل modules/weather/weather.css ثبت شد.');
+fs.writeFileSync(path.join(shortcutsDir, 'shortcuts.css'), shortcutsCss, 'utf8');
+console.log('✅ استایل شیشه‌ای بوکمارک‌ها در modules/shortcuts/shortcuts.css ثبت شد.');
 
-// ۳. جاوااسکریپت ماژول مستقل آب‌وهوا و زمان (modules/weather/weather.js)
-const weatherJs = `
+// ۲. منطق جاوااسکریپت مستقل بوکمارک‌ها (modules/shortcuts/shortcuts.js)
+const shortcutsJs = `
 /**
- * ماژول مستقل زمان، تقویم و وضعیت آب‌وهوا
+ * ماژول مستقل شبکه بوکمارک‌های دستیار
+ * برگرفته از کامپوننت Bookmarks.jsx
  */
-(function initWeatherModule() {
-  function toPersianDigits(n) {
-    const f = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-    return n.toString().replace(/\\d/g, x => f[x]);
+(function() {
+  const STORAGE_KEY = 'shortcuts';
+  const MAX_SLOTS = 11; // ۱۱ جایگاه افزوده به علاوه خانه دم دستی
+  let selectedIndices = new Set();
+
+  function getShortcuts() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('user_shortcuts');
+      const list = JSON.parse(data);
+      if (Array.isArray(list) && list.length > 0) return list;
+    } catch(e) {}
+    return [
+      { title: 'گوگل', url: 'https://www.google.com' },
+      { title: 'یوتیوب', url: 'https://www.youtube.com' },
+      { title: 'تلگرام', url: 'https://web.telegram.org' },
+      { title: 'اینستاگرام', url: 'https://www.instagram.com' },
+      { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
+      { title: 'دیوار', url: 'https://divar.ir' }
+    ];
   }
 
-  // داده‌های ذخیره‌شده یا پیش‌فرض
-  const weatherState = {
-    city: localStorage.getItem('ds_city_name') || 'تهران',
-    temp: '۱۸°',
-    condition: 'تمام ابری',
-    conditionIcon: '☁️',
-    maxTemp: '۲۶°',
-    minTemp: '۱۴°'
-  };
-
-  function updateClockAndDates() {
-    const timeEl = document.getElementById('ds-time-display');
-    const dayEl = document.getElementById('ds-day-display');
-    if (!timeEl || !dayEl) return;
-
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    timeEl.textContent = toPersianDigits(h + ':' + m);
-
-    const days = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
-    dayEl.textContent = days[now.getDay()];
+  function saveShortcuts(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    localStorage.setItem('user_shortcuts', JSON.stringify(list));
+    render();
   }
 
-  function renderWeatherWidget() {
-    let container = document.getElementById('weather-time-container') || document.querySelector('.weather-section');
-    if (!container) return;
+  function getFavicon(url) {
+    try {
+      const host = new URL(url).hostname;
+      return 'https://www.google.com/s2/favicons?domain=' + host + '&sz=64';
+    } catch(e) {
+      return '';
+    }
+  }
 
-    container.innerHTML = \`
-      <div class="ds-weather-widget-container">
-        <!-- کارت زمان و تقویم -->
-        <div class="ds-weather-card">
-          <div class="ds-card-top-row">
-            <span class="ds-time-val" id="ds-time-display">--:--</span>
-            <span class="ds-day-title" id="ds-day-display">دوشنبه</span>
-          </div>
+  function ensureBulkBar() {
+    let bar = document.getElementById('ds-bulk-bar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'ds-bulk-bar';
+      bar.className = 'ds-bulk-bar';
+      bar.innerHTML = \`
+        <span class="ds-bulk-close" id="ds-bulk-close">✕</span>
+        <span class="ds-bulk-del" id="ds-bulk-del">حذف 🗑️️</span>
+        <span style="opacity:0.3">|</span>
+        <span>مورد انتخاب شده</span>
+        <span class="ds-bulk-counter" id="ds-bulk-counter">۰</span>
+      \`;
+      document.body.appendChild(bar);
 
-          <div class="ds-dates-list">
-            <div class="ds-date-item">
-              <span>۱۴۰۵/۰۷/۱۳</span>
-              <span>(مهر)</span>
-            </div>
-            <div class="ds-date-item">
-              <span>۱۴۰۵/۰۷/۱۳</span>
-              <span>(مهر)</span>
-            </div>
-            <div class="ds-date-item">
-              <span>۱۴۴۸/۰۳/۱۹</span>
-              <span>(ربیع‌الثانی)</span>
-            </div>
-          </div>
+      document.getElementById('ds-bulk-close').onclick = () => {
+        selectedIndices.clear();
+        document.querySelectorAll('.ds-bookmark-box').forEach(c => c.classList.remove('is-selected'));
+        updateBulkBar();
+      };
 
-          <div class="ds-card-pill-actions">
-            <button class="ds-pill-btn" id="ds-timer-btn">تایمر ⌵</button>
-            <button class="ds-pill-btn" id="ds-pray-btn">اوقات شرعی ⌵</button>
-          </div>
-        </div>
+      document.getElementById('ds-bulk-del').onclick = () => {
+        let list = getShortcuts();
+        list = list.filter((_, idx) => !selectedIndices.has(idx));
+        selectedIndices.clear();
+        saveShortcuts(list);
+        updateBulkBar();
+      };
+    }
+    return bar;
+  }
 
-        <!-- کارت آب و هوا -->
-        <div class="ds-weather-card">
-          <div class="ds-card-top-row">
-            <span class="ds-weather-icon-top">\${weatherState.conditionIcon}</span>
-            <span class="ds-temp-val">\${weatherState.temp}</span>
-          </div>
+  function updateBulkBar() {
+    const bar = ensureBulkBar();
+    const count = selectedIndices.size;
+    const counterEl = document.getElementById('ds-bulk-counter');
+    if (counterEl) counterEl.textContent = count;
+    if (count > 0) bar.classList.add('visible');
+    else bar.classList.remove('visible');
+  }
 
-          <div class="ds-weather-status-wrap">
-            <div class="ds-condition-row">
-              <span>\${weatherState.condition}</span>
-              <span>☁️</span>
-            </div>
-            <div class="ds-temp-range">
-              <span>\${weatherState.maxTemp} حداکثر . \${weatherState.minTemp} حداقل</span>
-            </div>
-          </div>
+  function openEditModal(index = null, item = null) {
+    const isEdit = index !== null && item !== null;
+    document.getElementById('ds-modal-overlay')?.remove();
 
-          <div class="ds-card-pill-actions">
-            <button class="ds-pill-btn" id="ds-forecast-btn">پیش‌بینی ⌵</button>
-            <button class="ds-pill-btn" id="ds-location-btn">📍 \${weatherState.city}</button>
-          </div>
+    const overlay = document.createElement('div');
+    overlay.id = 'ds-modal-overlay';
+    overlay.className = 'ds-modal-overlay active';
+
+    overlay.innerHTML = \`
+      <div class="ds-glass-modal">
+        <h3>\${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر جدید'}</h3>
+        <input type="text" id="ds-inp-title" placeholder="نام میانبر" value="\${isEdit ? (item.title || '') : ''}">
+        <input type="text" id="ds-inp-url" placeholder="آدرس سایت" value="\${isEdit ? (item.url || '') : ''}">
+        <div class="ds-modal-actions">
+          <button class="ds-btn-save" id="ds-btn-save">\${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
+          <button class="ds-btn-cancel" id="ds-btn-cancel">انصراف</button>
         </div>
       </div>
     \`;
 
-    updateClockAndDates();
-    setInterval(updateClockAndDates, 1000);
+    document.body.appendChild(overlay);
 
-    // تغییر شهر
-    document.getElementById('ds-location-btn').onclick = () => {
-      const newCity = prompt('نام شهر را وارد کنید:', weatherState.city);
-      if (newCity && newCity.trim()) {
-        weatherState.city = newCity.trim();
-        localStorage.setItem('ds_city_name', weatherState.city);
-        renderWeatherWidget();
+    document.getElementById('ds-btn-cancel').onclick = () => overlay.remove();
+    document.getElementById('ds-btn-save').onclick = () => {
+      const title = document.getElementById('ds-inp-title').value.trim();
+      let url = document.getElementById('ds-inp-url').value.trim();
+      if (!url) return;
+      if (!/^https?:\\/\\//i.test(url)) url = 'https://' + url;
+
+      let list = getShortcuts();
+      if (isEdit) {
+        list[index] = { title: title || url, url };
+      } else {
+        list.push({ title: title || url, url });
       }
+      overlay.remove();
+      saveShortcuts(list);
     };
   }
 
+  function openMenu(e, index, item, card) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    document.querySelectorAll('.ds-context-menu').forEach(m => m.remove());
+
+    const isSelected = selectedIndices.has(index);
+    const menu = document.createElement('div');
+    menu.className = 'ds-context-menu';
+
+    menu.innerHTML = \`
+      <div class="ds-menu-item" id="act-open"><span>باز کردن</span> <span>🔗</span></div>
+      <div class="ds-menu-item" id="act-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
+      <div class="ds-menu-item" id="act-select"><span>\${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>\${isSelected ? '✕' : '☑'}</span></div>
+      <div class="ds-menu-item" id="act-edit"><span>ویرایش</span> <span>✏</span></div>
+      <div class="ds-menu-item ds-submenu-trigger">
+        <span style="font-size:11px;opacity:0.6;">‹</span>
+        <div style="display:flex;align-items:center;gap:8px;"><span>انتقال به</span> <span>📁</span></div>
+        <div class="ds-submenu-box">
+          <div class="ds-submenu-row active"><span>✓</span> <div style="display:flex;gap:6px;"><span>صفحه اصلی</span> <span>🏠</span></div></div>
+          <div class="ds-submenu-row"><span></span> <div style="display:flex;gap:6px;"><span>App</span> <span>📁</span></div></div>
+        </div>
+      </div>
+      <div class="ds-menu-item" id="act-copy"><span>کپی لینک</span> <span>📋</span></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.12);margin:4px 0;">
+      <div class="ds-menu-item danger" id="act-del"><span>حذف</span> <span>🗑️</span></div>
+    \`;
+
+    document.body.appendChild(menu);
+
+    let left = e ? e.clientX : card.getBoundingClientRect().left;
+    let top = e ? e.clientY : card.getBoundingClientRect().bottom + 5;
+    if (left + 180 > window.innerWidth) left = window.innerWidth - 185;
+    if (top + 280 > window.innerHeight) top = window.innerHeight - 285;
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+
+    menu.querySelector('#act-open').onclick = () => { window.location.href = item.url; menu.remove(); };
+    menu.querySelector('#act-tab').onclick = () => { window.open(item.url, '_blank'); menu.remove(); };
+    menu.querySelector('#act-select').onclick = () => {
+      if (isSelected) {
+        selectedIndices.delete(index);
+        card.classList.remove('is-selected');
+      } else {
+        selectedIndices.add(index);
+        card.classList.add('is-selected');
+      }
+      updateBulkBar();
+      menu.remove();
+    };
+    menu.querySelector('#act-edit').onclick = () => { menu.remove(); openEditModal(index, item); };
+    menu.querySelector('#act-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
+    menu.querySelector('#act-del').onclick = () => {
+      menu.remove();
+      let list = getShortcuts();
+      list.splice(index, 1);
+      selectedIndices.delete(index);
+      saveShortcuts(list);
+      updateBulkBar();
+    };
+
+    const docClick = (ev) => {
+      if (!menu.contains(ev.target)) {
+        menu.remove();
+        document.removeEventListener('click', docClick);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', docClick), 40);
+  }
+
+  function render() {
+    let container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'ds-bookmarks-grid';
+
+    // ۱. خانه شاخص: «دم دستی» برگرفته از سورس ری‌اکت
+    const damDastiBox = document.createElement('div');
+    damDastiBox.className = 'ds-bookmark-box is-damdasti';
+    damDastiBox.innerHTML = \`
+      <div class="ds-box-icon" style="font-size:24px;">⋮⋮⋮</div>
+      <span class="ds-box-title" style="color:#60a5fa;font-weight:bold;">دم دستی</span>
+    \`;
+    damDastiBox.onclick = () => alert('پوشه دسترسی سریع «دم دستی»');
+    grid.appendChild(damDastiBox);
+
+    const list = getShortcuts();
+
+    // ۲. رندر میانبرهای پر شده
+    list.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'ds-bookmark-box' + (selectedIndices.has(index) ? ' is-selected' : '');
+
+      card.innerHTML = \`
+        <button class="ds-box-dots" title="گزینه‌ها">⋮</button>
+        <div class="ds-box-icon">
+          <img src="\${getFavicon(item.url)}" onerror="this.style.opacity='0'" alt="">
+        </div>
+        <span class="ds-box-title">\${item.title}</span>
+      \`;
+
+      card.onclick = (e) => {
+        if (e.target.closest('.ds-box-dots')) return;
+        if (selectedIndices.size > 0) {
+          if (selectedIndices.has(index)) {
+            selectedIndices.delete(index);
+            card.classList.remove('is-selected');
+          } else {
+            selectedIndices.add(index);
+            card.classList.add('is-selected');
+          }
+          updateBulkBar();
+          return;
+        }
+        window.location.href = item.url;
+      };
+
+      const dots = card.querySelector('.ds-box-dots');
+      dots.onclick = (e) => openMenu(e, index, item, card);
+      card.oncontextmenu = (e) => openMenu(e, index, item, card);
+
+      grid.appendChild(card);
+    });
+
+    // ۳. پر کردن جایگاه‌های خالی تا سقف ۱۱ کارت با آیکون +
+    const emptySlots = Math.max(0, MAX_SLOTS - list.length);
+    for (let i = 0; i < emptySlots; i++) {
+      const addBox = document.createElement('div');
+      addBox.className = 'ds-bookmark-box';
+      addBox.innerHTML = \`
+        <div class="ds-box-icon" style="font-size:28px;opacity:0.4;">+</div>
+        <span class="ds-box-title" style="opacity:0.4;">افزودن</span>
+      \`;
+      addBox.onclick = () => openEditModal();
+      grid.appendChild(addBox);
+    }
+
+    container.appendChild(grid);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderWeatherWidget);
+    document.addEventListener('DOMContentLoaded', render);
   } else {
-    renderWeatherWidget();
+    render();
   }
 })();
 `;
-fs.writeFileSync(path.join(weatherDir, 'weather.js'), weatherJs, 'utf8');
-console.log('✅ اسکریپت modules/weather/weather.js ثبت شد.');
+fs.writeFileSync(path.join(shortcutsDir, 'shortcuts.js'), shortcutsJs, 'utf8');
+console.log('✅ ماژول بوکمارک‌ها در modules/shortcuts/shortcuts.js ثبت شد.');
 
-// ۴. الصاق به فایل‌های index.html و newtab.html
+// ۳. اتصال به فایل‌های HTML
 ['./index.html', './newtab.html'].forEach(filePath => {
   if (fs.existsSync(filePath)) {
     let html = fs.readFileSync(filePath, 'utf8');
-
-    if (!html.includes('modules/weather/weather.css')) {
-      html = html.replace('</head>', '  <link rel="stylesheet" href="modules/weather/weather.css">\n</head>');
+    if (!html.includes('modules/shortcuts/shortcuts.css')) {
+      html = html.replace('</head>', '  <link rel="stylesheet" href="modules/shortcuts/shortcuts.css">\n</head>');
     }
-    if (!html.includes('modules/weather/weather.js')) {
-      html = html.replace('</body>', '  <script src="modules/weather/weather.js"></script>\n</body>');
+    if (!html.includes('modules/shortcuts/shortcuts.js')) {
+      html = html.replace('</body>', '  <script src="modules/shortcuts/shortcuts.js"></script>\n</body>');
     }
     fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`🔗 ماژول آب‌وهوا به ${filePath} متصل شد.`);
+    console.log(`🔗 ماژول بوکمارک‌ها به ${filePath} متصل شد.`);
   }
 });

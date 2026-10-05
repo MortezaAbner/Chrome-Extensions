@@ -1,34 +1,111 @@
 
-.ds-shortcut-card {
+/* ========================================================
+   استایل شیشه‌ای شبکه بوکمارک‌های دستیار (شبکه ۱۲ تایی)
+======================================================== */
+.ds-bookmarks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 24px auto;
+  direction: rtl;
+  user-select: none;
+  font-family: inherit;
+}
+
+@media (min-width: 992px) {
+  .ds-bookmarks-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.ds-bookmark-box {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 6px;
-  border-radius: 18px;
+  justify-content: center;
+  min-height: 96px;
+  padding: 12px 8px;
+  border-radius: 20px;
   cursor: pointer;
-  user-select: none;
   background: var(--dash-glass-bg) !important;
   backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border) !important;
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-.ds-shortcut-card:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.ds-shortcut-card.is-selected {
-  outline: 2px solid #3b82f6 !important;
-  background: rgba(59, 130, 246, calc(var(--dash-glass-opacity) + 0.15)) !important;
+.ds-bookmark-box:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
 }
-.ds-shortcut-card.is-selected::after {
+
+/* کارت شاخص دم‌دستی */
+.ds-bookmark-box.is-damdasti {
+  border: 1px dashed rgba(59, 130, 246, 0.45) !important;
+  background: rgba(59, 130, 246, calc(var(--dash-glass-opacity) + 0.08)) !important;
+}
+
+/* آیکون کارت */
+.ds-box-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.ds-box-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* عنوان کارت */
+.ds-box-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  max-width: 84px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* دکمه سه نقطه گزینه‌ها */
+.ds-box-dots {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.ds-bookmark-box:hover .ds-box-dots { opacity: 1; }
+.ds-box-dots:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+
+/* کارت انتخاب شده برای مدیریت */
+.ds-bookmark-box.is-selected {
+  outline: 2px solid #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.25) !important;
+}
+.ds-bookmark-box.is-selected::after {
   content: "✓";
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 6px;
+  right: 6px;
   background: #3b82f6;
   color: #fff;
   width: 18px;
@@ -39,43 +116,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
 }
 
-.ds-icon-wrapper {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ds-icon-wrapper img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-.ds-title {
-  font-size: 12px;
-  color: #fff;
-  max-width: 76px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ds-dots-btn {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 6px;
-}
-.ds-dots-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
-
+/* کانتکست منوی شیشه‌ای ۶ گزینه‌ای */
 .ds-context-menu {
   position: fixed;
   z-index: 1000000;
@@ -89,8 +132,6 @@
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
   direction: rtl !important;
   color: #fff !important;
-  user-select: none !important;
-  font-family: inherit !important;
 }
 .ds-menu-item {
   display: flex;
@@ -115,11 +156,9 @@
   width: 140px;
   background: var(--dash-menu-bg);
   backdrop-filter: blur(var(--dash-blur-px));
-  -webkit-backdrop-filter: blur(var(--dash-blur-px));
   border: 1px solid var(--dash-glass-border);
   border-radius: 14px;
   padding: 6px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 .ds-submenu-trigger:hover .ds-submenu-box { display: block; }
 .ds-submenu-row {
@@ -132,6 +171,7 @@
 }
 .ds-submenu-row.active { color: #60a5fa; }
 
+/* نوار انتخاب دسته‌جمعی شناور */
 .ds-bulk-bar {
   position: fixed;
   bottom: 80px;
@@ -172,6 +212,7 @@
 .ds-bulk-del { color: #ef4444; cursor: pointer; }
 .ds-bulk-close { cursor: pointer; opacity: 0.7; }
 
+/* پاپ‌آپ شیشه‌ای افزودن/ویرایش */
 .ds-modal-overlay {
   position: fixed;
   inset: 0;

@@ -16,3 +16,14 @@
   --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-opacity));
   --dash-menu-bg: rgba(20, 16, 22, calc(var(--dash-glass-opacity) + 0.78));
 }
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../../fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+}
