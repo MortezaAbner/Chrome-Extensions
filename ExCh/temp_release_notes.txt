@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.36:
-- رفع مشکل کار نکردن دکمه‌های تایید و انصراف ماتی، بستن فوری پاپ‌آپ بدون پیام و هماهنگ‌سازی ماتی پاپ‌‌آپ مکان با داشبورد
+### 🇮🇷 تغییرات نسخه v1.32.37:
+- هماهنگ‌سازی ماتی پاپ‌آپ موقعیت مکانی آب‌وهوا با داشبورد، بستن بی‌صدا و فوری پنجره تنظیمات با کلیک روی تایید و بازگشت به قبل با انصراف
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.36):
-- Fix Settings Confirm and Cancel Actions with Silent Close and Sync Location Modal Blur
+### 🇬🇧 Release Notes (v1.32.37):
+- Sync Location Modal Blur With Dashboard and Fix Silent Settings Modal Close
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

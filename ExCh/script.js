@@ -2757,3 +2757,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
   
+
+  // اتصال مستقیم دکمه‌های تایید و انصراف ماتی با بستن فوری
+  (function initModalButtonsClean() {
+    const btnOk = document.getElementById('blur-save-btn');
+    const btnCancel = document.getElementById('blur-cancel-btn');
+    const sD = document.getElementById('slider-dash-blur');
+    const sP = document.getElementById('slider-popup-blur');
+
+    let initialD = localStorage.getItem('blur_dash_val') || (sD ? sD.value : '25');
+    let initialP = localStorage.getItem('blur_popup_val') || (sP ? sP.value : '65');
+
+    function closeSettingsPopup() {
+      // بستن کامل منوی تنظیمات
+      const settingsView = document.getElementById('view-settings');
+      if (settingsView) {
+        settingsView.classList.remove('active');
+        settingsView.style.display = 'none';
+      }
+      // بازگشت به نمای اصلی داشبورد
+      const dashboardView = document.getElementById('view-dashboard');
+      if (dashboardView) {
+        dashboardView.classList.add('active');
+        dashboardView.style.display = '';
+      }
+      const dockHome = document.getElementById('dock-home-btn');
+      if (dockHome) dockHome.classList.add('active');
+    }
+
+    if (btnOk) {
+      btnOk.onclick = function(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        const curD = sD ? sD.value : initialD;
+        const curP = sP ? sP.value : initialP;
+        localStorage.setItem('blur_dash_val', curD);
+        localStorage.setItem('blur_popup_val', curP);
+        initialD = curD;
+        initialP = curP;
+        closeSettingsPopup();
+      };
+    }
+
+    if (btnCancel) {
+      btnCancel.onclick = function(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        if (sD) sD.value = initialD;
+        if (sP) sP.value = initialP;
+        if (typeof setLiveBlur === 'function') setLiveBlur(initialD, initialP);
+        if (typeof applyBlurStyles === 'function') applyBlurStyles(initialD, initialP);
+        if (typeof window.handleDashBlurLive === 'function') window.handleDashBlurLive(initialD);
+        if (typeof window.handlePopupBlurLive === 'function') window.handlePopupBlurLive(initialP);
+        closeSettingsPopup();
+      };
+    }
+  })();

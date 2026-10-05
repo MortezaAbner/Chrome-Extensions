@@ -3,20 +3,37 @@ const fs = require('fs');
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // ۱. حذف کامل alert برای اطمینان از عدم مزاحمت کادر مرورگر
+  // ۱. حذف پیام آلرت مزاحم مرورگر
   js = js.replace(/alert\s*\(\s*['"`][^'"`]*['"`]\s*\)\s*;?/g, '');
 
-  // ۲. اصلاح مستقیم تزریق استایل تا پاپ‌آپ تنظیم موقعیت مکانی دقیقاً با داشبورد تغییر کند
-  const dashboardSelectors = '.ios-glass-card:not(.settings-modal-card), .location-modal-box, #location-modal, .location-modal-content, [id*="location-modal"]';
-  
-  if (!js.includes(dashboardSelectors)) {
-    js = js.replace(/\.ios-glass-card:not\(\.settings-modal-card\)[^,{]*/g, dashboardSelectors);
-  }
+  // ۲. متصل کردن استایل پاپ‌آپ مکان به داشبورد داخل استایل داینامیک بلر
+  const locationDashboardSync = `
+        /* کارت‌های داشبورد اصلی و پنجره موقعیت مکانی آب‌وهوا */
+        .ios-glass-card:not(.settings-modal-card),
+        .location-modal-box,
+        #location-modal,
+        #location-search-modal,
+        .location-modal-content,
+        .location-method-card {
+          backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-theme="dark"] .ios-glass-card:not(.settings-modal-card),
+        [data-theme="dark"] .location-modal-box,
+        [data-theme="dark"] #location-modal,
+        [data-theme="dark"] #location-search-modal,
+        [data-theme="dark"] .location-method-card {
+          background: rgba(15, 23, 42, 0.18) !important;
+        }
+`;
 
-  // ۳. هندلر مستقل، تمیز و تضمینی برای تایید، انصراف و بستن آنی پنجره تنظیمات
-  const cleanActionBlock = `
-  // اتصال مستقیم دکمه‌های تایید و انصراف ماتی
-  (function initModalButtons() {
+  js = js.replace(/\/\*\s*کارت‌های داشبورد اصلی[\s\S]*?\[data-theme="dark"\]\s*\.ios-glass-card:not\(\.settings-modal-card\)\s*\{[\s\S]*?\}\s*/g, locationDashboardSync.trim() + '\n');
+
+  // ۳. هندلر قطعی و مستقیم تایید، انصراف و بستن پاپ‌آپ تنظیمات
+  const settingsButtonsAction = `
+  // اتصال مستقیم دکمه‌های تایید و انصراف ماتی با بستن فوری
+  (function initModalButtonsClean() {
     const btnOk = document.getElementById('blur-save-btn');
     const btnCancel = document.getElementById('blur-cancel-btn');
     const sD = document.getElementById('slider-dash-blur');
@@ -25,19 +42,21 @@ if (fs.existsSync('./script.js')) {
     let initialD = localStorage.getItem('blur_dash_val') || (sD ? sD.value : '25');
     let initialP = localStorage.getItem('blur_popup_val') || (sP ? sP.value : '65');
 
-    function closeSettings() {
-      const modal = document.getElementById('view-settings');
-      if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
+    function closeSettingsPopup() {
+      // بستن کامل منوی تنظیمات
+      const settingsView = document.getElementById('view-settings');
+      if (settingsView) {
+        settingsView.classList.remove('active');
+        settingsView.style.display = 'none';
       }
-      const dash = document.getElementById('view-dashboard');
-      if (dash) {
-        dash.classList.add('active');
-        dash.style.display = '';
+      // بازگشت به نمای اصلی داشبورد
+      const dashboardView = document.getElementById('view-dashboard');
+      if (dashboardView) {
+        dashboardView.classList.add('active');
+        dashboardView.style.display = '';
       }
-      const dock = document.getElementById('dock-home-btn');
-      if (dock) dock.classList.add('active');
+      const dockHome = document.getElementById('dock-home-btn');
+      if (dockHome) dockHome.classList.add('active');
     }
 
     if (btnOk) {
@@ -47,11 +66,9 @@ if (fs.existsSync('./script.js')) {
         const curP = sP ? sP.value : initialP;
         localStorage.setItem('blur_dash_val', curD);
         localStorage.setItem('blur_popup_val', curP);
-        localStorage.setItem('cfg_dash_blur', curD);
-        localStorage.setItem('cfg_popup_blur', curP);
         initialD = curD;
         initialP = curP;
-        closeSettings();
+        closeSettingsPopup();
       };
     }
 
@@ -64,17 +81,17 @@ if (fs.existsSync('./script.js')) {
         if (typeof applyBlurStyles === 'function') applyBlurStyles(initialD, initialP);
         if (typeof window.handleDashBlurLive === 'function') window.handleDashBlurLive(initialD);
         if (typeof window.handlePopupBlurLive === 'function') window.handlePopupBlurLive(initialP);
-        closeSettings();
+        closeSettingsPopup();
       };
     }
   })();
-  `;
+`;
 
-  // پاک‌‌سازی بایندهای قبلی و اتصال کد جدید
-  js = js.replace(/\/\/ اتصال مستقیم دکمه‌های تایید و انصراف ماتی[\s\S]*?initModalButtons\(\);?\s*\}\)\(\);?/g, '');
-  js = js.replace(/\(function bindModalCloseActions\(\)[\s\S]*?\}\)\(\);?/g, '');
-  js += '\n' + cleanActionBlock;
+  // پاک کردن بایندرهای قبلی برای جلوگیری از اجرای تکراری یا بلاک شدن
+  js = js.replace(/\/\/ اتصال مستقیم دکمه‌های تایید و انصراف[\s\S]*?initModalButtonsClean\(\);?\s*\}\)\(\);?/g, '');
+  js = js.replace(/\/\/ اتصال مستقیم دکمه‌های تایید و انصراف[\s\S]*?initModalButtons\(\);?\s*\}\)\(\);?/g, '');
+  js += '\n' + settingsButtonsAction;
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ رفع مشکل عدم عملکرد تایید و انصراف و اتصال پاپ‌آپ مکان انجام شد.');
+  console.log('✅ پاپ‌آپ مکان به استایل داشبورد متصل شد و دکمه‌های تایید و انصراف اصلاح شدند.');
 }
