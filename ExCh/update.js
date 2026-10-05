@@ -3,12 +3,9 @@ const fs = require('fs');
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // جایگزینی تمیز و قطعی تابع تزریق بلر خالص شیشه‌ای
-  const cleanFrostedGlassScript = `
-      // کنترل شفافیت شیشه کریستالی (حفظ بافت شیشه بدون کدر شدن رنگ)
-      const dAlpha = (0.05 + (d / 100 * 0.10)).toFixed(2);
-      const pAlpha = (0.08 + (p / 100 * 0.12)).toFixed(2);
-
+  // جایگزینی دقیق تابع تزریق استایل برای حذف سفیدی و پوشش سراسری تمام بخش‌های شیشه‌ای
+  const cleanUniversalGlassEngine = `
+      // کنترل بلر خالص و شیشه کریستالی بدون هیچ‌گونه لایه سفید یا کدر
       let styleTag = document.getElementById('live-custom-blur-style');
       if (!styleTag) {
         styleTag = document.createElement('style');
@@ -17,15 +14,31 @@ if (fs.existsSync('./script.js')) {
       }
 
       styleTag.textContent = \`
-        .ios-glass-card:not(.settings-modal-card) {
-          backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, \${dAlpha}) !important;
+        /* ۱. اعمال بلر بر تمامی کارت‌های اصلی داشبورد، آب‌وهوا، ساعت، تقویم و تسک‌ها */
+        .ios-glass-card,
+        .weather-card,
+        .clock-card,
+        .calendar-card,
+        .task-card,
+        .quick-actions-bar,
+        .dock-container,
+        .task-item-card,
+        .stat-card {
+          backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
+          -webkit-backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
+          background: rgba(255, 255, 255, 0.06) !important;
         }
-        [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
-          background: rgba(15, 23, 42, \${dAlpha}) !important;
+        [data-theme="dark"] .ios-glass-card,
+        [data-theme="dark"] .weather-card,
+        [data-theme="dark"] .clock-card,
+        [data-theme="dark"] .calendar-card,
+        [data-theme="dark"] .task-card,
+        [data-theme="dark"] .dock-container,
+        [data-theme="dark"] .task-item-card {
+          background: rgba(15, 23, 42, 0.15) !important;
         }
 
+        /* ۲. اعمال بلر بر تمامی پاپ‌آپ‌ها، دراورها، ویرایش تسک و پنجره‌های تنظیمات */
         .glass-blur-menu,
         .forecast-drawer,
         .clock-drawer,
@@ -33,24 +46,31 @@ if (fs.existsSync('./script.js')) {
         .month-year-picker-modal,
         .date-event-popup,
         .task-tool-popup,
+        .task-modal-box,
+        .task-edit-modal,
         .location-modal-box,
-        .settings-modal-card {
-          backdrop-filter: blur(\${popupPx}px) saturate(190%) !important;
-          -webkit-backdrop-filter: blur(\${popupPx}px) saturate(190%) !important;
-          background: rgba(255, 255, 255, \${pAlpha}) !important;
+        .settings-modal-card,
+        .modal-overlay .modal-card,
+        .app-view.modal-overlay {
+          backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
         }
         [data-theme="dark"] .glass-blur-menu,
         [data-theme="dark"] .forecast-drawer,
         [data-theme="dark"] .clock-drawer,
-        [data-theme="dark"] .settings-modal-card {
-          background: rgba(15, 23, 42, \${pAlpha}) !important;
+        [data-theme="dark"] .task-modal-box,
+        [data-theme="dark"] .task-edit-modal,
+        [data-theme="dark"] .settings-modal-card,
+        [data-theme="dark"] .modal-overlay .modal-card {
+          background: rgba(15, 23, 42, 0.22) !important;
         }
       \`;
 `;
 
-  // بازنویسی دقیق بلوک استایل داینامیک
-  js = js.replace(/const dAlpha\s*=\s*[\s\S]*?settings-modal-card\s*\{[\s\S]*?\}\s*`;/g, cleanFrostedGlassScript.trim());
+  // جایگزینی دقیق بلوک استایل در فایل
+  js = js.replace(/let styleTag = document\.getElementById\('live-custom-blur-style'\);[\s\S]*?settings-modal-card\s*\{[\s\S]*?\}\s*`;/g, cleanUniversalGlassEngine.trim());
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ استایل شیشه مات کریستالی بدون کدر شدن در ۱۰۰٪ اعمال شد.');
+  console.log('✅ بلر سراسری شیشه‌ای کریستالی روی تمام پاپ‌آپ‌ها و کارت‌ها اعمال شد.');
 }
