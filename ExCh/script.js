@@ -2674,8 +2674,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const pPx = (p * 0.95).toFixed(1);
 
       // کنترل شفافیت و بلر بدون تداخل
-      const dAlpha = (0.08 + (d / 100 * 0.12)).toFixed(2);
-      const pAlpha = (0.12 + (p / 100 * 0.15)).toFixed(2);
+      // کنترل شفافیت شیشه کریستالی (حفظ بافت شیشه بدون کدر شدن رنگ)
+      const dAlpha = (0.05 + (d / 100 * 0.10)).toFixed(2);
+      const pAlpha = (0.08 + (p / 100 * 0.12)).toFixed(2);
 
       let styleTag = document.getElementById('live-custom-blur-style');
       if (!styleTag) {
@@ -2703,15 +2704,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .task-tool-popup,
         .location-modal-box,
         .settings-modal-card {
-          backdrop-filter: blur(${pPx}px) saturate(220%) !important;
-          -webkit-backdrop-filter: blur(${pPx}px) saturate(220%) !important;
+          backdrop-filter: blur(${popupPx}px) saturate(190%) !important;
+          -webkit-backdrop-filter: blur(${popupPx}px) saturate(190%) !important;
           background: rgba(255, 255, 255, ${pAlpha}) !important;
         }
         [data-theme="dark"] .glass-blur-menu,
         [data-theme="dark"] .forecast-drawer,
         [data-theme="dark"] .clock-drawer,
         [data-theme="dark"] .settings-modal-card {
-          background: rgba(15, 21, 37, ${pAlpha}) !important;
+          background: rgba(15, 23, 42, ${pAlpha}) !important;
         }
       `;
     }

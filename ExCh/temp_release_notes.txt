@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.29:
-- رفع نشت کادر فونت به تب‌های دیگر و اصلاح قطعی نمایش درصد و تغییر زنده ماتی اسلایدرها
+### 🇮🇷 تغییرات نسخه v1.32.31:
+- رفع مشکل کدر و رنگی شدن پاپ‌آپ و داشبورد در ماتی ۱۰۰٪ و تبدیل به شیشه مات کریستالی خالص
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.29):
-- Fix Tab DOM Leaks and Reliable Realtime Blur Percentage Engine
+### 🇬🇧 Release Notes (v1.32.31):
+- Fix 100% Blur Opaque Issue - Pure Frosted Glass
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
