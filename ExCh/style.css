@@ -2620,3 +2620,43 @@ body {
   border: 1.5px solid #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
+
+
+/* اتصال قطعی بلر شیشه‌ای به متغیرهای سراسری */
+:root {
+  --dash-blur-px: 18px;
+  --dash-alpha-val: 0.15;
+  --popup-blur-px: 55px;
+  --popup-alpha-val: 0.45;
+}
+
+.ios-glass-card:not(.settings-modal-card) {
+  backdrop-filter: blur(var(--dash-blur-px)) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) saturate(190%) !important;
+  background: rgba(255, 255, 255, var(--dash-alpha-val)) !important;
+}
+
+[data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
+  background: rgba(15, 23, 42, var(--dash-alpha-val)) !important;
+}
+
+.glass-blur-menu,
+.forecast-drawer,
+.clock-drawer,
+.azan-city-dropdown,
+.month-year-picker-modal,
+.date-event-popup,
+.task-tool-popup,
+.location-modal-box,
+.settings-modal-card {
+  backdrop-filter: blur(var(--popup-blur-px)) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(var(--popup-blur-px)) saturate(220%) !important;
+  background: rgba(255, 255, 255, var(--popup-alpha-val)) !important;
+}
+
+[data-theme="dark"] .glass-blur-menu,
+[data-theme="dark"] .forecast-drawer,
+[data-theme="dark"] .clock-drawer,
+[data-theme="dark"] .settings-modal-card {
+  background: rgba(15, 21, 37, var(--popup-alpha-val)) !important;
+}

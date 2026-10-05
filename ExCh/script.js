@@ -2635,126 +2635,77 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
 
-  // ========================================================
-  // موتور پایدار ماتی زنده، درصد فارسی و بستن پاپ‌آپ
-  // ========================================================
-  (function initBulletproofBlur() {
-    const sDash = document.getElementById('slider-dash-blur');
-    const sPopup = document.getElementById('slider-popup-blur');
-    const lDash = document.getElementById('val-dash-blur');
-    const lPopup = document.getElementById('val-popup-blur');
-    const btnSave = document.getElementById('blur-save-btn');
-    const btnCancel = document.getElementById('blur-cancel-btn');
-    const modalSettings = document.getElementById('view-settings');
+  
 
-    // تابع مستقل تبدیل عدد به فارسی بدون وابستگی
-    function formatFaPercent(num) {
-      const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-      return '٪' + String(num).replace(/\d/g, d => farsiDigits[d]);
-    }
 
-    let savedD = localStorage.getItem('blur_dash_val') || '25';
-    let savedP = localStorage.getItem('blur_popup_val') || '65';
+// ========================================================
+// کنترلر مستقیم و سراسری بلر و درصدها (Window Global Engine)
+// ========================================================
+(function() {
+  function toPersianDigits(n) {
+    return '٪' + String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  }
 
-    function setLiveBlur(dVal, pVal) {
-      const d = parseInt(dVal, 10);
-      const p = parseInt(pVal, 10);
+  let savedDash = localStorage.getItem('cfg_dash_blur') || '25';
+  let savedPopup = localStorage.getItem('cfg_popup_blur') || '65';
 
-      // آپدیت متن درصد در همان لحظه حرکت اسلایدر
-      if (lDash) lDash.textContent = formatFaPercent(d);
-      if (lPopup) lPopup.textContent = formatFaPercent(p);
+  window.handleDashBlurLive = function(val) {
+    const lbl = document.getElementById('val-dash-blur');
+    if (lbl) lbl.textContent = toPersianDigits(val);
 
-      const dPx = (d * 0.7).toFixed(1);
-      const pPx = (p * 0.95).toFixed(1);
+    const px = (val * 0.65).toFixed(1) + 'px';
+    const alpha = (val / 100 * 0.35).toFixed(2);
+    document.documentElement.style.setProperty('--dash-blur-px', px);
+    document.documentElement.style.setProperty('--dash-alpha-val', alpha);
+  };
 
-      // کنترل شفافیت و بلر بدون تداخل
-      const dAlpha = (d / 100 * 0.35).toFixed(2);
-      const pAlpha = (0.20 + (p / 100 * 0.55)).toFixed(2);
+  window.handlePopupBlurLive = function(val) {
+    const lbl = document.getElementById('val-popup-blur');
+    if (lbl) lbl.textContent = toPersianDigits(val);
 
-      let styleTag = document.getElementById('live-custom-blur-style');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.id = 'live-custom-blur-style';
-        document.head.appendChild(styleTag);
-      }
+    const px = (val * 0.90).toFixed(1) + 'px';
+    const alpha = (0.15 + (val / 100 * 0.55)).toFixed(2);
+    document.documentElement.style.setProperty('--popup-blur-px', px);
+    document.documentElement.style.setProperty('--popup-alpha-val', alpha);
+  };
 
-      styleTag.textContent = `
-        .ios-glass-card:not(.settings-modal-card) {
-          backdrop-filter: blur(${dPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(${dPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, ${dAlpha}) !important;
-        }
-        [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
-          background: rgba(15, 23, 42, ${dAlpha}) !important;
-        }
+  window.saveBlurSettings = function() {
+    const sD = document.getElementById('slider-dash-blur');
+    const sP = document.getElementById('slider-popup-blur');
+    if (sD) savedDash = sD.value;
+    if (sP) savedPopup = sP.value;
 
-        .glass-blur-menu,
-        .forecast-drawer,
-        .clock-drawer,
-        .azan-city-dropdown,
-        .month-year-picker-modal,
-        .date-event-popup,
-        .task-tool-popup,
-        .location-modal-box,
-        .settings-modal-card {
-          backdrop-filter: blur(${pPx}px) saturate(220%) !important;
-          -webkit-backdrop-filter: blur(${pPx}px) saturate(220%) !important;
-          background: rgba(255, 255, 255, ${pAlpha}) !important;
-        }
-        [data-theme="dark"] .glass-blur-menu,
-        [data-theme="dark"] .forecast-drawer,
-        [data-theme="dark"] .clock-drawer,
-        [data-theme="dark"] .settings-modal-card {
-          background: rgba(15, 21, 37, ${pAlpha}) !important;
-        }
-      `;
-    }
+    localStorage.setItem('cfg_dash_blur', savedDash);
+    localStorage.setItem('cfg_popup_blur', savedPopup);
 
-    // متصل کردن رویداد مستقیم کشیدن اسلایدر (input)
-    if (sDash) {
-      sDash.value = savedD;
-      sDash.addEventListener('input', () => {
-        setLiveBlur(sDash.value, sPopup ? sPopup.value : savedP);
-      });
-    }
+    const modal = document.getElementById('view-settings');
+    if (modal) modal.classList.remove('active');
+    document.getElementById('view-dashboard')?.classList.add('active');
+    document.getElementById('dock-home-btn')?.classList.add('active');
+  };
 
-    if (sPopup) {
-      sPopup.value = savedP;
-      sPopup.addEventListener('input', () => {
-        setLiveBlur(sDash ? sDash.value : savedD, sPopup.value);
-      });
-    }
+  window.cancelBlurSettings = function() {
+    const sD = document.getElementById('slider-dash-blur');
+    const sP = document.getElementById('slider-popup-blur');
+    if (sD) sD.value = savedDash;
+    if (sP) sP.value = savedPopup;
 
-    // اعمال مقدار ذخیره شده در شروع
-    setLiveBlur(savedD, savedP);
+    window.handleDashBlurLive(savedDash);
+    window.handlePopupBlurLive(savedPopup);
 
-    // دکمه تأیید ماتی: ذخیره دائمی و بستن پاپ‌آپ
-    if (btnSave) {
-      btnSave.onclick = (e) => {
-        e.stopPropagation();
-        savedD = sDash ? sDash.value : savedD;
-        savedP = sPopup ? sPopup.value : savedP;
-        localStorage.setItem('blur_dash_val', savedD);
-        localStorage.setItem('blur_popup_val', savedP);
-        setLiveBlur(savedD, savedP);
+    const modal = document.getElementById('view-settings');
+    if (modal) modal.classList.remove('active');
+    document.getElementById('view-dashboard')?.classList.add('active');
+    document.getElementById('dock-home-btn')?.classList.add('active');
+  };
 
-        if (modalSettings) modalSettings.classList.remove('active');
-        document.getElementById('view-dashboard')?.classList.add('active');
-        document.getElementById('dock-home-btn')?.classList.add('active');
-      };
-    }
-
-    // دکمه انصراف: برگرداندن درصدها و ماتی به مقدار قبلی و بستن پاپ‌آپ
-    if (btnCancel) {
-      btnCancel.onclick = (e) => {
-        e.stopPropagation();
-        if (sDash) sDash.value = savedD;
-        if (sPopup) sPopup.value = savedP;
-        setLiveBlur(savedD, savedP);
-
-        if (modalSettings) modalSettings.classList.remove('active');
-        document.getElementById('view-dashboard')?.classList.add('active');
-        document.getElementById('dock-home-btn')?.classList.add('active');
-      };
-    }
-  })();
+  // اعمال مقادیر در بارگذاری اولیه
+  setTimeout(() => {
+    const sD = document.getElementById('slider-dash-blur');
+    const sP = document.getElementById('slider-popup-blur');
+    if (sD) sD.value = savedDash;
+    if (sP) sP.value = savedPopup;
+    window.handleDashBlurLive(savedDash);
+    window.handlePopupBlurLive(savedPopup);
+  }, 100);
+})();
