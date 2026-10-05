@@ -2541,3 +2541,46 @@ body {
   background: var(--accent-color, #2563eb) !important;
   box-shadow: 0 4px 14px var(--accent-color, #2563eb) !important;
 }
+
+
+/* ========================================================
+   تیک اختصاصی تم‌ها و اعمال متغیرهای ماتی
+   ======================================================== */
+.theme-mode-btn {
+  position: relative !important;
+}
+
+.theme-mode-btn .mode-circle-preview {
+  position: relative !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* تیک خوردن حالت انتخابی (عکس ۲) */
+.theme-mode-btn.active .mode-circle-preview::after {
+  content: '✓';
+  position: absolute;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #2563eb;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.theme-mode-btn.active .mode-circle-preview {
+  border: 2.5px solid #2563eb !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* آیکون گرد و مدرن خودکار */
+.mode-circle-auto {
+  background: linear-gradient(135deg, #0f172a 50%, #ffffff 50%) !important;
+  border: 1.5px solid #64748b !important;
+}
+
+/* اصلاح کانتینر محتوای تنظیمات */
+.settings-content-container {
+  overflow-x: hidden !important;
+}

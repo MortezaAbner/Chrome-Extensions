@@ -433,13 +433,13 @@
           <div class="settings-tab-pane" id="pane-wallpaper">
             <div class="settings-form-row">
               <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم یا ریست به حالت پیش‌فرض</span></label>
-              <div class="settings-bg-actions" style="display: flex; gap: 10px; margin-top: 10px;">
-                <label class="settings-btn-upload location-chip" style="cursor: pointer; padding: 10px 16px;">
+                            <div class="settings-bg-actions" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; max-width: 100%;">
+                <label class="settings-btn-upload location-chip" style="cursor: pointer; padding: 9px 14px; font-size: 0.85rem; white-space: nowrap;">
                   📁 انتخاب عکس
                   <input type="file" id="settings-bg-file" accept="image/*" style="display: none;">
                 </label>
-                <button class="settings-btn-action location-chip" id="settings-blur-toggle" type="button" style="padding: 10px 16px;">✨ وضعیت بلر: <span id="settings-blur-status">شفاف</span></button>
-                <button class="settings-btn-action location-chip" id="settings-reset-bg" type="button" style="color: #ef4444; padding: 10px 16px;">↺ بازنشانی</button>
+                <button class="settings-btn-action location-chip" id="settings-blur-toggle" type="button" style="padding: 9px 14px; font-size: 0.85rem; white-space: nowrap;">✨ وضعیت بلر: <span id="settings-blur-status">شفاف</span></button>
+                <button class="settings-btn-action location-chip" id="settings-reset-bg" type="button" style="color: #ef4444; padding: 9px 14px; font-size: 0.85rem; white-space: nowrap;">↺ بازنشانی</button>
               </div>
             </div>
           </div>
@@ -451,7 +451,7 @@
               <label class="settings-field-label">تم رنگی<span class="sub-tip">انتخاب حالت نمایشی دستیار</span></label>
               <div class="theme-modes-grid">
                 <div class="theme-mode-btn" data-mode="auto" id="theme-btn-auto">
-                  <div class="mode-circle-preview mode-circle-auto">🌓</div>
+                  <div class="mode-circle-preview mode-circle-auto"></div>
                   <span>خودکار</span>
                 </div>
                 <div class="theme-mode-btn" data-mode="dark" id="theme-btn-dark">
