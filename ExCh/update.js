@@ -3,95 +3,58 @@ const fs = require('fs');
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // ۱. حذف پیام آلرت مزاحم مرورگر
-  js = js.replace(/alert\s*\(\s*['"`][^'"`]*['"`]\s*\)\s*;?/g, '');
+  // ۱. اضافه کردن سلکتورهای این سه دکمه به رول استایل پاپ‌آپ‌ها در بخش تزریق زنده بلر
+  const chipsTargetSelectors = `
+        #forecast-btn,
+        #azan-btn,
+        #timer-btn,
+        .widget-action-chip,
+        .forecast-toggle-btn,
+        .azan-toggle-btn,
+        .timer-toggle-btn,
+        .location-chip:not(#weather-city-btn),
+  `;
 
-  // ۲. متصل کردن استایل پاپ‌آپ مکان به داشبورد داخل استایل داینامیک بلر
-  const locationDashboardSync = `
-        /* کارت‌های داشبورد اصلی و پنجره موقعیت مکانی آب‌وهوا */
-        .ios-glass-card:not(.settings-modal-card),
-        .location-modal-box,
-        #location-modal,
-        #location-search-modal,
-        .location-modal-content,
-        .location-method-card {
-          backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
-          -webkit-backdrop-filter: blur(\${dPx}px) saturate(180%) !important;
-          background: rgba(255, 255, 255, 0.08) !important;
-        }
-        [data-theme="dark"] .ios-glass-card:not(.settings-modal-card),
-        [data-theme="dark"] .location-modal-box,
-        [data-theme="dark"] #location-modal,
-        [data-theme="dark"] #location-search-modal,
-        [data-theme="dark"] .location-method-card {
-          background: rgba(15, 23, 42, 0.18) !important;
-        }
-`;
+  if (!js.includes('#forecast-btn')) {
+    js = js.replace(
+      /(\.glass-blur-menu,[\s\S]*?\.settings-modal-card)/,
+      `${chipsTargetSelectors.trim()}\n        $1`
+    );
+  }
 
-  js = js.replace(/\/\*\s*کارت‌های داشبورد اصلی[\s\S]*?\[data-theme="dark"\]\s*\.ios-glass-card:not\(\.settings-modal-card\)\s*\{[\s\S]*?\}\s*/g, locationDashboardSync.trim() + '\n');
+  // ۲. مدیریت مستقل لوکیشن اوقات شرعی و تقدم لوکیشن آب‌وهوا
+  const prayerWeatherSyncLogic = `
+  // ========================================================
+  // تفکیک لوکیشن اوقات شرعی و تقدم لوکیشن آب‌وهوا
+  // ========================================================
+  (function setupLocationIndependence() {
+    // رویداد تغییر لوکیشن مستقل اوقات شرعی
+    window.updateAzanOnlyCity = function(cityName) {
+      if (!cityName) return;
+      localStorage.setItem('azan_custom_city_override', cityName);
+      if (typeof fetchAzanTimes === 'function') fetchAzanTimes(cityName);
+      else if (typeof updateAzanTimes === 'function') updateAzanTimes(cityName);
+      else if (typeof loadPrayerTimes === 'function') loadPrayerTimes(cityName);
+    };
 
-  // ۳. هندلر قطعی و مستقیم تایید، انصراف و بستن پاپ‌آپ تنظیمات
-  const settingsButtonsAction = `
-  // اتصال مستقیم دکمه‌های تایید و انصراف ماتی با بستن فوری
-  (function initModalButtonsClean() {
-    const btnOk = document.getElementById('blur-save-btn');
-    const btnCancel = document.getElementById('blur-cancel-btn');
-    const sD = document.getElementById('slider-dash-blur');
-    const sP = document.getElementById('slider-popup-blur');
-
-    let initialD = localStorage.getItem('blur_dash_val') || (sD ? sD.value : '25');
-    let initialP = localStorage.getItem('blur_popup_val') || (sP ? sP.value : '65');
-
-    function closeSettingsPopup() {
-      // بستن کامل منوی تنظیمات
-      const settingsView = document.getElementById('view-settings');
-      if (settingsView) {
-        settingsView.classList.remove('active');
-        settingsView.style.display = 'none';
-      }
-      // بازگشت به نمای اصلی داشبورد
-      const dashboardView = document.getElementById('view-dashboard');
-      if (dashboardView) {
-        dashboardView.classList.add('active');
-        dashboardView.style.display = '';
-      }
-      const dockHome = document.getElementById('dock-home-btn');
-      if (dockHome) dockHome.classList.add('active');
-    }
-
-    if (btnOk) {
-      btnOk.onclick = function(e) {
-        if (e) { e.preventDefault(); e.stopPropagation(); }
-        const curD = sD ? sD.value : initialD;
-        const curP = sP ? sP.value : initialP;
-        localStorage.setItem('blur_dash_val', curD);
-        localStorage.setItem('blur_popup_val', curP);
-        initialD = curD;
-        initialP = curP;
-        closeSettingsPopup();
-      };
-    }
-
-    if (btnCancel) {
-      btnCancel.onclick = function(e) {
-        if (e) { e.preventDefault(); e.stopPropagation(); }
-        if (sD) sD.value = initialD;
-        if (sP) sP.value = initialP;
-        if (typeof setLiveBlur === 'function') setLiveBlur(initialD, initialP);
-        if (typeof applyBlurStyles === 'function') applyBlurStyles(initialD, initialP);
-        if (typeof window.handleDashBlurLive === 'function') window.handleDashBlurLive(initialD);
-        if (typeof window.handlePopupBlurLive === 'function') window.handlePopupBlurLive(initialP);
-        closeSettingsPopup();
+    // هماهنگی با تغییر لوکیشن آب‌وهوا (به عنوان لوکیشن اصلی)
+    const baseSaveCity = window.saveCitySelection || window.applyCityChange;
+    if (typeof baseSaveCity === 'function') {
+      window.saveCitySelection = function(newCity) {
+        baseSaveCity(newCity);
+        localStorage.removeItem('azan_custom_city_override');
+        if (typeof fetchAzanTimes === 'function') fetchAzanTimes(newCity);
+        else if (typeof updateAzanTimes === 'function') updateAzanTimes(newCity);
+        else if (typeof loadPrayerTimes === 'function') loadPrayerTimes(newCity);
       };
     }
   })();
 `;
 
-  // پاک کردن بایندرهای قبلی برای جلوگیری از اجرای تکراری یا بلاک شدن
-  js = js.replace(/\/\/ اتصال مستقیم دکمه‌های تایید و انصراف[\s\S]*?initModalButtonsClean\(\);?\s*\}\)\(\);?/g, '');
-  js = js.replace(/\/\/ اتصال مستقیم دکمه‌های تایید و انصراف[\s\S]*?initModalButtons\(\);?\s*\}\)\(\);?/g, '');
-  js += '\n' + settingsButtonsAction;
+  // پاک کردن تعاریف تکراری قبلی و ثبت نسخه جدید
+  js = js.replace(/\/\/ ========================================================\s*\/\/ تفکیک لوکیشن اوقات شرعی[\s\S]*?setupLocationIndependence\(\);?\s*\}\)\(\);?/g, '');
+  js += '\n' + prayerWeatherSyncLogic;
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ پاپ‌آپ مکان به استایل داشبورد متصل شد و دکمه‌های تایید و انصراف اصلاح شدند.');
+  console.log('✅ اتصال ماتی ۳ دکمه و منطق تفکیک لوکیشن اوقات شرعی با موفقیت اعمال شد.');
 }

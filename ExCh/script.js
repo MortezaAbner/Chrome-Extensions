@@ -2458,6 +2458,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         /* ۲. پاپ‌آپ‌ها: پیش‌بینی، اوقات شرعی، تایمر و تنظیمات */
+        #forecast-btn,
+        #azan-btn,
+        #timer-btn,
+        .widget-action-chip,
+        .forecast-toggle-btn,
+        .azan-toggle-btn,
+        .timer-toggle-btn,
+        .location-chip:not(#weather-city-btn),
         .glass-blur-menu,
         .forecast-drawer,
         #forecast-drawer,
@@ -2808,6 +2816,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof window.handleDashBlurLive === 'function') window.handleDashBlurLive(initialD);
         if (typeof window.handlePopupBlurLive === 'function') window.handlePopupBlurLive(initialP);
         closeSettingsPopup();
+      };
+    }
+  })();
+
+
+  // ========================================================
+  // تفکیک لوکیشن اوقات شرعی و تقدم لوکیشن آب‌وهوا
+  // ========================================================
+  (function setupLocationIndependence() {
+    // رویداد تغییر لوکیشن مستقل اوقات شرعی
+    window.updateAzanOnlyCity = function(cityName) {
+      if (!cityName) return;
+      localStorage.setItem('azan_custom_city_override', cityName);
+      if (typeof fetchAzanTimes === 'function') fetchAzanTimes(cityName);
+      else if (typeof updateAzanTimes === 'function') updateAzanTimes(cityName);
+      else if (typeof loadPrayerTimes === 'function') loadPrayerTimes(cityName);
+    };
+
+    // هماهنگی با تغییر لوکیشن آب‌وهوا (به عنوان لوکیشن اصلی)
+    const baseSaveCity = window.saveCitySelection || window.applyCityChange;
+    if (typeof baseSaveCity === 'function') {
+      window.saveCitySelection = function(newCity) {
+        baseSaveCity(newCity);
+        localStorage.removeItem('azan_custom_city_override');
+        if (typeof fetchAzanTimes === 'function') fetchAzanTimes(newCity);
+        else if (typeof updateAzanTimes === 'function') updateAzanTimes(newCity);
+        else if (typeof loadPrayerTimes === 'function') loadPrayerTimes(newCity);
       };
     }
   })();
