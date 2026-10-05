@@ -2416,6 +2416,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // موتور مستقیم اعمال ماتی به کل عناصر داشبورد و پاپ‌آپ‌ها
   function injectDynamicBlurStyles(dashBlurPx, popupBlurPx) {
     // کنترل بلر خالص و شیشه کریستالی بدون هیچ‌گونه لایه سفید یا کدر
+      // کنترل تفکیک‌شده بلر داشبورد (شامل مکان) و پاپ‌آپ‌ها (پیش‌بینی، اوقات شرعی، تایمر)
       let styleTag = document.getElementById('live-custom-blur-style');
       if (!styleTag) {
         styleTag = document.createElement('style');
@@ -2424,7 +2425,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       styleTag.textContent = `
-        /* ۱. اعمال بلر بر تمامی کارت‌های اصلی داشبورد، آب‌وهوا، ساعت، تقویم و تسک‌ها */
+        /* ۱. داشبورد اصلی و پاپ‌آپ/دکمه مکان */
         .ios-glass-card,
         .weather-card,
         .clock-card,
@@ -2433,7 +2434,11 @@ document.addEventListener('DOMContentLoaded', () => {
         .quick-actions-bar,
         .dock-container,
         .task-item-card,
-        .stat-card {
+        .stat-card,
+        .location-modal-box,
+        .location-chip,
+        #weather-city-btn,
+        #location-search-modal {
           backdrop-filter: blur(${dPx}px) saturate(160%) !important;
           -webkit-backdrop-filter: blur(${dPx}px) saturate(160%) !important;
           background: rgba(255, 255, 255, 0.06) !important;
@@ -2444,21 +2449,27 @@ document.addEventListener('DOMContentLoaded', () => {
         [data-theme="dark"] .calendar-card,
         [data-theme="dark"] .task-card,
         [data-theme="dark"] .dock-container,
-        [data-theme="dark"] .task-item-card {
+        [data-theme="dark"] .task-item-card,
+        [data-theme="dark"] .location-modal-box,
+        [data-theme="dark"] .location-chip,
+        [data-theme="dark"] #weather-city-btn,
+        [data-theme="dark"] #location-search-modal {
           background: rgba(15, 23, 42, 0.15) !important;
         }
 
-        /* ۲. اعمال بلر بر تمامی پاپ‌آپ‌ها، دراورها، ویرایش تسک و پنجره‌های تنظیمات */
+        /* ۲. پاپ‌آپ‌ها: پیش‌بینی، اوقات شرعی، تایمر و تنظیمات */
         .glass-blur-menu,
         .forecast-drawer,
+        #forecast-drawer,
         .clock-drawer,
+        #timer-drawer,
+        #azan-drawer,
         .azan-city-dropdown,
         .month-year-picker-modal,
         .date-event-popup,
         .task-tool-popup,
         .task-modal-box,
         .task-edit-modal,
-        .location-modal-box,
         .settings-modal-card,
         .modal-overlay .modal-card,
         .app-view.modal-overlay {
@@ -2468,7 +2479,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         [data-theme="dark"] .glass-blur-menu,
         [data-theme="dark"] .forecast-drawer,
+        [data-theme="dark"] #forecast-drawer,
         [data-theme="dark"] .clock-drawer,
+        [data-theme="dark"] #timer-drawer,
+        [data-theme="dark"] #azan-drawer,
         [data-theme="dark"] .task-modal-box,
         [data-theme="dark"] .task-edit-modal,
         [data-theme="dark"] .settings-modal-card,
@@ -2476,148 +2490,6 @@ document.addEventListener('DOMContentLoaded', () => {
           background: rgba(15, 23, 42, 0.22) !important;
         }
       `;
-  }
-
-  // رویداد اسلایدرهای ماتی (۰ شفاف و ۱۰۰ کاملاً مات)
-  const sliderD = document.getElementById('slider-dash-blur');
-  const sliderP = document.getElementById('slider-popup-blur');
-  const labelD = document.getElementById('val-dash-blur');
-  const labelP = document.getElementById('val-popup-blur');
-
-  function updateBlurFromInputs() {
-    const dVal = sliderD ? parseInt(sliderD.value, 10) : 25;
-    const pVal = sliderP ? parseInt(sliderP.value, 10) : 65;
-
-    if (labelD) labelD.textContent = toFa(dVal) + '٪';
-    if (labelP) labelP.textContent = toFa(pVal) + '٪';
-
-    // تبدیل ۰ تا ۱۰۰ درصد به بازه ۰ تا ۸۰ پیکسل برای بلر واقعی
-    const dPx = (dVal * 0.7).toFixed(1);
-    const pPx = (pVal * 0.9).toFixed(1);
-
-    injectDynamicBlurStyles(dPx, pPx);
-  }
-
-  if (sliderD) sliderD.oninput = updateBlurFromInputs;
-  if (sliderP) sliderP.oninput = updateBlurFromInputs;
-
-  const btnSaveBlur = document.getElementById('blur-save-btn');
-  const btnCancelBlur = document.getElementById('blur-cancel-btn');
-
-  let savedDashVal = localStorage.getItem('blur_d_saved') || '25';
-  let savedPopupVal = localStorage.getItem('blur_p_saved') || '65';
-
-  if (sliderD) sliderD.value = savedDashVal;
-  if (sliderP) sliderP.value = savedPopupVal;
-  updateBlurFromInputs();
-
-  if (btnSaveBlur) {
-    btnSaveBlur.onclick = () => {
-      savedDashVal = sliderD.value;
-      savedPopupVal = sliderP.value;
-      localStorage.setItem('blur_d_saved', savedDashVal);
-      localStorage.setItem('blur_p_saved', savedPopupVal);
-      updateBlurFromInputs();
-      alert('میزان ماتی با موفقیت ذخیره شد ✓');
-    };
-  }
-
-  if (btnCancelBlur) {
-    btnCancelBlur.onclick = () => {
-      if (sliderD) sliderD.value = savedDashVal;
-      if (sliderP) sliderP.value = savedPopupVal;
-      updateBlurFromInputs();
-    };
-  }
-
-  // رویداد انتخاب تم و تیک خوردن (عکس ۲)
-  function setupThemeModeTicks() {
-    const modeBtns = document.querySelectorAll('.theme-mode-btn');
-    const savedMode = localStorage.getItem('theme_mode_choice') || 'auto';
-
-    function setMode(mode) {
-      modeBtns.forEach(b => {
-        b.classList.toggle('active', b.dataset.mode === mode);
-      });
-
-      if (mode === 'auto') {
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      } else {
-        document.documentElement.setAttribute('data-theme', mode);
-      }
-      localStorage.setItem('theme_mode_choice', mode);
-    }
-
-    modeBtns.forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        setMode(btn.dataset.mode);
-      };
-    });
-
-    setMode(savedMode);
-  }
-  setupThemeModeTicks();
-
-
-  // ========================================================
-  // موتور قطعی ماتی صفر تا صد (کنترل همزمان بلر و غلظت رنگ)
-  // ========================================================
-  function applyAbsoluteBlurEngine(dPercent, pPercent) {
-    let styleElem = document.getElementById('engine-absolute-blur');
-    if (!styleElem) {
-      styleElem = document.createElement('style');
-      styleElem.id = 'engine-absolute-blur';
-      document.head.appendChild(styleElem);
-    }
-
-    const dP = Math.max(0, Math.min(100, parseInt(dPercent, 10)));
-    const pP = Math.max(0, Math.min(100, parseInt(pPercent, 10)));
-
-    // محاسبه پیکسل بلر (از ۰px تا ۵۰px برای داشبورد و تا ۸۰px برای پاپ‌آپ)
-    const dBlurPx = (dP * 0.5).toFixed(1);
-    const pBlurPx = (pP * 0.8).toFixed(1);
-
-    // محاسبه غلظت رنگ شیشه بر اساس درصد (از شفاف ۰.۰۵ تا غلیظ ۰.۹۲)
-    const dAlphaLight = (0.05 + (dP / 100) * 0.55).toFixed(2);
-    const dAlphaDark = (0.10 + (dP / 100) * 0.65).toFixed(2);
-
-    const pAlphaLight = (0.25 + (pP / 100) * 0.65).toFixed(2);
-    const pAlphaDark = (0.35 + (pP / 100) * 0.60).toFixed(2);
-
-    styleElem.textContent = `
-      /* داشبورد اصلی */
-      .ios-glass-card:not(.settings-modal-card) {
-        backdrop-filter: blur(${dBlurPx}px) saturate(190%) !important;
-        -webkit-backdrop-filter: blur(${dBlurPx}px) saturate(190%) !important;
-        background: rgba(255, 255, 255, ${dAlphaLight}) !important;
-      }
-      [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
-        background: rgba(15, 23, 42, ${dAlphaDark}) !important;
-      }
-
-      /* پاپ‌آپ‌ها، دراورها و مودال تنظیمات */
-      .glass-blur-menu,
-      .forecast-drawer,
-      .clock-drawer,
-      .azan-city-dropdown,
-      .month-year-picker-modal,
-      .date-event-popup,
-      .task-tool-popup,
-      .location-modal-box,
-      .settings-modal-card {
-        backdrop-filter: blur(${pBlurPx}px) saturate(220%) !important;
-        -webkit-backdrop-filter: blur(${pBlurPx}px) saturate(220%) !important;
-        background: rgba(255, 255, 255, ${pAlphaLight}) !important;
-      }
-      [data-theme="dark"] .glass-blur-menu,
-      [data-theme="dark"] .forecast-drawer,
-      [data-theme="dark"] .clock-drawer,
-      [data-theme="dark"] .settings-modal-card {
-        background: rgba(15, 21, 37, ${pAlphaDark}) !important;
-      }
-    `;
   }
 
   // متصل کردن اسلایدرهای صفحه

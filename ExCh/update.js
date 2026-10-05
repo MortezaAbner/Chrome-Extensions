@@ -3,9 +3,8 @@ const fs = require('fs');
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // جایگزینی دقیق تابع تزریق استایل برای حذف سفیدی و پوشش سراسری تمام بخش‌های شیشه‌ای
-  const cleanUniversalGlassEngine = `
-      // کنترل بلر خالص و شیشه کریستالی بدون هیچ‌گونه لایه سفید یا کدر
+  const targetedBlurSeparation = `
+      // کنترل تفکیک‌شده بلر داشبورد (شامل مکان) و پاپ‌آپ‌ها (پیش‌بینی، اوقات شرعی، تایمر)
       let styleTag = document.getElementById('live-custom-blur-style');
       if (!styleTag) {
         styleTag = document.createElement('style');
@@ -14,7 +13,7 @@ if (fs.existsSync('./script.js')) {
       }
 
       styleTag.textContent = \`
-        /* ۱. اعمال بلر بر تمامی کارت‌های اصلی داشبورد، آب‌وهوا، ساعت، تقویم و تسک‌ها */
+        /* ۱. داشبورد اصلی و پاپ‌آپ/دکمه مکان */
         .ios-glass-card,
         .weather-card,
         .clock-card,
@@ -23,7 +22,11 @@ if (fs.existsSync('./script.js')) {
         .quick-actions-bar,
         .dock-container,
         .task-item-card,
-        .stat-card {
+        .stat-card,
+        .location-modal-box,
+        .location-chip,
+        #weather-city-btn,
+        #location-search-modal {
           backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
           -webkit-backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
           background: rgba(255, 255, 255, 0.06) !important;
@@ -34,21 +37,27 @@ if (fs.existsSync('./script.js')) {
         [data-theme="dark"] .calendar-card,
         [data-theme="dark"] .task-card,
         [data-theme="dark"] .dock-container,
-        [data-theme="dark"] .task-item-card {
+        [data-theme="dark"] .task-item-card,
+        [data-theme="dark"] .location-modal-box,
+        [data-theme="dark"] .location-chip,
+        [data-theme="dark"] #weather-city-btn,
+        [data-theme="dark"] #location-search-modal {
           background: rgba(15, 23, 42, 0.15) !important;
         }
 
-        /* ۲. اعمال بلر بر تمامی پاپ‌آپ‌ها، دراورها، ویرایش تسک و پنجره‌های تنظیمات */
+        /* ۲. پاپ‌آپ‌ها: پیش‌بینی، اوقات شرعی، تایمر و تنظیمات */
         .glass-blur-menu,
         .forecast-drawer,
+        #forecast-drawer,
         .clock-drawer,
+        #timer-drawer,
+        #azan-drawer,
         .azan-city-dropdown,
         .month-year-picker-modal,
         .date-event-popup,
         .task-tool-popup,
         .task-modal-box,
         .task-edit-modal,
-        .location-modal-box,
         .settings-modal-card,
         .modal-overlay .modal-card,
         .app-view.modal-overlay {
@@ -58,7 +67,10 @@ if (fs.existsSync('./script.js')) {
         }
         [data-theme="dark"] .glass-blur-menu,
         [data-theme="dark"] .forecast-drawer,
+        [data-theme="dark"] #forecast-drawer,
         [data-theme="dark"] .clock-drawer,
+        [data-theme="dark"] #timer-drawer,
+        [data-theme="dark"] #azan-drawer,
         [data-theme="dark"] .task-modal-box,
         [data-theme="dark"] .task-edit-modal,
         [data-theme="dark"] .settings-modal-card,
@@ -68,9 +80,9 @@ if (fs.existsSync('./script.js')) {
       \`;
 `;
 
-  // جایگزینی دقیق بلوک استایل در فایل
-  js = js.replace(/let styleTag = document\.getElementById\('live-custom-blur-style'\);[\s\S]*?settings-modal-card\s*\{[\s\S]*?\}\s*`;/g, cleanUniversalGlassEngine.trim());
+  // فقط جایگزینی بلوک تزریق استایل بدون دستکاری بقیه فایل
+  js = js.replace(/let styleTag = document\.getElementById\('live-custom-blur-style'\);[\s\S]*?settings-modal-card\s*\{[\s\S]*?\}\s*`;/g, targetedBlurSeparation.trim());
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ بلر سراسری شیشه‌ای کریستالی روی تمام پاپ‌آپ‌ها و کارت‌ها اعمال شد.');
+  console.log('✅ تفکیک ماتی پاپ‌آپ مکان با پیش‌بینی، اوقات شرعی و تایمر در script.js اعمال شد.');
 }
