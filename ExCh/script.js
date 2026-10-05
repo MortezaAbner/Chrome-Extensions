@@ -2511,3 +2511,100 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('dock-home-btn')?.classList.add('active');
     };
   }
+
+
+  // ========================================================
+  // موتور بلور خالص CSS (بدون لایه‌های رنگی تیره یا کدر)
+  // ========================================================
+  const sDashBlur = document.getElementById('slider-dash-blur');
+  const sPopupBlur = document.getElementById('slider-popup-blur');
+  const lblDashBlur = document.getElementById('val-dash-blur');
+  const lblPopupBlur = document.getElementById('val-popup-blur');
+  const btnConfirmBlur = document.getElementById('blur-save-btn');
+  const btnDismissBlur = document.getElementById('blur-cancel-btn');
+  const settingsModalRoot = document.getElementById('view-settings');
+
+  const DEFAULT_D_BLUR = '25';
+  const DEFAULT_P_BLUR = '65';
+
+  function applyPureBlur(dPercent, pPercent) {
+    const dP = Math.max(0, Math.min(100, parseInt(dPercent, 10)));
+    const pP = Math.max(0, Math.min(100, parseInt(pPercent, 10)));
+
+    if (lblDashBlur) lblDashBlur.textContent = toFa(dP) + '٪';
+    if (lblPopupBlur) lblPopupBlur.textContent = toFa(pP) + '٪';
+
+    // تبدیل مستقیم ۰٪ تا ۱۰۰٪ به بلور خالص ۰px تا ۶۰px داشبورد و تا ۸۵px پاپ‌آپ‌ها
+    const dPx = (dP * 0.6).toFixed(1);
+    const pPx = (pP * 0.85).toFixed(1);
+
+    let styleTag = document.getElementById('pure-blur-dynamic-style');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'pure-blur-dynamic-style';
+      document.head.appendChild(styleTag);
+    }
+
+    styleTag.textContent = `
+      .ios-glass-card:not(.settings-modal-card) {
+        backdrop-filter: blur(${dPx}px) !important;
+        -webkit-backdrop-filter: blur(${dPx}px) !important;
+      }
+      .glass-blur-menu,
+      .forecast-drawer,
+      .clock-drawer,
+      .azan-city-dropdown,
+      .month-year-picker-modal,
+      .date-event-popup,
+      .task-tool-popup,
+      .location-modal-box,
+      .settings-modal-card {
+        backdrop-filter: blur(${pPx}px) !important;
+        -webkit-backdrop-filter: blur(${pPx}px) !important;
+      }
+    `;
+  }
+
+  function previewPureBlur() {
+    const d = sDashBlur ? sDashBlur.value : (localStorage.getItem('saved_pure_d_blur') || DEFAULT_D_BLUR);
+    const p = sPopupBlur ? sPopupBlur.value : (localStorage.getItem('saved_pure_p_blur') || DEFAULT_P_BLUR);
+    applyPureBlur(d, p);
+  }
+
+  if (sDashBlur) sDashBlur.oninput = previewPureBlur;
+  if (sPopupBlur) sPopupBlur.oninput = previewPureBlur;
+
+  const initPureD = localStorage.getItem('saved_pure_d_blur') || DEFAULT_D_BLUR;
+  const initPureP = localStorage.getItem('saved_pure_p_blur') || DEFAULT_P_BLUR;
+  if (sDashBlur) sDashBlur.value = initPureD;
+  if (sPopupBlur) sPopupBlur.value = initPureP;
+  applyPureBlur(initPureD, initPureP);
+
+  if (btnConfirmBlur) {
+    btnConfirmBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_pure_d_blur', sDashBlur ? sDashBlur.value : DEFAULT_D_BLUR);
+      localStorage.setItem('saved_pure_p_blur', sPopupBlur ? sPopupBlur.value : DEFAULT_P_BLUR);
+      previewPureBlur();
+
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
+    };
+  }
+
+  if (btnDismissBlur) {
+    btnDismissBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_pure_d_blur', DEFAULT_D_BLUR);
+      localStorage.setItem('saved_pure_p_blur', DEFAULT_P_BLUR);
+
+      if (sDashBlur) sDashBlur.value = DEFAULT_D_BLUR;
+      if (sPopupBlur) sPopupBlur.value = DEFAULT_P_BLUR;
+      applyPureBlur(DEFAULT_D_BLUR, DEFAULT_P_BLUR);
+
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
+    };
+  }
