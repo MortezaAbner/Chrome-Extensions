@@ -1228,6 +1228,14 @@ document.addEventListener('DOMContentLoaded', () => {
     { title: 'واتساپ', url: 'https://web.whatsapp.com' }
   ];
 
+  
+  // به‌‌روزرسانی لیست شورتکات‌ها
+  const resetShortcutsFlag = 'v2_shortcuts';
+  if (localStorage.getItem('shortcuts_version') !== resetShortcutsFlag) {
+    localStorage.removeItem('my_shortcuts');
+    localStorage.setItem('shortcuts_version', resetShortcutsFlag);
+  }
+
   let shortcuts = JSON.parse(localStorage.getItem('my_shortcuts')) || defaultShortcuts;
 
   function renderShortcuts() {

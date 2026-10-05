@@ -2139,3 +2139,45 @@ body {
 .settings-tab-pane.active {
   display: flex;
 }
+
+
+/* رفع کشیدگی پنجره تنظیمات و نمایش به عنوان پاپ‌آپ متمرکز */
+#view-settings.app-view.active {
+  display: flex !important;
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.settings-modal-card {
+  width: 780px !important;
+  max-width: 92vw !important;
+  max-height: 85vh !important;
+  margin: auto !important;
+  border-radius: 30px !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden;
+}
+
+.settings-layout-body {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  gap: 20px !important;
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+}
+
+.settings-sidebar-nav {
+  width: 190px !important;
+  flex-shrink: 0 !important;
+}
+
+.settings-content-main {
+  flex: 1 !important;
+}
