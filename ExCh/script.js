@@ -2228,3 +2228,180 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     bindSettingsNavClick();
   }
+
+
+  // ========================================================
+  // موتور جامع تنظیمات زنده تم، ماتی، رنگ و فونت
+  // ========================================================
+
+  // ۱. کنترل تم (دارک، لایت، خودکار) - عکس ۲
+  function applyThemeMode(mode) {
+    document.querySelectorAll('.theme-mode-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+
+    if (mode === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', mode);
+    }
+    localStorage.setItem('user_theme_mode', mode);
+  }
+
+  document.querySelectorAll('.theme-mode-btn').forEach(btn => {
+    btn.onclick = () => applyThemeMode(btn.dataset.mode);
+  });
+
+  const savedThemeMode = localStorage.getItem('user_theme_mode') || 'auto';
+  applyThemeMode(savedThemeMode);
+
+  // ۲. کنترل ماتی زنده با تایید و انصراف - عکس ۳
+  const sDash = document.getElementById('slider-dash-blur');
+  const sPopup = document.getElementById('slider-popup-blur');
+  const tDash = document.getElementById('val-dash-blur');
+  const tPopup = document.getElementById('val-popup-blur');
+  const btnBlurSave = document.getElementById('blur-save-btn');
+  const btnBlurCancel = document.getElementById('blur-cancel-btn');
+
+  let currentDashBlur = localStorage.getItem('val_d_blur') || '25';
+  let currentPopupBlur = localStorage.getItem('val_p_blur') || '65';
+
+  function setLiveBlur(dPct, pPct) {
+    if (tDash) tDash.textContent = toFa(dPct) + '٪';
+    if (tPopup) tPopup.textContent = toFa(pPct) + '٪';
+
+    const dPx = (dPct * 0.6).toFixed(1) + 'px';
+    const pPx = (pPct * 0.9).toFixed(1) + 'px';
+
+    document.documentElement.style.setProperty('--dash-blur', dPx);
+    document.documentElement.style.setProperty('--popup-blur', pPx);
+  }
+
+  if (sDash) {
+    sDash.value = currentDashBlur;
+    sDash.oninput = (e) => setLiveBlur(e.target.value, sPopup ? sPopup.value : currentPopupBlur);
+  }
+  if (sPopup) {
+    sPopup.value = currentPopupBlur;
+    sPopup.oninput = (e) => setLiveBlur(sDash ? sDash.value : currentDashBlur, e.target.value);
+  }
+
+  if (btnBlurSave) {
+    btnBlurSave.onclick = () => {
+      currentDashBlur = sDash.value;
+      currentPopupBlur = sPopup.value;
+      localStorage.setItem('val_d_blur', currentDashBlur);
+      localStorage.setItem('val_p_blur', currentPopupBlur);
+      setLiveBlur(currentDashBlur, currentPopupBlur);
+      alert('میزان ماتی با موفقیت ذخیره شد ✓');
+    };
+  }
+
+  if (btnBlurCancel) {
+    btnBlurCancel.onclick = () => {
+      if (sDash) sDash.value = currentDashBlur;
+      if (sPopup) sPopup.value = currentPopupBlur;
+      setLiveBlur(currentDashBlur, currentPopupBlur);
+    };
+  }
+  setLiveBlur(currentDashBlur, currentPopupBlur);
+
+  // ۳. کنترل رنگ اصلی و تایید پالت RGB - عکس ۴
+  function setDashboardAccent(color) {
+    document.documentElement.style.setProperty('--accent-color', color);
+    localStorage.setItem('dash_accent_color', color);
+
+    document.querySelectorAll('.color-palette-circle').forEach(btn => {
+      const match = btn.dataset.color.toLowerCase() === color.toLowerCase();
+      btn.classList.toggle('active', match);
+      btn.textContent = match ? '✓' : '';
+    });
+  }
+
+  document.querySelectorAll('.color-palette-circle').forEach(circle => {
+    circle.onclick = () => {
+      setDashboardAccent(circle.dataset.color);
+    };
+  });
+
+  const rgbColorInput = document.getElementById('rgb-color-picker');
+  const rgbConfirmBtn = document.getElementById('rgb-confirm-btn');
+
+  if (rgbConfirmBtn && rgbColorInput) {
+    rgbConfirmBtn.onclick = () => {
+      const chosenColor = rgbColorInput.value;
+      setDashboardAccent(chosenColor);
+      alert('رنگ اختصاصی اعمال شد ✓');
+    };
+  }
+
+  const initialAccent = localStorage.getItem('dash_accent_color') || '#2563eb';
+  setDashboardAccent(initialAccent);
+  if (rgbColorInput) rgbColorInput.value = initialAccent;
+
+  // ۴. مدیریت فونت‌ها و آپلود فونت دلخواه - عکس ۵
+  function applyActiveFont(fontName) {
+    document.documentElement.style.setProperty('--app-font', "'" + fontName + "', system-ui, -apple-system, sans-serif");
+    document.body.style.fontFamily = "'" + fontName + "', system-ui, -apple-system, sans-serif";
+    localStorage.setItem('dash_active_font', fontName);
+
+    document.querySelectorAll('.font-card-item:not(.font-card-upload)').forEach(card => {
+      const isSelected = card.dataset.font === fontName;
+      card.classList.toggle('active', isSelected);
+      const sample = card.querySelector('.font-card-sample');
+      if (sample) {
+        sample.textContent = isSelected ? 'من اینطوریم ✓' : 'من اینطوریم';
+      }
+    });
+  }
+
+  document.querySelectorAll('.font-card-item:not(.font-card-upload)').forEach(card => {
+    card.onclick = () => applyActiveFont(card.dataset.font);
+  });
+
+  const fontUploadInput = document.getElementById('custom-font-file');
+  const fontUploadStatus = document.getElementById('upload-font-status');
+  const fontUploadSample = document.getElementById('upload-font-sample');
+  const uploadCard = document.getElementById('upload-font-card');
+
+  if (fontUploadInput) {
+    fontUploadInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const fontData = evt.target.result;
+        const fontName = 'CustomUserFont';
+
+        let fontStyleTag = document.getElementById('custom-user-font-tag');
+        if (!fontStyleTag) {
+          fontStyleTag = document.createElement('style');
+          fontStyleTag.id = 'custom-user-font-tag';
+          document.head.appendChild(fontStyleTag);
+        }
+        fontStyleTag.textContent = '@font-face { font-family: "' + fontName + '"; src: url(' + fontData + '); }';
+
+        localStorage.setItem('custom_font_base64', fontData);
+        applyActiveFont(fontName);
+
+        if (uploadCard) uploadCard.classList.add('active');
+        if (fontUploadSample) fontUploadSample.textContent = 'فونت شخصی ✓';
+        if (fontUploadStatus) fontUploadStatus.textContent = file.name.slice(0, 14);
+        alert('فونت با موفقیت آپلود و در کل سایت فعال شد!');
+      };
+      reader.readAsDataURL(file);
+    };
+  }
+
+  const storedCustomFont = localStorage.getItem('custom_font_base64');
+  if (storedCustomFont) {
+    let fontStyleTag = document.createElement('style');
+    fontStyleTag.id = 'custom-user-font-tag';
+    fontStyleTag.textContent = '@font-face { font-family: "CustomUserFont"; src: url(' + storedCustomFont + '); }';
+    document.head.appendChild(fontStyleTag);
+  }
+
+  const initialFont = localStorage.getItem('dash_active_font') || 'Vazirmatn';
+  applyActiveFont(initialFont);

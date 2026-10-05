@@ -376,6 +376,7 @@
   <!-- ۲. صفحه جدید شیشه‌ای تنظیمات -->
     <!-- ۲. مودال تنظیمات -->
     <!-- ۲. مودال تنظیمات -->
+    <!-- ۲. مودال تنظیمات -->
   <section id="view-settings" class="modal-overlay">
     <div class="settings-modal-card ios-glass-card glass-blur-menu">
       <div class="settings-card-header">
@@ -428,7 +429,7 @@
             </div>
           </div>
 
-          <!-- تب تصویر زمینه (عکس ۲) -->
+          <!-- تب تصویر زمینه -->
           <div class="settings-tab-pane" id="pane-wallpaper">
             <div class="settings-form-row">
               <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم یا ریست به حالت پیش‌فرض</span></label>
@@ -443,32 +444,28 @@
             </div>
           </div>
 
-          <!-- تب تم و رنگ (عکس ۳، ۴ و ۵) -->
+          <!-- تب تم و رنگ (عکس ۲، ۳، ۴ و ۵) -->
           <div class="settings-tab-pane" id="pane-theme">
-            <!-- تم رنگی -->
+            <!-- تم رنگی ۳ حالته (عکس ۲) -->
             <div class="settings-form-row">
-              <label class="settings-field-label">تم رنگی<span class="sub-tip">انتخاب کنید که دستیارتون چه رنگی باشه!</span></label>
+              <label class="settings-field-label">تم رنگی<span class="sub-tip">انتخاب حالت نمایشی دستیار</span></label>
               <div class="theme-modes-grid">
-                <div class="theme-mode-btn active" data-mode="glass">
-                  <div class="mode-circle-preview" style="background: rgba(255,255,255,0.25); border: 2px solid var(--accent-color);">✓</div>
-                  <span>شیشه‌ای</span>
-                </div>
-                <div class="theme-mode-btn" data-mode="auto">
-                  <div class="mode-circle-preview" style="background: linear-gradient(135deg, #0f172a 50%, #ffffff 50%);">🌓</div>
+                <div class="theme-mode-btn" data-mode="auto" id="theme-btn-auto">
+                  <div class="mode-circle-preview mode-circle-auto">🌓</div>
                   <span>خودکار</span>
                 </div>
-                <div class="theme-mode-btn" data-mode="dark">
-                  <div class="mode-circle-preview" style="background: #0f172a; border: 1px solid #334155;">🌙</div>
+                <div class="theme-mode-btn" data-mode="dark" id="theme-btn-dark">
+                  <div class="mode-circle-preview" style="background: #0f172a; border: 1.5px solid #334155; color: #f8fafc;">🌙</div>
                   <span>دارک</span>
                 </div>
-                <div class="theme-mode-btn" data-mode="light">
-                  <div class="mode-circle-preview" style="background: #ffffff; border: 1px solid #cbd5e1;">☀️</div>
+                <div class="theme-mode-btn active" data-mode="light" id="theme-btn-light">
+                  <div class="mode-circle-preview" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #eab308;">☀️</div>
                   <span>لایت</span>
                 </div>
               </div>
             </div>
 
-            <!-- میزان ماتی شیشه به صورت صفر تا صد -->
+            <!-- میزان ماتی شیشه به صورت صفر تا صد همراه با دکمه تایید و انصراف (عکس ۳) -->
             <div class="settings-form-row">
               <label class="settings-field-label">ماتی داشبورد اصلی<span class="sub-tip">میزان بلر کارت‌های اصلی: <strong id="val-dash-blur">۲۵٪</strong></span></label>
               <input type="range" id="slider-dash-blur" min="0" max="100" value="25" class="glass-slider">
@@ -479,7 +476,12 @@
               <input type="range" id="slider-popup-blur" min="0" max="100" value="65" class="glass-slider">
             </div>
 
-            <!-- انتخاب رنگ اصلی با پالت RGB و دکمه تایید -->
+            <div class="blur-actions-bar" style="display: flex; gap: 10px; margin-top: 4px;">
+              <button type="button" id="blur-save-btn" class="location-chip" style="background: var(--accent-color, #2563eb); color: #fff; padding: 6px 14px; font-weight: 700;">تأیید ماتی ✓</button>
+              <button type="button" id="blur-cancel-btn" class="location-chip" style="padding: 6px 14px;">انصراف ✕</button>
+            </div>
+
+            <!-- انتخاب رنگ اصلی با پالت RGB و دکمه تایید (عکس ۴) -->
             <div class="settings-form-row">
               <label class="settings-field-label">رنگ اصلی دستیار<span class="sub-tip">رنگ دکمه‌ها، متن‌های مهم و تقویم را عوض کنید.</span></label>
               <div class="theme-colors-grid">
@@ -492,7 +494,7 @@
                     <span>🎨</span>
                     <input type="color" id="rgb-color-picker" value="#2563eb">
                   </div>
-                  <button type="button" id="rgb-confirm-btn" class="location-chip" style="font-size: 0.75rem; padding: 6px 10px;">تأیید ✓</button>
+                  <button type="button" id="rgb-confirm-btn" class="location-chip" style="font-size: 0.78rem; padding: 6px 12px; font-weight: bold;">تأیید ✓</button>
                 </div>
               </div>
             </div>

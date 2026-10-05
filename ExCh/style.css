@@ -2453,3 +2453,91 @@ body {
   background: var(--accent-color, #2563eb) !important;
   box-shadow: 0 4px 14px var(--accent-color, #2563eb) !important;
 }
+
+
+/* ========================================================
+   متغیرهای سراسری تم، بلر و تنظیمات بدون اسکرول افقی
+   ======================================================== */
+:root {
+  --dash-blur: 25px;
+  --popup-blur: 65px;
+  --accent-color: #2563eb;
+  --app-font: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--app-font) !important;
+}
+
+/* اعمال مستقیم بلر روی داشبورد */
+.ios-glass-card:not(.settings-modal-card) {
+  backdrop-filter: blur(var(--dash-blur)) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur)) saturate(200%) !important;
+}
+
+/* اعمال مستقیم بلر روی پاپ‌آپ‌ها */
+.glass-blur-menu,
+.forecast-drawer,
+.clock-drawer,
+.azan-city-dropdown,
+.month-year-picker-modal,
+.date-event-popup,
+.task-tool-popup,
+.location-modal-box,
+.settings-modal-card {
+  backdrop-filter: blur(var(--popup-blur)) saturate(240%) !important;
+  -webkit-backdrop-filter: blur(var(--popup-blur)) saturate(240%) !important;
+}
+
+/* جلوگیری کامل از اسکرول افقی و تنظیم ابعاد مودال (عکس ۱) */
+.settings-modal-card {
+  width: 860px !important;
+  max-width: 95vw !important;
+  max-height: 88vh !important;
+  border-radius: 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  direction: rtl !important;
+}
+
+.settings-layout-body {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px !important;
+  margin-top: 14px !important;
+  min-height: 400px !important;
+  max-height: 65vh !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  direction: rtl !important;
+}
+
+.settings-content-container {
+  flex: 1 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding-left: 10px !important;
+  padding-right: 4px !important;
+}
+
+/* آیکون مدرن تم خودکار (عکس ۲) */
+.mode-circle-auto {
+  background: linear-gradient(135deg, #0f172a 50%, #ffffff 50%) !important;
+  border: 1.5px solid #64748b !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  font-size: 1.1rem !important;
+}
+
+/* المان‌های متأثر از رنگ اصلی دستیار (عکس ۴) */
+.today-circle,
+.task-mode-btn.active,
+.picker-confirm-btn,
+.modal-btn.save,
+.quick-task-btn,
+.search-btn,
+.location-modal-box .loc-method-btn.active {
+  background: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 4px 14px var(--accent-color, #2563eb) !important;
+}
