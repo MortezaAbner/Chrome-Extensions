@@ -2565,18 +2565,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
     }
-
-    // دکمه انصراف: برگرداندن درصدها و ماتی به مقدار قبلی و بستن پاپ‌آپ
-    if (btnCancel) {
-      btnCancel.onclick = (e) => {
-        e.stopPropagation();
-        if (sDash) sDash.value = savedD;
-        if (sPopup) sPopup.value = savedP;
-        setLiveBlur(savedD, savedP);
-
-        if (modalSettings) modalSettings.classList.remove('active');
-        document.getElementById('view-dashboard')?.classList.add('active');
-        document.getElementById('dock-home-btn')?.classList.add('active');
-      };
-    }
   })();
