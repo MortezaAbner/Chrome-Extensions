@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.48:
-- جایگزینی منوی میانبرها با ساختار ۶ گزینه‌ای دقیق دستیار شامل ساب‌منوی انتقال به پوشه و اتصال کامل به بلر زنده داشبورد
+### 🇮🇷 تغییرات نسخه v1.32.49:
+- تثبیت قطعی منوی ۶ گزینه‌ای دستیار، ساب‌منوی انتقال به پوشه و اتصال کامل کارت‌ها به بلر متغیر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.48):
-- Replace Context Menu with Exact Dastyar 6-Option Design and Live Glassmorphic Blur
+### 🇬🇧 Release Notes (v1.32.49):
+- Enforce 6-Option Dastyar Menu with Dynamic Glassmorphism
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

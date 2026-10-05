@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abner-dashboard-v22-0';
+const CACHE_NAME = 'cache-v-' + Date.now() + Date.now();
 const ASSETS = [
   './',
   './index.html',
@@ -30,16 +30,23 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+  );
+  self.clients.claim();
+});
+
 self.addEventListener('fetch', (event) => {
+  // فایل‌های افزونه هرگز نباید در Cache API ذخیره شوند
+  if (!event.request.url.startsWith('http')) return;
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const resClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
-        }
-        return networkResponse;
-      })
-      .catch(() => caches.match(event.request))
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
