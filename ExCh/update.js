@@ -1,45 +1,75 @@
 const fs = require('fs');
 
-// ۱. اصلاح و اتصال کلاس‌ها در script.js و style.css
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // استایل جامع برای شورت‌کات‌ها (عکس ۱) و کشویی‌های تایمر/اوقات‌شرعی/پیش‌بینی (عکس ۲)
-  const universalStyleBlock = `
-    /* استایل تزریقی هماهنگ با اسلایدرهای بلر */
-    let liveStyle = document.getElementById('live-custom-blur-style');
-    if (!liveStyle) {
-      liveStyle = document.createElement('style');
-      liveStyle.id = 'live-custom-blur-style';
-      document.head.appendChild(liveStyle);
-    }
+  // ۱. تنظیم پیش‌فرض ماتی داشبورد و پاپ‌آپ‌ها روی ۵۰ درصد
+  js = js.replace(/(localStorage\.getItem\(['"](?:blur_dash_val\vert{}user_dash_blur_pct)['"]\)\s*\|\|\s*)['"]\d+['"]/g, "$1'50'");
+  js = js.replace(/(localStorage\.getItem\(['"](?:blur_popup_val\vert{}user_popup_blur_pct)['"]\)\s*\|\|\s*)['"]\d+['"]/g, "$1'50'");
+  js = js.replace(/let\s+(?:dVal|dashBlurVal|currentDashBlur)\s*=\s*\d+;/g, "let dVal = 50;");
+  js = js.replace(/let\s+(?:pVal|popupBlurVal|currentPopupBlur)\s*=\s*\d+;/g, "let pVal = 50;");
 
-    liveStyle.textContent = \`
-      /* ۱. عکس ۱: میانبرها و دکمه افزودن و سرچ‌بار متصل به ماتی داشبورد */
+  // ۲. اصلاح جابه‌جایی تب‌های منوی تنظیمات (رفع باگ نمایش تصویر زمینه در تب تم و رنگ)
+  const tabFixCode = `
+  // اصلاح سوییچ بین تب‌های تنظیمات (رفع گیر کردن تب تصویر زمینه)
+  document.querySelectorAll('.settings-nav-item, [data-tab]').forEach(tabBtn => {
+    tabBtn.addEventListener('click', function() {
+      const targetTab = this.getAttribute('data-tab') || this.dataset.tab;
+      if (!targetTab) return;
+      
+      document.querySelectorAll('.settings-tab-pane, .tab-content-pane, [data-pane]').forEach(pane => {
+        pane.classList.remove('active');
+        pane.style.display = 'none';
+      });
+
+      const activePane = document.getElementById('tab-' + targetTab) || document.querySelector(\`[data-pane="\${targetTab}"]\`);
+      if (activePane) {
+        activePane.classList.add('active');
+        activePane.style.display = 'block';
+      }
+    }, true);
+  });
+  `;
+
+  // ۳. استایل هماهنگ‌سازی میانبرها و سرچ با داشبورد + کشویی‌ها با پاپ‌آپ
+  const preciseBlurInject = `
+  // تزریق استایل متمرکز و هماهنگ بلر
+  let dynStyle = document.getElementById('precise-live-blur-style');
+  if (!dynStyle) {
+    dynStyle = document.createElement('style');
+    dynStyle.id = 'precise-live-blur-style';
+    document.head.appendChild(dynStyle);
+  }
+
+  function updateDynamicGlassBlur(dPct, pPct) {
+    const dBlur = Math.round((dPct / 100) * 40);
+    const pBlur = Math.round((pPct / 100) * 50);
+
+    dynStyle.textContent = \`
+      /* هماهنگی نوار جستجو، میانبرها و کارت‌ها با ماتی داشبورد */
+      .ios-glass-card,
+      .search-box,
+      .search-bar-container,
+      .search-input-wrapper,
+      .google-search-bar,
       .shortcut-item,
       .shortcut-card,
       .shortcut-btn,
-      .shortcut-icon-wrapper,
       .shortcuts-grid > *,
       #shortcuts-container > *,
-      .add-shortcut-btn,
-      .search-bar-container,
-      .search-box,
-      .google-search-bar {
-        backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
-        -webkit-backdrop-filter: blur(\${dPx}px) saturate(160%) !important;
+      .add-shortcut-btn {
+        backdrop-filter: blur(\${dBlur}px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(\${dBlur}px) saturate(160%) !important;
         background: rgba(255, 255, 255, 0.08) !important;
       }
+      [data-theme="dark"] .search-bar-container,
       [data-theme="dark"] .shortcut-item,
-      [data-theme="dark"] .shortcut-card,
-      [data-theme="dark"] .shortcut-btn,
       [data-theme="dark"] .shortcuts-grid > *,
-      [data-theme="dark"] .add-shortcut-btn,
-      [data-theme="dark"] .search-bar-container {
+      [data-theme="dark"] .add-shortcut-btn {
         background: rgba(15, 23, 42, 0.20) !important;
       }
 
-      /* ۲. عکس ۲: کشویی تایمر، اوقات شرعی، پیش‌بینی و محتویات متصل به ماتی پاپ‌آپ */
+      /* هماهنگی دراورهای کشویی پیش‌بینی، اوقات شرعی و تایمر با ماتی پاپ‌آپ */
       .forecast-drawer,
       #forecast-drawer,
       .clock-drawer,
@@ -48,13 +78,11 @@ if (fs.existsSync('./script.js')) {
       .timer-drawer,
       #azan-drawer,
       .azan-drawer,
-      .drawer-container,
       .drawer-content,
       .timer-box,
-      .timer-inputs-wrapper,
       .settings-modal-card {
-        backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(\${popupPx}px) saturate(180%) !important;
+        backdrop-filter: blur(\${pBlur}px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(\${pBlur}px) saturate(180%) !important;
         background: rgba(255, 255, 255, 0.12) !important;
       }
       [data-theme="dark"] .forecast-drawer,
@@ -62,77 +90,19 @@ if (fs.existsSync('./script.js')) {
       [data-theme="dark"] #clock-drawer,
       [data-theme="dark"] #timer-drawer,
       [data-theme="dark"] #azan-drawer,
-      [data-theme="dark"] .drawer-content,
       [data-theme="dark"] .settings-modal-card {
         background: rgba(15, 23, 42, 0.25) !important;
       }
     \`;
+  }
   `;
 
-  // پاک کردن آلرت و بستن قطعی پنجره در تایید و انصراف
-  js = js.replace(/alert\s*\(\s*['"`][^'"`]*['"`]\s*\)\s*;?/g, '');
-
-  const closeSettingsLogic = `
-  // تابع اختصاصی بستن پنجره تنظیمات
-  function triggerCloseSettings() {
-    // روش ۱: شبیه‌سازی کلیک روی دکمه ضربدر بستن
-    const closeBtn = document.querySelector('.settings-modal-close, #close-settings-btn, .modal-close-btn, [data-close-modal]');
-    if (closeBtn) {
-      closeBtn.click();
-      return;
-    }
-    // روش ۲: حذف کلاس اکتیو از مودال تنظیمات
-    const sModal = document.querySelector('.settings-modal-card, #settings-modal, #view-settings, .settings-modal-overlay');
-    if (sModal) {
-      sModal.classList.remove('active');
-      sModal.style.display = 'none';
-    }
-    const dView = document.getElementById('view-dashboard');
-    if (dView) {
-      dView.classList.add('active');
-      dView.style.display = '';
-    }
-  }
-
-  // رویداد تایید ماتی
-  document.getElementById('blur-save-btn')?.addEventListener('click', function(e) {
-    if (e) e.stopPropagation();
-    triggerCloseSettings();
-  }, true);
-
-  // رویداد انصراف ماتی
-  document.getElementById('blur-cancel-btn')?.addEventListener('click', function(e) {
-    if (e) e.stopPropagation();
-    triggerCloseSettings();
-  }, true);
-  `;
-
-  // جایگزینی ساختار استایل‌دهی داخل تابع بلر
-  if (js.includes('live-custom-blur-style')) {
-    js = js.replace(/let liveStyle = document\.getElementById\('live-custom-blur-style'\);[\s\S]*?liveStyle\.textContent = `[\s\S]*?`;/, universalStyleBlock.trim());
-  }
-
-  // اضافه کردن رویداد بستن بدون دستکاری توابع موجود
-  js = js.replace(/\/\/ تابع اختصاصی بستن پنجره تنظیمات[\s\S]*?triggerCloseSettings\(\);?\s*\}, true\);/g, '');
-  js += '\n' + closeSettingsLogic;
+  // پاک کردن تعاریف تکراری قبلی و ثبت نسخه اصلاح‌شده به انتهای فایل
+  js = js.replace(/\/\/ تزریق استایل متمرکز و هماهنگ بلر[\s\S]*?updateDynamicGlassBlur\(\d+,\s*\d+\);?/g, '');
+  js = js.replace(/\/\/ اصلاح سوییچ بین تب‌های تنظیمات[\s\S]*?\}, true\);/g, '');
+  
+  js += '\n' + tabFixCode + '\n' + preciseBlurInject + '\nupdateDynamicGlassBlur(50, 50);\n';
 
   fs.writeFileSync('./script.js', js, 'utf8');
+  console.log('✅ باگ تب تنظیمات رفع شد، ماتی دیفالت روی ۵۰ درصد تنظیم شد و میانبرها و کشویی‌ها هماهنگ شدند.');
 }
-
-// ۲. حل مشکل پس‌زمینه ثابت در style.css در صورت وجود
-if (fs.existsSync('./style.css')) {
-  let css = fs.readFileSync('./style.css', 'utf8');
-  // آزاد کردن backdrop-filter و background از شورت‌کات‌ها و کشویی‌ها تا از متغیرها پیروی کنند
-  css += `
-/* اطمینان از اعمال بلر شفاف روی شورت‌کات‌ها و کشویی‌ها */
-.shortcut-item, .shortcut-card, .shortcut-btn, .add-shortcut-btn {
-  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.08)) !important;
-}
-.forecast-drawer, .clock-drawer, #timer-drawer, #azan-drawer {
-  background: var(--popup-glass-bg, rgba(255, 255, 255, 0.12)) !important;
-}
-`;
-  fs.writeFileSync('./style.css', css, 'utf8');
-}
-
-console.log('✅ میانبرها، کشویی تایمر/پیش‌بینی/اوقات شرعی و بستن پنجره تنظیمات با موفقیت اصلاح شدند.');
