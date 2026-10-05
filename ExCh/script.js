@@ -2674,8 +2674,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const pPx = (p * 0.95).toFixed(1);
 
       // کنترل شفافیت و بلر بدون تداخل
-      const dAlpha = (d / 100 * 0.35).toFixed(2);
-      const pAlpha = (0.20 + (p / 100 * 0.55)).toFixed(2);
+      const dAlpha = (0.08 + (d / 100 * 0.12)).toFixed(2);
+      const pAlpha = (0.12 + (p / 100 * 0.15)).toFixed(2);
 
       let styleTag = document.getElementById('live-custom-blur-style');
       if (!styleTag) {
