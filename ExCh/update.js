@@ -1,75 +1,80 @@
 const fs = require('fs');
 
-if (fs.existsSync('./script.js')) {
-  let js = fs.readFileSync('./script.js', 'utf8');
+if (fs.existsSync('./style.css')) {
+  let css = fs.readFileSync('./style.css', 'utf8');
 
-  // ۱. تعریف تابع جامع دریافت تاریخ زنده سیستم
-  const liveDateFunc = `
-  // محاسبه دقیق تاریخ امروز سیستم در تقویم خورشیدی
-  function getLivePersianDate() {
-    const now = new Date();
-    try {
-      const parts = new Intl.DateTimeFormat('en-US-u-ca-persian', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric'
-      }).formatToParts(now);
+  const unifiedGlassStyles = `
+/* =========================================================
+   یکپارچه‌سازی قطعی استایل شیشه‌ای مات داشبورد در تمام نقاط
+   ========================================================= */
 
-      let y = 1405, m = 7, d = 1;
-      parts.forEach(p => {
-        if (p.type === 'year') y = parseInt(p.value, 10);
-        if (p.type === 'month') m = parseInt(p.value, 10);
-        if (p.type === 'day') d = parseInt(p.value, 10);
-      });
-      return { year: y, monthIndex: m - 1, day: d };
-    } catch (e) {
-      return { year: 1405, monthIndex: 6, day: 9 };
-    }
-  }
+/* کلاس پایه برای تمام پاپ‌آپ‌ها، دراورها و پنجره‌ها */
+.glass-blur-menu,
+.forecast-drawer,
+.clock-drawer,
+.azan-city-dropdown,
+.month-year-picker-modal,
+.date-event-popup,
+.task-tool-popup,
+.board-dropdown-menu,
+.location-modal-box,
+.convert-modal-box,
+.settings-modal-card,
+#add-modal .modal-content,
+#timer-alarm-modal .modal-content {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(50px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(50px) saturate(220%) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--glass-shadow), var(--glass-specular) !important;
+}
+
+/* آیتم‌ها و باکس‌های داخلی پاپ‌آپ‌ها (کارت‌های روزانه، اینپوت‌ها و دکمه‌ها) */
+.forecast-day-box,
+.picker-scroll-list,
+.manual-input-wrapper input,
+.timer-input,
+.azan-city-dropdown input,
+.tag-input-row input,
+.custom-select-glass,
+.counter-box-glass,
+.edit-task-title-row,
+.edit-task-desc-area {
+  background: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .forecast-day-box,
+[data-theme="dark"] .picker-scroll-list,
+[data-theme="dark"] .manual-input-wrapper input,
+[data-theme="dark"] .timer-input,
+[data-theme="dark"] .azan-city-dropdown input,
+[data-theme="dark"] .tag-input-row input,
+[data-theme="dark"] .custom-select-glass,
+[data-theme="dark"] .counter-box-glass,
+[data-theme="dark"] .edit-task-title-row,
+[data-theme="dark"] .edit-task-desc-area {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* پس‌زمینه محو شیشه‌ای لایه اورلی مودال‌ها */
+.modal-overlay {
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+}
 `;
 
-  if (!js.includes('function getLivePersianDate()')) {
-    js = liveDateFunc + '\n' + js;
-  }
+  // پاک‌سازی تعاریف قبلی شیشه اختصاصی و جایگزینی با سیستم یکپارچه
+  css = css.replace(/\/\* =========================================================[\s\S]*?\/\* پس‌زمینه محو شیشه‌ای لایه اورلی مودال‌ها \*\/[\s\S]*?\}/g, '');
+  css += '\n' + unifiedGlassStyles;
 
-  // ۲. حذف شرط ثابت عدد ۹ و اتصال به روز زنده سیستم
-  js = js.replace(
-    /if\s*\(\s*year\s*===\s*1405\s*&&\s*monthIndex\s*===\s*6\s*&&\s*i\s*===\s*9\s*\)\s*span\.className\s*=\s*['"]today-circle['"];?/g,
-    `const liveToday = getLivePersianDate();
-      if (year === liveToday.year && monthIndex === liveToday.monthIndex && i === liveToday.day) {
-        span.className = 'today-circle';
-      }`
-  );
-
-  js = js.replace(
-    /if\s*\(\s*year\s*===\s*baseRealToday\.year\s*&&\s*monthIndex\s*===\s*baseRealToday\.month\s*&&\s*i\s*===\s*baseRealToday\.day\s*\)\s*\{[\s\S]*?\}/g,
-    `const liveToday = getLivePersianDate();
-      if (year === liveToday.year && monthIndex === liveToday.monthIndex && i === liveToday.day) {
-        span.className = 'today-circle';
-      }`
-  );
-
-  // ۳. تنظیم سال و ماه شروع تقویم روی تاریخ سیستم به جای عدد ثابت
-  js = js.replace(
-    /let currentYear\s*=\s*\d+;\s*let currentMonthIndex\s*=\s*\d+;/,
-    `const initToday = getLivePersianDate();
-  let currentYear = initToday.year;
-  let currentMonthIndex = initToday.monthIndex;`
-  );
-
-  // ۴. دکمه برو به امروز برای بازگشت به تاریخ زنده سیستم
-  js = js.replace(
-    /pickerTodayBtn\.onclick\s*=\s*\(e\)\s*=>\s*\{[\s\S]*?\};/,
-    `pickerTodayBtn.onclick = (e) => {
-      e.stopPropagation();
-      const freshNow = getLivePersianDate();
-      currentYear = freshNow.year;
-      currentMonthIndex = freshNow.monthIndex;
-      renderCalendar(currentYear, currentMonthIndex);
-      monthYearPicker.classList.remove('active');
-    };`
-  );
-
-  fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ مشکل دایره روز ثابت برطرف شد و تقویم به تاریخ سیستم وصل گردید.');
+  fs.writeFileSync('./style.css', css, 'utf8');
+  console.log('✅ استایل شیشه‌ای مات داشبورد با موفقیت بر روی تمام بخش‌ها اعمال شد.');
 }
