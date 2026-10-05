@@ -2214,3 +2214,242 @@ body {
   background: var(--accent-color) !important;
   box-shadow: 0 4px 14px var(--accent-color) !important;
 }
+
+
+/* ========================================================
+   چیدمان راست‌چین و استایل‌های تنظیمات، اسکرول، فونت و تم
+   ======================================================== */
+.settings-modal-card {
+  width: 780px !important;
+  max-width: 94vw !important;
+  max-height: 86vh !important;
+  border-radius: 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  direction: rtl !important;
+}
+
+.settings-card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  direction: rtl !important;
+}
+
+.settings-layout-body {
+  display: flex !important;
+  flex-direction: row !important; /* سایدبار در سمت راست در حالت RTL */
+  gap: 20px !important;
+  margin-top: 14px !important;
+  min-height: 380px !important;
+  max-height: 62vh !important;
+  overflow: hidden !important;
+  direction: rtl !important;
+}
+
+.settings-sidebar-nav {
+  width: 200px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  border-left: 1px solid var(--glass-border) !important;
+  border-right: none !important;
+  padding-left: 14px !important;
+  padding-right: 0 !important;
+}
+
+.nav-item-glass {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+  font-size: 0.88rem !important;
+  font-weight: 750 !important;
+  cursor: pointer !important;
+  color: var(--text-muted) !important;
+  transition: all 0.2s ease !important;
+  text-align: right !important;
+}
+.nav-item-glass:hover, .nav-item-glass.active {
+  background: rgba(255, 255, 255, 0.35) !important;
+  color: var(--accent-color, #2563eb) !important;
+}
+[data-theme="dark"] .nav-item-glass:hover, [data-theme="dark"] .nav-item-glass.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.settings-content-container {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding-left: 10px !important;
+  padding-right: 4px !important;
+}
+
+.settings-tab-pane {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+.settings-tab-pane.active {
+  display: flex !important;
+}
+
+/* اسکرول‌بار باریک فقط در محتوای تنظیمات */
+.settings-content-container {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+}
+.settings-content-container::-webkit-scrollbar {
+  width: 5px !important;
+  display: block !important;
+}
+.settings-content-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+/* پالت رنگ و تم */
+.theme-modes-grid, .theme-colors-grid {
+  display: flex !important;
+  gap: 14px !important;
+  align-items: center !important;
+  margin-top: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.theme-mode-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  background: none !important;
+  border: none !important;
+  color: var(--text-main) !important;
+  font-size: 0.82rem !important;
+  font-weight: 750 !important;
+}
+.mode-circle-preview {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 50% !important;
+  border: 2px solid transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.2s, border-color 0.2s !important;
+}
+.theme-mode-btn.active .mode-circle-preview {
+  border-color: var(--accent-color, #2563eb) !important;
+  transform: scale(1.08) !important;
+}
+
+.color-palette-circle {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  border: 2.5px solid transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+  transition: transform 0.2s, border-color 0.2s !important;
+}
+.color-palette-circle.active {
+  border-color: #ffffff !important;
+  transform: scale(1.12) !important;
+  box-shadow: 0 0 12px rgba(255,255,255,0.45) !important;
+}
+
+.color-picker-wrapper {
+  position: relative !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  border: 2px dashed rgba(255,255,255,0.7) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.color-picker-wrapper input[type="color"] {
+  position: absolute !important;
+  top: -10px; left: -10px;
+  width: 60px; height: 60px;
+  opacity: 0 !important;
+  cursor: pointer !important;
+}
+
+/* اسلایدرهای شیشه‌ای ماتی */
+.glass-slider {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100% !important;
+  height: 8px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  outline: none !important;
+  margin-top: 8px !important;
+}
+.glass-slider::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  background: var(--accent-color, #2563eb) !important;
+  cursor: pointer !important;
+  border: 2.5px solid #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* کارت‌های فونت */
+.font-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+}
+.font-card-item {
+  background: rgba(255, 255, 255, 0.28) !important;
+  border: 1.5px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  padding: 12px 6px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  transition: all 0.2s !important;
+}
+.font-card-item.active {
+  border-color: var(--accent-color, #2563eb) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.25) !important;
+}
+.font-card-sample { font-size: 0.92rem !important; font-weight: 800 !important; color: var(--text-main) !important; }
+.font-card-name { font-size: 0.72rem !important; color: var(--text-muted) !important; }
+
+.font-card-upload {
+  border-style: dashed !important;
+  border-color: var(--accent-color, #2563eb) !important;
+}
+
+/* اعمال رنگ اکسنت روی تمام بخش‌های آبی عکس ۴ و ۵ */
+.today-circle,
+.task-mode-btn.active,
+.picker-confirm-btn,
+.modal-btn.save,
+.quick-task-btn,
+.search-btn {
+  background: var(--accent-color, #2563eb) !important;
+  box-shadow: 0 4px 14px var(--accent-color, #2563eb) !important;
+}

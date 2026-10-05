@@ -375,6 +375,7 @@
 
   <!-- ۲. صفحه جدید شیشه‌ای تنظیمات -->
     <!-- ۲. مودال تنظیمات -->
+    <!-- ۲. مودال تنظیمات -->
   <section id="view-settings" class="modal-overlay">
     <div class="settings-modal-card ios-glass-card glass-blur-menu">
       <div class="settings-card-header">
@@ -383,6 +384,7 @@
       </div>
 
       <div class="settings-layout-body">
+        <!-- ستون سایدبار منوها در سمت راست پنجره (عکس ۱) -->
         <div class="settings-sidebar-nav">
           <div class="nav-item-glass active" data-tab="general"><span class="nav-ico">⚙️</span> عمومی</div>
           <div class="nav-item-glass" data-tab="wallpaper"><span class="nav-ico">🖼️</span> تصویر زمینه</div>
@@ -394,8 +396,9 @@
           <div class="nav-item-glass" data-tab="feedback"><span class="nav-ico">💬</span> فیدبک به ما</div>
         </div>
 
+        <!-- محتوای تنظیمات در سمت چپ سایدبار -->
         <div class="settings-content-container">
-          <!-- ۱. تب عمومی (بدون گزینه‌های تصویر زمینه) -->
+          <!-- تب عمومی -->
           <div class="settings-tab-pane active" id="pane-general">
             <div class="settings-form-row">
               <label class="settings-field-label">زبان<span class="sub-tip">انتخاب زبان پیش‌فرض</span></label>
@@ -425,33 +428,33 @@
             </div>
           </div>
 
-          <!-- ۲. تب اختصاصی تصویر زمینه -->
+          <!-- تب تصویر زمینه (عکس ۲) -->
           <div class="settings-tab-pane" id="pane-wallpaper">
             <div class="settings-form-row">
               <label class="settings-field-label">تصویر زمینه شخصی<span class="sub-tip">بارگذاری تصویر از سیستم یا ریست به حالت پیش‌فرض</span></label>
-              <div class="settings-bg-actions">
-                <label class="settings-btn-upload">
+              <div class="settings-bg-actions" style="display: flex; gap: 10px; margin-top: 10px;">
+                <label class="settings-btn-upload location-chip" style="cursor: pointer; padding: 10px 16px;">
                   📁 انتخاب عکس
                   <input type="file" id="settings-bg-file" accept="image/*" style="display: none;">
                 </label>
-                <button class="settings-btn-action" id="settings-blur-toggle">✨ وضعیت بلر: <span id="settings-blur-status">مات</span></button>
-                <button class="settings-btn-action danger" id="settings-reset-bg">↺ بازنشانی</button>
+                <button class="settings-btn-action location-chip" id="settings-blur-toggle" type="button" style="padding: 10px 16px;">✨ وضعیت بلر: <span id="settings-blur-status">شفاف</span></button>
+                <button class="settings-btn-action location-chip" id="settings-reset-bg" type="button" style="color: #ef4444; padding: 10px 16px;">↺ بازنشانی</button>
               </div>
             </div>
           </div>
 
-          <!-- ۳. تب تم و رنگ -->
+          <!-- تب تم و رنگ (عکس ۳، ۴ و ۵) -->
           <div class="settings-tab-pane" id="pane-theme">
-            <!-- تم کلی -->
+            <!-- تم رنگی -->
             <div class="settings-form-row">
               <label class="settings-field-label">تم رنگی<span class="sub-tip">انتخاب کنید که دستیارتون چه رنگی باشه!</span></label>
               <div class="theme-modes-grid">
                 <div class="theme-mode-btn active" data-mode="glass">
-                  <div class="mode-circle-preview" style="background: rgba(255,255,255,0.3); backdrop-filter: blur(15px); border: 2px solid var(--accent-color, #2563eb);">✓</div>
+                  <div class="mode-circle-preview" style="background: rgba(255,255,255,0.25); border: 2px solid var(--accent-color);">✓</div>
                   <span>شیشه‌ای</span>
                 </div>
                 <div class="theme-mode-btn" data-mode="auto">
-                  <div class="mode-circle-preview" style="background: linear-gradient(135deg, #1e293b 50%, #f8fafc 50%);">🌓</div>
+                  <div class="mode-circle-preview" style="background: linear-gradient(135deg, #0f172a 50%, #ffffff 50%);">🌓</div>
                   <span>خودکار</span>
                 </div>
                 <div class="theme-mode-btn" data-mode="dark">
@@ -459,7 +462,7 @@
                   <span>دارک</span>
                 </div>
                 <div class="theme-mode-btn" data-mode="light">
-                  <div class="mode-circle-preview" style="background: #ffffff; border: 1px solid #e2e8f0;">☀️</div>
+                  <div class="mode-circle-preview" style="background: #ffffff; border: 1px solid #cbd5e1;">☀️</div>
                   <span>لایت</span>
                 </div>
               </div>
@@ -476,27 +479,30 @@
               <input type="range" id="slider-popup-blur" min="0" max="100" value="65" class="glass-slider">
             </div>
 
-            <!-- رنگ اصلی دستیار بدون ستاره و با RGB -->
+            <!-- انتخاب رنگ اصلی با پالت RGB و دکمه تایید -->
             <div class="settings-form-row">
               <label class="settings-field-label">رنگ اصلی دستیار<span class="sub-tip">رنگ دکمه‌ها، متن‌های مهم و تقویم را عوض کنید.</span></label>
               <div class="theme-colors-grid">
-                <div class="color-palette-circle active" data-color="#2563eb" style="background: #2563eb;">✓</div>
-                <div class="color-palette-circle" data-color="#ef4444" style="background: #ef4444;"></div>
-                <div class="color-palette-circle" data-color="#10b981" style="background: #10b981;"></div>
-                <div class="color-palette-circle" data-color="#39ff14" style="background: #39ff14;"></div>
-                <div class="color-picker-wrapper" title="انتخاب رنگ RGB دلخواه">
-                  <span>🎨</span>
-                  <input type="color" id="rgb-color-picker" value="#2563eb">
+                <div class="color-palette-circle active" data-color="#2563eb" style="background: #2563eb;" title="آبی">✓</div>
+                <div class="color-palette-circle" data-color="#ef4444" style="background: #ef4444;" title="قرمز"></div>
+                <div class="color-palette-circle" data-color="#10b981" style="background: #10b981;" title="سبز"></div>
+                <div class="color-palette-circle" data-color="#39ff14" style="background: #39ff14;" title="سبز فسفری"></div>
+                <div class="rgb-picker-box" style="display: flex; align-items: center; gap: 6px;">
+                  <div class="color-picker-wrapper" title="انتخاب رنگ دلخواه">
+                    <span>🎨</span>
+                    <input type="color" id="rgb-color-picker" value="#2563eb">
+                  </div>
+                  <button type="button" id="rgb-confirm-btn" class="location-chip" style="font-size: 0.75rem; padding: 6px 10px;">تأیید ✓</button>
                 </div>
               </div>
             </div>
 
-            <!-- فونت‌ها با دکمه آپلود فونت شخصی -->
+            <!-- بخش فونت‌ها با انتخاب آنی و تیک، به همراه آپلود فونت دلخواه (عکس ۵) -->
             <div class="settings-form-row">
               <label class="settings-field-label">فونت<span class="sub-tip">فونت مورد نظرتو انتخاب کن یا فونت دلخواهتو اضافه کن.</span></label>
               <div class="font-cards-grid" id="font-options-container">
                 <div class="font-card-item active" data-font="Vazirmatn">
-                  <div class="font-card-sample" style="font-family: Vazirmatn, sans-serif;">من اینطوریم</div>
+                  <div class="font-card-sample">من اینطوریم ✓</div>
                   <div class="font-card-name">وزیر</div>
                 </div>
                 <div class="font-card-item" data-font="Estedad">
@@ -517,15 +523,15 @@
                 </div>
                 <div class="font-card-item" data-font="YekanBakh">
                   <div class="font-card-sample">من اینطوریم</div>
-                  <div class="font-card-name">یکان‌بخ</div>
+                  <div class="font-card-name">یکان‌‌بخ</div>
                 </div>
                 <div class="font-card-item" data-font="Peyda">
                   <div class="font-card-sample">من اینطوریم</div>
                   <div class="font-card-name">پیدا</div>
                 </div>
-                <label class="font-card-item font-card-upload">
-                  <div class="font-card-sample">➕ آپلود فونت</div>
-                  <div class="font-card-name">فایل TTF/WOFF2</div>
+                <label class="font-card-item font-card-upload" id="upload-font-card" style="cursor: pointer;">
+                  <div class="font-card-sample" id="upload-font-sample">➕ آپلود فونت</div>
+                  <div class="font-card-name" id="upload-font-status">فایل TTF/WOFF2</div>
                   <input type="file" id="custom-font-file" accept=".woff2,.woff,.ttf,.otf" style="display: none;">
                 </label>
               </div>
