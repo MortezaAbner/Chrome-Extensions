@@ -2959,3 +2959,194 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
 updateDynamicGlassBlur(50, 50);
+
+
+// ========================================================
+// ماژول مدیریت جامع میانبرها (منوی ۳ نقطه، انتخاب، ویرایش و تیک)
+// ========================================================
+(function initCompleteShortcutSuite() {
+  let selectedShortcuts = new Set();
+
+  // ۱. ایجاد نوار وضعیت انتخاب دسته‌جمعی در صورت نبودن در صفحه
+  let bulkBar = document.getElementById('shortcut-bulk-bar');
+  if (!bulkBar) {
+    bulkBar = document.createElement('div');
+    bulkBar.id = 'shortcut-bulk-bar';
+    bulkBar.innerHTML = `
+      <span class="btn-bulk-close" id="bulk-bar-close">✕</span>
+      <span class="btn-bulk-delete" id="bulk-bar-del">حذف 🗑️</span>
+      <span style="opacity:0.3">|</span>
+      <span>مورد انتخاب شده</span>
+      <span class="count-badge" id="bulk-bar-count">۰</span>
+    `;
+    document.body.appendChild(bulkBar);
+
+    document.getElementById('bulk-bar-close')?.addEventListener('click', clearAllShortcutSelections);
+    document.getElementById('bulk-bar-del')?.addEventListener('click', deleteSelectedShortcuts);
+  }
+
+  function updateBulkBar() {
+    const countEl = document.getElementById('bulk-bar-count');
+    if (!countEl) return;
+    const count = selectedShortcuts.size;
+    countEl.textContent = count;
+    if (count > 0) {
+      bulkBar.classList.add('active');
+    } else {
+      bulkBar.classList.remove('active');
+    }
+  }
+
+  function clearAllShortcutSelections() {
+    selectedShortcuts.clear();
+    document.querySelectorAll('.shortcut-item, .shortcut-card').forEach(el => {
+      el.classList.remove('is-selected');
+    });
+    updateBulkBar();
+  }
+
+  function deleteSelectedShortcuts() {
+    if (selectedShortcuts.size === 0) return;
+    let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+    list = list.filter((_, idx) => !selectedShortcuts.has(idx.toString()));
+    localStorage.setItem('user_shortcuts', JSON.stringify(list));
+    clearAllShortcutSelections();
+    if (typeof renderShortcuts === 'function') renderShortcuts();
+    else location.reload();
+  }
+
+  // ۲. مدیریت کلیک راست یا سه‌نقطه میانبرها برای باز کردن منو
+  window.openShortcutOptionsMenu = function(e, index, itemEl, shortcutData) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    document.querySelectorAll('.shortcut-custom-menu').forEach(m => m.remove());
+
+    const isSelected = selectedShortcuts.has(index.toString());
+    const menu = document.createElement('div');
+    menu.className = 'shortcut-custom-menu';
+
+    menu.innerHTML = `
+      <div class="menu-row" id="m-open"><span>باز کردن</span> <span>🔗</span></div>
+      <div class="menu-row" id="m-open-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
+      <div class="menu-row" id="m-select"><span>${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>${isSelected ? '✕' : '☑'}</span></div>
+      <hr>
+      <div class="menu-row" id="m-edit"><span>ویرایش</span> <span>✏️️</span></div>
+      <div class="menu-row" id="m-copy"><span>کپی لینک</span> <span>📋</span></div>
+      <hr>
+      <div class="menu-row danger" id="m-delete"><span>حذف</span> <span>🗑️</span></div>
+    `;
+
+    document.body.appendChild(menu);
+
+    const rect = itemEl.getBoundingClientRect();
+    menu.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+    menu.style.left = Math.max(10, rect.left + window.scrollX - 40) + 'px';
+
+    // عملکرد گزینه‌ها
+    menu.querySelector('#m-open').onclick = () => {
+      window.location.href = shortcutData.url;
+      menu.remove();
+    };
+    menu.querySelector('#m-open-tab').onclick = () => {
+      window.open(shortcutData.url, '_blank');
+      menu.remove();
+    };
+    menu.querySelector('#m-select').onclick = () => {
+      if (isSelected) {
+        selectedShortcuts.delete(index.toString());
+        itemEl.classList.remove('is-selected');
+      } else {
+        selectedShortcuts.add(index.toString());
+        itemEl.classList.add('is-selected');
+      }
+      updateBulkBar();
+      menu.remove();
+    };
+    menu.querySelector('#m-copy').onclick = () => {
+      navigator.clipboard.writeText(shortcutData.url);
+      menu.remove();
+    };
+    menu.querySelector('#m-edit').onclick = () => {
+      menu.remove();
+      openShortcutEditModal(index, shortcutData);
+    };
+    menu.querySelector('#m-delete').onclick = () => {
+      menu.remove();
+      let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+      list.splice(index, 1);
+      localStorage.setItem('user_shortcuts', JSON.stringify(list));
+      selectedShortcuts.delete(index.toString());
+      updateBulkBar();
+      if (typeof renderShortcuts === 'function') renderShortcuts();
+      else location.reload();
+    };
+
+    const closeHandler = (ev) => {
+      if (!menu.contains(ev.target)) {
+        menu.remove();
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', closeHandler), 50);
+  };
+
+  // ۳. پاپ‌آپ اختصاصی ویرایش میانبر با تایید و انصراف
+  function openShortcutEditModal(index, data) {
+    document.getElementById('shortcut-edit-dialog')?.remove();
+
+    const dPx = localStorage.getItem('blur_dash_val') || '25';
+    const dialog = document.createElement('div');
+    dialog.id = 'shortcut-edit-dialog';
+    dialog.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:99999;background:rgba(0,0,0,0.4);';
+
+    dialog.innerHTML = `
+      <div style="width:340px;padding:20px;border-radius:20px;background:rgba(255,255,255,0.12);backdrop-filter:blur(${dPx}px) saturate(160%);-webkit-backdrop-filter:blur(${dPx}px) saturate(160%);border:1px solid rgba(255,255,255,0.25);color:white;direction:rtl;box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+        <h4 style="margin:0 0 15px 0;font-size:15px;font-weight:bold;">ویرایش میانبر</h4>
+        <input id="edit-s-title" type="text" value="${data.title || data.name || ''}" placeholder="نام میانبر" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.25);color:white;margin-bottom:10px;box-sizing:border-box;">
+        <input id="edit-s-url" type="text" value="${data.url || ''}" placeholder="آدرس سایت" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.25);color:white;margin-bottom:15px;box-sizing:border-box;">
+        <div style="display:flex;gap:10px;">
+          <button id="edit-s-save" style="flex:1;padding:10px;background:#2563eb;color:white;border:none;border-radius:12px;cursor:pointer;font-weight:bold;">تأیید و ذخیره</button>
+          <button id="edit-s-cancel" style="flex:1;padding:10px;background:rgba(255,255,255,0.15);color:white;border:none;border-radius:12px;cursor:pointer;">انصراف</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(dialog);
+
+    document.getElementById('edit-s-cancel').onclick = () => dialog.remove();
+    document.getElementById('edit-s-save').onclick = () => {
+      const newTitle = document.getElementById('edit-s-title').value.trim();
+      const newUrl = document.getElementById('edit-s-url').value.trim();
+      if (!newUrl) return;
+
+      let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+      if (list[index]) {
+        list[index].title = newTitle || newUrl;
+        list[index].name = newTitle || newUrl;
+        list[index].url = newUrl;
+        localStorage.setItem('user_shortcuts', JSON.stringify(list));
+      }
+      dialog.remove();
+      if (typeof renderShortcuts === 'function') renderShortcuts();
+      else location.reload();
+    };
+  }
+
+  // قلاب کردن خودکار به دکمه‌های ۳ نقطه و کارت‌های شورت‌کات
+  function bindToAllShortcutCards() {
+    const shortcutEls = document.querySelectorAll('.shortcut-item, .shortcut-card');
+    let list = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+
+    shortcutEls.forEach((el, idx) => {
+      const moreBtn = el.querySelector('.shortcut-more-btn, .more-btn, [data-action="more"]');
+      const itemData = list[idx] || { title: el.innerText, url: el.getAttribute('href') || '#' };
+
+      if (moreBtn) {
+        moreBtn.onclick = (e) => window.openShortcutOptionsMenu(e, idx, el, itemData);
+      } else {
+        el.oncontextmenu = (e) => window.openShortcutOptionsMenu(e, idx, el, itemData);
+      }
+    });
+  }
+
+  setInterval(bindToAllShortcutCards, 1500);
+})();

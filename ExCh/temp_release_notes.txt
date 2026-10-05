@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.42:
-- رفع مشکل جابه‌جایی تب تصویر زمینه و تم رنگی، تنظیم پیش‌فرض ماتی روی ۵۰ درصد، و اتصال استایل شیشه‌ای میانبرها و کشویی‌های تایمر، پیش‌بینی و اوقات شرعی
+### 🇮🇷 تغییرات نسخه v1.32.43:
+- پیاده‌سازی منوی سه‌نقطه میانبرها شامل باز کردن فوری در تب جاری و جدید، انتخاب با تیک و نوار مدیریت دسته‌جمعی، ویرایش پاپ‌آپ شیشه‌ای، کپی لینک و حذف
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.42):
-- Fix Settings Tab Switching, Set Default Blur to 50% and Sync Shortcuts and Drawers Blur
+### 🇬🇧 Release Notes (v1.32.43):
+- Implement Complete Shortcut Context Menu with Multi-Select and Glass Edit Modal
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

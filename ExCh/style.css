@@ -2628,3 +2628,133 @@ body {
 .forecast-drawer, .clock-drawer, #timer-drawer, #azan-drawer {
   background: var(--popup-glass-bg, rgba(255, 255, 255, 0.12)) !important;
 }
+
+
+/* ========================================================
+   استایل شیشه‌ای مودال افزودن میانبر و نوار انتخاب دسته‌جمعی
+======================================================== */
+.add-shortcut-modal-card,
+#add-shortcut-modal,
+#edit-shortcut-modal,
+.shortcut-modal-box {
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 20px !important;
+}
+
+/* تیک آبی انتخاب میانبر */
+.shortcut-item.is-selected {
+  position: relative;
+  outline: 2px solid #3b82f6 !important;
+  border-radius: 16px !important;
+}
+.shortcut-item.is-selected::after {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #3b82f6;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+/* نوار انتخاب دسته‌جمعی پایین صفحه */
+#shortcut-bulk-bar {
+  position: fixed;
+  bottom: 85px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 40px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  color: white;
+  direction: rtl;
+}
+#shortcut-bulk-bar.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+#shortcut-bulk-bar .count-badge {
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+#shortcut-bulk-bar .btn-bulk-delete {
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#shortcut-bulk-bar .btn-bulk-close {
+  cursor: pointer;
+  opacity: 0.7;
+}
+#shortcut-bulk-bar .btn-bulk-close:hover {
+  opacity: 1;
+}
+
+/* منوی پاپ‌آپ سه‌نقطه میانبرها */
+.shortcut-custom-menu {
+  position: absolute;
+  z-index: 10000;
+  background: rgba(28, 25, 23, 0.88);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 6px;
+  min-width: 160px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  direction: rtl;
+}
+.shortcut-custom-menu .menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.shortcut-custom-menu .menu-row:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.shortcut-custom-menu .menu-row.danger {
+  color: #ef4444;
+}
+.shortcut-custom-menu hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
