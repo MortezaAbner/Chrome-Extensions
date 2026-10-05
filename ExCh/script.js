@@ -173,6 +173,74 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             localStorage.setItem('custom_bg', event.target.result);
             applyBackgroundConfig();
+
+  // مدیریت تب تم و رنگ و اسلایدرهای کنترل مات‌‌شدگی شیشه
+  const navBtnGeneral = document.getElementById('nav-btn-general');
+  const navBtnTheme = document.getElementById('nav-btn-theme');
+  const tabGeneral = document.getElementById('settings-tab-general');
+  const tabTheme = document.getElementById('settings-tab-theme');
+
+  if (navBtnGeneral && navBtnTheme) {
+    navBtnGeneral.onclick = () => {
+      navBtnGeneral.classList.add('active');
+      navBtnTheme.classList.remove('active');
+      if (tabGeneral) tabGeneral.style.display = 'flex';
+      if (tabTheme) tabTheme.style.display = 'none';
+    };
+
+    navBtnTheme.onclick = () => {
+      navBtnTheme.classList.add('active');
+      navBtnGeneral.classList.remove('active');
+      if (tabGeneral) tabGeneral.style.display = 'none';
+      if (tabTheme) tabTheme.style.display = 'flex';
+    };
+  }
+
+  // اسلایدرهای مات‌شدگی شیشه‌ای داشبورد و پاپ‌آپ‌ها
+  const sliderDashBlur = document.getElementById('slider-dash-blur');
+  const sliderPopupBlur = document.getElementById('slider-popup-blur');
+  const valDashBlur = document.getElementById('val-dash-blur');
+  const valPopupBlur = document.getElementById('val-popup-blur');
+
+  function applyCustomBlurSettings() {
+    const dashBlur = localStorage.getItem('dash_blur_val') || '25';
+    const popupBlur = localStorage.getItem('popup_blur_val') || '65';
+
+    if (sliderDashBlur) sliderDashBlur.value = dashBlur;
+    if (sliderPopupBlur) sliderPopupBlur.value = popupBlur;
+    if (valDashBlur) valDashBlur.textContent = toFa(dashBlur) + 'px';
+    if (valPopupBlur) valPopupBlur.textContent = toFa(popupBlur) + 'px';
+
+    document.querySelectorAll('.ios-glass-card').forEach(el => {
+      el.style.setProperty('backdrop-filter', 'blur(' + dashBlur + 'px) saturate(200%)', 'important');
+      el.style.setProperty('-webkit-backdrop-filter', 'blur(' + dashBlur + 'px) saturate(200%)', 'important');
+    });
+
+    const popupSelectors = '.glass-blur-menu, .forecast-drawer, .clock-drawer, .azan-city-dropdown, .month-year-picker-modal, .date-event-popup, .task-tool-popup, .location-modal-box';
+    document.querySelectorAll(popupSelectors).forEach(el => {
+      el.style.setProperty('backdrop-filter', 'blur(' + popupBlur + 'px) saturate(250%)', 'important');
+      el.style.setProperty('-webkit-backdrop-filter', 'blur(' + popupBlur + 'px) saturate(250%)', 'important');
+    });
+  }
+
+  if (sliderDashBlur) {
+    sliderDashBlur.oninput = (e) => {
+      const v = e.target.value;
+      localStorage.setItem('dash_blur_val', v);
+      applyCustomBlurSettings();
+    };
+  }
+
+  if (sliderPopupBlur) {
+    sliderPopupBlur.oninput = (e) => {
+      const v = e.target.value;
+      localStorage.setItem('popup_blur_val', v);
+      applyCustomBlurSettings();
+    };
+  }
+
+  applyCustomBlurSettings();
+
           } catch (err) {
             alert('حجم عکس بالاست!');
           }
