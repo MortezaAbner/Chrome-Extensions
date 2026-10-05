@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
 
           } catch (err) {
-            alert('حجم عکس بالاست!');
+            
           }
         };
         reader.readAsDataURL(file);
@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (autoGpsBtn) {
     autoGpsBtn.onclick = () => {
       if (!navigator.geolocation) {
-        alert('مرورگر شما از موقعیت‌یابی پشتیبانی نمی‌کند.');
+        
         return;
       }
       autoGpsBtn.style.opacity = '0.6';
@@ -795,9 +795,9 @@ document.addEventListener('DOMContentLoaded', () => {
         (err) => {
           autoGpsBtn.style.opacity = '1';
           if (err.code === 1) {
-            alert('دسترسی به موقعیت مکانی رد شد. برای استفاده مجدد، دسترسی لوکیشن را در نوار آدرس مرورگر فعال کنید یا دوباره کلیک کنید.');
+            
           } else {
-            alert('خطا در دریافت مختصات GPS دستگاه.');
+            
           }
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -842,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchRealWeather(activeCoords.lat, activeCoords.lon, activeCoords.name);
         cityModal.classList.remove('active');
       } else {
-        alert('خطا در ارتباط با سرورهای تشخیص آی‌پی. اتصال اینترنت خود را بررسی کنید یا نام شهر را دستی جستجو نمایید.');
+        
       }
     };
   }
@@ -869,11 +869,11 @@ document.addEventListener('DOMContentLoaded', () => {
           manualCityInput.value = '';
           cityModal.classList.remove('active');
         } else {
-          alert('شهر مورد نظر پیدا نشد! نام شهر را دقیق وارد کنید.');
+          
         }
       } catch (err) {
         citySaveBtn.textContent = 'تأیید و ذخیره';
-        alert('خطا در اتصال به سرور جستجوی شهر.');
+        
       }
     };
 
@@ -2300,7 +2300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('val_d_blur', currentDashBlur);
       localStorage.setItem('val_p_blur', currentPopupBlur);
       setLiveBlur(currentDashBlur, currentPopupBlur);
-      alert('میزان ماتی با موفقیت ذخیره شد ✓');
+      
     };
   }
 
@@ -2338,7 +2338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rgbConfirmBtn.onclick = () => {
       const chosenColor = rgbColorInput.value;
       setDashboardAccent(chosenColor);
-      alert('رنگ اختصاصی اعمال شد ✓');
+      
     };
   }
 
@@ -2395,7 +2395,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (uploadCard) uploadCard.classList.add('active');
         if (fontUploadSample) fontUploadSample.textContent = 'فونت شخصی ✓';
         if (fontUploadStatus) fontUploadStatus.textContent = file.name.slice(0, 14);
-        alert('فونت با موفقیت آپلود و در کل سایت فعال شد!');
+        
       };
       reader.readAsDataURL(file);
     };
@@ -2533,7 +2533,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('user_dash_blur_pct', persistentDash);
       localStorage.setItem('user_popup_blur_pct', persistentPopup);
       onSliderDrag();
-      alert('میزان ماتی با موفقیت در سیستم ثبت شد ✓');
+      
     };
   }
 
@@ -2697,3 +2697,63 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
   })();
+
+
+  // بستن قطعی پاپ‌آپ تنظیمات هنگام تایید و انصراف
+  
+  
+
+  // اتصال مستقیم دکمه‌های تایید و انصراف ماتی
+  (function initModalButtons() {
+    const btnOk = document.getElementById('blur-save-btn');
+    const btnCancel = document.getElementById('blur-cancel-btn');
+    const sD = document.getElementById('slider-dash-blur');
+    const sP = document.getElementById('slider-popup-blur');
+
+    let initialD = localStorage.getItem('blur_dash_val') || (sD ? sD.value : '25');
+    let initialP = localStorage.getItem('blur_popup_val') || (sP ? sP.value : '65');
+
+    function closeSettings() {
+      const modal = document.getElementById('view-settings');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+      const dash = document.getElementById('view-dashboard');
+      if (dash) {
+        dash.classList.add('active');
+        dash.style.display = '';
+      }
+      const dock = document.getElementById('dock-home-btn');
+      if (dock) dock.classList.add('active');
+    }
+
+    if (btnOk) {
+      btnOk.onclick = function(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        const curD = sD ? sD.value : initialD;
+        const curP = sP ? sP.value : initialP;
+        localStorage.setItem('blur_dash_val', curD);
+        localStorage.setItem('blur_popup_val', curP);
+        localStorage.setItem('cfg_dash_blur', curD);
+        localStorage.setItem('cfg_popup_blur', curP);
+        initialD = curD;
+        initialP = curP;
+        closeSettings();
+      };
+    }
+
+    if (btnCancel) {
+      btnCancel.onclick = function(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        if (sD) sD.value = initialD;
+        if (sP) sP.value = initialP;
+        if (typeof setLiveBlur === 'function') setLiveBlur(initialD, initialP);
+        if (typeof applyBlurStyles === 'function') applyBlurStyles(initialD, initialP);
+        if (typeof window.handleDashBlurLive === 'function') window.handleDashBlurLive(initialD);
+        if (typeof window.handlePopupBlurLive === 'function') window.handlePopupBlurLive(initialP);
+        closeSettings();
+      };
+    }
+  })();
+  
