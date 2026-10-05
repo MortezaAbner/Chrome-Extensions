@@ -2230,264 +2230,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ========================================================
-  // موتور جامع تنظیمات زنده تم، ماتی، رنگ و فونت
-  // ========================================================
-
-  // ۱. کنترل تم (دارک، لایت، خودکار) - عکس ۲
-  function applyThemeMode(mode) {
-    document.querySelectorAll('.theme-mode-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.mode === mode);
-    });
-
-    if (mode === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-    } else {
-      document.documentElement.setAttribute('data-theme', mode);
-    }
-    localStorage.setItem('user_theme_mode', mode);
-  }
-
-  document.querySelectorAll('.theme-mode-btn').forEach(btn => {
-    btn.onclick = () => applyThemeMode(btn.dataset.mode);
-  });
-
-  const savedThemeMode = localStorage.getItem('user_theme_mode') || 'auto';
-  applyThemeMode(savedThemeMode);
-
-  // ۲. کنترل ماتی زنده با تایید و انصراف - عکس ۳
-  const sDash = document.getElementById('slider-dash-blur');
-  const sPopup = document.getElementById('slider-popup-blur');
-  const tDash = document.getElementById('val-dash-blur');
-  const tPopup = document.getElementById('val-popup-blur');
-  const btnBlurSave = document.getElementById('blur-save-btn');
-  const btnBlurCancel = document.getElementById('blur-cancel-btn');
-
-  let currentDashBlur = localStorage.getItem('val_d_blur') || '25';
-  let currentPopupBlur = localStorage.getItem('val_p_blur') || '65';
-
-  function setLiveBlur(dPct, pPct) {
-    if (tDash) tDash.textContent = toFa(dPct) + '٪';
-    if (tPopup) tPopup.textContent = toFa(pPct) + '٪';
-
-    const dPx = (dPct * 0.6).toFixed(1) + 'px';
-    const pPx = (pPct * 0.9).toFixed(1) + 'px';
-
-    document.documentElement.style.setProperty('--dash-blur', dPx);
-    document.documentElement.style.setProperty('--popup-blur', pPx);
-  }
-
-  if (sDash) {
-    sDash.value = currentDashBlur;
-    sDash.oninput = (e) => setLiveBlur(e.target.value, sPopup ? sPopup.value : currentPopupBlur);
-  }
-  if (sPopup) {
-    sPopup.value = currentPopupBlur;
-    sPopup.oninput = (e) => setLiveBlur(sDash ? sDash.value : currentDashBlur, e.target.value);
-  }
-
-  if (btnBlurSave) {
-    btnBlurSave.onclick = () => {
-      currentDashBlur = sDash.value;
-      currentPopupBlur = sPopup.value;
-      localStorage.setItem('val_d_blur', currentDashBlur);
-      localStorage.setItem('val_p_blur', currentPopupBlur);
-      setLiveBlur(currentDashBlur, currentPopupBlur);
-      alert('میزان ماتی با موفقیت ذخیره شد ✓');
-    };
-  }
-
-  if (btnBlurCancel) {
-    btnBlurCancel.onclick = () => {
-      if (sDash) sDash.value = currentDashBlur;
-      if (sPopup) sPopup.value = currentPopupBlur;
-      setLiveBlur(currentDashBlur, currentPopupBlur);
-    };
-  }
-  setLiveBlur(currentDashBlur, currentPopupBlur);
-
-  // ۳. کنترل رنگ اصلی و تایید پالت RGB - عکس ۴
-  function setDashboardAccent(color) {
-    document.documentElement.style.setProperty('--accent-color', color);
-    localStorage.setItem('dash_accent_color', color);
-
-    document.querySelectorAll('.color-palette-circle').forEach(btn => {
-      const match = btn.dataset.color.toLowerCase() === color.toLowerCase();
-      btn.classList.toggle('active', match);
-      btn.textContent = match ? '✓' : '';
-    });
-  }
-
-  document.querySelectorAll('.color-palette-circle').forEach(circle => {
-    circle.onclick = () => {
-      setDashboardAccent(circle.dataset.color);
-    };
-  });
-
-  const rgbColorInput = document.getElementById('rgb-color-picker');
-  const rgbConfirmBtn = document.getElementById('rgb-confirm-btn');
-
-  if (rgbConfirmBtn && rgbColorInput) {
-    rgbConfirmBtn.onclick = () => {
-      const chosenColor = rgbColorInput.value;
-      setDashboardAccent(chosenColor);
-      alert('رنگ اختصاصی اعمال شد ✓');
-    };
-  }
-
-  const initialAccent = localStorage.getItem('dash_accent_color') || '#2563eb';
-  setDashboardAccent(initialAccent);
-  if (rgbColorInput) rgbColorInput.value = initialAccent;
-
-  // ۴. مدیریت فونت‌ها و آپلود فونت دلخواه - عکس ۵
-  function applyActiveFont(fontName) {
-    document.documentElement.style.setProperty('--app-font', "'" + fontName + "', system-ui, -apple-system, sans-serif");
-    document.body.style.fontFamily = "'" + fontName + "', system-ui, -apple-system, sans-serif";
-    localStorage.setItem('dash_active_font', fontName);
-
-    document.querySelectorAll('.font-card-item:not(.font-card-upload)').forEach(card => {
-      const isSelected = card.dataset.font === fontName;
-      card.classList.toggle('active', isSelected);
-      const sample = card.querySelector('.font-card-sample');
-      if (sample) {
-        sample.textContent = isSelected ? 'من اینطوریم ✓' : 'من اینطوریم';
-      }
-    });
-  }
-
-  document.querySelectorAll('.font-card-item:not(.font-card-upload)').forEach(card => {
-    card.onclick = () => applyActiveFont(card.dataset.font);
-  });
-
-  const fontUploadInput = document.getElementById('custom-font-file');
-  const fontUploadStatus = document.getElementById('upload-font-status');
-  const fontUploadSample = document.getElementById('upload-font-sample');
-  const uploadCard = document.getElementById('upload-font-card');
-
-  if (fontUploadInput) {
-    fontUploadInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const fontData = evt.target.result;
-        const fontName = 'CustomUserFont';
-
-        let fontStyleTag = document.getElementById('custom-user-font-tag');
-        if (!fontStyleTag) {
-          fontStyleTag = document.createElement('style');
-          fontStyleTag.id = 'custom-user-font-tag';
-          document.head.appendChild(fontStyleTag);
-        }
-        fontStyleTag.textContent = '@font-face { font-family: "' + fontName + '"; src: url(' + fontData + '); }';
-
-        localStorage.setItem('custom_font_base64', fontData);
-        applyActiveFont(fontName);
-
-        if (uploadCard) uploadCard.classList.add('active');
-        if (fontUploadSample) fontUploadSample.textContent = 'فونت شخصی ✓';
-        if (fontUploadStatus) fontUploadStatus.textContent = file.name.slice(0, 14);
-        alert('فونت با موفقیت آپلود و در کل سایت فعال شد!');
-      };
-      reader.readAsDataURL(file);
-    };
-  }
-
-  const storedCustomFont = localStorage.getItem('custom_font_base64');
-  if (storedCustomFont) {
-    let fontStyleTag = document.createElement('style');
-    fontStyleTag.id = 'custom-user-font-tag';
-    fontStyleTag.textContent = '@font-face { font-family: "CustomUserFont"; src: url(' + storedCustomFont + '); }';
-    document.head.appendChild(fontStyleTag);
-  }
-
-  const initialFont = localStorage.getItem('dash_active_font') || 'Vazirmatn';
-  applyActiveFont(initialFont);
-
-
-  // موتور مستقیم اعمال ماتی به کل عناصر داشبورد و پاپ‌آپ‌ها
-  function injectDynamicBlurStyles(dashBlurPx, popupBlurPx) {
-    let styleTag = document.getElementById('live-custom-blur-style');
-    if (!styleTag) {
-      styleTag = document.createElement('style');
-      styleTag.id = 'live-custom-blur-style';
-      document.head.appendChild(styleTag);
-    }
-
-    styleTag.textContent = `
-      .ios-glass-card:not(.settings-modal-card) {
-        backdrop-filter: blur(${dashBlurPx}px) saturate(200%) !important;
-        -webkit-backdrop-filter: blur(${dashBlurPx}px) saturate(200%) !important;
-      }
-      .glass-blur-menu,
-      .forecast-drawer,
-      .clock-drawer,
-      .azan-city-dropdown,
-      .month-year-picker-modal,
-      .date-event-popup,
-      .task-tool-popup,
-      .location-modal-box,
-      .settings-modal-card {
-        backdrop-filter: blur(${popupBlurPx}px) saturate(240%) !important;
-        -webkit-backdrop-filter: blur(${popupBlurPx}px) saturate(240%) !important;
-      }
-    `;
-  }
-
-  // رویداد اسلایدرهای ماتی (۰ شفاف و ۱۰۰ کاملاً مات)
-  const sliderD = document.getElementById('slider-dash-blur');
-  const sliderP = document.getElementById('slider-popup-blur');
-  const labelD = document.getElementById('val-dash-blur');
-  const labelP = document.getElementById('val-popup-blur');
-
-  function updateBlurFromInputs() {
-    const dVal = sliderD ? parseInt(sliderD.value, 10) : 25;
-    const pVal = sliderP ? parseInt(sliderP.value, 10) : 65;
-
-    if (labelD) labelD.textContent = toFa(dVal) + '٪';
-    if (labelP) labelP.textContent = toFa(pVal) + '٪';
-
-    // تبدیل ۰ تا ۱۰۰ درصد به بازه ۰ تا ۸۰ پیکسل برای بلر واقعی
-    const dPx = (dVal * 0.7).toFixed(1);
-    const pPx = (pVal * 0.9).toFixed(1);
-
-    injectDynamicBlurStyles(dPx, pPx);
-  }
-
-  if (sliderD) sliderD.oninput = updateBlurFromInputs;
-  if (sliderP) sliderP.oninput = updateBlurFromInputs;
-
-  const btnSaveBlur = document.getElementById('blur-save-btn');
-  const btnCancelBlur = document.getElementById('blur-cancel-btn');
-
-  let savedDashVal = localStorage.getItem('blur_d_saved') || '25';
-  let savedPopupVal = localStorage.getItem('blur_p_saved') || '65';
-
-  if (sliderD) sliderD.value = savedDashVal;
-  if (sliderP) sliderP.value = savedPopupVal;
-  updateBlurFromInputs();
-
-  if (btnSaveBlur) {
-    btnSaveBlur.onclick = () => {
-      savedDashVal = sliderD.value;
-      savedPopupVal = sliderP.value;
-      localStorage.setItem('blur_d_saved', savedDashVal);
-      localStorage.setItem('blur_p_saved', savedPopupVal);
-      updateBlurFromInputs();
-      alert('میزان ماتی با موفقیت ذخیره شد ✓');
-    };
-  }
-
-  if (btnCancelBlur) {
-    btnCancelBlur.onclick = () => {
-      if (sliderD) sliderD.value = savedDashVal;
-      if (sliderP) sliderP.value = savedPopupVal;
-      updateBlurFromInputs();
-    };
-  }
-
   // رویداد انتخاب تم و تیک خوردن (عکس ۲)
   function setupThemeModeTicks() {
     const modeBtns = document.querySelectorAll('.theme-mode-btn');
@@ -2628,5 +2370,144 @@ document.addEventListener('DOMContentLoaded', () => {
       if (slD) slD.value = persistentDash;
       if (slP) slP.value = persistentPopup;
       onSliderDrag();
+    };
+  }
+
+
+  // ========================================================
+  // موتور سه‌گانه ماتی زنده، کدری رنگ شیشه و بستن پاپ‌آپ
+  // ========================================================
+  const sDashBlur = document.getElementById('slider-dash-blur');
+  const sPopupBlur = document.getElementById('slider-popup-blur');
+  const sGlassOpacity = document.getElementById('slider-glass-opacity');
+
+  const lblDashBlur = document.getElementById('val-dash-blur');
+  const lblPopupBlur = document.getElementById('val-popup-blur');
+  const lblGlassOpacity = document.getElementById('val-glass-opacity');
+
+  const btnConfirmBlur = document.getElementById('blur-save-btn');
+  const btnDismissBlur = document.getElementById('blur-cancel-btn');
+  const settingsModalRoot = document.getElementById('view-settings');
+
+  // مقادیر پیش‌فرض
+  const DEFAULT_D_BLUR = '25';
+  const DEFAULT_P_BLUR = '65';
+  const DEFAULT_OPACITY = '40';
+
+  function renderTripleGlassEngine(dPercent, pPercent, opPercent) {
+    const dP = Math.max(0, Math.min(100, parseInt(dPercent, 10)));
+    const pP = Math.max(0, Math.min(100, parseInt(pPercent, 10)));
+    const op = Math.max(0, Math.min(100, parseInt(opPercent, 10)));
+
+    if (lblDashBlur) lblDashBlur.textContent = toFa(dP) + '٪';
+    if (lblPopupBlur) lblPopupBlur.textContent = toFa(pP) + '٪';
+    if (lblGlassOpacity) lblGlassOpacity.textContent = toFa(op) + '٪';
+
+    // تبدیل درصد به پیکسل بلر (۰ تا ۶۰ پیکسل برای داشبورد و ۰ تا ۹۰ پیکسل برای پاپ‌آپ)
+    const dPx = (dP * 0.6).toFixed(1);
+    const pPx = (pP * 0.9).toFixed(1);
+
+    // محاسبه آلفای رنگ بر اساس اسلایدر کدری (از ۰ تا ۰.۹۵)
+    const cardAlphaLight = (op / 100 * 0.85).toFixed(2);
+    const cardAlphaDark = (op / 100 * 0.88).toFixed(2);
+    const popupAlphaLight = Math.min(0.98, (op / 100 * 0.92) + 0.1).toFixed(2);
+    const popupAlphaDark = Math.min(0.98, (op / 100 * 0.90) + 0.15).toFixed(2);
+
+    let styleTag = document.getElementById('triple-glass-dynamic-style');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'triple-glass-dynamic-style';
+      document.head.appendChild(styleTag);
+    }
+
+    styleTag.textContent = `
+      /* داشبورد اصلی */
+      .ios-glass-card:not(.settings-modal-card) {
+        backdrop-filter: blur(${dPx}px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(${dPx}px) saturate(200%) !important;
+        background: rgba(255, 255, 255, ${cardAlphaLight}) !important;
+      }
+      [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
+        background: rgba(15, 23, 42, ${cardAlphaDark}) !important;
+      }
+
+      /* پاپ‌آپ‌ها، دراورها و پنجره تنظیمات */
+      .glass-blur-menu,
+      .forecast-drawer,
+      .clock-drawer,
+      .azan-city-dropdown,
+      .month-year-picker-modal,
+      .date-event-popup,
+      .task-tool-popup,
+      .location-modal-box,
+      .settings-modal-card {
+        backdrop-filter: blur(${pPx}px) saturate(240%) !important;
+        -webkit-backdrop-filter: blur(${pPx}px) saturate(240%) !important;
+        background: rgba(255, 255, 255, ${popupAlphaLight}) !important;
+      }
+      [data-theme="dark"] .glass-blur-menu,
+      [data-theme="dark"] .forecast-drawer,
+      [data-theme="dark"] .clock-drawer,
+      [data-theme="dark"] .settings-modal-card {
+        background: rgba(15, 21, 37, ${popupAlphaDark}) !important;
+      }
+    `;
+  }
+
+  function readAndPreviewSliders() {
+    const curD = sDashBlur ? sDashBlur.value : (localStorage.getItem('saved_d_blur') || DEFAULT_D_BLUR);
+    const curP = sPopupBlur ? sPopupBlur.value : (localStorage.getItem('saved_p_blur') || DEFAULT_P_BLUR);
+    const curO = sGlassOpacity ? sGlassOpacity.value : (localStorage.getItem('saved_glass_op') || DEFAULT_OPACITY);
+    renderTripleGlassEngine(curD, curP, curO);
+  }
+
+  if (sDashBlur) sDashBlur.oninput = readAndPreviewSliders;
+  if (sPopupBlur) sPopupBlur.oninput = readAndPreviewSliders;
+  if (sGlassOpacity) sGlassOpacity.oninput = readAndPreviewSliders;
+
+  // بارگذاری مقادیر اولیه
+  const initialD = localStorage.getItem('saved_d_blur') || DEFAULT_D_BLUR;
+  const initialP = localStorage.getItem('saved_p_blur') || DEFAULT_P_BLUR;
+  const initialO = localStorage.getItem('saved_glass_op') || DEFAULT_OPACITY;
+
+  if (sDashBlur) sDashBlur.value = initialD;
+  if (sPopupBlur) sPopupBlur.value = initialP;
+  if (sGlassOpacity) sGlassOpacity.value = initialO;
+  renderTripleGlassEngine(initialD, initialP, initialO);
+
+  // بستن پاپ‌آپ و ذخیره دائم با کلیک تایید
+  if (btnConfirmBlur) {
+    btnConfirmBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_d_blur', sDashBlur ? sDashBlur.value : DEFAULT_D_BLUR);
+      localStorage.setItem('saved_p_blur', sPopupBlur ? sPopupBlur.value : DEFAULT_P_BLUR);
+      localStorage.setItem('saved_glass_op', sGlassOpacity ? sGlassOpacity.value : DEFAULT_OPACITY);
+      readAndPreviewSliders();
+
+      // بستن پاپ‌آپ تنظیمات و بازگشت به داشبورد
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
+    };
+  }
+
+  // بازگشت به پیش‌فرض و بستن پاپ‌آپ با کلیک انصراف
+  if (btnDismissBlur) {
+    btnDismissBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_d_blur', DEFAULT_D_BLUR);
+      localStorage.setItem('saved_p_blur', DEFAULT_P_BLUR);
+      localStorage.setItem('saved_glass_op', DEFAULT_OPACITY);
+
+      if (sDashBlur) sDashBlur.value = DEFAULT_D_BLUR;
+      if (sPopupBlur) sPopupBlur.value = DEFAULT_P_BLUR;
+      if (sGlassOpacity) sGlassOpacity.value = DEFAULT_OPACITY;
+
+      renderTripleGlassEngine(DEFAULT_D_BLUR, DEFAULT_P_BLUR, DEFAULT_OPACITY);
+
+      // بستن پاپ‌آپ تنظیمات
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
     };
   }

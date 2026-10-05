@@ -1,109 +1,100 @@
 const fs = require('fs');
 
-// ۱. بازگرداندن آیکون داخل دایره خودکار در newtab.html
+// ۱. افزودن ۳ اسلایدر ماتی و کدری در newtab.html
 if (fs.existsSync('./newtab.html')) {
   let html = fs.readFileSync('./newtab.html', 'utf8');
 
-  // آیکون دوگانه ماه/خورشید داخل دایره خودکار (عکس ۱)
-  html = html.replace(
-    /<div class="mode-circle-preview mode-circle-auto">[\s\S]*?<\/div>/,
-    '<div class="mode-circle-preview mode-circle-auto"><span class="auto-mode-icon">🌓</span></div>'
-  );
+  const trioSliderBlock = `            <!-- کنترل سه‌گانه ماتی و کدری رنگ شیشه -->
+            <div class="settings-form-row">
+              <label class="settings-field-label">ماتی بلر داشبورد اصلی<span class="sub-tip">میزان تاری پشت کارت‌های اصلی: <strong id="val-dash-blur">۲۵٪</strong></span></label>
+              <input type="range" id="slider-dash-blur" min="0" max="100" value="25" class="glass-slider">
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">ماتی بلر پاپ‌آپ‌ها و دراورها<span class="sub-tip">میزان تاری پنجره‌های بازشونده: <strong id="val-popup-blur">۶۵٪</strong></span></label>
+              <input type="range" id="slider-popup-blur" min="0" max="100" value="65" class="glass-slider">
+            </div>
+
+            <div class="settings-form-row">
+              <label class="settings-field-label">کدری و غلظت رنگ شیشه‌ای<span class="sub-tip">میزان شفافیت (۰٪ شیشه خالص، ۱۰۰٪ رنگ پوشاننده): <strong id="val-glass-opacity">۴۰٪</strong></span></label>
+              <input type="range" id="slider-glass-opacity" min="0" max="100" value="40" class="glass-slider">
+            </div>
+
+            <div class="blur-actions-bar" style="display: flex; gap: 10px; margin-top: 6px;">
+              <button type="button" id="blur-save-btn" class="location-chip" style="background: var(--accent-color, #2563eb); color: #fff; padding: 8px 18px; font-weight: bold; cursor: pointer;">تأیید ماتی ✓</button>
+              <button type="button" id="blur-cancel-btn" class="location-chip" style="padding: 8px 18px; cursor: pointer;">انصراف ✕</button>
+            </div>`;
+
+  // جایگزینی بخش اسلایدرهای قبلی
+  html = html.replace(/<!-- میزان ماتی شیشه[\s\S]*?<\/div>\s*<\/div>/, trioSliderBlock);
 
   fs.writeFileSync('./newtab.html', html, 'utf8');
-  console.log('✅ آیکون حالت خودکار در newtab.html اضافه شد.');
+  console.log('✅ اسلایدر سه‌گانه ماتی و کدری در newtab.html جایگزین شد.');
 }
 
-// ۲. اصلاح استایل آیکون و تیک در style.css
-if (fs.existsSync('./style.css')) {
-  let css = fs.readFileSync('./style.css', 'utf8');
-
-  const themeIconCss = `
-/* آیکون و چیدمان حالت خودکار و تیک فعال */
-.mode-circle-auto {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 1.25rem !important;
-  background: linear-gradient(135deg, #0f172a 50%, #ffffff 50%) !important;
-  border: 1.5px solid #64748b !important;
-  position: relative !important;
-}
-
-.auto-mode-icon {
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-}
-
-/* تیک در گوشه بالا برای جلوگیری از پوشاندن آیکون */
-.theme-mode-btn.active .mode-circle-preview::after {
-  content: '✓';
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 18px;
-  height: 18px;
-  background: var(--accent-color, #2563eb);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 900;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-`;
-
-  if (!css.includes('.auto-mode-icon')) {
-    css += '\n' + themeIconCss;
-    fs.writeFileSync('./style.css', css, 'utf8');
-    console.log('✅ استایل تیک و آیکون خودکار در style.css اعمال شد.');
-  }
-}
-
-// ۳. موتور قدرتمند و مستقیم ماتی (Blur + Opacity) در script.js
+// ۲. اعمال منطق زنده ۳ اسلایدر، بستن پاپ‌آپ و انصراف به پیش‌فرض در script.js
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  const masterBlurScript = `
+  const trioSliderEngine = `
   // ========================================================
-  // موتور قطعی ماتی صفر تا صد (کنترل همزمان بلر و غلظت رنگ)
+  // موتور سه‌گانه ماتی زنده، کدری رنگ شیشه و بستن پاپ‌آپ
   // ========================================================
-  function applyAbsoluteBlurEngine(dPercent, pPercent) {
-    let styleElem = document.getElementById('engine-absolute-blur');
-    if (!styleElem) {
-      styleElem = document.createElement('style');
-      styleElem.id = 'engine-absolute-blur';
-      document.head.appendChild(styleElem);
-    }
+  const sDashBlur = document.getElementById('slider-dash-blur');
+  const sPopupBlur = document.getElementById('slider-popup-blur');
+  const sGlassOpacity = document.getElementById('slider-glass-opacity');
 
+  const lblDashBlur = document.getElementById('val-dash-blur');
+  const lblPopupBlur = document.getElementById('val-popup-blur');
+  const lblGlassOpacity = document.getElementById('val-glass-opacity');
+
+  const btnConfirmBlur = document.getElementById('blur-save-btn');
+  const btnDismissBlur = document.getElementById('blur-cancel-btn');
+  const settingsModalRoot = document.getElementById('view-settings');
+
+  // مقادیر پیش‌فرض
+  const DEFAULT_D_BLUR = '25';
+  const DEFAULT_P_BLUR = '65';
+  const DEFAULT_OPACITY = '40';
+
+  function renderTripleGlassEngine(dPercent, pPercent, opPercent) {
     const dP = Math.max(0, Math.min(100, parseInt(dPercent, 10)));
     const pP = Math.max(0, Math.min(100, parseInt(pPercent, 10)));
+    const op = Math.max(0, Math.min(100, parseInt(opPercent, 10)));
 
-    // محاسبه پیکسل بلر (از ۰px تا ۵۰px برای داشبورد و تا ۸۰px برای پاپ‌آپ)
-    const dBlurPx = (dP * 0.5).toFixed(1);
-    const pBlurPx = (pP * 0.8).toFixed(1);
+    if (lblDashBlur) lblDashBlur.textContent = toFa(dP) + '٪';
+    if (lblPopupBlur) lblPopupBlur.textContent = toFa(pP) + '٪';
+    if (lblGlassOpacity) lblGlassOpacity.textContent = toFa(op) + '٪';
 
-    // محاسبه غلظت رنگ شیشه بر اساس درصد (از شفاف ۰.۰۵ تا غلیظ ۰.۹۲)
-    const dAlphaLight = (0.05 + (dP / 100) * 0.55).toFixed(2);
-    const dAlphaDark = (0.10 + (dP / 100) * 0.65).toFixed(2);
+    // تبدیل درصد به پیکسل بلر (۰ تا ۶۰ پیکسل برای داشبورد و ۰ تا ۹۰ پیکسل برای پاپ‌آپ)
+    const dPx = (dP * 0.6).toFixed(1);
+    const pPx = (pP * 0.9).toFixed(1);
 
-    const pAlphaLight = (0.25 + (pP / 100) * 0.65).toFixed(2);
-    const pAlphaDark = (0.35 + (pP / 100) * 0.60).toFixed(2);
+    // محاسبه آلفای رنگ بر اساس اسلایدر کدری (از ۰ تا ۰.۹۵)
+    const cardAlphaLight = (op / 100 * 0.85).toFixed(2);
+    const cardAlphaDark = (op / 100 * 0.88).toFixed(2);
+    const popupAlphaLight = Math.min(0.98, (op / 100 * 0.92) + 0.1).toFixed(2);
+    const popupAlphaDark = Math.min(0.98, (op / 100 * 0.90) + 0.15).toFixed(2);
 
-    styleElem.textContent = \`
+    let styleTag = document.getElementById('triple-glass-dynamic-style');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'triple-glass-dynamic-style';
+      document.head.appendChild(styleTag);
+    }
+
+    styleTag.textContent = \`
       /* داشبورد اصلی */
       .ios-glass-card:not(.settings-modal-card) {
-        backdrop-filter: blur(\${dBlurPx}px) saturate(190%) !important;
-        -webkit-backdrop-filter: blur(\${dBlurPx}px) saturate(190%) !important;
-        background: rgba(255, 255, 255, \${dAlphaLight}) !important;
+        backdrop-filter: blur(\${dPx}px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(\${dPx}px) saturate(200%) !important;
+        background: rgba(255, 255, 255, \${cardAlphaLight}) !important;
       }
       [data-theme="dark"] .ios-glass-card:not(.settings-modal-card) {
-        background: rgba(15, 23, 42, \${dAlphaDark}) !important;
+        background: rgba(15, 23, 42, \${cardAlphaDark}) !important;
       }
 
-      /* پاپ‌آپ‌ها، دراورها و مودال تنظیمات */
+      /* پاپ‌آپ‌ها، دراورها و پنجره تنظیمات */
       .glass-blur-menu,
       .forecast-drawer,
       .clock-drawer,
@@ -113,77 +104,83 @@ if (fs.existsSync('./script.js')) {
       .task-tool-popup,
       .location-modal-box,
       .settings-modal-card {
-        backdrop-filter: blur(\${pBlurPx}px) saturate(220%) !important;
-        -webkit-backdrop-filter: blur(\${pBlurPx}px) saturate(220%) !important;
-        background: rgba(255, 255, 255, \${pAlphaLight}) !important;
+        backdrop-filter: blur(\${pPx}px) saturate(240%) !important;
+        -webkit-backdrop-filter: blur(\${pPx}px) saturate(240%) !important;
+        background: rgba(255, 255, 255, \${popupAlphaLight}) !important;
       }
       [data-theme="dark"] .glass-blur-menu,
       [data-theme="dark"] .forecast-drawer,
       [data-theme="dark"] .clock-drawer,
       [data-theme="dark"] .settings-modal-card {
-        background: rgba(15, 21, 37, \${pAlphaDark}) !important;
+        background: rgba(15, 21, 37, \${popupAlphaDark}) !important;
       }
     \`;
   }
 
-  // متصل کردن اسلایدرهای صفحه
-  const slD = document.getElementById('slider-dash-blur');
-  const slP = document.getElementById('slider-popup-blur');
-  const lblD = document.getElementById('val-dash-blur');
-  const lblP = document.getElementById('val-popup-blur');
-  const btnSave = document.getElementById('blur-save-btn');
-  const btnCancel = document.getElementById('blur-cancel-btn');
-
-  let persistentDash = localStorage.getItem('user_dash_blur_pct') || '25';
-  let persistentPopup = localStorage.getItem('user_popup_blur_pct') || '65';
-
-  function onSliderDrag() {
-    const dVal = slD ? slD.value : persistentDash;
-    const pVal = slP ? slP.value : persistentPopup;
-
-    if (lblD) lblD.textContent = toFa(dVal) + '٪';
-    if (lblP) lblP.textContent = toFa(pVal) + '٪';
-
-    // اعمال آنی در همان لحظه کشیدن اسلایدر حتی روی خود کادر تنظیمات
-    applyAbsoluteBlurEngine(dVal, pVal);
+  function readAndPreviewSliders() {
+    const curD = sDashBlur ? sDashBlur.value : (localStorage.getItem('saved_d_blur') || DEFAULT_D_BLUR);
+    const curP = sPopupBlur ? sPopupBlur.value : (localStorage.getItem('saved_p_blur') || DEFAULT_P_BLUR);
+    const curO = sGlassOpacity ? sGlassOpacity.value : (localStorage.getItem('saved_glass_op') || DEFAULT_OPACITY);
+    renderTripleGlassEngine(curD, curP, curO);
   }
 
-  if (slD) {
-    slD.value = persistentDash;
-    slD.oninput = onSliderDrag;
-  }
-  if (slP) {
-    slP.value = persistentPopup;
-    slP.oninput = onSliderDrag;
-  }
+  if (sDashBlur) sDashBlur.oninput = readAndPreviewSliders;
+  if (sPopupBlur) sPopupBlur.oninput = readAndPreviewSliders;
+  if (sGlassOpacity) sGlassOpacity.oninput = readAndPreviewSliders;
 
-  // اعمال مقدار اولیه
-  onSliderDrag();
+  // بارگذاری مقادیر اولیه
+  const initialD = localStorage.getItem('saved_d_blur') || DEFAULT_D_BLUR;
+  const initialP = localStorage.getItem('saved_p_blur') || DEFAULT_P_BLUR;
+  const initialO = localStorage.getItem('saved_glass_op') || DEFAULT_OPACITY;
 
-  if (btnSave) {
-    btnSave.onclick = () => {
-      persistentDash = slD.value;
-      persistentPopup = slP.value;
-      localStorage.setItem('user_dash_blur_pct', persistentDash);
-      localStorage.setItem('user_popup_blur_pct', persistentPopup);
-      onSliderDrag();
-      alert('میزان ماتی با موفقیت در سیستم ثبت شد ✓');
+  if (sDashBlur) sDashBlur.value = initialD;
+  if (sPopupBlur) sPopupBlur.value = initialP;
+  if (sGlassOpacity) sGlassOpacity.value = initialO;
+  renderTripleGlassEngine(initialD, initialP, initialO);
+
+  // بستن پاپ‌آپ و ذخیره دائم با کلیک تایید
+  if (btnConfirmBlur) {
+    btnConfirmBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_d_blur', sDashBlur ? sDashBlur.value : DEFAULT_D_BLUR);
+      localStorage.setItem('saved_p_blur', sPopupBlur ? sPopupBlur.value : DEFAULT_P_BLUR);
+      localStorage.setItem('saved_glass_op', sGlassOpacity ? sGlassOpacity.value : DEFAULT_OPACITY);
+      readAndPreviewSliders();
+
+      // بستن پاپ‌آپ تنظیمات و بازگشت به داشبورد
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
     };
   }
 
-  if (btnCancel) {
-    btnCancel.onclick = () => {
-      if (slD) slD.value = persistentDash;
-      if (slP) slP.value = persistentPopup;
-      onSliderDrag();
+  // بازگشت به پیش‌فرض و بستن پاپ‌آپ با کلیک انصراف
+  if (btnDismissBlur) {
+    btnDismissBlur.onclick = (e) => {
+      e.stopPropagation();
+      localStorage.setItem('saved_d_blur', DEFAULT_D_BLUR);
+      localStorage.setItem('saved_p_blur', DEFAULT_P_BLUR);
+      localStorage.setItem('saved_glass_op', DEFAULT_OPACITY);
+
+      if (sDashBlur) sDashBlur.value = DEFAULT_D_BLUR;
+      if (sPopupBlur) sPopupBlur.value = DEFAULT_P_BLUR;
+      if (sGlassOpacity) sGlassOpacity.value = DEFAULT_OPACITY;
+
+      renderTripleGlassEngine(DEFAULT_D_BLUR, DEFAULT_P_BLUR, DEFAULT_OPACITY);
+
+      // بستن پاپ‌آپ تنظیمات
+      if (settingsModalRoot) settingsModalRoot.classList.remove('active');
+      document.getElementById('view-dashboard')?.classList.add('active');
+      document.getElementById('dock-home-btn')?.classList.add('active');
     };
   }
 `;
 
-  // پاک کردن کدهای ناقص قبلی بلر و افزودن موتور کامل
-  js = js.replace(/\/\/ ========================================================\s*\/\/ موتور قطعی ماتی[\s\S]*?btnCancel\.onclick[\s\S]*?\};?\s*\}\s*/g, '');
-  js += '\n' + masterBlurScript;
+  // پاک کردن موتور قبلی و جایگزینی با موتور سه‌گانه
+  js = js.replace(/\/\/ ========================================================\s*\/\/ موتور جامع تنظیمات زنده[\s\S]*?btnCancelBlur\.onclick[\s\S]*?\};?\s*\}\s*/g, '');
+  js = js.replace(/\/\/ ========================================================\s*\/\/ موتور سه‌گانه ماتی[\s\S]*?btnDismissBlur\.onclick[\s\S]*?\};?\s*\}\s*/g, '');
+  js += '\n' + trioSliderEngine;
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ موتور جامع ماتی شیشه به script.js تزریق شد.');
+  console.log('✅ موتور سه‌گانه ماتی و بستن خودکار پاپ‌آپ در script.js اعمال شد.');
 }
