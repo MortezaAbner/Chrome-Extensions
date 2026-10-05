@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.20:
-- راست‌چین‌سازی سایدبار تنظیمات، انتقال گزینه‌های پس‌زمینه، تاییدیه رنگ RGB و اتصال کامل فونت‌ها
+### 🇮🇷 تغییرات نسخه v1.32.21:
+- رفع مشکل جابه‌جایی تب‌های تنظیمات و بستن پاپ‌آپ با کلیک روی فضای بیرونی
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.20):
-- RTL Settings Navigation, Dedicated Wallpaper Pane, RGB Picker and Live Font Switching
+### 🇬🇧 Release Notes (v1.32.21):
+- Fix Settings Tab Switching and Add Backdrop Click to Dismiss
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
