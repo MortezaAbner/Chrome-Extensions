@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.46:
-- رفع خطای کش سرویس ورکر و خطای سینتکس استایل در اسکریپت
+### 🇮🇷 تغییرات نسخه v1.32.47:
+- یکپارچه‌سازی منوی کامل سه‌نقطه میانبرها، باز کردن، تب جدید، انتخاب گروهی، مودال‌های شیشه‌ای و اتصال به بلر متغیر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.46):
-- Fix Service Worker Cache and Script Syntax Errors
+### 🇬🇧 Release Notes (v1.32.47):
+- Integrate Dastyar Shortcut Actions with Dynamic Glassmorphism
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
