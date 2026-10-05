@@ -1,19 +1,17 @@
 
 /**
- * ماژول مستقل تقویم فارسی آبنر
+ * ماژول تقویم فارسی آبنر با پاک‌سازی تقویم‌های تکراری
  */
 (function initAbnerCalendar() {
   const persianMonths = [
     'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
     'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
   ];
-
-  // حروف مخفف روزهای هفته زیر اعداد (می‌تواند مناسبت یا نام روز باشد)
   const daySubLabels = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
 
   let state = {
     year: 1405,
-    month: 7, // مهر
+    month: 7,
     day: 13,
     selectedDay: 13
   };
@@ -30,16 +28,15 @@
   }
 
   function renderCalendar() {
-    // حذف قطعی تقویم‌های اضافی احتمالی در صفحه
-    document.querySelectorAll('.calendar-section, .right-column .Calendar, #ab-calendar-container-extra').forEach(el => {
-      if (el.id !== 'abner-calendar-container') el.remove();
-    });
+    // حذف کامل تقویم‌های تکراری و اضافی در صفحه
+    document.querySelectorAll('#ab-calendar-container-extra, .calendar-section:not(#abner-calendar-container)').forEach(el => el.remove());
 
+    // یافتن یا ساخت کانتینر تقویم اصلی در سمت راست
     let container = document.getElementById('abner-calendar-container');
     if (!container) {
       container = document.createElement('div');
       container.id = 'abner-calendar-container';
-      const rightCol = document.querySelector('.right-column') || document.body;
+      const rightCol = document.querySelector('.right-column') || document.querySelector('.calendar-area') || document.body;
       rightCol.appendChild(container);
     }
 
@@ -50,7 +47,6 @@
     for (let d = 1; d <= monthDays; d++) {
       const isToday = (d === state.day && state.month === 7 && state.year === 1405);
       const isSelected = (d === state.selectedDay);
-      // انتخاب یک متن یا حرف نمایشی زیر اعداد برای تطابق با درخواست شما
       const subText = daySubLabels[(d - 1) % 7];
 
       cellsHtml += `
@@ -71,7 +67,7 @@
         <div class="ab-calendar-subtitle">ربيع‌الثاني . جمادی‌الثانی . اول-مهر</div>
         
         <div class="ab-calendar-weekdays">
-          <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span>جمعه</span>
+          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
         </div>
         
         <div class="ab-calendar-days-grid">
@@ -79,13 +75,12 @@
         </div>
 
         <div class="ab-calendar-footer">
-          <button class="ab-cal-footer-btn" id="ab-cal-today">📅 تقویم گوگل</button>
-          <button class="ab-cal-footer-btn" id="ab-cal-convert">🔄 تبدیل تاریخ</button>
+          <button class="ab-cal-footer-btn">📅 تقویم گوگل</button>
+          <button class="ab-cal-footer-btn">🔄 تبدیل تاریخ</button>
         </div>
       </div>
     `;
 
-    // دکمه‌های ناوبری ماه‌های قبل و بعد
     document.getElementById('ab-cal-prev').onclick = () => {
       if (state.month > 1) state.month--;
       else { state.month = 12; state.year--; }
@@ -97,7 +92,6 @@
       renderCalendar();
     };
 
-    // کلیک روی روزها
     container.querySelectorAll('.ab-calendar-day-cell').forEach(el => {
       el.onclick = () => {
         state.selectedDay = parseInt(el.getAttribute('data-day'));

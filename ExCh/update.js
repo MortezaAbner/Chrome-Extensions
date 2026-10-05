@@ -1,23 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('📅 در حال اصلاح و یکپارچه‌سازی تقویم شیشه‌ای آبنر...');
+console.log('🛠 در حال رفع مشکل تقویم تکراری و اصلاح شبکه روزهای تقویم آبنر...');
 
 const calendarDir = path.join(__dirname, 'modules', 'calendar');
 if (!fs.existsSync(calendarDir)) {
   fs.mkdirSync(calendarDir, { recursive: true });
 }
 
-// ۱. استایل شیشه‌ای کامل تقویم آبنر (modules/calendar/calendar.css)
+// ۱. اصلاح CSS تقویم برای استایل شیشه‌ای و چیدمان دقیق روزهای هفته
 const calendarCss = `
 /* ========================================================
-   استایل ماژولار شیشه‌ای تقویم فارسی آبنر
+   استایل شیشه‌ای ماژول تقویم آبنر (اصلاح‌شده)
 ======================================================== */
 .ab-calendar-card {
   width: 100%;
-  max-width: 330px;
-  padding: 18px;
-  border-radius: 24px;
+  max-width: 320px;
+  padding: 16px;
+  border-radius: 22px;
   box-sizing: border-box;
   direction: rtl;
   user-select: none;
@@ -35,12 +35,12 @@ const calendarCss = `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   padding: 0 4px;
 }
 
 .ab-calendar-title {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
   color: #fff;
 }
@@ -49,46 +49,51 @@ const calendarCss = `
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2));
   color: #fff;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.15s ease;
 }
 .ab-calendar-nav-btn:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
 }
 
 .ab-calendar-subtitle {
-  font-size: 11.5px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.65);
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
-/* هدر روزهای هفته (شنبه تا جمعه) */
+/* هدر روزهای هفته به صورت سطر افقی منظم */
 .ab-calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 2px !important;
+  text-align: center !important;
+  margin-bottom: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  direction: rtl !important;
+}
+.ab-calendar-weekdays span {
+  display: block;
   text-align: center;
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
 }
 
-/* شبکه روزها */
+/* شبکه روزها به صورت جدول ۷ ستونه */
 .ab-calendar-days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  justify-items: center;
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 4px !important;
+  justify-items: center !important;
+  direction: rtl !important;
 }
 
 .ab-calendar-day-cell {
@@ -96,9 +101,9 @@ const calendarCss = `
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 42px;
-  border-radius: 14px;
+  width: 34px;
+  height: 38px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -106,18 +111,16 @@ const calendarCss = `
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* عدد روز تقویم */
 .ab-calendar-day-num {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #fff;
 }
 
-/* حروف زیر اعداد (مثلاً مناسبت یا نام کوتاه روز) */
 .ab-calendar-day-sub {
-  font-size: 9.5px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 2px;
+  font-size: 8.5px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 1px;
 }
 
 .ab-calendar-day-cell.is-today {
@@ -132,15 +135,14 @@ const calendarCss = `
   color: #fff !important;
 }
 
-/* دکمه‌های پایین تقویم */
 .ab-calendar-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  padding-top: 10px;
+  margin-top: 12px;
+  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 12px;
+  font-size: 11.5px;
 }
 .ab-cal-footer-btn {
   background: transparent;
@@ -156,23 +158,21 @@ const calendarCss = `
 `;
 fs.writeFileSync(path.join(calendarDir, 'calendar.css'), calendarCss, 'utf8');
 
-// ۳. جاوااسکریپت مستقل تقویم آبنر (modules/calendar/calendar.js)
+// ۲. جاوااسکریپت جایگزینی هوشمند و هدایت تقویم آبنر به موقعیت اصلی سمت راست
 const calendarJs = `
 /**
- * ماژول مستقل تقویم فارسی آبنر
+ * ماژول تقویم فارسی آبنر با پاک‌سازی تقویم‌های تکراری
  */
 (function initAbnerCalendar() {
   const persianMonths = [
     'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
     'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
   ];
-
-  // حروف مخفف روزهای هفته زیر اعداد (می‌تواند مناسبت یا نام روز باشد)
   const daySubLabels = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
 
   let state = {
     year: 1405,
-    month: 7, // مهر
+    month: 7,
     day: 13,
     selectedDay: 13
   };
@@ -189,16 +189,15 @@ const calendarJs = `
   }
 
   function renderCalendar() {
-    // حذف قطعی تقویم‌های اضافی احتمالی در صفحه
-    document.querySelectorAll('.calendar-section, .right-column .Calendar, #ab-calendar-container-extra').forEach(el => {
-      if (el.id !== 'abner-calendar-container') el.remove();
-    });
+    // حذف کامل تقویم‌های تکراری و اضافی در صفحه
+    document.querySelectorAll('#ab-calendar-container-extra, .calendar-section:not(#abner-calendar-container)').forEach(el => el.remove());
 
+    // یافتن یا ساخت کانتینر تقویم اصلی در سمت راست
     let container = document.getElementById('abner-calendar-container');
     if (!container) {
       container = document.createElement('div');
       container.id = 'abner-calendar-container';
-      const rightCol = document.querySelector('.right-column') || document.body;
+      const rightCol = document.querySelector('.right-column') || document.querySelector('.calendar-area') || document.body;
       rightCol.appendChild(container);
     }
 
@@ -209,7 +208,6 @@ const calendarJs = `
     for (let d = 1; d <= monthDays; d++) {
       const isToday = (d === state.day && state.month === 7 && state.year === 1405);
       const isSelected = (d === state.selectedDay);
-      // انتخاب یک متن یا حرف نمایشی زیر اعداد برای تطابق با درخواست شما
       const subText = daySubLabels[(d - 1) % 7];
 
       cellsHtml += \`
@@ -230,7 +228,7 @@ const calendarJs = `
         <div class="ab-calendar-subtitle">ربيع‌الثاني . جمادی‌الثانی . اول-مهر</div>
         
         <div class="ab-calendar-weekdays">
-          <span>شنبه</span><span>یکشنبه</span><span>دوشنبه</span><span>سه‌شنبه</span><span>چهارشنبه</span><span>پنج‌شنبه</span><span>جمعه</span>
+          <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
         </div>
         
         <div class="ab-calendar-days-grid">
@@ -238,13 +236,12 @@ const calendarJs = `
         </div>
 
         <div class="ab-calendar-footer">
-          <button class="ab-cal-footer-btn" id="ab-cal-today">📅 تقویم گوگل</button>
-          <button class="ab-cal-footer-btn" id="ab-cal-convert">🔄 تبدیل تاریخ</button>
+          <button class="ab-cal-footer-btn">📅 تقویم گوگل</button>
+          <button class="ab-cal-footer-btn">🔄 تبدیل تاریخ</button>
         </div>
       </div>
     \`;
 
-    // دکمه‌های ناوبری ماه‌های قبل و بعد
     document.getElementById('ab-cal-prev').onclick = () => {
       if (state.month > 1) state.month--;
       else { state.month = 12; state.year--; }
@@ -256,7 +253,6 @@ const calendarJs = `
       renderCalendar();
     };
 
-    // کلیک روی روزها
     container.querySelectorAll('.ab-calendar-day-cell').forEach(el => {
       el.onclick = () => {
         state.selectedDay = parseInt(el.getAttribute('data-day'));
@@ -275,7 +271,7 @@ const calendarJs = `
 `;
 fs.writeFileSync(path.join(calendarDir, 'calendar.js'), calendarJs, 'utf8');
 
-// ۴. الصاق به فایل‌های HTML
+// ۳. اتصال به فایل‌های HTML
 ['./index.html', './newtab.html'].forEach(filePath => {
   if (fs.existsSync(filePath)) {
     let html = fs.readFileSync(filePath, 'utf8');
