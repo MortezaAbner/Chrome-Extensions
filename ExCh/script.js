@@ -3608,3 +3608,150 @@ updateDynamicGlassBlur(50, 50);
     window.renderShortcuts();
   }
 })();
+
+
+// ========================================================
+// لاجیک اجرایی منوی ۶ گزینه‌ای دستیار و هماهنگی بلر داشبورد
+// ========================================================
+(function setupExactDastyarMenu() {
+  // بستن منوهای قبلی پروژه برای جلوگیری از تداخل تصویر ۱
+  const oldMenus = document.querySelectorAll('.shortcut-menu, .shortcut-popover, .shortcut-context-menu');
+  oldMenus.forEach(m => m.style.display = 'none');
+
+  window.openExactDastyarContextMenu = function(e, cardEl) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // حذف منوی فعال قبلی
+    document.querySelectorAll('.dastyar-full-context-menu').forEach(m => m.remove());
+
+    const title = cardEl.querySelector('.shortcut-title, .title, span')?.textContent?.trim() || 'میانبر';
+    const targetUrl = cardEl.getAttribute('href') || cardEl.dataset.url || 'https://google.com';
+    const isSelected = cardEl.classList.contains('is-selected');
+
+    const menu = document.createElement('div');
+    menu.className = 'dastyar-full-context-menu';
+
+    menu.innerHTML = `
+      <div class="dastyar-menu-item" id="act-open">
+        <span>باز کردن</span>
+        <span class="item-icon">🔗</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-tab">
+        <span>باز کردن در تب جدید</span>
+        <span class="item-icon">↗</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-select">
+        <span>${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span>
+        <span class="item-icon">${isSelected ? '✕' : '☑'}</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-edit">
+        <span>ویرایش</span>
+        <span class="item-icon">✏</span>
+      </div>
+      <div class="dastyar-menu-item dastyar-submenu-wrapper" id="act-move">
+        <span style="font-size: 11px; opacity: 0.6;">‹</span>
+        <div class="item-label-group">
+          <span>انتقال به</span>
+          <span class="item-icon">📁</span>
+        </div>
+        <div class="dastyar-submenu-panel">
+          <div class="dastyar-submenu-item current-folder" data-folder="home">
+            <span class="item-icon">✓</span>
+            <div class="item-label-group">
+              <span>صفحه اصلی</span>
+              <span class="item-icon">🏠</span>
+            </div>
+          </div>
+          <div class="dastyar-submenu-item" data-folder="app">
+            <span></span>
+            <div class="item-label-group">
+              <span>App</span>
+              <span class="item-icon">📁</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dastyar-menu-item" id="act-copy">
+        <span>کپی لینک</span>
+        <span class="item-icon">📋</span>
+      </div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:4px 0;">
+      <div class="dastyar-menu-item danger" id="act-delete">
+        <span>حذف</span>
+        <span class="item-icon">🗑️</span>
+      </div>
+    `;
+
+    document.body.appendChild(menu);
+
+    // محاسبه محل باز شدن منو نسبت به کارت
+    const rect = cardEl.getBoundingClientRect();
+    let leftPos = rect.left - 20;
+    let topPos = rect.bottom + 8;
+    if (leftPos < 15) leftPos = 15;
+    if (topPos + 260 > window.innerHeight) topPos = rect.top - 265;
+
+    menu.style.left = leftPos + 'px';
+    menu.style.top = topPos + 'px';
+
+    // رویداد گزینه‌ها
+    menu.querySelector('#act-open').onclick = () => {
+      window.location.href = targetUrl;
+      menu.remove();
+    };
+    menu.querySelector('#act-tab').onclick = () => {
+      window.open(targetUrl, '_blank');
+      menu.remove();
+    };
+    menu.querySelector('#act-select').onclick = () => {
+      cardEl.classList.toggle('is-selected');
+      if (typeof updateBulkBar === 'function') updateBulkBar();
+      menu.remove();
+    };
+    menu.querySelector('#act-copy').onclick = () => {
+      navigator.clipboard.writeText(targetUrl);
+      menu.remove();
+    };
+    menu.querySelector('#act-edit').onclick = () => {
+      menu.remove();
+      if (typeof openShortcutModal === 'function') {
+        openShortcutModal(null, { title: title, url: targetUrl });
+      }
+    };
+    menu.querySelector('#act-delete').onclick = () => {
+      menu.remove();
+      cardEl.remove();
+    };
+
+    // کلیک بیرون برای بستن
+    const dismissHandler = (evt) => {
+      if (!menu.contains(evt.target)) {
+        menu.remove();
+        document.removeEventListener('click', dismissHandler);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', dismissHandler), 40);
+  };
+
+  // الصاق به آیکون‌های ۳ نقطه و کارت‌های فعلی صفحه
+  function bindToCurrentCards() {
+    const cards = document.querySelectorAll('.shortcut-item, .shortcut-card, .shortcut-item-card');
+    cards.forEach(card => {
+      // غیرفعال کردن پاپ‌آپ‌های قدیمی
+      const oldDots = card.querySelector('.shortcut-more-btn, .more-btn, [data-action="more"], .shortcut-dots-btn');
+      if (oldDots && !oldDots.dataset.boundDastyarExact) {
+        oldDots.dataset.boundDastyarExact = 'true';
+        oldDots.onclick = (e) => window.openExactDastyarContextMenu(e, card);
+      }
+      if (!card.dataset.boundDastyarExactCtx) {
+        card.dataset.boundDastyarExactCtx = 'true';
+        card.oncontextmenu = (e) => window.openExactDastyarContextMenu(e, card);
+      }
+    });
+  }
+
+  setInterval(bindToCurrentCards, 1000);
+})();

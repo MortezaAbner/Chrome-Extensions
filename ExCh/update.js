@@ -1,446 +1,277 @@
 const fs = require('fs');
 
-// ۱. افزودن استایل شیشه‌ای اختصاصی میانبرها به style.css
+// ۱. تنظیم استایل شیشه‌ای کامل و دقیق منوی دستیار در style.css
 if (fs.existsSync('./style.css')) {
   let css = fs.readFileSync('./style.css', 'utf8');
 
-  const shortcutCss = `
+  const fullDastyarMenuCss = `
 /* ========================================================
-   استایل‌های شیشه‌ای میانبرها و منوی سه‌نقطه بر پایه دستیار
+   استایل کامل میانبرها و منوی زمینه دستیار با بلر زنده داشبورد
 ======================================================== */
-.shortcut-item-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 6px;
-  border-radius: 18px;
-  cursor: pointer;
-  user-select: none;
+.shortcut-item,
+.shortcut-card,
+.shortcut-item-card,
+.search-bar-container,
+.search-box {
+  background: rgba(255, 255, 255, 0.12) !important;
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  transition: transform 0.15s ease, background 0.2s ease;
 }
-.shortcut-item-card:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.14) !important;
-}
-[data-theme="dark"] .shortcut-item-card {
-  background: rgba(15, 23, 42, 0.22) !important;
+[data-theme="dark"] .shortcut-item,
+[data-theme="dark"] .shortcut-card,
+[data-theme="dark"] .shortcut-item-card,
+[data-theme="dark"] .search-bar-container {
+  background: rgba(15, 23, 42, 0.3) !important;
 }
 
-/* تیک آبی انتخاب میانبر */
-.shortcut-item-card.is-selected {
-  outline: 2px solid #3b82f6 !important;
-  background: rgba(59, 130, 246, 0.18) !important;
-}
-.shortcut-item-card.is-selected::after {
-  content: "✓";
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: #3b82f6;
-  color: #fff;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 15;
-}
-
-.shortcut-dots-btn {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  cursor: pointer;
-  padding: 2px 5px;
-  border-radius: 6px;
-}
-.shortcut-dots-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-/* نوار انتخاب دسته‌‌جمعی شناور در پایین */
-.shortcut-bulk-bar {
+/* منوی اصلی سه‌نقطه دستیار */
+.dastyar-full-context-menu {
   position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(30px);
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  z-index: 99999;
-  color: #fff;
-  direction: rtl;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.25s ease;
-}
-.shortcut-bulk-bar.visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
-.shortcut-bulk-bar .bulk-badge {
-  background: #3b82f6;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-}
-.shortcut-bulk-bar .bulk-del { color: #ef4444; cursor: pointer; }
-.shortcut-bulk-bar .bulk-close { cursor: pointer; opacity: 0.6; }
-.shortcut-bulk-bar .bulk-close:hover { opacity: 1; }
-
-/* منوی شناور سه‌نقطه میانبر */
-.shortcut-floating-menu {
-  position: absolute;
-  z-index: 100000;
-  background: rgba(28, 25, 23, 0.88);
+  z-index: 999999;
+  width: 175px;
+  background: rgba(30, 20, 25, 0.85);
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
   padding: 6px;
-  min-width: 165px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
   direction: rtl;
+  font-family: inherit;
+  user-select: none;
 }
-.shortcut-floating-menu .menu-action {
+
+.dastyar-menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  color: #f1f5f9;
+  color: #f3f4f6;
   font-size: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s ease;
+}
+.dastyar-menu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dastyar-menu-item.danger {
+  color: #f87171;
+}
+.dastyar-menu-item .item-label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dastyar-menu-item .item-icon {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* ساب‌منوی انتقال به */
+.dastyar-submenu-wrapper {
+  position: relative;
+}
+.dastyar-submenu-panel {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  margin-right: 6px;
+  width: 145px;
+  background: rgba(30, 20, 25, 0.9);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+.dastyar-submenu-wrapper:hover .dastyar-submenu-panel {
+  display: block;
+}
+
+.dastyar-submenu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  color: #f3f4f6;
+  font-size: 12.5px;
   border-radius: 10px;
   cursor: pointer;
 }
-.shortcut-floating-menu .menu-action:hover { background: rgba(255, 255, 255, 0.14); }
-.shortcut-floating-menu .menu-action.danger { color: #ef4444; }
-.shortcut-floating-menu .menu-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
+.dastyar-submenu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
-
-/* مودال شیشه‌ای افزودن و ویرایش */
-.shortcut-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100005;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-.shortcut-modal-overlay.active { opacity: 1; pointer-events: auto; }
-.shortcut-glass-modal {
-  width: 90%;
-  max-width: 360px;
-  padding: 22px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(170%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
-  direction: rtl;
-}
-.shortcut-glass-modal h3 { margin: 0 0 14px 0; font-size: 16px; }
-.shortcut-glass-modal input {
-  width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
-  box-sizing: border-box;
-}
-.shortcut-glass-modal .modal-btn-row { display: flex; gap: 10px; margin-top: 6px; }
-.shortcut-glass-modal .btn-confirm {
-  flex: 1; padding: 10px; border-radius: 12px; background: #2563eb; border: none; color: #fff; font-weight: bold; cursor: pointer;
-}
-.shortcut-glass-modal .btn-cancel {
-  flex: 1; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; cursor: pointer;
+.dastyar-submenu-item.current-folder {
+  color: #60a5fa;
 }
 `;
 
-  if (!css.includes('shortcut-bulk-bar')) {
-    css += '\n' + shortcutCss;
-    fs.writeFileSync('./style.css', css, 'utf8');
-  }
+  // پاک‌سازی نسخه‌های استایل تکراری و افزودن استایل جدید
+  css = css.replace(/\/\* ========================================================\s*استایل کامل میانبرها[\s\S]*?\.dastyar-submenu-item\.current-folder\s*\{[^}]*\}\s*/g, '');
+  css += '\n' + fullDastyarMenuCss;
+  fs.writeFileSync('./style.css', css, 'utf8');
 }
 
-// ۲. تزریق منطق اجرایی ۱ به ۱ دستیار به script.js
+// ۲. تزریق منطق اجرایی ۱ به ۱ منوی ۶ گزینه‌ای به script.js
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  const shortcutJs = `
+  const liveDastyarEngine = `
 // ========================================================
-// موتور اجرایی میانبرهای دستیار با حفظ استایل شیشه‌ای
+// لاجیک اجرایی منوی ۶ گزینه‌ای دستیار و هماهنگی بلر داشبورد
 // ========================================================
-(function initShortcutsEngine() {
-  const STORAGE_KEY = 'user_shortcuts';
-  let selectedIndices = new Set();
+(function setupExactDastyarMenu() {
+  // بستن منوهای قبلی پروژه برای جلوگیری از تداخل تصویر ۱
+  const oldMenus = document.querySelectorAll('.shortcut-menu, .shortcut-popover, .shortcut-context-menu');
+  oldMenus.forEach(m => m.style.display = 'none');
 
-  function getShortcuts() {
-    try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [
-        { title: 'گوگل', url: 'https://www.google.com' },
-        { title: 'یوتیوب', url: 'https://www.youtube.com' },
-        { title: 'تلگرام', url: 'https://web.telegram.org' },
-        { title: 'اینستاگرام', url: 'https://www.instagram.com' },
-        { title: 'دیجی‌کالا', url: 'https://www.digikala.com' },
-        { title: 'دیوار', url: 'https://divar.ir' }
-      ];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function saveShortcuts(list) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    renderShortcuts();
-  }
-
-  function ensureBulkBar() {
-    let bar = document.getElementById('shortcut-bulk-bar');
-    if (!bar) {
-      bar = document.createElement('div');
-      bar.id = 'shortcut-bulk-bar';
-      bar.className = 'shortcut-bulk-bar';
-      bar.innerHTML = \`
-        <span class="bulk-close" id="bulk-close-btn" title="لغو انتخاب">✕</span>
-        <span class="bulk-del" id="bulk-del-btn">حذف 🗑️</span>
-        <span style="opacity:0.3">|</span>
-        <span>مورد انتخاب شده</span>
-        <span class="bulk-badge" id="bulk-counter">۰</span>
-      \`;
-      document.body.appendChild(bar);
-
-      document.getElementById('bulk-close-btn').onclick = clearSelection;
-      document.getElementById('bulk-del-btn').onclick = deleteSelected;
-    }
-    return bar;
-  }
-
-  function updateBulkBar() {
-    const bar = ensureBulkBar();
-    const counter = document.getElementById('bulk-counter');
-    const count = selectedIndices.size;
-    if (counter) counter.textContent = count;
-    if (count > 0) bar.classList.add('visible');
-    else bar.classList.remove('visible');
-  }
-
-  function clearSelection() {
-    selectedIndices.clear();
-    document.querySelectorAll('.shortcut-item-card').forEach(el => el.classList.remove('is-selected'));
-    updateBulkBar();
-  }
-
-  function deleteSelected() {
-    if (selectedIndices.size === 0) return;
-    let list = getShortcuts();
-    list = list.filter((_, idx) => !selectedIndices.has(idx));
-    clearSelection();
-    saveShortcuts(list);
-  }
-
-  function openShortcutModal(index = null, currentItem = null) {
-    const isEdit = index !== null && currentItem !== null;
-    let modalOverlay = document.getElementById('shortcut-editor-overlay');
-    if (!modalOverlay) {
-      modalOverlay = document.createElement('div');
-      modalOverlay.id = 'shortcut-editor-overlay';
-      modalOverlay.className = 'shortcut-modal-overlay';
-      document.body.appendChild(modalOverlay);
+  window.openExactDastyarContextMenu = function(e, cardEl) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
 
-    modalOverlay.innerHTML = \`
-      <div class="shortcut-glass-modal">
-        <h3>\${isEdit ? 'ویرایش میانبر' : 'افزودن میانبر'}</h3>
-        <input type="text" id="sh-input-name" placeholder="نام میانبر" value="\${isEdit ? (currentItem.title || '') : ''}">
-        <input type="text" id="sh-input-url" placeholder="آدرس سایت (مثال: https://site.com)" value="\${isEdit ? (currentItem.url || '') : ''}">
-        <div class="modal-btn-row">
-          <button class="btn-confirm" id="sh-btn-save">\${isEdit ? 'تأیید و ذخیره' : 'افزودن'}</button>
-          <button class="btn-cancel" id="sh-btn-cancel">انصراف</button>
-        </div>
-      </div>
-    \`;
+    // حذف منوی فعال قبلی
+    document.querySelectorAll('.dastyar-full-context-menu').forEach(m => m.remove());
 
-    modalOverlay.classList.add('active');
+    const title = cardEl.querySelector('.shortcut-title, .title, span')?.textContent?.trim() || 'میانبر';
+    const targetUrl = cardEl.getAttribute('href') || cardEl.dataset.url || 'https://google.com';
+    const isSelected = cardEl.classList.contains('is-selected');
 
-    document.getElementById('sh-btn-cancel').onclick = () => modalOverlay.classList.remove('active');
-    document.getElementById('sh-btn-save').onclick = () => {
-      const name = document.getElementById('sh-input-name').value.trim();
-      let url = document.getElementById('sh-input-url').value.trim();
-      if (!url) return;
-      if (!/^https?:\\/\\//i.test(url)) url = 'https://' + url;
-
-      let list = getShortcuts();
-      if (isEdit) {
-        list[index] = { title: name || url, url: url };
-      } else {
-        list.push({ title: name || url, url: url });
-      }
-      modalOverlay.classList.remove('active');
-      saveShortcuts(list);
-    };
-  }
-
-  function openContextMenu(e, index, item, targetCard) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    document.querySelectorAll('.shortcut-floating-menu').forEach(m => m.remove());
-
-    const isSelected = selectedIndices.has(index);
     const menu = document.createElement('div');
-    menu.className = 'shortcut-floating-menu';
+    menu.className = 'dastyar-full-context-menu';
 
     menu.innerHTML = \`
-      <div class="menu-action" id="ctx-open"><span>باز کردن</span> <span>🔗</span></div>
-      <div class="menu-action" id="ctx-open-tab"><span>باز کردن در تب جدید</span> <span>↗</span></div>
-      <div class="menu-action" id="ctx-select"><span>\${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span> <span>\${isSelected ? '✕' : '☑'}</span></div>
-      <div class="menu-divider"></div>
-      <div class="menu-action" id="ctx-edit"><span>ویرایش</span> <span>✏</span></div>
-      <div class="menu-action" id="ctx-copy"><span>کپی لینک</span> <span>📋</span></div>
-      <div class="menu-divider"></div>
-      <div class="menu-action danger" id="ctx-delete"><span>حذف</span> <span>🗑️</span></div>
+      <div class="dastyar-menu-item" id="act-open">
+        <span>باز کردن</span>
+        <span class="item-icon">🔗</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-tab">
+        <span>باز کردن در تب جدید</span>
+        <span class="item-icon">↗</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-select">
+        <span>\${isSelected ? 'لغو انتخاب' : 'انتخاب'}</span>
+        <span class="item-icon">\${isSelected ? '✕' : '☑'}</span>
+      </div>
+      <div class="dastyar-menu-item" id="act-edit">
+        <span>ویرایش</span>
+        <span class="item-icon">✏</span>
+      </div>
+      <div class="dastyar-menu-item dastyar-submenu-wrapper" id="act-move">
+        <span style="font-size: 11px; opacity: 0.6;">‹</span>
+        <div class="item-label-group">
+          <span>انتقال به</span>
+          <span class="item-icon">📁</span>
+        </div>
+        <div class="dastyar-submenu-panel">
+          <div class="dastyar-submenu-item current-folder" data-folder="home">
+            <span class="item-icon">✓</span>
+            <div class="item-label-group">
+              <span>صفحه اصلی</span>
+              <span class="item-icon">🏠</span>
+            </div>
+          </div>
+          <div class="dastyar-submenu-item" data-folder="app">
+            <span></span>
+            <div class="item-label-group">
+              <span>App</span>
+              <span class="item-icon">📁</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dastyar-menu-item" id="act-copy">
+        <span>کپی لینک</span>
+        <span class="item-icon">📋</span>
+      </div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:4px 0;">
+      <div class="dastyar-menu-item danger" id="act-delete">
+        <span>حذف</span>
+        <span class="item-icon">🗑️</span>
+      </div>
     \`;
 
     document.body.appendChild(menu);
 
-    const rect = targetCard.getBoundingClientRect();
-    menu.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-    menu.style.left = Math.max(12, rect.left + window.scrollX - 25) + 'px';
+    // محاسبه محل باز شدن منو نسبت به کارت
+    const rect = cardEl.getBoundingClientRect();
+    let leftPos = rect.left - 20;
+    let topPos = rect.bottom + 8;
+    if (leftPos < 15) leftPos = 15;
+    if (topPos + 260 > window.innerHeight) topPos = rect.top - 265;
 
-    menu.querySelector('#ctx-open').onclick = () => { window.location.href = item.url; menu.remove(); };
-    menu.querySelector('#ctx-open-tab').onclick = () => { window.open(item.url, '_blank'); menu.remove(); };
-    menu.querySelector('#ctx-select').onclick = () => {
-      if (isSelected) {
-        selectedIndices.delete(index);
-        targetCard.classList.remove('is-selected');
-      } else {
-        selectedIndices.add(index);
-        targetCard.classList.add('is-selected');
+    menu.style.left = leftPos + 'px';
+    menu.style.top = topPos + 'px';
+
+    // رویداد گزینه‌ها
+    menu.querySelector('#act-open').onclick = () => {
+      window.location.href = targetUrl;
+      menu.remove();
+    };
+    menu.querySelector('#act-tab').onclick = () => {
+      window.open(targetUrl, '_blank');
+      menu.remove();
+    };
+    menu.querySelector('#act-select').onclick = () => {
+      cardEl.classList.toggle('is-selected');
+      if (typeof updateBulkBar === 'function') updateBulkBar();
+      menu.remove();
+    };
+    menu.querySelector('#act-copy').onclick = () => {
+      navigator.clipboard.writeText(targetUrl);
+      menu.remove();
+    };
+    menu.querySelector('#act-edit').onclick = () => {
+      menu.remove();
+      if (typeof openShortcutModal === 'function') {
+        openShortcutModal(null, { title: title, url: targetUrl });
       }
-      updateBulkBar();
-      menu.remove();
     };
-    menu.querySelector('#ctx-edit').onclick = () => { menu.remove(); openShortcutModal(index, item); };
-    menu.querySelector('#ctx-copy').onclick = () => { navigator.clipboard.writeText(item.url); menu.remove(); };
-    menu.querySelector('#ctx-delete').onclick = () => {
+    menu.querySelector('#act-delete').onclick = () => {
       menu.remove();
-      let list = getShortcuts();
-      list.splice(index, 1);
-      selectedIndices.delete(index);
-      updateBulkBar();
-      saveShortcuts(list);
+      cardEl.remove();
     };
 
-    const docClick = (ev) => {
-      if (!menu.contains(ev.target)) {
+    // کلیک بیرون برای بستن
+    const dismissHandler = (evt) => {
+      if (!menu.contains(evt.target)) {
         menu.remove();
-        document.removeEventListener('click', docClick);
+        document.removeEventListener('click', dismissHandler);
       }
     };
-    setTimeout(() => document.addEventListener('click', docClick), 50);
-  }
-
-  window.renderShortcuts = function () {
-    const container = document.getElementById('shortcuts-container') || document.querySelector('.shortcuts-grid');
-    if (!container) return;
-
-    container.innerHTML = '';
-    const shortcuts = getShortcuts();
-
-    shortcuts.forEach((item, index) => {
-      const card = document.createElement('div');
-      card.className = 'shortcut-item-card ' + (selectedIndices.has(index) ? 'is-selected' : '');
-      const domain = (new URL(item.url || 'https://google.com')).hostname;
-
-      card.innerHTML = \`
-        <button class="shortcut-dots-btn" title="گزینه‌ها">⋮</button>
-        <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;">
-          <img src="https://www.google.com/s2/favicons?domain=\${domain}&sz=64" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display='none'">
-        </div>
-        <span style="font-size:12px;color:#fff;max-width:76px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">\${item.title}</span>
-      \`;
-
-      card.onclick = (e) => {
-        if (e.target.closest('.shortcut-dots-btn')) return;
-        if (selectedIndices.size > 0) {
-          if (selectedIndices.has(index)) {
-            selectedIndices.delete(index);
-            card.classList.remove('is-selected');
-          } else {
-            selectedIndices.add(index);
-            card.classList.add('is-selected');
-          }
-          updateBulkBar();
-          return;
-        }
-        window.location.href = item.url;
-      };
-
-      const dots = card.querySelector('.shortcut-dots-btn');
-      dots.onclick = (e) => openContextMenu(e, index, item, card);
-      card.oncontextmenu = (e) => openContextMenu(e, index, item, card);
-
-      container.appendChild(card);
-    });
-
-    // دکمه افزودن (+)
-    const addCard = document.createElement('div');
-    addCard.className = 'shortcut-item-card';
-    addCard.innerHTML = \`
-      <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;">+</div>
-      <span style="font-size:12px;color:#fff;opacity:0.8;">افزودن</span>
-    \`;
-    addCard.onclick = () => openShortcutModal();
-    container.appendChild(addCard);
+    setTimeout(() => document.addEventListener('click', dismissHandler), 40);
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.renderShortcuts);
-  } else {
-    window.renderShortcuts();
+  // الصاق به آیکون‌های ۳ نقطه و کارت‌های فعلی صفحه
+  function bindToCurrentCards() {
+    const cards = document.querySelectorAll('.shortcut-item, .shortcut-card, .shortcut-item-card');
+    cards.forEach(card => {
+      // غیرفعال کردن پاپ‌آپ‌های قدیمی
+      const oldDots = card.querySelector('.shortcut-more-btn, .more-btn, [data-action="more"], .shortcut-dots-btn');
+      if (oldDots && !oldDots.dataset.boundDastyarExact) {
+        oldDots.dataset.boundDastyarExact = 'true';
+        oldDots.onclick = (e) => window.openExactDastyarContextMenu(e, card);
+      }
+      if (!card.dataset.boundDastyarExactCtx) {
+        card.dataset.boundDastyarExactCtx = 'true';
+        card.oncontextmenu = (e) => window.openExactDastyarContextMenu(e, card);
+      }
+    });
   }
+
+  setInterval(bindToCurrentCards, 1000);
 })();
 `;
 
-  // پاک‌سازی تعریف‌های قبلی و ثبت نسخه استاندارد
-  js = js.replace(/\/\/ ========================================================\s*\/\/ موتور اجرایی میانبرهای دستیار[\s\S]*?initShortcutsEngine\(\);?\s*\}\)\(\);?/g, '');
-  js += '\n' + shortcutJs;
+  // پاک کردن تعاریف قبلی و ثبت ماژول تازه
+  js = js.replace(/\/\/ ========================================================\s*\/\/ لاجیک اجرایی منوی ۶ گزینه‌ای دستیار[\s\S]*?setupExactDastyarMenu\(\);?\s*\}\)\(\);?/g, '');
+  js += '\n' + liveDastyarEngine;
 
   fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ ماژول شیشه‌ای میانبرها بر پایه دستیار با موفقیت ادغام شد.');
+  console.log('✅ منوی دقیق دستیار با ۶ گزینه و ساب‌منوی پوشه‌ها با موفقیت اعمال شد.');
 }

@@ -2961,3 +2961,108 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 4px 0;
 }
+
+
+/* ========================================================
+   استایل کامل میانبرها و منوی زمینه دستیار با بلر زنده داشبورد
+======================================================== */
+.shortcut-item,
+.shortcut-card,
+.shortcut-item-card,
+.search-bar-container,
+.search-box {
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+}
+[data-theme="dark"] .shortcut-item,
+[data-theme="dark"] .shortcut-card,
+[data-theme="dark"] .shortcut-item-card,
+[data-theme="dark"] .search-bar-container {
+  background: rgba(15, 23, 42, 0.3) !important;
+}
+
+/* منوی اصلی سه‌نقطه دستیار */
+.dastyar-full-context-menu {
+  position: fixed;
+  z-index: 999999;
+  width: 175px;
+  background: rgba(30, 20, 25, 0.85);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 6px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  direction: rtl;
+  font-family: inherit;
+  user-select: none;
+}
+
+.dastyar-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  color: #f3f4f6;
+  font-size: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s ease;
+}
+.dastyar-menu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dastyar-menu-item.danger {
+  color: #f87171;
+}
+.dastyar-menu-item .item-label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dastyar-menu-item .item-icon {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* ساب‌منوی انتقال به */
+.dastyar-submenu-wrapper {
+  position: relative;
+}
+.dastyar-submenu-panel {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  margin-right: 6px;
+  width: 145px;
+  background: rgba(30, 20, 25, 0.9);
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+.dastyar-submenu-wrapper:hover .dastyar-submenu-panel {
+  display: block;
+}
+
+.dastyar-submenu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  color: #f3f4f6;
+  font-size: 12.5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.dastyar-submenu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dastyar-submenu-item.current-folder {
+  color: #60a5fa;
+}
