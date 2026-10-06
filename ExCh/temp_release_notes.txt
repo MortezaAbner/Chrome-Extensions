@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.79:
-- استقرار کدهای کامل و مستقل جاوااسکریپت و سی‌اس‌اس درون پوشه‌های اختصاصی ماژول‌ها
+### 🇮🇷 تغییرات نسخه v1.32.80:
+- پاک‌سازی کامل اسکریپت‌های تزریقی، حذف کدهای متفرقه و بازگشت به ساختار اصلی داشبورد آبنر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.79):
-- Populate Complete Code into Modules Todo Calendar and Weather
+### 🇬🇧 Release Notes (v1.32.80):
+- Clean Injected Modules and Revert Dashboard to Stable State
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
