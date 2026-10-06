@@ -1,38 +1,41 @@
 
 /**
- * هماهنگ‌سازی دقیق و زنده لبه پایینی کادر تسک با لبه پایینی تقویم
+ * هم‌ترازسازی زنده لبه پایینی کادر تسک با لبه پایینی تقویم
  */
-(function matchTaskWithCalendarBottom() {
-  function sync() {
-    // یافتن ستون راست یا المان تقویم
-    const rightCol = document.querySelector('.right-column') || 
-                     document.querySelector('.Calendar')?.closest('div') ||
-                     document.querySelector('[class*="calendar"]')?.parentElement;
-
+(function matchBottomWithCalendar() {
+  function applyExactBottom() {
+    const rightCol = document.querySelector('.right-column');
     const leftCol = document.querySelector('.left-column');
-    if (!leftCol) return;
+    if (!rightCol || !leftCol) return;
 
-    let targetHeight = 720;
-    if (rightCol && rightCol.offsetHeight > 400) {
-      targetHeight = rightCol.offsetHeight;
-    }
+    // پیدا کردن آخرین المان در ستون راست (تقویم)
+    const calEl = rightCol.querySelector('.Calendar') || 
+                  rightCol.querySelector('[class*="calendar"]') || 
+                  rightCol.lastElementChild;
 
-    // اعمال ارتفاع به کادر تسک و تگ‌های والد آن
-    const taskCard = leftCol.firstElementChild || leftCol;
-    taskCard.style.setProperty('height', targetHeight + 'px', 'important');
-    taskCard.style.setProperty('min-height', targetHeight + 'px', 'important');
-    taskCard.style.setProperty('max-height', targetHeight + 'px', 'important');
+    if (!calEl) return;
 
-    const formFlex = leftCol.querySelector('form > div');
-    if (formFlex) {
-      formFlex.style.setProperty('height', targetHeight + 'px', 'important');
-      formFlex.style.setProperty('min-height', targetHeight + 'px', 'important');
-      formFlex.style.setProperty('max-height', targetHeight + 'px', 'important');
+    const calBottom = calEl.getBoundingClientRect().bottom;
+    const taskTop = leftCol.getBoundingClientRect().top;
+    const targetH = Math.round(calBottom - taskTop);
+
+    if (targetH > 400) {
+      const taskContainer = leftCol.firstElementChild;
+      const taskForm = leftCol.querySelector('form');
+      const formFlex = leftCol.querySelector('form > div');
+
+      [taskContainer, taskForm, formFlex].forEach(el => {
+        if (el) {
+          el.style.setProperty('height', targetH + 'px', 'important');
+          el.style.setProperty('min-height', targetH + 'px', 'important');
+          el.style.setProperty('max-height', targetH + 'px', 'important');
+        }
+      });
     }
   }
 
-  window.addEventListener('load', sync);
-  window.addEventListener('resize', sync);
-  document.addEventListener('DOMContentLoaded', sync);
-  setInterval(sync, 400);
+  window.addEventListener('load', applyExactBottom);
+  window.addEventListener('resize', applyExactBottom);
+  document.addEventListener('DOMContentLoaded', applyExactBottom);
+  setInterval(applyExactBottom, 500);
 })();

@@ -1,94 +1,101 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('📏 در حال اتصال دقیق ارتفاع تسک به لبه پایینی تقویم...');
+console.log('📏 در حال تنظیم دقیق ارتفاع کادر تسک مماس با لبه زیرین تقویم...');
 
-// ۱. تنظیم استایل با ارتفاع ۷۲۰ پیکسل و شناسه قوی در modules/todo/todo.css
+// ۱. تنظیم استایل در modules/todo/todo.css بدون تغییر ساختار تب‌ها
 const todoCssPath = path.join(__dirname, 'modules', 'todo', 'todo.css');
-const stretchCss = `
+
+const alignWithCalendarCss = `
 /* ========================================================
-   کشیدگی کامل کادر تسک تا زیر تقویم
+   امتداد دقیق ارتفاع کادر تسک مماس با خط زیرین تقویم
 ======================================================== */
-/* ۱. کادر اصلی شیشه‌ای تسک */
-.left-column,
-.left-column > div,
+/* ۱. کادر اصلی تسک و فرم چاکرا */
+.left-column > div:first-child,
 .left-column form,
-.left-column form > div,
-div[class*="todo"],
-div[class*="task"] {
-  min-height: 720px !important;
-  height: 720px !important;
-  max-height: 720px !important;
+.left-column form > div {
+  height: 690px !important;
+  min-height: 690px !important;
+  max-height: 690px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
   box-sizing: border-box !important;
 }
 
-/* ۲. فضای داخلی لیست تسک‌ها کل ارتفاع خالی را پر کند */
-.left-column [class*="list"],
-.left-column ul,
+/* ۲. حفظ اندازه طبیعی دکمه‌ها و تب‌های بالا */
+.left-column form > div > div:first-child,
+.left-column [role="tablist"],
+.left-column button {
+  flex-shrink: 0 !important;
+}
+
+/* ۳. کشیده شدن فضای لیست تسک‌ها در میانه کادر */
+.left-column form > div > div[style*="overflow"],
 .left-column form > div > div:nth-child(3),
 .left-column form > div > div:nth-child(4) {
   flex: 1 1 auto !important;
-  min-height: 480px !important;
   overflow-y: auto !important;
+  min-height: 380px !important;
 }
 
-/* ۳. نوار ثبت تسک جدید دقیقاً در کف و با ارتفاع استاندارد */
-.left-column form [class*="InputGroup"],
-.left-column input[placeholder*="تسک"],
-.left-column [class*="add-box"] {
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+/* ۴. چسبیدن نوار ورودی تسک جدید به کف کادر بدون تغییر سایز */
+.left-column form > div > div:last-child {
   margin-top: auto !important;
-  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  height: 48px !important;
+  min-height: 48px !important;
 }
 `;
-fs.writeFileSync(todoCssPath, stretchCss, 'utf8');
-console.log('✅ استایل ارتفاع ۷۲۰px در modules/todo/todo.css نوشته شد.');
 
-// ۲. اسکریپت هماهنگ‌سازی پویا در modules/todo/todo.js
+fs.writeFileSync(todoCssPath, alignWithCalendarCss, 'utf8');
+console.log('✅ استایل ارتفاع ۶۹۰px در modules/todo/todo.css اعمال شد.');
+
+// ۲. اسکریپت محاسبه دقیق فاصله مماس در modules/todo/todo.js
 const todoJsPath = path.join(__dirname, 'modules', 'todo', 'todo.js');
-const dynamicSyncJs = `
+
+const alignScriptJs = `
 /**
- * هماهنگ‌سازی دقیق و زنده لبه پایینی کادر تسک با لبه پایینی تقویم
+ * هم‌ترازسازی زنده لبه پایینی کادر تسک با لبه پایینی تقویم
  */
-(function matchTaskWithCalendarBottom() {
-  function sync() {
-    // یافتن ستون راست یا المان تقویم
-    const rightCol = document.querySelector('.right-column') || 
-                     document.querySelector('.Calendar')?.closest('div') ||
-                     document.querySelector('[class*="calendar"]')?.parentElement;
-
+(function matchBottomWithCalendar() {
+  function applyExactBottom() {
+    const rightCol = document.querySelector('.right-column');
     const leftCol = document.querySelector('.left-column');
-    if (!leftCol) return;
+    if (!rightCol || !leftCol) return;
 
-    let targetHeight = 720;
-    if (rightCol && rightCol.offsetHeight > 400) {
-      targetHeight = rightCol.offsetHeight;
-    }
+    // پیدا کردن آخرین المان در ستون راست (تقویم)
+    const calEl = rightCol.querySelector('.Calendar') || 
+                  rightCol.querySelector('[class*="calendar"]') || 
+                  rightCol.lastElementChild;
 
-    // اعمال ارتفاع به کادر تسک و تگ‌های والد آن
-    const taskCard = leftCol.firstElementChild || leftCol;
-    taskCard.style.setProperty('height', targetHeight + 'px', 'important');
-    taskCard.style.setProperty('min-height', targetHeight + 'px', 'important');
-    taskCard.style.setProperty('max-height', targetHeight + 'px', 'important');
+    if (!calEl) return;
 
-    const formFlex = leftCol.querySelector('form > div');
-    if (formFlex) {
-      formFlex.style.setProperty('height', targetHeight + 'px', 'important');
-      formFlex.style.setProperty('min-height', targetHeight + 'px', 'important');
-      formFlex.style.setProperty('max-height', targetHeight + 'px', 'important');
+    const calBottom = calEl.getBoundingClientRect().bottom;
+    const taskTop = leftCol.getBoundingClientRect().top;
+    const targetH = Math.round(calBottom - taskTop);
+
+    if (targetH > 400) {
+      const taskContainer = leftCol.firstElementChild;
+      const taskForm = leftCol.querySelector('form');
+      const formFlex = leftCol.querySelector('form > div');
+
+      [taskContainer, taskForm, formFlex].forEach(el => {
+        if (el) {
+          el.style.setProperty('height', targetH + 'px', 'important');
+          el.style.setProperty('min-height', targetH + 'px', 'important');
+          el.style.setProperty('max-height', targetH + 'px', 'important');
+        }
+      });
     }
   }
 
-  window.addEventListener('load', sync);
-  window.addEventListener('resize', sync);
-  document.addEventListener('DOMContentLoaded', sync);
-  setInterval(sync, 400);
+  window.addEventListener('load', applyExactBottom);
+  window.addEventListener('resize', applyExactBottom);
+  document.addEventListener('DOMContentLoaded', applyExactBottom);
+  setInterval(applyExactBottom, 500);
 })();
 `;
-fs.writeFileSync(todoJsPath, dynamicSyncJs, 'utf8');
-console.log('✅ اسکریپت محاسبه ارتفاع زنده در modules/todo/todo.js ذخیره شد.');
+
+fs.writeFileSync(todoJsPath, alignScriptJs, 'utf8');
+console.log('✅ اسکریپت تطبیق مماس در modules/todo/todo.js ثبت شد.');

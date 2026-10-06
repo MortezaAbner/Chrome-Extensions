@@ -1,40 +1,40 @@
 
 /* ========================================================
-   کشیدگی کامل کادر تسک تا زیر تقویم
+   امتداد دقیق ارتفاع کادر تسک مماس با خط زیرین تقویم
 ======================================================== */
-/* ۱. کادر اصلی شیشه‌ای تسک */
-.left-column,
-.left-column > div,
+/* ۱. کادر اصلی تسک و فرم چاکرا */
+.left-column > div:first-child,
 .left-column form,
-.left-column form > div,
-div[class*="todo"],
-div[class*="task"] {
-  min-height: 720px !important;
-  height: 720px !important;
-  max-height: 720px !important;
+.left-column form > div {
+  height: 690px !important;
+  min-height: 690px !important;
+  max-height: 690px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
   box-sizing: border-box !important;
 }
 
-/* ۲. فضای داخلی لیست تسک‌ها کل ارتفاع خالی را پر کند */
-.left-column [class*="list"],
-.left-column ul,
+/* ۲. حفظ اندازه طبیعی دکمه‌ها و تب‌های بالا */
+.left-column form > div > div:first-child,
+.left-column [role="tablist"],
+.left-column button {
+  flex-shrink: 0 !important;
+}
+
+/* ۳. کشیده شدن فضای لیست تسک‌ها در میانه کادر */
+.left-column form > div > div[style*="overflow"],
 .left-column form > div > div:nth-child(3),
 .left-column form > div > div:nth-child(4) {
   flex: 1 1 auto !important;
-  min-height: 480px !important;
   overflow-y: auto !important;
+  min-height: 380px !important;
 }
 
-/* ۳. نوار ثبت تسک جدید دقیقاً در کف و با ارتفاع استاندارد */
-.left-column form [class*="InputGroup"],
-.left-column input[placeholder*="تسک"],
-.left-column [class*="add-box"] {
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+/* ۴. چسبیدن نوار ورودی تسک جدید به کف کادر بدون تغییر سایز */
+.left-column form > div > div:last-child {
   margin-top: auto !important;
-  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  height: 48px !important;
+  min-height: 48px !important;
 }
