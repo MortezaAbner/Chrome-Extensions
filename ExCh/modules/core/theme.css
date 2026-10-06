@@ -139,3 +139,49 @@ main, .main-layout, .dashboard-container {
 .left-column [class*="form"] {
   margin-top: auto !important;
 }
+
+
+/* ========================================================
+   تثبیت ارتفاع تسک هم‌تراز با لبه پایینی تقویم آبنر
+======================================================== */
+.left-column {
+  height: auto !important;
+  min-height: 540px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* پنل بیرونی تسک و یادداشت */
+.left-column > div,
+.left-column .task-container,
+.left-column .todo-box,
+.left-column [data-area="todo"] {
+  height: 540px !important;
+  min-height: 540px !important;
+  max-height: 540px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+
+/* باز شدن کامل بدنه میانی تسک */
+.left-column > div > div:nth-child(2),
+.left-column ul,
+.left-column .tasks-list,
+.left-column .todo-list,
+.left-column [class*="list"] {
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  max-height: 380px !important;
+  overflow-y: auto !important;
+}
+
+/* چسبیدن اینپوت و دکمه نوشتن به کف پنل */
+.left-column form,
+.left-column .input-group,
+.left-column .add-task-box,
+.left-column [class*="input"],
+.left-column [class*="footer"] {
+  margin-top: auto !important;
+}

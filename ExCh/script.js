@@ -2298,3 +2298,33 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(matchHeight, 150);
   setTimeout(matchHeight, 600);
 })();
+
+
+/* تنظیم مستقیم ارتفاع کارت تسک در لحظه رندر */
+(function forceSetTaskHeight() {
+  function applyHeight() {
+    const leftCol = document.querySelector('.left-column');
+    if (!leftCol) return;
+    
+    // هدف‌گیری تمام المان‌های والد و کارت اول ستون چپ
+    const taskElements = leftCol.querySelectorAll('& > div, .task-container, .todo-box, [data-area="todo"]');
+    taskElements.forEach(el => {
+      el.style.setProperty('height', '540px', 'important');
+      el.style.setProperty('min-height', '540px', 'important');
+      el.style.setProperty('display', 'flex', 'important');
+      el.style.setProperty('flex-direction', 'column', 'important');
+    });
+
+    const innerList = leftCol.querySelector('ul, .tasks-list, .todo-list, [class*="list"]');
+    if (innerList) {
+      innerList.style.setProperty('flex', '1 1 auto', 'important');
+      innerList.style.setProperty('overflow-y', 'auto', 'important');
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', applyHeight);
+  window.addEventListener('load', applyHeight);
+  setTimeout(applyHeight, 100);
+  setTimeout(applyHeight, 500);
+  setTimeout(applyHeight, 1200);
+})();
