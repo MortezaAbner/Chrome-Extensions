@@ -1,231 +1,160 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('⚡ در حال فعال‌سازی اکشن‌های تمام آیکون‌های فرم تسک جدید آبنر...');
+console.log('🎨 در حال تنظیم پیش‌فرض ماتی ۵۰٪ برای داشبورد، پاپ‌آپ‌ها و اسلایدرهای تم...');
 
-// ۱. افزودن استایل فعال و پاپ‌آپ‌های این آیکون‌ها در theme.css
+// ۱. تنظیم مقادیر پیش‌فرض متغیرهای شیشه‌ای روی ۵۰٪ در theme.css
 const themeCssPath = path.join(__dirname, 'modules', 'core', 'theme.css');
 if (fs.existsSync(themeCssPath)) {
   let themeCss = fs.readFileSync(themeCssPath, 'utf8');
 
-  const actionButtonsCss = `
+  const defaultGlass50Css = `
 /* ========================================================
-   استایل تعاملی و فعال‌سازی آیکون‌های پایین فرم تسک آبنر
+   تنظیمات پیش‌فرض ماتی و شفافیت ۵۰٪ در داشبورد و پاپ‌آپ‌ها
 ======================================================== */
-.ab-action-active {
-  background: rgba(37, 99, 235, 0.35) !important;
-  border: 1.5px solid #3b82f6 !important;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5) !important;
-  transform: translateY(-2px);
+:root {
+  /* ۵۰٪ ماتی (بلر ۲۰ پیکسل) */
+  --dash-blur-px: 20px !important;
+  --dash-glass-blur: 20px !important;
+  
+  /* ۵۰٪ پوشانندگی و شفافیت پس‌زمینه کارت‌ها */
+  --dash-glass-bg: rgba(20, 24, 35, 0.50) !important;
+  --dash-card-opacity: 0.50 !important;
+  
+  /* ۵۰٪ پوشانندگی پس‌زمینه پاپ‌آپ‌ها و مودال‌ها */
+  --dash-popup-bg: rgba(25, 30, 45, 0.50) !important;
+  --dash-popup-blur: 20px !important;
+  
+  --dash-glass-border: rgba(255, 255, 255, 0.18) !important;
 }
 
-.ab-action-popup {
-  position: absolute;
-  bottom: 56px;
-  right: 15px;
-  background: rgba(22, 27, 34, 0.92) !important;
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 999999;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-  direction: rtl;
-  min-width: 170px;
-  color: #fff;
-  font-size: 12px;
+/* اعمال پیش‌فرض به تمام کارت‌ها، ویجت‌ها و منوها */
+.ab-todo-container,
+.ab-calendar-card,
+.ab-weather-card,
+.task-container,
+.todo-box,
+.left-column > div,
+.right-column > div,
+.center-column > div,
+[class*="glass"] {
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  background: var(--dash-glass-bg, rgba(20, 24, 35, 0.50)) !important;
 }
-.ab-action-item {
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.08);
-  transition: all 0.15s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ab-action-item:hover {
-  background: #2563eb;
-  color: #fff;
+
+/* اعمال پیش‌فرض به تمام پنجره‌های پاپ‌آپ و مدال تنظیمات */
+.modal,
+.popup,
+.settings-modal,
+div[role="dialog"],
+[class*="modal-content"],
+[class*="settings-window"] {
+  backdrop-filter: blur(var(--dash-popup-blur, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-popup-blur, 20px)) saturate(160%) !important;
+  background: var(--dash-popup-bg, rgba(25, 30, 45, 0.50)) !important;
 }
 `;
 
-  if (!themeCss.includes('ab-action-active')) {
-    themeCss += '\n' + actionButtonsCss;
-    fs.writeFileSync(themeCssPath, themeCss, 'utf8');
-    console.log('✅ استایل تعاملی به theme.css افزوده شد.');
-  }
+  themeCss = themeCss.replace(/\/\* ========================================================\s*تنظیمات پیش‌‌فرض ماتی[\s\S]*$/g, '');
+  themeCss += '\n' + defaultGlass50Css;
+  fs.writeFileSync(themeCssPath, themeCss, 'utf8');
+  console.log('✅ استایل ماتی پیش‌فرض ۵۰٪ در theme.css ثبت شد.');
 }
 
-// ۲. اعمال هندلرهای جاوااسکریپت برای تک‌تک آیکون‌ها در script.js
+// ۲. اعمال مقدار ۵۰٪ روی اسلایدرها و هماهنگی با localStorage در script.js
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  const bindScript = `
-/* پیاده‌سازی و فعال‌سازی کامل تمام آیتم‌های نوار نوشتن تسک جدید */
-(function setupNewTaskIconsInteractions() {
-  const taskState = {
-    tag: null,
-    date: null,
-    time: null,
-    priority: null,
-    repeat: false
-  };
+  const defaultSliderSync = `
+/* تنظیم پیش‌فرض اسلایدرها و متغیرهای ماتی روی ۵۰٪ */
+(function setupGlass50Default() {
+  const DASH_BLUR_KEY = 'abner_dashboard_blur';
+  const POPUP_BLUR_KEY = 'abner_popup_blur';
 
-  function bindIcons() {
-    const bottomBar = document.querySelector('.left-column form, form[class*="todo"]');
-    if (!bottomBar) return;
+  // اگر قبلاً مقداری ذخیره نشده باشد یا برای اولین بار لود شود، روی ۵۰ درصد قرار می‌گیرد
+  let dashBlur = localStorage.getItem(DASH_BLUR_KEY);
+  if (dashBlur === null) {
+    dashBlur = '50';
+    localStorage.setItem(DASH_BLUR_KEY, '50');
+  }
 
-    // پیدا کردن دکمه‌ها از روی المان یا موقعیت چیدمان
-    const buttons = bottomBar.querySelectorAll('button, div[role="button"], span[role="button"]');
-    if (buttons.length < 5) return;
+  let popupBlur = localStorage.getItem(POPUP_BLUR_KEY);
+  if (popupBlur === null) {
+    popupBlur = '50';
+    localStorage.setItem(POPUP_BLUR_KEY, '50');
+  }
 
-    const btnTag = buttons[0];       // 🏷️ برچسب
-    const btnCal = buttons[1];       // 📅 تقویم
-    const btnTime = buttons[2];      // ⏰ یادآور
-    const btnPriority = buttons[3];  // 🚩 اولویت
-    const btnRepeat = buttons[4];    // 🔄 تکرار
-    const btnSubmit = buttons[5] || bottomBar.querySelector('button[type="submit"], button:last-child'); // ⬆️ ثبت
+  function applyGlassVariables(dashVal, popupVal) {
+    const root = document.documentElement;
+    // تبدیل ۰ تا ۱۰۰ به بلر مناسب (مثلا ۰ تا ۴۰ پیکسل)
+    const blurPx = Math.round((dashVal / 100) * 40);
+    const bgOpacity = (dashVal / 100) * 0.85;
 
-    function showPopup(targetEl, items, onSelect) {
-      document.querySelectorAll('.ab-action-popup').forEach(p => p.remove());
-      const popup = document.createElement('div');
-      popup.className = 'ab-action-popup';
-      
-      items.forEach(it => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'ab-action-item';
-        itemEl.innerText = it.label;
-        itemEl.onclick = (e) => {
-          e.stopPropagation();
-          onSelect(it.val);
-          targetEl.classList.add('ab-action-active');
-          popup.remove();
+    const pBlurPx = Math.round((popupVal / 100) * 40);
+    const pBgOpacity = (popupVal / 100) * 0.85;
+
+    root.style.setProperty('--dash-blur-px', blurPx + 'px');
+    root.style.setProperty('--dash-glass-blur', blurPx + 'px');
+    root.style.setProperty('--dash-glass-bg', 'rgba(20, 24, 35, ' + bgOpacity.toFixed(2) + ')');
+
+    root.style.setProperty('--dash-popup-blur', pBlurPx + 'px');
+    root.style.setProperty('--dash-popup-bg', 'rgba(25, 30, 45, ' + pBgOpacity.toFixed(2) + ')');
+  }
+
+  function syncSlidersUI() {
+    // یافتن اسلایدرهای تنظیمات تم و رنگ
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach(slider => {
+      const parentText = slider.parentElement ? slider.parentElement.innerText : '';
+
+      if (parentText.includes('داشبورد') || parentText.includes('کارت')) {
+        slider.value = localStorage.getItem(DASH_BLUR_KEY) || '50';
+        const label = slider.parentElement.querySelector('span, p, div');
+        if (label && label.innerText.includes('%')) {
+          label.innerText = label.innerText.replace(/\\d+%/, slider.value + '%');
+        }
+        slider.oninput = (e) => {
+          const val = e.target.value;
+          localStorage.setItem(DASH_BLUR_KEY, val);
+          if (label && label.innerText.includes('%')) {
+            label.innerText = label.innerText.replace(/\\d+%/, val + '%');
+          }
+          applyGlassVariables(val, localStorage.getItem(POPUP_BLUR_KEY) || '50');
         };
-        popup.appendChild(itemEl);
-      });
+      }
 
-      bottomBar.style.position = 'relative';
-      bottomBar.appendChild(popup);
-    }
-
-    // ۱. برچسب
-    if (btnTag && !btnTag.dataset.boundTag) {
-      btnTag.dataset.boundTag = 'true';
-      btnTag.style.cursor = 'pointer';
-      btnTag.onclick = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        showPopup(btnTag, [
-          { label: 'فوری ⚡', val: 'فوری' },
-          { label: 'کاری 💼', val: 'کاری' },
-          { label: 'شخصی 👤', val: 'شخصی' },
-          { label: 'پروژه 🚀', val: 'پروژه' }
-        ], (val) => { taskState.tag = val; });
-      };
-    }
-
-    // ۲. تقویم (موعد انجام)
-    if (btnCal && !btnCal.dataset.boundCal) {
-      btnCal.dataset.boundCal = 'true';
-      btnCal.style.cursor = 'pointer';
-      btnCal.onclick = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        showPopup(btnCal, [
-          { label: 'امروز', val: 'امروز' },
-          { label: 'فردا', val: 'فردا' },
-          { label: 'پایان هفته', val: 'پایان هفته' },
-          { label: 'هفته آینده', val: 'هفته آینده' }
-        ], (val) => { taskState.date = val; });
-      };
-    }
-
-    // ۳. ساعت و یادآور
-    if (btnTime && !btnTime.dataset.boundTime) {
-      btnTime.dataset.boundTime = 'true';
-      btnTime.style.cursor = 'pointer';
-      btnTime.onclick = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        showPopup(btnTime, [
-          { label: 'صبح (۰۹:۰۰)', val: '09:00' },
-          { label: 'ظهر (۱۳:۰۰)', val: '13:00' },
-          { label: 'عصر (۱۸:۰۰)', val: '18:00' },
-          { label: 'شب (۲۱:۰۰)', val: '21:00' }
-        ], (val) => { taskState.time = val; });
-      };
-    }
-
-    // ۴. پرچم اولویت
-    if (btnPriority && !btnPriority.dataset.boundPriority) {
-      btnPriority.dataset.boundPriority = 'true';
-      btnPriority.style.cursor = 'pointer';
-      btnPriority.onclick = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        showPopup(btnPriority, [
-          { label: '🔴 بالا', val: 'high' },
-          { label: '🟡 متوسط', val: 'medium' },
-          { label: '🔵 پایین', val: 'low' }
-        ], (val) => { taskState.priority = val; });
-      };
-    }
-
-    // ۵. تکرار
-    if (btnRepeat && !btnRepeat.dataset.boundRepeat) {
-      btnRepeat.dataset.boundRepeat = 'true';
-      btnRepeat.style.cursor = 'pointer';
-      btnRepeat.onclick = (e) => {
-        e.preventDefault(); e.stopPropagation();
-        taskState.repeat = !taskState.repeat;
-        if (taskState.repeat) {
-          btnRepeat.classList.add('ab-action-active');
-        } else {
-          btnRepeat.classList.remove('ab-action-active');
+      if (parentText.includes('پاپ‌آپ') || parentText.includes('پوشانندگی')) {
+        slider.value = localStorage.getItem(POPUP_BLUR_KEY) || '50';
+        const label = slider.parentElement.querySelector('span, p, div');
+        if (label && label.innerText.includes('%')) {
+          label.innerText = label.innerText.replace(/\\d+%/, slider.value + '%');
         }
-      };
-    }
-
-    // ۶. ارسال و ثبت تسک (فلش آبی)
-    if (btnSubmit && !btnSubmit.dataset.boundSubmit) {
-      btnSubmit.dataset.boundSubmit = 'true';
-      btnSubmit.onclick = (e) => {
-        const inp = bottomBar.querySelector('input[type="text"], input');
-        if (inp && inp.value.trim() !== '') {
-          // الحاق ویژگی‌های انتخابی به تسک قبل از ثبت
-          if (taskState.tag) inp.value += ' #' + taskState.tag;
-          if (taskState.date) inp.value += ' [' + taskState.date + ']';
-          
-          bottomBar.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-
-          // ریست وضعیت دکمه‌ها
-          buttons.forEach(b => b.classList.remove('ab-action-active'));
-          taskState.tag = null;
-          taskState.date = null;
-          taskState.time = null;
-          taskState.priority = null;
-          taskState.repeat = false;
-        }
-      };
-    }
-
-    // بستن پنجره با کلیک در هر نقطه دیگر
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.ab-action-popup').forEach(p => p.remove());
+        slider.oninput = (e) => {
+          const val = e.target.value;
+          localStorage.setItem(POPUP_BLUR_KEY, val);
+          if (label && label.innerText.includes('%')) {
+            label.innerText = label.innerText.replace(/\\d+%/, val + '%');
+          }
+          applyGlassVariables(localStorage.getItem(DASH_BLUR_KEY) || '50', val);
+        };
+      }
     });
   }
 
-  window.addEventListener('load', bindIcons);
-  document.addEventListener('DOMContentLoaded', bindIcons);
-  setInterval(bindIcons, 800);
+  applyGlassVariables(dashBlur, popupBlur);
+  window.addEventListener('load', syncSlidersUI);
+  document.addEventListener('DOMContentLoaded', syncSlidersUI);
+  setInterval(syncSlidersUI, 1000);
 })();
 `;
 
-  if (!js.includes('setupNewTaskIconsInteractions')) {
-    js += '\n' + bindScript;
-    fs.writeFileSync('./script.js', js, 'utf8');
-    console.log('✅ منطق عملکرد تک‌تک آیکون‌ها به script.js اضافه شد.');
+  if (!js.includes('setupGlass50Default')) {
+    js += '\n' + defaultSliderSync;
+  } else {
+    js = js.replace(/\/\* تنظیم پیش‌فرض اسلایدرها و متغیرهای ماتی[\s\S]*?\)\(\);/, defaultSliderSync.trim());
   }
+
+  fs.writeFileSync('./script.js', js, 'utf8');
+  console.log('✅ همگام‌سازی اسلایدرها و متغیرها در script.js انجام شد.');
 }

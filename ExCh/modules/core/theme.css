@@ -198,3 +198,50 @@ main, .main-layout, .dashboard-container {
 .ab-tag-chip:hover {
   background: #2563eb;
 }
+
+
+/* ========================================================
+   تنظیمات پیش‌فرض ماتی و شفافیت ۵۰٪ در داشبورد و پاپ‌آپ‌ها
+======================================================== */
+:root {
+  /* ۵۰٪ ماتی (بلر ۲۰ پیکسل) */
+  --dash-blur-px: 20px !important;
+  --dash-glass-blur: 20px !important;
+  
+  /* ۵۰٪ پوشانندگی و شفافیت پس‌زمینه کارت‌ها */
+  --dash-glass-bg: rgba(20, 24, 35, 0.50) !important;
+  --dash-card-opacity: 0.50 !important;
+  
+  /* ۵۰٪ پوشانندگی پس‌زمینه پاپ‌آپ‌ها و مودال‌ها */
+  --dash-popup-bg: rgba(25, 30, 45, 0.50) !important;
+  --dash-popup-blur: 20px !important;
+  
+  --dash-glass-border: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* اعمال پیش‌فرض به تمام کارت‌ها، ویجت‌ها و منوها */
+.ab-todo-container,
+.ab-calendar-card,
+.ab-weather-card,
+.task-container,
+.todo-box,
+.left-column > div,
+.right-column > div,
+.center-column > div,
+[class*="glass"] {
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  background: var(--dash-glass-bg, rgba(20, 24, 35, 0.50)) !important;
+}
+
+/* اعمال پیش‌فرض به تمام پنجره‌های پاپ‌آپ و مدال تنظیمات */
+.modal,
+.popup,
+.settings-modal,
+div[role="dialog"],
+[class*="modal-content"],
+[class*="settings-window"] {
+  backdrop-filter: blur(var(--dash-popup-blur, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-popup-blur, 20px)) saturate(160%) !important;
+  background: var(--dash-popup-bg, rgba(25, 30, 45, 0.50)) !important;
+}
