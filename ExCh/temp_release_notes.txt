@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.68:
-- حذف پنل اضافه بالای صفحه، ارتقای نوار ابزار تسک‌های سمت چپ شامل سورت، هاید، ویرایش و استایل شیشه‌ای زنده آبنر
+### 🇮🇷 تغییرات نسخه v1.32.69:
+- حذف تسک اضافی بالایی، بازگرداندن ابعاد و ظاهر اولیه تسک اصلی سمت چپ با استایل شیشه‌ای آبنر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.68):
-- Integrate Full Task Tools and Remove Extra Center Todo
+### 🇬🇧 Release Notes (v1.32.69):
+- Restore Original Task Panel and Remove Top Overlay
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
