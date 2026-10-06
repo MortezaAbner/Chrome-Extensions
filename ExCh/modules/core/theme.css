@@ -95,3 +95,47 @@ main, .main-layout, .dashboard-container {
   display: block !important;
   width: 100% !important;
 }
+
+
+/* ========================================================
+   تراز قطعی ارتفاع تسک با لبه پایینی تقویم در آبنر
+======================================================== */
+/* ستون سمت چپ به صورت تمام‌قد */
+.left-column, .tasks-column {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+/* کارت اصلی تسک و یادداشت */
+.left-column > div:first-child,
+.task-container,
+.todo-box,
+[data-area="todo"] {
+  height: 575px !important;
+  min-height: 575px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  transition: height 0.2s ease !important;
+}
+
+/* امتداد لیست تسک‌ها در فضای میانی برای هل دادن دکمه ثبت به کف کارت */
+.left-column ul,
+.left-column .task-list,
+.left-column .todo-list,
+.left-column [class*="list"],
+.left-column [class*="content"] {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  max-height: none !important;
+}
+
+/* چسبیدن اینپوت نوشتن تسک جدید به لبه پایینی کارت */
+.left-column form,
+.left-column .input-group,
+.left-column .add-task-box,
+.left-column [class*="input-wrap"],
+.left-column [class*="form"] {
+  margin-top: auto !important;
+}

@@ -2273,3 +2273,28 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 });
+
+
+/* هماهنگ‌سازی پویا و بلادرنگ ارتفاع تسک با لبه پایینی تقویم آبنر */
+(function syncTaskHeightWithCalendar() {
+  function matchHeight() {
+    const rightCol = document.querySelector('.right-column') || document.querySelector('.weather-column');
+    const taskCard = document.querySelector('.left-column > div:first-child') || 
+                     document.querySelector('.task-container') || 
+                     document.querySelector('.todo-box') ||
+                     document.querySelector('[data-area="todo"]');
+
+    if (rightCol && taskCard) {
+      const rightHeight = rightCol.offsetHeight;
+      if (rightHeight > 300) {
+        taskCard.style.setProperty('height', rightHeight + 'px', 'important');
+        taskCard.style.setProperty('min-height', rightHeight + 'px', 'important');
+      }
+    }
+  }
+
+  window.addEventListener('load', matchHeight);
+  window.addEventListener('resize', matchHeight);
+  setTimeout(matchHeight, 150);
+  setTimeout(matchHeight, 600);
+})();
