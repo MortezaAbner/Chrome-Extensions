@@ -185,3 +185,11 @@ main, .main-layout, .dashboard-container {
 .left-column [class*="footer"] {
   margin-top: auto !important;
 }
+
+
+/* تراز تضمینی کانتینر تسک سمت چپ */
+.left-column {
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
