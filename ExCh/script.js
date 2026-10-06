@@ -2244,3 +2244,32 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     bindSettingsNavClick();
   }
+
+// اصلاح رویداد دکمه تسک در نوار ابزار پایین آبنر
+document.addEventListener('DOMContentLoaded', () => {
+  // یافتن دکمه تسک در نوار ناوبری پایین
+  const taskNavBtn = document.querySelector('button[data-tab="tasks"], .dock-item[data-target="tasks"], .bottom-bar button:nth-child(4), #nav-task-btn');
+  if (taskNavBtn) {
+    taskNavBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // بستن هرگونه اسکرول یا پنجره کشویی پایینی
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.bottom-drawer, .tasks-bottom-sheet, .bottom-todo-section').forEach(el => el.remove());
+
+      // برجسته‌سازی و هایلایت پنل اصلی تسک سمت چپ
+      const leftTask = document.querySelector('.task-container, .todo-box, [data-area="todo"], .left-column');
+      if (leftTask) {
+        leftTask.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        leftTask.style.transition = 'box-shadow 0.3s ease, transform 0.2s ease';
+        leftTask.style.boxShadow = '0 0 25px rgba(37, 99, 235, 0.6)';
+        leftTask.style.transform = 'scale(1.01)';
+        setTimeout(() => {
+          leftTask.style.boxShadow = '';
+          leftTask.style.transform = '';
+        }, 600);
+      }
+    };
+  }
+});

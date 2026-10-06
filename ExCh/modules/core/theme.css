@@ -140,3 +140,59 @@ body {
   font-size: 11px !important;
   cursor: pointer !important;
 }
+
+
+/* ========================================================
+   تراز ارتفاع تسک با تقویم و غیرفعال‌سازی بخش اسکرول پایین
+======================================================== */
+/* ۱. تنظیم ارتفاع پنل تسک سمت چپ هم‌تراز با لبه پایینی تقویم */
+.task-container, 
+.todo-box, 
+[data-area="todo"], 
+.left-column > div:first-child,
+.left-column {
+  min-height: 590px !important;
+  height: 590px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+/* اسکرول داخلی لیست تسک برای پر کردن فضای عمودی تا اینپوت پایین */
+.task-container .task-list,
+.todo-box .todo-list,
+[data-area="todo"] .list-content,
+.left-column .tasks-list {
+  flex: 1 1 auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+/* اینپوت نوشتن تسک جدید همیشه در انتهای پنل تسک */
+.task-container .input-group,
+.todo-box .add-task-box,
+[data-area="todo"] .bottom-input,
+.left-column .add-todo-form {
+  margin-top: auto !important;
+}
+
+/* ۲. مسدودسازی کامل هرگونه سکشن اسکرولی پایین صفحه و پنجره‌های مزاحم زیرین */
+.bottom-drawer,
+.tasks-bottom-sheet,
+.bottom-todo-section,
+.scroll-section,
+div[class*="bottom-view"],
+div[class*="tasks-full-view"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* جلوگیری از اسکرول خوردن کل صفحه به پایین */
+html, body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}

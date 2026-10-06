@@ -1,106 +1,115 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🧹 در حال حذف تسک بالایی و بازگرداندن ابعاد و منطق تسک اصلی آبنر...');
+console.log('📐 در حال تنظیم ارتفاع تسک هم‌تراز با تقویم و رفع رفتار کلیک نوار پایین آبنر...');
 
-// ۱. حذف کامل اسکریپت ماژول اضافه از HTMLها تا پنل بالایی کلاً برداشته شود
-['./index.html', './newtab.html'].forEach(filePath => {
-  if (fs.existsSync(filePath)) {
-    let html = fs.readFileSync(filePath, 'utf8');
-    html = html.replace(/\s*<link rel="stylesheet" href="modules\/todo\/todo\.css">\s*/g, '\n');
-    html = html.replace(/\s*<script src="modules\/todo\/todo\.js"><\/script>\s*/g, '\n');
-    fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`🔗 فایل ${filePath} از ماژول تسک اضافه پاک شد.`);
-  }
-});
-
-// ۲. خالی کردن ماژول todo اضافی
-const todoDir = path.join(__dirname, 'modules', 'todo');
-if (fs.existsSync(todoDir)) {
-  fs.writeFileSync(path.join(todoDir, 'todo.js'), '// ماژول تسک اصلی در اسکریپت داشبورد فعال است\n', 'utf8');
-  fs.writeFileSync(path.join(todoDir, 'todo.css'), '/* استایل تسک اصلی */\n', 'utf8');
-}
-
-// ۳. بازگرداندن ابعاد و استایل شیشه‌ای کامل پنل تسک اصلی به theme.css
+// ۱. تنظیم استایل در theme.css (هم‌تراز کردن ارتفاع تسک با انتهای تقویم و حذف سکشن اسکرولی پایین)
 const themeCssPath = path.join(__dirname, 'modules', 'core', 'theme.css');
 if (fs.existsSync(themeCssPath)) {
   let themeCss = fs.readFileSync(themeCssPath, 'utf8');
 
-  const todoOriginalStyle = `
+  const heightAndBottomBarFix = `
 /* ========================================================
-   تنظیمات ابعاد اصلی و استایل شیشه‌ای تسک اصلی آبنر
+   تراز ارتفاع تسک با تقویم و غیرفعال‌سازی بخش اسکرول پایین
 ======================================================== */
-/* حذف هرگونه تسک اضافه بالایی یا وسطی */
-#abner-todo-container, #abner-left-todo, .ab-todo-panel, .top-todo-card {
-  display: none !important;
-}
-
-/* پنل اصلی تسک در ستون سمت چپ */
-.task-container, .todo-box, [data-area="todo"], .left-column > div:first-child {
-  width: 100% !important;
-  max-width: 310px !important;
-  border-radius: 20px !important;
-  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
-  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
-  direction: rtl !important;
-  box-sizing: border-box !important;
-  padding: 12px !important;
-}
-
-/* استایل آیتم‌های تسک بر اساس سورس مادر (Todo.jsx) */
-.todo-item, .task-item {
-  background: #eef0f512 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 14px !important;
-  margin-bottom: 8px !important;
-  padding: 8px 10px !important;
-  transition: all 0.2s ease !important;
-}
-.todo-item:hover, .task-item:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-.todo-item.completed, .task-item.completed {
-  opacity: 0.45 !important;
-}
-.todo-item.completed label, .task-item.completed label,
-.todo-item.completed span, .task-item.completed span {
-  text-decoration: line-through !important;
-}
-
-/* پنل تایید حذف برگرفته از سورس مادر */
-.todo-del-confirm-box {
+/* ۱. تنظیم ارتفاع پنل تسک سمت چپ هم‌تراز با لبه پایینی تقویم */
+.task-container, 
+.todo-box, 
+[data-area="todo"], 
+.left-column > div:first-child,
+.left-column {
+  min-height: 590px !important;
+  height: 590px !important;
   display: flex !important;
-  justify-content: space-around !important;
-  margin-top: 8px !important;
-  padding-top: 6px !important;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1) !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
-.btn-todo-cancel {
-  background: #333740 !important;
-  color: #A8ABBA !important;
-  border: none !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  cursor: pointer !important;
+
+/* اسکرول داخلی لیست تسک برای پر کردن فضای عمودی تا اینپوت پایین */
+.task-container .task-list,
+.todo-box .todo-list,
+[data-area="todo"] .list-content,
+.left-column .tasks-list {
+  flex: 1 1 auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
 }
-.btn-todo-del {
-  background: #42282D !important;
-  color: #DE4237 !important;
-  border: none !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  cursor: pointer !important;
+
+/* اینپوت نوشتن تسک جدید همیشه در انتهای پنل تسک */
+.task-container .input-group,
+.todo-box .add-task-box,
+[data-area="todo"] .bottom-input,
+.left-column .add-todo-form {
+  margin-top: auto !important;
+}
+
+/* ۲. مسدودسازی کامل هرگونه سکشن اسکرولی پایین صفحه و پنجره‌های مزاحم زیرین */
+.bottom-drawer,
+.tasks-bottom-sheet,
+.bottom-todo-section,
+.scroll-section,
+div[class*="bottom-view"],
+div[class*="tasks-full-view"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* جلوگیری از اسکرول خوردن کل صفحه به پایین */
+html, body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
 }
 `;
 
-  // پاک کردن استایل‌های تکراری قبلی و اعمال استایل تمیز
-  themeCss = themeCss.replace(/\/\* ========================================================\s*تنظیمات ابعاد اصلی و استایل شیشه‌ای تسک اصلی آبنر[\s\S]*$/g, '');
-  themeCss += '\n' + todoOriginalStyle;
+  // جایگزینی کدهای قبلی با اصلاحیه جدید
+  themeCss = themeCss.replace(/\/\* ========================================================\s*تراز ارتفاع تسک با تقویم[\s\S]*$/g, '');
+  themeCss += '\n' + heightAndBottomBarFix;
   fs.writeFileSync(themeCssPath, themeCss, 'utf8');
-  console.log('✅ استایل شیشه‌ای و ابعاد اصلی تسک در theme.css تثبیت شد.');
+  console.log('✅ ارتفاع تسک و مهار اسکرول در theme.css ذخیره شد.');
+}
+
+// ۲. اصلاح رویداد کلیک دکمه نوار پایین در script.js
+if (fs.existsSync('./script.js')) {
+  let js = fs.readFileSync('./script.js', 'utf8');
+
+  const bottomNavHook = `
+// اصلاح رویداد دکمه تسک در نوار ابزار پایین آبنر
+document.addEventListener('DOMContentLoaded', () => {
+  // یافتن دکمه تسک در نوار ناوبری پایین
+  const taskNavBtn = document.querySelector('button[data-tab="tasks"], .dock-item[data-target="tasks"], .bottom-bar button:nth-child(4), #nav-task-btn');
+  if (taskNavBtn) {
+    taskNavBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // بستن هرگونه اسکرول یا پنجره کشویی پایینی
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.bottom-drawer, .tasks-bottom-sheet, .bottom-todo-section').forEach(el => el.remove());
+
+      // برجسته‌سازی و هایلایت پنل اصلی تسک سمت چپ
+      const leftTask = document.querySelector('.task-container, .todo-box, [data-area="todo"], .left-column');
+      if (leftTask) {
+        leftTask.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        leftTask.style.transition = 'box-shadow 0.3s ease, transform 0.2s ease';
+        leftTask.style.boxShadow = '0 0 25px rgba(37, 99, 235, 0.6)';
+        leftTask.style.transform = 'scale(1.01)';
+        setTimeout(() => {
+          leftTask.style.boxShadow = '';
+          leftTask.style.transform = '';
+        }, 600);
+      }
+    };
+  }
+});
+`;
+
+  if (!js.includes('اصلاح رویداد دکمه تسک در نوار ابزار پایین آبنر')) {
+    js += '\n' + bottomNavHook;
+    fs.writeFileSync('./script.js', js, 'utf8');
+    console.log('✅ هندلر نوار ابزار پایین به script.js اضافه شد.');
+  }
 }
