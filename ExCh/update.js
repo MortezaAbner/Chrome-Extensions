@@ -1,125 +1,102 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔄 در حال بازگرداندن نوار تسک به حالت تک‌خطی و جمع‌وجور اولیه...');
+console.log('📐 در حال امتداد کادر تسک تا پایین تقویم و تثبیت نوار ورودی تک‌خطی...');
 
-// ۱. اصلاح دقیق استایل‌ها در theme.css
+// ۱. تنظیم استایل در theme.css
 const themeCssPath = path.join(__dirname, 'modules', 'core', 'theme.css');
 if (fs.existsSync(themeCssPath)) {
   let themeCss = fs.readFileSync(themeCssPath, 'utf8');
 
-  // حذف رول‌های آسیب‌رسان قبلی
-  themeCss = themeCss.replace(/\/\* ========================================================\s*تثبیت ارتفاع تسک[\s\S]*$/g, '');
-  themeCss = themeCss.replace(/\/\* ========================================================\s*تراز قطعی ارتفاع تسک[\s\S]*$/g, '');
+  // حذف رول‌های قبلی
+  themeCss = themeCss.replace(/\/\* ========================================================\s*تثبیت نوار تک‌خطی تسک جدید[\s\S]*$/g, '');
 
-  const compactInputFix = `
+  const correctLayoutCss = `
 /* ========================================================
-   تثبیت نوار تک‌خطی تسک جدید و جلوگیری از باز شدن فرم
+   کادر بزرگ تسک تا پایین تقویم + نوار ورودی تک‌خطی در کف
 ======================================================== */
-/* ۱. کادر اصلی پنل تسک سمت چپ */
+/* ۱. کادر اصلی شیشه‌ای تسک: ارتفاع بلند و کشیده */
 .left-column > div:first-child,
-.task-container,
-.todo-box,
-[data-area="todo"] {
-  height: 540px !important;
-  min-height: 540px !important;
-  max-height: 540px !important;
+.left-column [class*="container"],
+.left-column [class*="box"],
+.left-column [class*="wrapper"] {
+  height: 580px !important;
+  min-height: 580px !important;
+  max-height: 580px !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   box-sizing: border-box !important;
 }
 
-/* ۲. فضای لیست تسک‌ها گسترش پیدا کند، نه فرم ورودی */
-.left-column ul,
-.left-column .tasks-list,
-.left-column .todo-list,
+/* ۲. فضای بین آیتم‌ها و فرم ورودی کش بیاید تا فرم به کف کادر بچسبد */
 .left-column [class*="list"],
-.left-column [class*="items"] {
+.left-column ul,
+.left-column > div:first-child > div:nth-child(2),
+.left-column > div:first-child > div:nth-child(3) {
   flex: 1 1 auto !important;
   overflow-y: auto !important;
-  max-height: none !important;
+  min-height: 200px !important;
 }
 
-/* ۳. مهار و کوچک‌سازی فرم ورودی به اندازه یک نوار باریک اولیه */
+/* ۳. نوار نوشتن تسک جدید: دقیقاً یک خط باریک و جمع‌‌وجور در انتهای کادر */
 .left-column form,
-.left-column .input-group,
-.left-column .add-task-box,
+.left-column [class*="add"],
 .left-column [class*="input-wrap"],
-.left-column [class*="add-box"] {
-  flex: 0 0 44px !important;
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+.left-column [class*="bottom"] {
+  flex: 0 0 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
   margin-top: auto !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  box-sizing: border-box !important;
+  margin-bottom: 0 !important;
 }
 
-/* پنهان‌سازی بخش توضیحات و ردیف آیکون‌های اضافه داخل فرم تا تک‌خطی بماند */
-.left-column form textarea,
-.left-column form [placeholder*="توضیحات"],
-.left-column form .form-details,
-.left-column form [class*="detail"],
-.left-column form [class*="extra"] {
-  display: none !important;
-}
-
-/* استایل اینپوت تک‌خطی */
 .left-column form input,
-.left-column .input-group input {
-  height: 40px !important;
-  line-height: 40px !important;
-  font-size: 12.5px !important;
-  border-radius: 12px !important;
+.left-column input[placeholder*="تسک"] {
+  height: 42px !important;
+  line-height: 42px !important;
+  box-sizing: border-box !important;
 }
 `;
 
-  themeCss += '\n' + compactInputFix;
+  themeCss += '\n' + correctLayoutCss;
   fs.writeFileSync(themeCssPath, themeCss, 'utf8');
-  console.log('✅ نوار تسک در theme.css به ابعاد جمع‌وجور سابق بازگشت.');
+  console.log('✅ استایل کادر بلند و اینپوت باریک در theme.css ذخیره شد.');
 }
 
-// ۲. تمیزکاری فایل script.js از استایل‌های اجباری روی فرم
+// ۲. اعمال مستقیم روی DOM برای غلبه بر محدودیت‌های احتمالی جاوااسکریپت
 if (fs.existsSync('./script.js')) {
   let js = fs.readFileSync('./script.js', 'utf8');
 
-  // حذف اسکریپت‌هایی که استایل form را دستکاری می‌کردند
-  js = js.replace(/\/\* ========================================================\s*محاسبه و تراز میلی‌متری[\s\S]*?\)\(\);/g, '');
-  js = js.replace(/\/\* تنظیم مستقیم ارتفاع کارت تسک[\s\S]*?\)\(\);/g, '');
+  js = js.replace(/\/\* تنظیم ارتفاع کادر کلی بدون دستکاری[\s\S]*?\)\(\);/g, '');
 
-  const compactScript = `
-/* تنظیم ارتفاع کادر کلی بدون دستکاری ارتفاع نوار ورودی */
-(function keepTaskInputCompact() {
-  function applyCompact() {
+  const domScript = `
+/* تنظیم مستقیم ارتفاع بلند کادر تسک */
+(function forceFullHeightTaskCard() {
+  function apply() {
     const leftCol = document.querySelector('.left-column');
     if (!leftCol) return;
 
-    // بستن بخش توضیحات در صورت باز ماندن
-    const descArea = leftCol.querySelector('textarea, [placeholder*="توضیحات"]');
-    if (descArea && descArea.parentElement) {
-      descArea.style.display = 'none';
-    }
-
-    const form = leftCol.querySelector('form');
-    if (form) {
-      form.style.setProperty('height', '44px', 'important');
-      form.style.setProperty('min-height', '44px', 'important');
-      form.style.setProperty('max-height', '44px', 'important');
-      form.style.setProperty('flex', '0 0 44px', 'important');
+    // پیدا کردن کادر اصلی اول ستون چپ
+    const mainBox = leftCol.querySelector('& > div:first-child') || leftCol.firstElementChild;
+    if (mainBox) {
+      mainBox.style.setProperty('height', '580px', 'important');
+      mainBox.style.setProperty('min-height', '580px', 'important');
+      mainBox.style.setProperty('display', 'flex', 'important');
+      mainBox.style.setProperty('flex-direction', 'column', 'important');
     }
   }
 
-  window.addEventListener('load', applyCompact);
-  document.addEventListener('DOMContentLoaded', applyCompact);
-  setTimeout(applyCompact, 200);
+  window.addEventListener('load', apply);
+  document.addEventListener('DOMContentLoaded', apply);
+  setTimeout(apply, 150);
+  setTimeout(apply, 600);
 })();
 `;
 
-  if (!js.includes('keepTaskInputCompact')) {
-    js += '\n' + compactScript;
+  if (!js.includes('forceFullHeightTaskCard')) {
+    js += '\n' + domScript;
     fs.writeFileSync('./script.js', js, 'utf8');
   }
 }

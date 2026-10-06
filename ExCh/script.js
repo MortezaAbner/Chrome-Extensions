@@ -2306,28 +2306,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-/* تنظیم ارتفاع کادر کلی بدون دستکاری ارتفاع نوار ورودی */
-(function keepTaskInputCompact() {
-  function applyCompact() {
+
+
+
+/* تنظیم مستقیم ارتفاع بلند کادر تسک */
+(function forceFullHeightTaskCard() {
+  function apply() {
     const leftCol = document.querySelector('.left-column');
     if (!leftCol) return;
 
-    // بستن بخش توضیحات در صورت باز ماندن
-    const descArea = leftCol.querySelector('textarea, [placeholder*="توضیحات"]');
-    if (descArea && descArea.parentElement) {
-      descArea.style.display = 'none';
-    }
-
-    const form = leftCol.querySelector('form');
-    if (form) {
-      form.style.setProperty('height', '44px', 'important');
-      form.style.setProperty('min-height', '44px', 'important');
-      form.style.setProperty('max-height', '44px', 'important');
-      form.style.setProperty('flex', '0 0 44px', 'important');
+    // پیدا کردن کادر اصلی اول ستون چپ
+    const mainBox = leftCol.querySelector('& > div:first-child') || leftCol.firstElementChild;
+    if (mainBox) {
+      mainBox.style.setProperty('height', '580px', 'important');
+      mainBox.style.setProperty('min-height', '580px', 'important');
+      mainBox.style.setProperty('display', 'flex', 'important');
+      mainBox.style.setProperty('flex-direction', 'column', 'important');
     }
   }
 
-  window.addEventListener('load', applyCompact);
-  document.addEventListener('DOMContentLoaded', applyCompact);
-  setTimeout(applyCompact, 200);
+  window.addEventListener('load', apply);
+  document.addEventListener('DOMContentLoaded', apply);
+  setTimeout(apply, 150);
+  setTimeout(apply, 600);
 })();

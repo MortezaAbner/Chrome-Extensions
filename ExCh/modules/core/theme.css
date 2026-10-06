@@ -99,65 +99,51 @@ main, .main-layout, .dashboard-container {
 
 
 
+
+
 /* ========================================================
-   تثبیت نوار تک‌خطی تسک جدید و جلوگیری از باز شدن فرم
+   کادر بزرگ تسک تا پایین تقویم + نوار ورودی تک‌خطی در کف
 ======================================================== */
-/* ۱. کادر اصلی پنل تسک سمت چپ */
+/* ۱. کادر اصلی شیشه‌ای تسک: ارتفاع بلند و کشیده */
 .left-column > div:first-child,
-.task-container,
-.todo-box,
-[data-area="todo"] {
-  height: 540px !important;
-  min-height: 540px !important;
-  max-height: 540px !important;
+.left-column [class*="container"],
+.left-column [class*="box"],
+.left-column [class*="wrapper"] {
+  height: 580px !important;
+  min-height: 580px !important;
+  max-height: 580px !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   box-sizing: border-box !important;
 }
 
-/* ۲. فضای لیست تسک‌ها گسترش پیدا کند، نه فرم ورودی */
-.left-column ul,
-.left-column .tasks-list,
-.left-column .todo-list,
+/* ۲. فضای بین آیتم‌ها و فرم ورودی کش بیاید تا فرم به کف کادر بچسبد */
 .left-column [class*="list"],
-.left-column [class*="items"] {
+.left-column ul,
+.left-column > div:first-child > div:nth-child(2),
+.left-column > div:first-child > div:nth-child(3) {
   flex: 1 1 auto !important;
   overflow-y: auto !important;
-  max-height: none !important;
+  min-height: 200px !important;
 }
 
-/* ۳. مهار و کوچک‌سازی فرم ورودی به اندازه یک نوار باریک اولیه */
+/* ۳. نوار نوشتن تسک جدید: دقیقاً یک خط باریک و جمع‌‌وجور در انتهای کادر */
 .left-column form,
-.left-column .input-group,
-.left-column .add-task-box,
+.left-column [class*="add"],
 .left-column [class*="input-wrap"],
-.left-column [class*="add-box"] {
-  flex: 0 0 44px !important;
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+.left-column [class*="bottom"] {
+  flex: 0 0 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
   margin-top: auto !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  box-sizing: border-box !important;
+  margin-bottom: 0 !important;
 }
 
-/* پنهان‌سازی بخش توضیحات و ردیف آیکون‌های اضافه داخل فرم تا تک‌خطی بماند */
-.left-column form textarea,
-.left-column form [placeholder*="توضیحات"],
-.left-column form .form-details,
-.left-column form [class*="detail"],
-.left-column form [class*="extra"] {
-  display: none !important;
-}
-
-/* استایل اینپوت تک‌خطی */
 .left-column form input,
-.left-column .input-group input {
-  height: 40px !important;
-  line-height: 40px !important;
-  font-size: 12.5px !important;
-  border-radius: 12px !important;
+.left-column input[placeholder*="تسک"] {
+  height: 42px !important;
+  line-height: 42px !important;
+  box-sizing: border-box !important;
 }
