@@ -1,49 +1,40 @@
 
 /* ========================================================
-   تنظیم قطعی ارتفاع بلند کادر تسک و نوار باریک پایین
+   کشیدگی کامل کادر تسک تا زیر تقویم
 ======================================================== */
-:root {
-  --task-card-height: 610px;
-}
-
-/* ۱. بدنه و ستون چپ */
-.left-column {
-  height: var(--task-card-height) !important;
-  min-height: var(--task-card-height) !important;
-  max-height: var(--task-card-height) !important;
-}
-
-/* ۲. کادر والد و کارت شیشه‌ای اصلی */
+/* ۱. کادر اصلی شیشه‌ای تسک */
+.left-column,
 .left-column > div,
+.left-column form,
 .left-column form > div,
-.task-container,
-.todo-box,
-[data-area="todo"] {
-  height: var(--task-card-height) !important;
-  min-height: var(--task-card-height) !important;
-  max-height: var(--task-card-height) !important;
+div[class*="todo"],
+div[class*="task"] {
+  min-height: 720px !important;
+  height: 720px !important;
+  max-height: 720px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
   box-sizing: border-box !important;
 }
 
-/* ۳. لیست تسک‌ها کل فضای میانی را پوشش دهد */
-.left-column ul,
+/* ۲. فضای داخلی لیست تسک‌ها کل ارتفاع خالی را پر کند */
 .left-column [class*="list"],
+.left-column ul,
 .left-column form > div > div:nth-child(3),
 .left-column form > div > div:nth-child(4) {
   flex: 1 1 auto !important;
+  min-height: 480px !important;
   overflow-y: auto !important;
-  max-height: none !important;
 }
 
-/* ۴. ثابت ماندن نوار نوشتن تسک جدید در پایین کادر با اندازه استاندارد */
-.left-column form input,
+/* ۳. نوار ثبت تسک جدید دقیقاً در کف و با ارتفاع استاندارد */
 .left-column form [class*="InputGroup"],
+.left-column input[placeholder*="تسک"],
 .left-column [class*="add-box"] {
-  height: 42px !important;
-  min-height: 42px !important;
-  max-height: 42px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  margin-top: auto !important;
   box-sizing: border-box !important;
 }

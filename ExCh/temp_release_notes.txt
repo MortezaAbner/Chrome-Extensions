@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.93:
-- افزایش ارتفاع کادر تسک به ۶۱۰ پیکسل و هماهنگ‌سازی کامل با ارتفاع تقویم ستون راست
+### 🇮🇷 تغییرات نسخه v1.32.94:
+- امتداد دقیق کادر شیشه‌ای تسک تا لبه زیرین تقویم سمت راست با هماهنگ‌سازی پویا
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.93):
-- Increase Task Card Height to Align with Calendar
+### 🇬🇧 Release Notes (v1.32.94):
+- Stretch Task Container to Bottom Line of Calendar
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
