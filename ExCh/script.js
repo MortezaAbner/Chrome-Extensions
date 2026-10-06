@@ -2330,3 +2330,81 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(apply, 150);
   setTimeout(apply, 600);
 })();
+
+
+/* فعال‌سازی اکشن‌های برچسب و دکمه‌های پایینی در فرم ثبت و ویرایش */
+(function setupTaskFormActions() {
+  const predefinedTags = ['فوری ⚡', 'کاری 💼', 'شخصی 👤', 'پروژه آبنر 🚀'];
+  let selectedTag = null;
+
+  function initToolbarEvents() {
+    // یافتن دکمه‌های نوار پایینی در هر فرمی که در صفحه هست (ثبت یا ادیت)
+    const forms = document.querySelectorAll('.left-column form, form[class*="todo"], form[class*="task"]');
+    
+    forms.forEach(form => {
+      // دکمه تگ (اولین دکمه از سمت راست/چپ در نوار ابزار)
+      const tagBtn = form.querySelector('button:has(svg), div:has(svg), [class*="tag"], [title*="برچسب"]') ||
+                     form.querySelectorAll('.left-column form button, form button')[0];
+      
+      const submitBtn = form.querySelector('button[type="submit"], [class*="submit"], button:last-child');
+      const inputField = form.querySelector('input[type="text"]');
+
+      // ایجاد پنجره انتخاب برچسب
+      if (tagBtn && !tagBtn.dataset.tagBound) {
+        tagBtn.dataset.tagBound = "true";
+        tagBtn.style.cursor = "pointer";
+
+        tagBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          document.querySelectorAll('.ab-tag-picker-popup').forEach(el => el.remove());
+
+          const popup = document.createElement('div');
+          popup.className = 'ab-tag-picker-popup';
+          popup.innerHTML = predefinedTags.map(t => `<div class="ab-tag-chip">${t}</div>`).join('');
+
+          form.style.position = 'relative';
+          form.appendChild(popup);
+
+          popup.querySelectorAll('.ab-tag-chip').forEach(chip => {
+            chip.onclick = (ev) => {
+              ev.stopPropagation();
+              selectedTag = chip.innerText;
+              popup.remove();
+
+              // نمایش بچ برچسب انتخاب‌شده داخل فرم
+              let currentBadge = form.querySelector('.ab-tag-badge');
+              if (!currentBadge) {
+                currentBadge = document.createElement('span');
+                currentBadge.className = 'ab-tag-badge';
+                form.insertBefore(currentBadge, form.children[1] || null);
+              }
+              currentBadge.innerText = '🏷️ ' + selectedTag;
+            };
+          });
+        };
+      }
+
+      // عملکرد دکمه ثبت (فلش رو به بالا)
+      if (submitBtn && !submitBtn.dataset.bound) {
+        submitBtn.dataset.bound = "true";
+        submitBtn.onclick = (e) => {
+          if (inputField && inputField.value.trim() !== "") {
+            // اجازه به سابمیت پیش‌فرض یا ثبت مستقیم
+            form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+          }
+        };
+      }
+    });
+
+    // بستن پاپ‌آپ با کلیک در بیرون
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.ab-tag-picker-popup').forEach(el => el.remove());
+    });
+  }
+
+  window.addEventListener('load', initToolbarEvents);
+  document.addEventListener('DOMContentLoaded', initToolbarEvents);
+  setInterval(initToolbarEvents, 1000);
+})();
