@@ -1,58 +1,55 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('📝 در حال استقرار ماژول دست‌نویس و تسک‌های آبنر (modules/todo)...');
+console.log('🧹 در حال یکپارچه‌سازی و استقرار کامل تسک‌ها در پنل سمت چپ آبنر...');
 
 const todoDir = path.join(__dirname, 'modules', 'todo');
-if (!fs.existsSync(todoDir)) {
-  fs.mkdirSync(todoDir, { recursive: true });
-}
+if (!fs.existsSync(todoDir)) fs.mkdirSync(todoDir, { recursive: true });
 
-// ۱. ساخت استایل شیشه‌ای ماژول تسک‌های آبنر (modules/todo/todo.css)
+// ۱. استایل شیشه‌ای کامل پنل تسک و ابزارهای سورت/هاید (modules/todo/todo.css)
 const todoCss = `
 /* ========================================================
-   استایل شیشه‌ای ماژول تسک و یادداشت آبنر
+   استایل شیشه‌ای پنل تسک و یادداشت آبنر در سمت چپ
 ======================================================== */
-.ab-todo-container {
-  width: 100%;
-  max-width: 320px;
-  height: 480px;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  border-radius: 24px;
-  box-sizing: border-box;
-  direction: rtl;
-  user-select: none;
-  font-family: inherit;
-  color: #fff;
+.ab-todo-panel {
+  width: 100% !important;
+  max-width: 320px !important;
+  height: 480px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 16px !important;
+  border-radius: 24px !important;
+  box-sizing: border-box !important;
+  direction: rtl !important;
+  user-select: none !important;
+  font-family: inherit !important;
+  color: #fff !important;
   background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
-  margin: 0 auto;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2) !important;
+  margin: 0 auto 20px auto !important;
 }
 
 /* تب‌های بالای تسک و یادداشت */
 .ab-todo-tabs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 12px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 10px !important;
 }
 .ab-todo-tab-btn {
-  flex: 1;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18));
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  flex: 1 !important;
+  padding: 6px 12px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 .ab-todo-tab-btn.active {
   background: #2563eb !important;
@@ -60,203 +57,208 @@ const todoCss = `
   border-color: #3b82f6 !important;
 }
 
-/* هدر دست‌نویس */
-.ab-todo-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+/* نوار ابزار: سورت، هاید، و اکشن‌ها */
+.ab-todo-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
-.ab-todo-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
+.ab-tool-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  padding: 0 8px !important;
 }
-.ab-todo-hide-btn {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18));
-  color: #E8ECFD;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
+.ab-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
 }
-.ab-todo-hide-btn:hover { background: rgba(255, 255, 255, 0.2); }
+.ab-tool-btn.active {
+  background: rgba(59, 130, 246, 0.3) !important;
+  color: #60a5fa !important;
+  border-color: #3b82f6 !important;
+}
+
+/* محتوای پنهان‌شده */
+.ab-todo-list.is-hidden {
+  display: none !important;
+}
+.ab-todo-hidden-notice {
+  margin: auto !important;
+  text-align: center !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-size: 12px !important;
+}
 
 /* لیست اسکرول تسک‌ها */
 .ab-todo-list {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
 }
-.ab-todo-list::-webkit-scrollbar { width: 4px; }
+.ab-todo-list::-webkit-scrollbar { width: 4px !important; }
 .ab-todo-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
 }
 
-/* هر آیتم تسک */
+/* آیتم تسک */
 .ab-todo-item {
-  display: flex;
-  flex-direction: column;
-  background: rgba(238, 240, 245, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 8px 10px;
-  transition: all 0.2s ease;
+  display: flex !important;
+  flex-direction: column !important;
+  background: rgba(238, 240, 245, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  padding: 8px 10px !important;
+  transition: all 0.2s ease !important;
 }
 .ab-todo-item:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 .ab-todo-item.completed .ab-todo-text {
-  text-decoration: line-through;
-  opacity: 0.45;
+  text-decoration: line-through !important;
+  opacity: 0.45 !important;
 }
 
 .ab-todo-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
 }
-
 .ab-todo-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  flex: 1;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  flex: 1 !important;
 }
 .ab-todo-checkbox {
-  width: 17px;
-  height: 17px;
-  accent-color: #2563eb;
-  cursor: pointer;
+  width: 17px !important;
+  height: 17px !important;
+  accent-color: #2563eb !important;
+  cursor: pointer !important;
 }
 .ab-todo-text {
-  font-size: 13px;
-  color: #fff;
-  word-break: break-word;
+  font-size: 13px !important;
+  color: #fff !important;
+  word-break: break-word !important;
 }
 
-/* دکمه‌های ویرایش و حذف هنگام هاور */
 .ab-todo-actions {
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  display: flex !important;
+  gap: 8px !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
 }
 .ab-todo-item:hover .ab-todo-actions {
-  opacity: 1;
+  opacity: 1 !important;
 }
 .ab-todo-btn {
-  background: transparent;
-  border: none;
-  color: #868A9B;
-  cursor: pointer;
-  padding: 2px;
-  font-size: 13px;
+  background: transparent !important;
+  border: none !important;
+  color: #868A9B !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  padding: 2px !important;
 }
-.ab-todo-btn:hover { color: #fff; }
+.ab-todo-btn:hover { color: #fff !important; }
 
-/* پنل تایید حذف */
+/* دکمه‌های تایید حذف */
 .ab-todo-del-confirm {
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  display: none !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1) !important;
 }
 .ab-todo-del-confirm.active {
-  display: flex;
+  display: flex !important;
 }
 .ab-del-btn-cancel {
-  background: #333740;
-  color: #A8ABBA;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  cursor: pointer;
+  background: #333740 !important;
+  color: #A8ABBA !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
 }
 .ab-del-btn-apply {
-  background: #42282D;
-  color: #DE4237;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  cursor: pointer;
+  background: #42282D !important;
+  color: #DE4237 !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
 }
 
-/* اینپوت اضافه کردن تسک */
+/* اینپوت افزودن */
 .ab-todo-input-wrap {
-  position: relative;
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
+  position: relative !important;
+  margin-top: 10px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 .ab-todo-input {
-  width: 100%;
-  padding: 10px 14px 10px 38px;
-  border-radius: 14px;
-  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2));
-  background: rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: 12.5px;
-  box-sizing: border-box;
-  outline: none;
-  direction: rtl;
+  width: 100% !important;
+  padding: 10px 14px 10px 38px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.2)) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: #fff !important;
+  font-size: 12.5px !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  direction: rtl !important;
 }
-.ab-todo-input::placeholder {
-  color: rgba(255, 255, 255, 0.65);
-}
+.ab-todo-input::placeholder { color: rgba(255, 255, 255, 0.65) !important; }
 .ab-todo-add-btn {
-  position: absolute;
-  left: 6px;
-  width: 26px;
-  height: 26px;
-  background: #2563eb;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* حالت خالی بودن لیست */
-.ab-todo-empty {
-  margin: auto;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12.5px;
-  padding: 20px 0;
+  position: absolute !important;
+  left: 6px !important;
+  width: 26px !important;
+  height: 26px !important;
+  background: #2563eb !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
 }
 `;
 fs.writeFileSync(path.join(todoDir, 'todo.css'), todoCss, 'utf8');
 
-// ۲. ساخت جاوااسکریپت مستقل دست‌نویس و تسک‌های آبنر (modules/todo/todo.js)
+// ۲. جاوااسکریپت اختصاصی با تمرکز روی ستون چپ و حذف هر تسک اضافه
 const todoJs = `
 /**
- * ماژول تسک و یادداشت‌های آبنر
+ * ماژول تسک‌های کامل آبنر مستقر در پنل سمت چپ
  */
-(function initAbnerTodoModule() {
-  const STORAGE_KEY = 'abner_todos_data';
-  let activeTab = 'tasks'; // 'tasks' یا 'notes'
+(function initAbnerLeftTodo() {
+  const STORAGE_KEY = 'abner_todos_v2';
+  let activeTab = 'tasks';
+  let isHidden = false;
+  let sortMode = 'default'; // 'default', 'completed', 'active'
 
   function getTodos() {
     try {
@@ -275,20 +277,31 @@ const todoJs = `
   }
 
   function render() {
-    let container = document.getElementById('abner-todo-container');
+    // ۱. پاک‌سازی هرگونه کانتینر تسک تکراری در وسط یا بالای صفحه
+    document.querySelectorAll('#abner-todo-container, .top-todo-card, .center-column .ab-todo-panel').forEach(el => el.remove());
+
+    // ۲. یافتن کانتینر اختصاصی در ستون سمت چپ
+    let container = document.getElementById('abner-left-todo');
     if (!container) {
       container = document.createElement('div');
-      container.id = 'abner-todo-container';
-      const leftCol = document.querySelector('.left-column') || document.body;
+      container.id = 'abner-left-todo';
+      const leftCol = document.querySelector('.left-column') || document.querySelector('.todo-column') || document.body;
       leftCol.prepend(container);
     }
 
-    const allTodos = getTodos();
-    const currentList = allTodos.filter(t => (t.type || 'tasks') === activeTab);
+    let allTodos = getTodos();
+    let currentList = allTodos.filter(t => (t.type || 'tasks') === activeTab);
+
+    // سورت
+    if (sortMode === 'completed') {
+      currentList = currentList.filter(t => t.completed);
+    } else if (sortMode === 'active') {
+      currentList = currentList.filter(t => !t.completed);
+    }
 
     let itemsHtml = '';
     if (currentList.length === 0) {
-      itemsHtml = '<div class="ab-todo-empty">هنوز موردی ثبت نشده است!</div>';
+      itemsHtml = '<div style="margin:auto;text-align:center;color:rgba(255,255,255,0.5);font-size:12px;">موردی وجود ندارد</div>';
     } else {
       currentList.forEach(t => {
         itemsHtml += \`
@@ -313,38 +326,67 @@ const todoJs = `
     }
 
     container.innerHTML = \`
-      <div class="ab-todo-container">
+      <div class="ab-todo-panel">
         <div class="ab-todo-tabs">
-          <button class="ab-todo-tab-btn \${activeTab === 'tasks' ? 'active' : ''}" id="ab-tab-tasks">تسک</button>
-          <button class="ab-todo-tab-btn \${activeTab === 'notes' ? 'active' : ''}" id="ab-tab-notes">یادداشت</button>
+          <button class="ab-todo-tab-btn \${activeTab === 'tasks' ? 'active' : ''}" id="ab-btn-tasks">تسک</button>
+          <button class="ab-todo-tab-btn \${activeTab === 'notes' ? 'active' : ''}" id="ab-btn-notes">یادداشت</button>
         </div>
 
-        <div class="ab-todo-header">
-          <span class="ab-todo-title">دست‌نویس</span>
-          <button class="ab-todo-hide-btn" id="ab-todo-toggle-view" title="مخفی کن">👁️</button>
+        <div class="ab-todo-toolbar">
+          <div style="display:flex;gap:4px;">
+            <button class="ab-tool-btn" id="ab-tool-add-quick" title="افزودن سریع">+</button>
+            <button class="ab-tool-btn \${sortMode !== 'default' ? 'active' : ''}" id="ab-tool-sort" title="فیلتر وضعیت">⚡ فیلتر</button>
+            <button class="ab-tool-btn \${isHidden ? 'active' : ''}" id="ab-tool-hide" title="مخفی‌سازی">\${isHidden ? '👁️‍🗨️' : '👁️'}</button>
+          </div>
+          <button class="ab-tool-btn" id="ab-tool-clear" title="حذف انجام‌شده‌ها">•••</button>
         </div>
 
-        <div class="ab-todo-list" id="ab-todo-list-scroll">
+        <div class="ab-todo-list \${isHidden ? 'is-hidden' : ''}">
           \${itemsHtml}
         </div>
+        \${isHidden ? '<div class="ab-todo-hidden-notice">لیست مخفی است</div>' : ''}
 
         <div class="ab-todo-input-wrap">
-          <input type="text" class="ab-todo-input" id="ab-todo-input-field" placeholder="نوشتن \${activeTab === 'tasks' ? 'تسک جدید' : 'یادداشت جدید'}...">
-          <button class="ab-todo-add-btn" id="ab-todo-add-btn">+</button>
+          <input type="text" class="ab-todo-input" id="ab-todo-input" placeholder="نوشتن \${activeTab === 'tasks' ? 'تسک جدید' : 'یادداشت جدید'}...">
+          <button class="ab-todo-add-btn" id="ab-todo-add">+</button>
         </div>
       </div>
     \`;
 
-    // سوییچ تب
-    document.getElementById('ab-tab-tasks').onclick = () => { activeTab = 'tasks'; render(); };
-    document.getElementById('ab-tab-notes').onclick = () => { activeTab = 'notes'; render(); };
+    // تب‌ها
+    document.getElementById('ab-btn-tasks').onclick = () => { activeTab = 'tasks'; render(); };
+    document.getElementById('ab-btn-notes').onclick = () => { activeTab = 'notes'; render(); };
 
-    // افزودن آیتم
-    const inputField = document.getElementById('ab-todo-input-field');
-    const addBtn = document.getElementById('ab-todo-add-btn');
+    // نوار ابزار: هاید
+    document.getElementById('ab-tool-hide').onclick = () => {
+      isHidden = !isHidden;
+      render();
+    };
+
+    // نوار ابزار: فیلتر وضعیت
+    document.getElementById('ab-tool-sort').onclick = () => {
+      if (sortMode === 'default') sortMode = 'active';
+      else if (sortMode === 'active') sortMode = 'completed';
+      else sortMode = 'default';
+      render();
+    };
+
+    // نوار ابزار: پاک‌سازی تمام‌شده‌ها
+    document.getElementById('ab-tool-clear').onclick = () => {
+      if (confirm('تسک‌های انجام‌شده حذف شوند؟')) {
+        let list = getTodos();
+        list = list.filter(t => !t.completed);
+        saveTodos(list);
+      }
+    };
+
+    // اینپوت افزودن
+    const inp = document.getElementById('ab-todo-input');
+    const addBtn = document.getElementById('ab-todo-add');
+    const quickBtn = document.getElementById('ab-tool-add-quick');
 
     function handleAdd() {
-      const text = inputField.value.trim();
+      const text = inp.value.trim();
       if (!text) return;
       const list = getTodos();
       list.push({
@@ -353,14 +395,15 @@ const todoJs = `
         completed: false,
         type: activeTab
       });
-      inputField.value = '';
+      inp.value = '';
       saveTodos(list);
     }
 
     addBtn.onclick = handleAdd;
-    inputField.onkeydown = (e) => { if (e.key === 'Enter') handleAdd(); };
+    quickBtn.onclick = () => inp.focus();
+    inp.onkeydown = (e) => { if (e.key === 'Enter') handleAdd(); };
 
-    // رویدادهای آیتم‌ها
+    // عملیات آیتم‌ها
     container.querySelectorAll('.ab-todo-item').forEach(itemEl => {
       const id = itemEl.getAttribute('data-id');
       const chk = itemEl.querySelector('.ab-todo-checkbox');
@@ -375,12 +418,8 @@ const todoJs = `
         }
       };
 
-      itemEl.querySelector('.btn-delete').onclick = () => {
-        delConfirm.classList.add('active');
-      };
-      itemEl.querySelector('.ab-del-btn-cancel').onclick = () => {
-        delConfirm.classList.remove('active');
-      };
+      itemEl.querySelector('.btn-delete').onclick = () => delConfirm.classList.add('active');
+      itemEl.querySelector('.ab-del-btn-cancel').onclick = () => delConfirm.classList.remove('active');
       itemEl.querySelector('.ab-del-btn-apply').onclick = () => {
         let list = getTodos();
         list = list.filter(x => x.id !== id);
@@ -389,7 +428,7 @@ const todoJs = `
 
       itemEl.querySelector('.btn-edit').onclick = () => {
         const currentItem = getTodos().find(x => x.id === id);
-        const newText = prompt('ویرایش متن:', currentItem ? currentItem.text : '');
+        const newText = prompt('ویرایش:', currentItem ? currentItem.text : '');
         if (newText !== null && newText.trim() !== '') {
           const list = getTodos();
           const target = list.find(x => x.id === id);
@@ -412,7 +451,7 @@ const todoJs = `
 `;
 fs.writeFileSync(path.join(todoDir, 'todo.js'), todoJs, 'utf8');
 
-// ۳. اتصال ماژول به فایل‌های HTML
+// ۳. رفع هرگونه تداخل در فایل‌های HTML
 ['./index.html', './newtab.html'].forEach(filePath => {
   if (fs.existsSync(filePath)) {
     let html = fs.readFileSync(filePath, 'utf8');
@@ -423,6 +462,5 @@ fs.writeFileSync(path.join(todoDir, 'todo.js'), todoJs, 'utf8');
       html = html.replace('</body>', '  <script src="modules/todo/todo.js"></script>\n</body>');
     }
     fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`🔗 اتصال ماژول تسک‌های آبنر به ${filePath} برقرار شد.`);
   }
 });
