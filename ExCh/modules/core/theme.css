@@ -267,3 +267,30 @@ html, body, #root, .app-container, .dashboard, main {
 .left-column [class*="form"] {
   margin-top: auto !important;
 }
+
+
+/* ========================================================
+   قفل قطعی عدم اسکرول و تثبیت ارتفاع در آبنر
+======================================================== */
+html, body {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+/* حذف کامل بخش چارت و صفحه پایینی در کل لایه‌ها */
+.bottom-view, .tasks-full-view, .analytics-section, .tasks-bottom-sheet, .bottom-drawer {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+/* تضمین هم‌قد بودن محفظه تسک با ستون تقویم */
+.left-column > div:first-child,
+.task-container,
+.todo-box {
+  height: 580px !important;
+  min-height: 580px !important;
+}
