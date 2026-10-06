@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.72:
-- حذف ریشه‌ای سکشن تحلیلی پایین صفحه، قفل اسکرول نوار پایین و تنظیم خودکار ارتفاع تسک با تقویم در آبنر
+### 🇮🇷 تغییرات نسخه v1.32.73:
+- بازیابی فایل‌های آسیب‌‌دیده، تثبیت ساختار سه‌ستونه داشبورد، بازگشت تقویم به راست و هماهنگی کامل ارتفاع تسک آبنر
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.72):
-- Eliminate Bottom Section and Strictly Match Task Height
+### 🇬🇧 Release Notes (v1.32.73):
+- Restore HTML Integrity and Fix Clean 3-Column Layout
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields

@@ -1,296 +1,97 @@
 
+
+
 /* ========================================================
-   متغیرهای سراسری سیستم شیشه‌ای (ماتی + شفافیت متغیر)
+   چیدمان استاندارد، تفکیک‌شده و متقارن داشبورد آبنر
 ======================================================== */
-:root {
-  --dash-blur-px: 20px;
-  --dash-glass-opacity: 0.12;
-  --dash-glass-border-opacity: 0.18;
-  --dash-glass-bg: rgba(255, 255, 255, var(--dash-glass-opacity));
-  --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-opacity));
-  --dash-menu-bg: rgba(28, 22, 26, calc(var(--dash-glass-opacity) + 0.72));
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  width: 100vw !important;
+  height: 100vh !important;
 }
 
-[data-theme="dark"] {
-  --dash-glass-bg: rgba(15, 23, 42, calc(var(--dash-glass-opacity) + 0.15));
-  --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-opacity));
-  --dash-menu-bg: rgba(20, 16, 22, calc(var(--dash-glass-opacity) + 0.78));
-}
-@font-face {
-  font-family: 'Vazirmatn';
-  src: url('../../fonts/Vazirmatn-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-body {
-  font-family: 'Vazirmatn', sans-serif;
-}
-/* چیدمان متقارن و استاندارد داشبورد آبنر */
-.dashboard-container, .main-layout, main {
+/* ساختار ۳ ستونه داشبورد */
+main, .main-layout, .dashboard-container {
   display: flex !important;
+  flex-direction: row !important;
   justify-content: space-between !important;
   align-items: flex-start !important;
   width: 100% !important;
-  max-width: 1440px !important;
+  max-width: 1460px !important;
+  height: 100vh !important;
   margin: 0 auto !important;
-  padding: 20px !important;
+  padding: 24px 30px !important;
   box-sizing: border-box !important;
+  gap: 20px !important;
 }
 
-/* ستون چپ: تسک‌ها */
+/* ستون سمت چپ: پنل تسک و یادداشت */
 .left-column, .tasks-column {
   flex: 0 0 320px !important;
   width: 320px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  z-index: 10 !important;
 }
 
-/* ستون وسط: نوار جستجو و بوکمارک‌های مربعی */
+/* ستون مرکز: نوار جستجو و شبکه بوکمارک‌های مربعی */
 .center-column, .search-column {
-  flex: 1 !important;
+  flex: 1 1 auto !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  max-width: 680px !important;
+  max-width: 660px !important;
   margin: 0 auto !important;
+  z-index: 10 !important;
 }
 
-/* ستون راست: وضعیت هوا و تقویم اصلی */
+/* ستون سمت راست: آب‌وهوا، ساعت و تقویم اصلی */
 .right-column, .weather-column {
-  flex: 0 0 340px !important;
-  width: 340px !important;
+  flex: 0 0 330px !important;
+  width: 330px !important;
   display: flex !important;
   flex-direction: column !important;
+  align-items: stretch !important;
   gap: 16px !important;
+  z-index: 10 !important;
 }
 
-/* پنهان‌سازی هرگونه تقویم متفرقه خارج از ستون راست */
-#abner-calendar-root, #abner-calendar-container, .ab-calendar-card {
-  display: none !important;
-}
-
-
-/* ========================================================
-   تنظیمات ابعاد اصلی و استایل شیشه‌ای تسک اصلی آبنر
-======================================================== */
-/* حذف هرگونه تسک اضافه بالایی یا وسطی */
-#abner-todo-container, #abner-left-todo, .ab-todo-panel, .top-todo-card {
-  display: none !important;
-}
-
-/* پنل اصلی تسک در ستون سمت چپ */
-.task-container, .todo-box, [data-area="todo"], .left-column > div:first-child {
+/* استایل شیشه‌ای کامل پنل تسک سمت چپ هم‌تراز با تقویم */
+.left-column > div:first-child,
+.task-container,
+.todo-box {
   width: 100% !important;
-  max-width: 310px !important;
-  border-radius: 20px !important;
+  height: 540px !important;
+  min-height: 540px !important;
+  border-radius: 24px !important;
   background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
-  direction: rtl !important;
   box-sizing: border-box !important;
-  padding: 12px !important;
-}
-
-/* استایل آیتم‌های تسک بر اساس سورس مادر (Todo.jsx) */
-.todo-item, .task-item {
-  background: #eef0f512 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 14px !important;
-  margin-bottom: 8px !important;
-  padding: 8px 10px !important;
-  transition: all 0.2s ease !important;
-}
-.todo-item:hover, .task-item:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-.todo-item.completed, .task-item.completed {
-  opacity: 0.45 !important;
-}
-.todo-item.completed label, .task-item.completed label,
-.todo-item.completed span, .task-item.completed span {
-  text-decoration: line-through !important;
-}
-
-/* پنل تایید حذف برگرفته از سورس مادر */
-.todo-del-confirm-box {
-  display: flex !important;
-  justify-content: space-around !important;
-  margin-top: 8px !important;
-  padding-top: 6px !important;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1) !important;
-}
-.btn-todo-cancel {
-  background: #333740 !important;
-  color: #A8ABBA !important;
-  border: none !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  cursor: pointer !important;
-}
-.btn-todo-del {
-  background: #42282D !important;
-  color: #DE4237 !important;
-  border: none !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  cursor: pointer !important;
-}
-
-
-/* ========================================================
-   تراز ارتفاع تسک با تقویم و غیرفعال‌سازی بخش اسکرول پایین
-======================================================== */
-/* ۱. تنظیم ارتفاع پنل تسک سمت چپ هم‌تراز با لبه پایینی تقویم */
-.task-container, 
-.todo-box, 
-[data-area="todo"], 
-.left-column > div:first-child,
-.left-column {
-  min-height: 590px !important;
-  height: 590px !important;
   display: flex !important;
   flex-direction: column !important;
-  box-sizing: border-box !important;
 }
 
-/* اسکرول داخلی لیست تسک برای پر کردن فضای عمودی تا اینپوت پایین */
-.task-container .task-list,
-.todo-box .todo-list,
-[data-area="todo"] .list-content,
-.left-column .tasks-list {
-  flex: 1 1 auto !important;
-  max-height: none !important;
-  overflow-y: auto !important;
-}
-
-/* اینپوت نوشتن تسک جدید همیشه در انتهای پنل تسک */
-.task-container .input-group,
-.todo-box .add-task-box,
-[data-area="todo"] .bottom-input,
-.left-column .add-todo-form {
-  margin-top: auto !important;
-}
-
-/* ۲. مسدودسازی کامل هرگونه سکشن اسکرولی پایین صفحه و پنجره‌های مزاحم زیرین */
-.bottom-drawer,
-.tasks-bottom-sheet,
-.bottom-todo-section,
-.scroll-section,
-div[class*="bottom-view"],
-div[class*="tasks-full-view"] {
+/* حذف هرگونه تقویم متفرقه در مرکز یا پایین صفحه */
+.center-column .Calendar,
+.center-column .ab-calendar-card,
+#abner-calendar-root,
+#abner-calendar-container,
+.bottom-view,
+.tasks-full-view {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
 }
 
-/* جلوگیری از اسکرول خوردن کل صفحه به پایین */
-html, body {
-  overflow: hidden !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-}
-
-
-/* ========================================================
-   اصلاح نهایی ارتفاع تسک و قفل اسکرول داشبورد آبنر
-======================================================== */
-/* ۱. قفل کامل اسکرول بدنه و داشبورد برای ممانعت از باز شدن سکشن پایین */
-html, body, #root, .app-container, .dashboard, main {
-  overflow: hidden !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-}
-
-/* مخفی‌سازی کامل سکشن کشویی پایینی که روی دکمه تسک باز می‌شد */
-.tasks-drawer,
-.tasks-bottom-sheet,
-.bottom-sheet,
-.bottom-section,
-.analytics-section,
-[class*="bottom-view"],
-[class*="drawer"],
-[class*="sheet"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  height: 0 !important;
-}
-
-/* ۲. تراز دقیق ارتفاع تسک سمت چپ هم‌قد با مجموع آب‌وهوا و تقویم راست */
-.left-column {
-  display: flex !important;
-  flex-direction: column !important;
-  height: auto !important;
-}
-
-/* تمام کانتینرهای والد و اصلی کارت تسک سمت چپ */
-.left-column > div,
-.task-wrapper,
-.todo-wrapper,
-.task-card,
-.todo-card,
-.task-container,
-.todo-box,
-[data-area="todo"] {
-  height: 520px !important;
-  min-height: 520px !important;
-  max-height: 520px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-/* کشیده شدن محتوای وسط تسک‌ها تا اینپوت پایینی به انتهای کادر بچسبد */
-.left-column .list-container,
-.left-column ul,
-.left-column .tasks-list,
-.left-column .todo-list,
-.left-column [class*="list"] {
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
-  max-height: none !important;
-}
-
-/* چسبیدن همیشگی فیلد نوشتن تسک جدید به کف پنل */
-.left-column form,
-.left-column .input-group,
-.left-column .add-task-box,
-.left-column [class*="input"],
-.left-column [class*="form"] {
-  margin-top: auto !important;
-}
-
-
-/* ========================================================
-   قفل قطعی عدم اسکرول و تثبیت ارتفاع در آبنر
-======================================================== */
-html, body {
-  overflow: hidden !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-}
-
-/* حذف کامل بخش چارت و صفحه پایینی در کل لایه‌ها */
-.bottom-view, .tasks-full-view, .analytics-section, .tasks-bottom-sheet, .bottom-drawer {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  pointer-events: none !important;
-}
-
-/* تضمین هم‌قد بودن محفظه تسک با ستون تقویم */
-.left-column > div:first-child,
-.task-container,
-.todo-box {
-  height: 580px !important;
-  min-height: 580px !important;
+/* نمایش منظم تقویم اصلی تنها در ستون سمت راست */
+.right-column .Calendar,
+.right-column .calendar-card,
+.right-column .calendar-section {
+  display: block !important;
+  width: 100% !important;
 }

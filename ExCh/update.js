@@ -1,154 +1,143 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
-console.log('🔍 در حال عیب‌یابی عمیق و رفع ریشه‌ای سکشن پایین و ارتفاع تسک آبنر...');
+console.log('🔄 در حال بازیابی سلامت فایل‌های HTML و اصلاح ساختار چیدمان آبنر...');
 
-// ۱. حذف قطعی تگ‌ها و المان‌های سکشن پایین از فایل‌های HTML
-['./index.html', './newtab.html'].forEach(filePath => {
-  if (fs.existsSync(filePath)) {
-    let html = fs.readFileSync(filePath, 'utf8');
-
-    // حذف کدهای مربوط به ویجت‌های تحلیلی/پایینی که در تصویر دیده می‌شوند
-    html = html.replace(/<section[^>]*class="[^"]*(bottom|chart|analytic|drawer|history)[^"]*"[\s\S]*?<\/section>/gi, '');
-    html = html.replace(/<div[^>]*class="[^"]*(bottom|chart|analytic|drawer|history)[^"]*"[\s\S]*?<\/div>/gi, '');
-
-    fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`✅ فایل ${filePath} از سکشن‌های اضافی پاک‌سازی شد.`);
-  }
-});
-
-// ۲. اصلاح مستقیم script.js برای مسدودسازی رفتار دکمه نوار پایین و تنظیم زنده ارتفاع تسک
-if (fs.existsSync('./script.js')) {
-  let js = fs.readFileSync('./script.js', 'utf8');
-
-  // غیرفعال کردن توابع بازکننده سکشن پایین در صورت وجود در سورس
-  js = js.replace(/function\s+(openTaskDrawer|showTaskHistory|toggleTaskModal|scrollToTasks)\s*\([^)]*\)\s*\{/g, 'function $1() { return; /* غیرفعال شده توسط آبنر */');
-
-  const fixScript = `
-/* ========================================================
-   عیب‌یابی قطعی و تثبیت داشبورد آبنر
-======================================================== */
-(function fixAbnerDashboard() {
-  function applyLayoutFix() {
-    // ۱. حذف درجا و قطعی هر المانی که سکشن پایین را نمایش می‌دهد
-    const bottomSelectors = [
-      '.bottom-view', '.tasks-full-view', '.analytics-section',
-      '.tasks-bottom-sheet', '.drawer', '[class*="chart"]',
-      '#task-history', '.task-chart-container'
-    ];
-    bottomSelectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => el.remove());
-    });
-
-    // ۲. هم‌تراز کردن دقیق ارتفاع تسک با ستون تقویم و ساعت
-    const rightCol = document.querySelector('.right-column') || document.querySelector('.side-column');
-    const taskBox = document.querySelector('.task-container') || 
-                    document.querySelector('.todo-box') || 
-                    document.querySelector('.left-column > div:first-child') ||
-                    document.querySelector('[data-area="todo"]');
-
-    if (taskBox) {
-      // اگر ستون راست وجود دارد، ارتفاع تسک دقیقاً برابر ارتفاع آن می‌شود
-      let targetHeight = 580;
-      if (rightCol && rightCol.offsetHeight > 400) {
-        targetHeight = rightCol.offsetHeight;
-      }
-      taskBox.style.setProperty('height', targetHeight + 'px', 'important');
-      taskBox.style.setProperty('min-height', targetHeight + 'px', 'important');
-      taskBox.style.setProperty('max-height', targetHeight + 'px', 'important');
-      taskBox.style.setProperty('display', 'flex', 'important');
-      taskBox.style.setProperty('flex-direction', 'column', 'important');
-      taskBox.style.setProperty('box-sizing', 'border-box', 'important');
-
-      // امتداد لیست تسک تا اینپوت به پایین بچسبد
-      const listEl = taskBox.querySelector('ul, .task-list, .todo-list, [class*="list"]');
-      if (listEl) {
-        listEl.style.setProperty('flex', '1 1 auto', 'important');
-        listEl.style.setProperty('overflow-y', 'auto', 'important');
-      }
-
-      const inputWrap = taskBox.querySelector('form, .input-group, [class*="input"]');
-      if (inputWrap) {
-        inputWrap.style.setProperty('margin-top', 'auto', 'important');
-      }
-    }
-
-    // ۳. قطع رویداد دکمه تسک نوار پایین تا هیچ اسکرول یا صفحه‌ای باز نشود
-    const dockButtons = document.querySelectorAll('.bottom-bar button, .dock button, nav button');
-    dockButtons.forEach(btn => {
-      btn.onclick = (e) => {
-        // جلوگیری از هرگونه رفتار اسکرول و انتقال به پایین
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        window.scrollTo(0, 0);
-
-        // در صورت کلیک فقط پنل سمت چپ هایلایت شود
-        if (taskBox) {
-          taskBox.style.transition = 'box-shadow 0.3s ease';
-          taskBox.style.boxShadow = '0 0 24px rgba(37, 99, 235, 0.5)';
-          setTimeout(() => { taskBox.style.boxShadow = ''; }, 500);
-        }
-      };
-    });
-  }
-
-  // اجرا بلافاصله و با تأخیر برای اطمینان از لود کامل DOM
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyLayoutFix);
-  } else {
-    applyLayoutFix();
-  }
-  window.addEventListener('load', applyLayoutFix);
-  setTimeout(applyLayoutFix, 200);
-  setTimeout(applyLayoutFix, 800);
-})();
-`;
-
-  if (!js.includes('fixAbnerDashboard')) {
-    js += '\n' + fixScript;
-  } else {
-    js = js.replace(/\/\* ========================================================\s*عیب‌یابی قطعی و تثبیت داشبورد آبنر[\s\S]*$/, fixScript);
-  }
-
-  fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ منطق جلوگیری از اسکرول و تنظیم ارتفاع زنده در script.js اعمال شد.');
+// ۱. بازگرداندن فایل‌های HTML و اسکریپت اصلی به آخرین نسخه سالم گیت برای رفع تگ‌های آسیب‌دیده
+try {
+  execSync('git checkout HEAD~2 -- index.html newtab.html script.js', { stdio: 'ignore' });
+  console.log('✅ فایل‌های اصلی HTML و script.js بازیابی شدند.');
+} catch (e) {
+  try {
+    execSync('git checkout -- index.html newtab.html script.js', { stdio: 'ignore' });
+    console.log('✅ فایل‌های HTML بازنشانی شدند.');
+  } catch (err) {}
 }
 
-// ۳. قفل سراسری اسکرول و استایل در theme.css
+// ۲. تمیزکاری فایل استایل سراسری theme.css و تثبیت چیدمان استاندارد ۳ ستونه
 const themeCssPath = path.join(__dirname, 'modules', 'core', 'theme.css');
 if (fs.existsSync(themeCssPath)) {
   let themeCss = fs.readFileSync(themeCssPath, 'utf8');
 
-  const cssHardLock = `
+  // حذف هرگونه رول مخرب یا تکراری قبلی
+  themeCss = themeCss.replace(/\/\* ========================================================[\s\S]*$/g, '');
+
+  const cleanLayoutCss = `
 /* ========================================================
-   قفل قطعی عدم اسکرول و تثبیت ارتفاع در آبنر
+   چیدمان استاندارد، تفکیک‌شده و متقارن داشبورد آبنر
 ======================================================== */
 html, body {
+  margin: 0 !important;
+  padding: 0 !important;
   overflow: hidden !important;
+  width: 100vw !important;
   height: 100vh !important;
-  max-height: 100vh !important;
 }
 
-/* حذف کامل بخش چارت و صفحه پایینی در کل لایه‌ها */
-.bottom-view, .tasks-full-view, .analytics-section, .tasks-bottom-sheet, .bottom-drawer {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  pointer-events: none !important;
+/* ساختار ۳ ستونه داشبورد */
+main, .main-layout, .dashboard-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  max-width: 1460px !important;
+  height: 100vh !important;
+  margin: 0 auto !important;
+  padding: 24px 30px !important;
+  box-sizing: border-box !important;
+  gap: 20px !important;
 }
 
-/* تضمین هم‌قد بودن محفظه تسک با ستون تقویم */
+/* ستون سمت چپ: پنل تسک و یادداشت */
+.left-column, .tasks-column {
+  flex: 0 0 320px !important;
+  width: 320px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  z-index: 10 !important;
+}
+
+/* ستون مرکز: نوار جستجو و شبکه بوکمارک‌های مربعی */
+.center-column, .search-column {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  max-width: 660px !important;
+  margin: 0 auto !important;
+  z-index: 10 !important;
+}
+
+/* ستون سمت راست: آب‌وهوا، ساعت و تقویم اصلی */
+.right-column, .weather-column {
+  flex: 0 0 330px !important;
+  width: 330px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  z-index: 10 !important;
+}
+
+/* استایل شیشه‌ای کامل پنل تسک سمت چپ هم‌تراز با تقویم */
 .left-column > div:first-child,
 .task-container,
 .todo-box {
-  height: 580px !important;
-  min-height: 580px !important;
+  width: 100% !important;
+  height: 540px !important;
+  min-height: 540px !important;
+  border-radius: 24px !important;
+  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* حذف هرگونه تقویم متفرقه در مرکز یا پایین صفحه */
+.center-column .Calendar,
+.center-column .ab-calendar-card,
+#abner-calendar-root,
+#abner-calendar-container,
+.bottom-view,
+.tasks-full-view {
+  display: none !important;
+}
+
+/* نمایش منظم تقویم اصلی تنها در ستون سمت راست */
+.right-column .Calendar,
+.right-column .calendar-card,
+.right-column .calendar-section {
+  display: block !important;
+  width: 100% !important;
 }
 `;
 
-  themeCss = themeCss.replace(/\/\* ========================================================\s*قفل قطعی عدم اسکرول[\s\S]*$/g, '');
-  themeCss += '\n' + cssHardLock;
+  themeCss += '\n' + cleanLayoutCss;
   fs.writeFileSync(themeCssPath, themeCss, 'utf8');
-  console.log('✅ استایل قفل اسکرول و ارتفاع در theme.css تثبیت شد.');
+  console.log('✅ چیدمان ۳ ستونه استاندارد در theme.css تثبیت شد.');
 }
+
+// ۳. اطمینان از الصاق درست استایل بوکمارک‌های مربعی
+['./index.html', './newtab.html'].forEach(filePath => {
+  if (fs.existsSync(filePath)) {
+    let html = fs.readFileSync(filePath, 'utf8');
+    html = html.replace(/\s*<link rel="stylesheet" href="modules\/calendar\/calendar\.css">\s*/g, '\n');
+    html = html.replace(/\s*<script src="modules\/calendar\/calendar\.js"><\/script>\s*/g, '\n');
+
+    if (!html.includes('modules/bookmark/bookmark.css')) {
+      html = html.replace('</head>', '  <link rel="stylesheet" href="modules/bookmark/bookmark.css">\n</head>');
+    }
+    if (!html.includes('modules/bookmark/bookmark.js')) {
+      html = html.replace('</body>', '  <script src="modules/bookmark/bookmark.js"></script>\n</body>');
+    }
+    fs.writeFileSync(filePath, html, 'utf8');
+  }
+});
