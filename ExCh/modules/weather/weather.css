@@ -1,61 +1,46 @@
 
-/* استایل شیشه‌ای ویجت آب و هوای آبنر */
-.ab-weather-widget-card {
-  width: 100% !important;
-  max-width: 320px !important;
-  min-height: 180px !important;
-  padding: 16px 18px !important;
-  border-radius: 24px !important;
-  box-sizing: border-box !important;
-  direction: rtl !important;
-  user-select: none !important;
-  font-family: inherit !important;
-  color: #fff !important;
-  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
+/* ========================================================
+   استایل‌های تفکیک‌شده دو ویجت تاریخ سه‌جانبه و آب‌وهوای اصلی آبنر
+======================================================== */
+
+/* حذف هرگونه ویجت متفرقه که در مرکز یا بالای صفحه ایجاد شده بود */
+#abner-datetime-widget,
+#abner-weather-widget,
+.top-weather-box {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+/* استایل شیشه‌ای دو کارت تاریخ سه‌جانبه و آب‌وهوا در بالای تقویم */
+.right-column > div:first-child,
+.right-column > div:nth-child(2),
+.weather-section,
+.datetime-section {
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  background: var(--dash-glass-bg, rgba(20, 24, 35, 0.50)) !important;
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
+  border-radius: 24px !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
+  transition: all 0.2s ease !important;
 }
 
-.ab-w-top {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  margin-bottom: 6px !important;
-}
-.ab-w-temp {
-  font-size: 32px !important;
-  font-weight: 800 !important;
-  color: #6366f1 !important;
-}
-.ab-w-icon {
-  font-size: 30px !important;
-  opacity: 0.9 !important;
+/* استایل دکمه‌های کپسولی پایین این دو کارت (اوقات شرعی، تایمر، پیش‌بینی، شهر) */
+.right-column button,
+.weather-section button,
+.datetime-section button {
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #fff !important;
+  font-family: inherit !important;
+  backdrop-filter: blur(8px) !important;
+  transition: background 0.2s ease !important;
 }
 
-.ab-w-info {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
-.ab-w-status {
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.ab-w-range {
-  font-size: 12px !important;
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-
-.ab-w-bottom {
-  display: flex !important;
-  gap: 8px !important;
-  margin-top: 14px !important;
+.right-column button:hover,
+.weather-section button:hover,
+.datetime-section button:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
 }
