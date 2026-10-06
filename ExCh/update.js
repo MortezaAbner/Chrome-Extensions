@@ -1,94 +1,125 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🎯 در حال محاسبه و قفل مستقیم ارتفاع تسک دقیقاً هم‌تراز با لبه پایینی تقویم...');
+console.log('🔄 در حال بازگرداندن نوار تسک به حالت تک‌خطی و جمع‌وجور اولیه...');
 
-// ۱. تزریق اسکریپت تنظیم پویای ارتفاع بر اساس مختصات زنده تقویم
-if (fs.existsSync('./script.js')) {
-  let js = fs.readFileSync('./script.js', 'utf8');
-
-  const exactHeightSyncScript = `
-/* ========================================================
-   محاسبه و تراز میلی‌متری ارتفاع تسک با لبه پایینی تقویم آبنر
-======================================================== */
-(function syncTaskExactHeight() {
-  function applyExactHeight() {
-    // پیدا کردن اینپوت تسک و کانتینر اصلی والد آن
-    const taskInput = document.querySelector('input[placeholder*="تسک"], input[placeholder*="دست نویس"]') ||
-                      Array.from(document.querySelectorAll('input')).find(i => (i.placeholder && i.placeholder.includes('تسک')));
-    
-    // پیدا کردن کارت تقویم در سمت راست
-    const calendarCard = document.querySelector('.Calendar, .calendar-card, [class*="calendar"], .right-column > div:last-child');
-
-    if (!taskInput || !calendarCard) return;
-
-    // پیدا کردن کادر شیشه‌ای اصلی تسک در سمت چپ
-    let taskCard = taskInput.closest('.left-column > div') || 
-                   taskInput.closest('[class*="todo"]') || 
-                   taskInput.closest('[class*="task"]') || 
-                   taskInput.parentElement.parentElement;
-
-    if (taskCard && calendarCard) {
-      const calRect = calendarCard.getBoundingClientRect();
-      const taskRect = taskCard.getBoundingClientRect();
-
-      // محاسبه فاصله دقیق از بالای تسک تا انتهای تقویم
-      const targetHeight = Math.round(calRect.bottom - taskRect.top);
-
-      if (targetHeight > 350) {
-        taskCard.style.setProperty('height', targetHeight + 'px', 'important');
-        taskCard.style.setProperty('min-height', targetHeight + 'px', 'important');
-        taskCard.style.setProperty('max-height', targetHeight + 'px', 'important');
-        taskCard.style.setProperty('display', 'flex', 'important');
-        taskCard.style.setProperty('flex-direction', 'column', 'important');
-        taskCard.style.setProperty('justify-content', 'space-between', 'important');
-        taskCard.style.setProperty('box-sizing', 'border-box', 'important');
-
-        // باز کردن فضای اسکرول میانی تسک‌ها
-        const listContainer = taskCard.querySelector('ul, [class*="list"], div:nth-child(2)');
-        if (listContainer) {
-          listContainer.style.setProperty('flex', '1 1 auto', 'important');
-          listContainer.style.setProperty('overflow-y', 'auto', 'important');
-        }
-
-        // چسباندن اینپوت و فرم به پایین‌ترین نقطه کادر
-        const formWrap = taskInput.closest('form') || taskInput.parentElement;
-        if (formWrap) {
-          formWrap.style.setProperty('margin-top', 'auto', 'important');
-        }
-      }
-    }
-  }
-
-  // اجرا در لود، تغییر سایز پنجره و با فواصل زمانی کوتاه برای مهار رندرهای بعدی ری‌اکت
-  window.addEventListener('load', applyExactHeight);
-  window.addEventListener('resize', applyExactHeight);
-  document.addEventListener('DOMContentLoaded', applyExactHeight);
-  setInterval(applyExactHeight, 500);
-})();
-`;
-
-  // پاک کردن اسکریپت‌های آزمایشی قبلی و جایگزینی با اسکریپت قطعی
-  js = js.replace(/\/\* ========================================================\s*محاسبه و تراز میلی‌متری[\s\S]*?\)\(\);/, '');
-  js += '\n' + exactHeightSyncScript;
-  fs.writeFileSync('./script.js', js, 'utf8');
-  console.log('✅ اسکریپت تراز زنده در script.js ثبت شد.');
-}
-
-// ۲. اعمال استایل عمومی کمکی در theme.css
+// ۱. اصلاح دقیق استایل‌ها در theme.css
 const themeCssPath = path.join(__dirname, 'modules', 'core', 'theme.css');
 if (fs.existsSync(themeCssPath)) {
   let themeCss = fs.readFileSync(themeCssPath, 'utf8');
-  const cssRule = `
-/* تراز تضمینی کانتینر تسک سمت چپ */
-.left-column {
-  align-self: stretch !important;
+
+  // حذف رول‌های آسیب‌رسان قبلی
+  themeCss = themeCss.replace(/\/\* ========================================================\s*تثبیت ارتفاع تسک[\s\S]*$/g, '');
+  themeCss = themeCss.replace(/\/\* ========================================================\s*تراز قطعی ارتفاع تسک[\s\S]*$/g, '');
+
+  const compactInputFix = `
+/* ========================================================
+   تثبیت نوار تک‌خطی تسک جدید و جلوگیری از باز شدن فرم
+======================================================== */
+/* ۱. کادر اصلی پنل تسک سمت چپ */
+.left-column > div:first-child,
+.task-container,
+.todo-box,
+[data-area="todo"] {
+  height: 540px !important;
+  min-height: 540px !important;
+  max-height: 540px !important;
   display: flex !important;
   flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+
+/* ۲. فضای لیست تسک‌ها گسترش پیدا کند، نه فرم ورودی */
+.left-column ul,
+.left-column .tasks-list,
+.left-column .todo-list,
+.left-column [class*="list"],
+.left-column [class*="items"] {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  max-height: none !important;
+}
+
+/* ۳. مهار و کوچک‌سازی فرم ورودی به اندازه یک نوار باریک اولیه */
+.left-column form,
+.left-column .input-group,
+.left-column .add-task-box,
+.left-column [class*="input-wrap"],
+.left-column [class*="add-box"] {
+  flex: 0 0 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  margin-top: auto !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+/* پنهان‌سازی بخش توضیحات و ردیف آیکون‌های اضافه داخل فرم تا تک‌خطی بماند */
+.left-column form textarea,
+.left-column form [placeholder*="توضیحات"],
+.left-column form .form-details,
+.left-column form [class*="detail"],
+.left-column form [class*="extra"] {
+  display: none !important;
+}
+
+/* استایل اینپوت تک‌خطی */
+.left-column form input,
+.left-column .input-group input {
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 12.5px !important;
+  border-radius: 12px !important;
 }
 `;
-  if (!themeCss.includes('تراز تضمینی کانتینر تسک سمت چپ')) {
-    themeCss += '\n' + cssRule;
-    fs.writeFileSync(themeCssPath, themeCss, 'utf8');
+
+  themeCss += '\n' + compactInputFix;
+  fs.writeFileSync(themeCssPath, themeCss, 'utf8');
+  console.log('✅ نوار تسک در theme.css به ابعاد جمع‌وجور سابق بازگشت.');
+}
+
+// ۲. تمیزکاری فایل script.js از استایل‌های اجباری روی فرم
+if (fs.existsSync('./script.js')) {
+  let js = fs.readFileSync('./script.js', 'utf8');
+
+  // حذف اسکریپت‌هایی که استایل form را دستکاری می‌کردند
+  js = js.replace(/\/\* ========================================================\s*محاسبه و تراز میلی‌متری[\s\S]*?\)\(\);/g, '');
+  js = js.replace(/\/\* تنظیم مستقیم ارتفاع کارت تسک[\s\S]*?\)\(\);/g, '');
+
+  const compactScript = `
+/* تنظیم ارتفاع کادر کلی بدون دستکاری ارتفاع نوار ورودی */
+(function keepTaskInputCompact() {
+  function applyCompact() {
+    const leftCol = document.querySelector('.left-column');
+    if (!leftCol) return;
+
+    // بستن بخش توضیحات در صورت باز ماندن
+    const descArea = leftCol.querySelector('textarea, [placeholder*="توضیحات"]');
+    if (descArea && descArea.parentElement) {
+      descArea.style.display = 'none';
+    }
+
+    const form = leftCol.querySelector('form');
+    if (form) {
+      form.style.setProperty('height', '44px', 'important');
+      form.style.setProperty('min-height', '44px', 'important');
+      form.style.setProperty('max-height', '44px', 'important');
+      form.style.setProperty('flex', '0 0 44px', 'important');
+    }
+  }
+
+  window.addEventListener('load', applyCompact);
+  document.addEventListener('DOMContentLoaded', applyCompact);
+  setTimeout(applyCompact, 200);
+})();
+`;
+
+  if (!js.includes('keepTaskInputCompact')) {
+    js += '\n' + compactScript;
+    fs.writeFileSync('./script.js', js, 'utf8');
   }
 }
