@@ -2408,3 +2408,47 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('DOMContentLoaded', initToolbarEvents);
   setInterval(initToolbarEvents, 1000);
 })();
+
+
+/* فعال‌سازی قطعی آیکون‌های نوار ابزار فرم تسک جدید آبنر */
+(function bindAllTaskFormActions() {
+  function initIcons() {
+    // پیدا کردن فرم نوشتن تسک جدید
+    const newForm = document.querySelector('.left-column form, form:not([class*="edit"])');
+    if (!newForm) return;
+
+    // پیدا کردن دکمه‌ها و آیکون‌های ردیف پایین فرم
+    const iconButtons = newForm.querySelectorAll('button, div[role="button"], span[role="button"], svg');
+
+    iconButtons.forEach((btn, index) => {
+      const parentBtn = btn.closest('button, div[role="button"]') || btn;
+      if (parentBtn.dataset.boundNewAction) return;
+      parentBtn.dataset.boundNewAction = 'true';
+      parentBtn.style.cursor = 'pointer';
+
+      parentBtn.addEventListener('click', (e) => {
+        // پیدا کردن المان معادل در فرم ادیت و شبیه‌سازی رفتار آن در صورت وجود
+        const editForm = document.querySelector('form[class*="edit"], .edit-todo-form');
+        if (editForm) {
+          const editBtns = editForm.querySelectorAll('button, div[role="button"], span[role="button"]');
+          if (editBtns[index]) {
+            editBtns[index].click();
+            return;
+          }
+        }
+
+        // اگر دکمه ثبت (فلش آبی) بود
+        if (parentBtn.querySelector('svg[class*="arrow"], svg[class*="up"]') || index === iconButtons.length - 1) {
+          const inp = newForm.querySelector('input[type="text"], input');
+          if (inp && inp.value.trim() !== '') {
+            newForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }
+        }
+      }, true);
+    });
+  }
+
+  window.addEventListener('load', initIcons);
+  document.addEventListener('DOMContentLoaded', initIcons);
+  setInterval(initIcons, 800);
+})();
