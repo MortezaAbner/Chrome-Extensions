@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "آبنر - Abner New Tab",
-  "version": "1.0.1",
+  "version": "10.1",
   "description": "صفحه تب جدید مدرن، ماژولار و وب‌اپ آبنر",
   "chrome_url_overrides": {
     "newtab": "index.html"
