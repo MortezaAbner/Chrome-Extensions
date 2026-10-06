@@ -2273,3 +2273,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 });
+
+
+/* مسدودسازی اسکرول دکمه تسک نوار پایین آبنر و همگام‌سازی با پنل چپ */
+(function lockBottomTaskScroll() {
+  function handleNavClicks() {
+    // دکمه آیکون تسک/دفترچه در نوار پایین
+    const dockButtons = document.querySelectorAll('.bottom-bar button, .dock button, nav button, [class*="dock"] button');
+    dockButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        // جلوگیری از اسکرول خوردن صفحه به پایین یا باز شدن پاپ‌آپ زیرین
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        // بستن هر کشویی ساخته‌شده
+        document.querySelectorAll('.tasks-drawer, .bottom-sheet, [class*="sheet"]').forEach(el => el.remove());
+      }, true);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', handleNavClicks);
+  } else {
+    handleNavClicks();
+  }
+})();

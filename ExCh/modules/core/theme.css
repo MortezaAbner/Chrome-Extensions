@@ -196,3 +196,74 @@ html, body {
   height: 100vh !important;
   max-height: 100vh !important;
 }
+
+
+/* ========================================================
+   اصلاح نهایی ارتفاع تسک و قفل اسکرول داشبورد آبنر
+======================================================== */
+/* ۱. قفل کامل اسکرول بدنه و داشبورد برای ممانعت از باز شدن سکشن پایین */
+html, body, #root, .app-container, .dashboard, main {
+  overflow: hidden !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+/* مخفی‌سازی کامل سکشن کشویی پایینی که روی دکمه تسک باز می‌شد */
+.tasks-drawer,
+.tasks-bottom-sheet,
+.bottom-sheet,
+.bottom-section,
+.analytics-section,
+[class*="bottom-view"],
+[class*="drawer"],
+[class*="sheet"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+}
+
+/* ۲. تراز دقیق ارتفاع تسک سمت چپ هم‌قد با مجموع آب‌وهوا و تقویم راست */
+.left-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+}
+
+/* تمام کانتینرهای والد و اصلی کارت تسک سمت چپ */
+.left-column > div,
+.task-wrapper,
+.todo-wrapper,
+.task-card,
+.todo-card,
+.task-container,
+.todo-box,
+[data-area="todo"] {
+  height: 520px !important;
+  min-height: 520px !important;
+  max-height: 520px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+/* کشیده شدن محتوای وسط تسک‌ها تا اینپوت پایینی به انتهای کادر بچسبد */
+.left-column .list-container,
+.left-column ul,
+.left-column .tasks-list,
+.left-column .todo-list,
+.left-column [class*="list"] {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  max-height: none !important;
+}
+
+/* چسبیدن همیشگی فیلد نوشتن تسک جدید به کف پنل */
+.left-column form,
+.left-column .input-group,
+.left-column .add-task-box,
+.left-column [class*="input"],
+.left-column [class*="form"] {
+  margin-top: auto !important;
+}
