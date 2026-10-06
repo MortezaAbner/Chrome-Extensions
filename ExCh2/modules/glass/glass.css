@@ -1,0 +1,77 @@
+:root {
+  --dash-blur-px: 16px;                 /* میزان تاری شیشه */
+  --dash-glass-border-op: 0.25;         /* شفافیت خط دور کادر */
+  --dash-glass-border: rgba(255, 255, 255, var(--dash-glass-border-op));
+}
+
+/* اعمال مستقیم روی تمام کادرها بدون هیچ رنگی در پس‌زمینه */
+.glass-panel,
+.task-module,
+.search-pill,
+.shortcuts-board,
+.clock-widget,
+.weather-widget,
+.calendar-module,
+.ab-bottom-dock {
+  background: transparent !important; /* حذف کامل رنگ پس‌زمینه */
+  backdrop-filter: blur(var(--dash-blur-px)) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px)) !important;
+  border: 1px solid var(--dash-glass-border) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+  transition: backdrop-filter 0.2s ease, -webkit-backdrop-filter 0.2s ease;
+}
+
+/* پنل شناور تنظیمات شیشه */
+.glass-settings-popup {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  padding: 14px 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  font-size: 13px;
+  user-select: none;
+}
+
+.glass-settings-popup.hidden {
+  display: none;
+}
+
+.glass-settings-popup input[type="range"] {
+  cursor: pointer;
+  accent-color: #38bdf8;
+}
+
+/* قانون سراسری: حذف رنگ پس‌زمینه سفید از تمام کارت‌ها و فرزندان آن‌ها */
+.glass-panel,
+.task-module,
+.search-pill,
+.shortcuts-board,
+.clock-widget,
+.weather-widget,
+.calendar-module,
+.task-row,
+.shortcut-item,
+.task-tabs,
+.task-card-item,
+input[type="text"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: blur(var(--dash-blur-px, 16px)) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 16px)) saturate(150%) !important;
+  border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.22)) !important;
+}
+
+/* برای اینکه نوشته‌ها و آیکون‌ها روی تصویر پس‌زمینه کاملاً خوانا بمانند */
+.task-row label,
+.clock-display,
+.temp-degree,
+.shortcut-item span,
+.cal-grid span {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}

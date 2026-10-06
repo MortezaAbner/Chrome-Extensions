@@ -1,0 +1,582 @@
+/* ========================================================
+   ۱. متغیرهای پایه شیشه داینامیک
+======================================================== */
+:root {
+  --dash-blur-px: 16px;
+  --dash-glass-border: rgba(255, 255, 255, 0.22);
+  --primary-accent: #2563eb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #0b0f19;
+}
+
+.wallpaper-background {
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 50% 60%, rgba(220, 38, 38, 0.4), transparent 50%),
+    radial-gradient(circle at 15% 20%, rgba(249, 115, 22, 0.3), transparent 45%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(10, 10, 15, 0.95) 100%);
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+/* ========================================================
+   ۲. کانتینر اصلی صفحه و شبکه ۳ ستونه هم‌تراز[cite: 16]
+======================================================== */
+.dashboard-viewport {
+  position: relative;
+  z-index: 10;
+  width: 95vw;
+  max-width: 1350px;
+  height: 530px; /* ارتفاع دقیق تراز ستون‌ها */
+  display: grid;
+  grid-template-columns: 290px 1fr 390px;
+  gap: 16px;
+  align-items: stretch; /* کشیدگی کامل تسک تا مماس شدن با پایین تقویم */
+}
+
+/* افکت شیشه‌ای شفاف روی تمام باکس‌ها بدون پس‌زمینه رنگی */
+.glass-panel,
+.task-module,
+.search-pill,
+.shortcuts-board,
+.clock-widget,
+.weather-widget,
+.calendar-module,
+.task-row,
+.task-bottom-input input {
+  background: transparent !important;
+  backdrop-filter: blur(var(--dash-blur-px, 16px)) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(var(--dash-blur-px, 16px)) saturate(160%) !important;
+  border: 1px solid var(--dash-glass-border) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+.task-row label,
+.clock-display,
+.temp-degree,
+.shortcut-item span,
+.cal-grid span {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ستون ۱ (راست): کارت تسک هم‌تراز با انتهای تقویم[cite: 16] */
+.task-module {
+  height: 100% !important; /* پر کردن دقیق کل ارتفاع ستون تقویم */
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 24px !important;
+}
+
+.task-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 14px;
+}
+
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 7px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab-btn.active {
+  background: #3b82f6 !important;
+  color: #fff;
+}
+
+.task-action-bar {
+  display: flex;
+  justify-content: space-around;
+  margin: 12px 0;
+}
+
+.task-action-bar button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.task-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px !important;
+}
+
+.task-bottom-input input {
+  width: 100%;
+  padding: 11px 14px;
+  outline: none;
+  color: #fff;
+  border-radius: 14px !important;
+}
+
+/* ستون ۲ (وسط): سرچ، دسته‌بندی‌ها و میانبرها[cite: 16] */
+.center-module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-pill {
+  width: 100%;
+  max-width: 530px;
+  display: flex;
+  align-items: center;
+  padding: 9px 18px;
+  border-radius: 30px !important;
+}
+
+.g-icon {
+  font-weight: bold;
+  font-size: 16px;
+  color: #ea4335;
+  margin-left: 10px;
+}
+
+.search-pill input {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: none !important;
+}
+
+.search-tools button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.shortcuts-categories {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 530px;
+  padding: 2px 6px;
+}
+
+.cat-pill {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s;
+}
+
+.cat-pill.active {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cat-pill.highlight-orange { background: rgba(249, 115, 22, 0.35); }
+.cat-pill.highlight-teal { background: rgba(20, 184, 166, 0.35); }
+.cat-pill.add-cat { background: transparent; border-style: dashed; }
+
+.shortcuts-board {
+  display: grid;
+  grid-template-columns: repeat(6, 62px);
+  gap: 10px;
+  padding: 14px;
+  border-radius: 22px !important;
+  justify-content: center;
+}
+
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 62px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 14px !important;
+  font-size: 11px;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.2s;
+}
+
+.shortcut-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.shortcut-item.highlight-box.red {
+  background: rgba(239, 68, 68, 0.45);
+  border-color: rgba(239, 68, 68, 0.8);
+}
+
+.shortcut-item.empty-card {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.shortcut-item.add-btn {
+  border-style: dashed !important;
+  cursor: pointer;
+}
+
+/* ستون ۳ (چپ): ساعت، آب‌وهوا و تقویم[cite: 16] */
+.left-module {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.widgets-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.clock-widget, .weather-widget {
+  padding: 10px 12px;
+  border-radius: 18px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 135px;
+}
+
+.clock-display, .temp-degree {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.calendar-detail, .weather-text, .weather-range {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.widget-actions, .weather-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.widget-actions button, .weather-actions button {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  font-size: 10px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.calendar-module {
+  flex: 1; /* پر کردن دقیق باقیمانده ارتفاع تا پایین */
+  padding: 12px 14px;
+  border-radius: 22px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cal-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cal-nav button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cal-sub {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.cal-grid .th {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+}
+
+.cal-grid span {
+  padding: 4px 0;
+  border-radius: 6px;
+}
+
+.cal-grid .active-day {
+  background: #2563eb !important;
+  color: #fff;
+  font-weight: bold;
+}
+
+.holiday {
+  color: #f87171 !important;
+}
+
+.cal-bottom-bar {
+  display: flex;
+  gap: 6px;
+}
+
+.cal-bottom-bar button {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 4px;
+  border-radius: 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ========================================================
+   ۳. نوار داکر شناور پایین[cite: 9]
+======================================================== */
+.ab-bottom-dock {
+  position: fixed !important;
+  bottom: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 5px 14px !important;
+  border-radius: 30px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35) !important;
+}
+
+.ab-dock-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.ab-dock-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.06);
+}
+
+.ab-dock-banana {
+  font-size: 15px;
+  display: inline-block;
+  transform: rotate(-10deg);
+}
+
+.ab-dock-letter {
+  font-size: 13px;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.ab-dock-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 2px;
+}
+
+/* ========================================================
+   ۴. پاپ‌آپ تنظیمات ماتی شیشه
+======================================================== */
+.glass-settings-popup {
+  position: fixed !important;
+  bottom: 68px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 100000 !important;
+  padding: 10px 18px;
+  border-radius: 16px !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 12px;
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.glass-settings-popup.hidden {
+  display: none !important;
+}
+
+.glass-settings-popup input[type="range"] {
+  cursor: pointer;
+  accent-color: #38bdf8;
+}
+
+/* ========================================================
+   ۵. ریسپانسیو و حالت وب‌اپ (موبایل و تبلت)
+======================================================== */
+@media (max-width: 1024px) {
+  body {
+    overflow-y: auto !important;
+    align-items: flex-start !important;
+    padding: 16px 10px 90px 10px !important;
+  }
+
+  .dashboard-viewport {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .center-module,
+  .left-module,
+  .task-module {
+    width: 100% !important;
+    max-width: 480px !important;
+  }
+
+  .center-module { order: 1 !important; }
+  .left-module { order: 2 !important; }
+  .task-module { order: 3 !important; height: 420px !important; }
+
+  .shortcuts-board {
+    grid-template-columns: repeat(4, 1fr) !important;
+    width: 100% !important;
+  }
+
+  .shortcuts-categories {
+    justify-content: center !important;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .shortcuts-board {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .widgets-top-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ========================================================
+   استایل‌های هماهنگ‌سازی آیکون‌های وکتور مینیمال
+======================================================== */
+.min-icon-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.min-icon-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.min-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.shortcut-item:hover .min-icon {
+  transform: translateY(-2px);
+  color: #38bdf8;
+}
+
+.flex-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.search-engine-icon {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 8px;
+}

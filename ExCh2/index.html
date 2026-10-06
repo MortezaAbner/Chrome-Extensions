@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آبنر | داشبورد</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- لایه پس‌زمینه پویا -->
+  <div class="wallpaper-background"></div>
+
+  <!-- کانتینر اصلی داشبورد متقارن[cite: 16] -->
+  <main class="dashboard-viewport">
+    
+    <!-- ستون ۱ (راست): کارت تسک هم‌تراز با انتهای تقویم[cite: 16] -->
+    <aside class="glass-panel task-module">
+      <div class="task-tabs">
+        <button class="tab-btn active" id="btnTabTasks">تسک</button>
+        <button class="tab-btn" id="btnTabNotes">یادداشت</button>
+      </div>
+
+      <div class="task-action-bar">
+        <button title="بیشتر" class="min-icon-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg>
+        </button>
+        <button title="مخفی" class="min-icon-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button title="فیلتر" class="min-icon-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </button>
+        <button title="افزودن" class="min-icon-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+
+      <div class="task-scroll-area" id="tasksList">
+        <div class="task-row glass-panel">
+          <input type="checkbox" id="chk1">
+          <label for="chk1">بلی</label>
+        </div>
+        <div class="task-row glass-panel">
+          <input type="checkbox" id="chk2">
+          <label for="chk2">ل</label>
+        </div>
+      </div>
+
+      <div class="task-bottom-input">
+        <input type="text" id="newTaskInput" class="glass-panel" placeholder="نوشتن تسک جدید...">
+      </div>
+    </aside>
+
+    <!-- ستون ۲ (وسط): سرچ‌بار، دسته‌بندی‌ها و میانبرها[cite: 16] -->
+    <section class="center-module">
+      <div class="glass-panel search-pill">
+        <span class="search-engine-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input type="text" id="searchInput" placeholder="جستجو در گوگل...">
+        <div class="search-tools">
+          <button title="کیبورد" class="min-icon-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+          </button>
+          <button title="صوتی" class="min-icon-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- تب‌های دسته‌بندی بالای میانبرها[cite: 16] -->
+      <div class="shortcuts-categories">
+        <button class="cat-pill active">صفحه اصلی</button>
+        <button class="cat-pill highlight-orange">دم دستی</button>
+        <button class="cat-pill highlight-teal">ممد قلی</button>
+        <button class="cat-pill add-cat">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          پوشه جدید
+        </button>
+      </div>
+
+      <!-- شبکه میانبرها با آیکون‌های خطی و تمیز[cite: 16] -->
+      <div class="glass-panel shortcuts-board">
+        <a href="https://digikala.com" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </span>
+          <span class="label">دیجی‌کالا</span>
+        </a>
+        <a href="https://instagram.com" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </span>
+          <span class="label">اینستاگرام</span>
+        </a>
+        <a href="https://web.telegram.org" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </span>
+          <span class="label">تلگرام</span>
+        </a>
+        <a href="https://youtube.com" class="shortcut-item highlight-box red">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+          </span>
+          <span class="label">یوتیوب</span>
+        </a>
+        <a href="https://google.com" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          </span>
+          <span class="label">گوگل</span>
+        </a>
+        <button class="shortcut-item app-drawer-btn" title="همه برنامه‌ها">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+          </span>
+        </button>
+
+        <a href="#" class="shortcut-item empty-card"></a>
+        <a href="#" class="shortcut-item empty-card"></a>
+        <a href="#" class="shortcut-item empty-card"></a>
+        <button class="shortcut-item add-btn" title="افزودن">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <a href="#" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </span>
+          <span class="label">وب</span>
+        </a>
+        <a href="https://divar.ir" class="shortcut-item">
+          <span class="min-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </span>
+          <span class="label">دیوار</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ستون ۳ (چپ): ساعت، آب‌وهوا و تقویم ماهانه[cite: 16] -->
+    <aside class="left-module">
+      <div class="widgets-top-row">
+        <!-- ساعت -->
+        <div class="glass-panel clock-widget">
+          <div class="widget-head">
+            <span class="clock-display" id="clockTime">۰۰:۵۴</span>
+            <span class="day-display">چهارشنبه</span>
+          </div>
+          <div class="calendar-detail">
+            <small>۱۴۰۵/۰۷/۱۵ (مهر)</small>
+            <small>۲۰۲۶/۱۰/۰۷ (اکتبر)</small>
+            <small>۱۴۴۸/۰۴/۱۹ (ربیع‌الثانی)</small>
+          </div>
+          <div class="widget-actions">
+            <button>اوقات شرعی ▾</button>
+            <button>تایمر ▾</button>
+          </div>
+        </div>
+
+        <!-- آب‌وهوا -->
+        <div class="glass-panel weather-widget">
+          <div class="temp-head">
+            <span class="temp-degree">۱۹°</span>
+            <span class="min-icon weather-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+            </span>
+          </div>
+          <div class="weather-text">تمام ابری</div>
+          <div class="weather-range">۲۱° حداکثر · ۱۸° حداقل</div>
+          <div class="weather-actions">
+            <button class="flex-btn">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              تهران
+            </button>
+            <button>پیش‌بینی ▾</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- تقویم ماهانه -->
+      <div class="glass-panel calendar-module">
+        <div class="cal-nav">
+          <button class="min-icon-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h4>مهر ۱۴۰۵ ▾</h4>
+          <button class="min-icon-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <p class="cal-sub">ربیع‌الثانی - جمادی‌الاول Sep-Oct</p>
+        
+        <div class="cal-grid">
+          <span class="th">ش</span><span class="th">ی</span><span class="th">د</span><span class="th">س</span>
+          <span class="th">چ</span><span class="th">پ</span><span class="th holiday">ج</span>
+          
+          <span></span><span></span><span></span><span>۱</span><span>۲</span><span>۳</span><span class="holiday">۴</span>
+          <span>۵</span><span>۶</span><span>۷</span><span>۸</span><span>۹</span><span>۱۰</span><span class="holiday">۱۱</span>
+          <span>۱۲</span><span>۱۳</span><span>۱۴</span><span class="active-day">۱۵</span><span>۱۶</span><span>۱۷</span><span class="holiday">۱۸</span>
+          <span>۱۹</span><span>۲۰</span><span>۲۱</span><span>۲۲</span><span>۲۳</span><span>۲۴</span><span class="holiday">۲۵</span>
+          <span>۲۶</span><span>۲۷</span><span>۲۸</span><span>۲۹</span><span>۳۰</span>
+        </div>
+
+        <div class="cal-bottom-bar">
+          <button class="flex-btn">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            تبدیل تاریخ
+          </button>
+          <button class="flex-btn">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            تقویم گوگل
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- نوار داکر شناور پایین[cite: 10] -->
+  <nav class="ab-bottom-dock" aria-label="تنظیمات سریع">
+    <button type="button" class="ab-dock-btn" id="dock-btn-font" title="تنظیمات قلم">
+      <span class="ab-dock-letter">A</span>
+    </button>
+    <span class="ab-dock-divider"></span>
+    <button type="button" class="ab-dock-btn" id="dock-btn-widgets" title="ابزارها">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
+    <button type="button" class="ab-dock-btn ab-dock-btn-center" id="dock-btn-theme" title="تم">
+      <!-- آیکون مینیمال هلال ماه به جای ایموجی -->
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button type="button" class="ab-dock-btn" id="dock-btn-settings" title="تنظیمات ماتی">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <span class="ab-dock-divider"></span>
+    <button type="button" class="ab-dock-btn" id="dock-btn-wallpaper" title="پس‌زمینه">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    </button>
+  </nav>
+
+  <!-- پاپ‌آپ تنظیمات ماتی شیشه -->
+  <div class="glass-settings-popup hidden" id="glassSettingsPopup">
+    <span>ماتی شیشه:</span>
+    <input type="range" id="glassBlurSlider" min="0" max="40" value="16">
+    <span id="glassBlurVal">16px</span>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
