@@ -27,3 +27,45 @@
 body {
   font-family: 'Vazirmatn', sans-serif;
 }
+/* چیدمان متقارن و استاندارد داشبورد آبنر */
+.dashboard-container, .main-layout, main {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+}
+
+/* ستون چپ: تسک‌ها */
+.left-column, .tasks-column {
+  flex: 0 0 320px !important;
+  width: 320px !important;
+}
+
+/* ستون وسط: نوار جستجو و بوکمارک‌های مربعی */
+.center-column, .search-column {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  max-width: 680px !important;
+  margin: 0 auto !important;
+}
+
+/* ستون راست: وضعیت هوا و تقویم اصلی */
+.right-column, .weather-column {
+  flex: 0 0 340px !important;
+  width: 340px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+/* پنهان‌سازی هرگونه تقویم متفرقه خارج از ستون راست */
+#abner-calendar-root, #abner-calendar-container, .ab-calendar-card {
+  display: none !important;
+}
