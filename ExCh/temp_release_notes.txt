@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.84:
-- تنظیم پیش‌فرض ماتی داشبورد و پاپ‌آپ‌ها روی ۵۰ درصد و فعال‌سازی اتصال زنده اسلایدرها در تنظیمات تم و رنگ
+### 🇮🇷 تغییرات نسخه v1.32.85:
+- انتقال و استقرار کدهای مستقل آب و هوا و تاریخ سه‌جانبه به همراه دکمه‌های کپسولی درون پوشه‌های ماژولار
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.84):
-- Set Default 50 Percent Glass Blur and Opacity with Dynamic Controls
+### 🇬🇧 Release Notes (v1.32.85):
+- Modularize Triple Date and Weather Widgets into Dedicated Folders
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
