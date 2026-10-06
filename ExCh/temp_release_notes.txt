@@ -1,5 +1,5 @@
-### 🇮🇷 تغییرات نسخه v1.32.90:
-- حذف تقویم ساختگی میانه صفحه و تثبیت ساختار ماژولار فقط برای تقویم اصلی سمت راست
+### 🇮🇷 تغییرات نسخه v1.32.91:
+- بازگردانی فایل‌های داشبورد به دو مرحله قبل و قرار دادن کدهای تقویم درون پوشه ماژولار بدون تغییر ساختار
 - مات‌تر و خواناتر شدن استایل شیشه‌ای پنجره‌های پیش‌بینی، اوقات شرعی و تایمر
 - فعال‌سازی کامل موقعیت‌یابی زنده دستگاه (GPS)، تشخیص آی‌پی و جستجوی شهر
 - افزودن قابلیت تغییر مقادیر تایمر با چرخ ماوس
@@ -7,8 +7,8 @@
 
 ---
 
-### 🇬🇧 Release Notes (v1.32.90):
-- Remove Injected Middle Calendar and Keep Only Native Calendar
+### 🇬🇧 Release Notes (v1.32.91):
+- Revert Dashboard 2 Steps and Place Exact Calendar in Folder
 - Enhanced frosted glass blur and opacity for forecast, prayer times, and timer drawers
 - Enabled native device GPS geocoding, IP lookup, and interactive city search
 - Added mouse-wheel increment and decrement support for timer fields
