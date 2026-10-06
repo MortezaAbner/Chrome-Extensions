@@ -1,12 +1,14 @@
 {
   "manifest_version": 3,
   "name": "آبنر - Abner New Tab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "صفحه تب جدید مدرن، ماژولار و وب‌اپ آبنر",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
