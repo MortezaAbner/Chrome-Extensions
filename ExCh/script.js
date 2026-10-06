@@ -1,3 +1,4 @@
+let timerAlarmModal = null;
 function renderShortcuts() { if (window.renderAbnerBookmarks) window.renderAbnerBookmarks(); }
 // تعریف تابع ماتی برای رفع ارور applyAbsoluteBlurEngine is not defined
 function applyAbsoluteBlurEngine(dashPct, popupPct) {
@@ -1053,7 +1054,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timerActionMain.classList.remove('running');
             timerHr.value = '۰۰'; timerMin.value = '۲۵'; timerSec.value = '۰۰';
             startAlarmSound();
-            if (timerAlarmModal) timerAlarmModal.classList.add('active');
+            timerAlarmModal = timerAlarmModal || document.querySelector('.timer-alarm-modal, #timerAlarmModal');
+        if (typeof timerAlarmModal !== 'undefined' && timerAlarmModal) timerAlarmModal.classList.add('active');
             return;
           }
           const curH = Math.floor(totalRemainingSec / 3600);
