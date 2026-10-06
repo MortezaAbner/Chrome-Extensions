@@ -1,46 +1,136 @@
 
 /* ========================================================
-   استایل‌های تفکیک‌شده دو ویجت تاریخ سه‌جانبه و آب‌وهوای اصلی آبنر
+   استایل ماژولار ویجت‌های آب و هوا و تاریخ سه‌جانبه آبنر
 ======================================================== */
-
-/* حذف هرگونه ویجت متفرقه که در مرکز یا بالای صفحه ایجاد شده بود */
-#abner-datetime-widget,
-#abner-weather-widget,
-.top-weather-box {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
+.ab-weather-row {
+  display: flex !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 340px !important;
+  direction: rtl !important;
+  margin-bottom: 12px !important;
 }
 
-/* استایل شیشه‌ای دو کارت تاریخ سه‌جانبه و آب‌وهوا در بالای تقویم */
-.right-column > div:first-child,
-.right-column > div:nth-child(2),
-.weather-section,
-.datetime-section {
+/* کارت‌های دوقلوی تاریخ و آب و هوا */
+.ab-date-card,
+.ab-weather-card {
+  flex: 1 1 50% !important;
+  min-height: 190px !important;
+  padding: 14px 12px !important;
+  border-radius: 24px !important;
+  box-sizing: border-box !important;
+  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
-  background: var(--dash-glass-bg, rgba(20, 24, 35, 0.50)) !important;
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
-  border-radius: 24px !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  color: #fff !important;
+  position: relative !important;
+}
+
+/* سربرگ زمان و دما */
+.ab-head-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.ab-clock-val {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: #3b82f6 !important;
+}
+.ab-day-name {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+.ab-temp-val {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  color: #6366f1 !important;
+}
+.ab-weather-icon {
+  font-size: 26px !important;
+}
+
+/* سطرهای سه‌گانه تاریخ */
+.ab-date-rows {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin: 6px 0 !important;
+  font-size: 11px !important;
+}
+.ab-date-line {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+.ab-date-line .month-tag {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-size: 10.5px !important;
+}
+
+/* توضیحات آب و هوا */
+.ab-w-desc {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+}
+.ab-w-minmax {
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* دکمه‌های کپسولی پایین کارت‌ها */
+.ab-pill-group {
+  display: flex !important;
+  gap: 6px !important;
+  margin-top: 8px !important;
+}
+.ab-pill-action {
+  flex: 1 !important;
+  padding: 5px 8px !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
   transition: all 0.2s ease !important;
 }
-
-/* استایل دکمه‌های کپسولی پایین این دو کارت (اوقات شرعی، تایمر، پیش‌بینی، شهر) */
-.right-column button,
-.weather-section button,
-.datetime-section button {
-  border-radius: 20px !important;
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
-  color: #fff !important;
-  font-family: inherit !important;
-  backdrop-filter: blur(8px) !important;
-  transition: background 0.2s ease !important;
+.ab-pill-action:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
 }
 
-.right-column button:hover,
-.weather-section button:hover,
-.datetime-section button:hover {
-  background: rgba(255, 255, 255, 0.28) !important;
+/* پاپ‌آپ‌های اختصاصی اوقات شرعی، تایمر، شهر و پیش‌بینی */
+.ab-sub-popup {
+  position: absolute !important;
+  bottom: 50px !important;
+  right: 0 !important;
+  width: 100% !important;
+  background: rgba(25, 30, 42, 0.92) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 16px !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+  z-index: 100 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+  display: none;
+}
+.ab-sub-popup.active {
+  display: block !important;
 }

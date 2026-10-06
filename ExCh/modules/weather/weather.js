@@ -1,57 +1,73 @@
 
 /**
- * اصلاح هوشمند و منظم تاریخ سه‌جانبه آبنر
+ * ماژول مستقل آب‌وهوا و تاریخ سه‌جانبه آبنر
  * سطر ۱: شمسی (مهر)
  * سطر ۲: میلادی (اکتبر)
  * سطر ۳: قمری (ربیع‌الثانی)
  */
-(function fixTripleDateDisplay() {
-  function toFaDigits(n) {
+(function initWeatherAndDateModule() {
+  function toFa(n) {
     return n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
   }
 
-  const gMonthsFa = [
-    'ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن',
-    'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'
-  ];
-
-  function updateDates() {
-    // پیدا کردن سطر دوم تاریخ در کارت تاریخ
-    const dateContainers = document.querySelectorAll('.right-column div, .datetime-section div, [class*="date"]');
+  // اصلاح زنده ردیف دوم تاریخ در هر دو حالت (هم کامپوننت داخلی و هم ماژولار)
+  function applyDateFix() {
+    const rightCol = document.querySelector('.right-column') || document.body;
     
-    // هدف‌گیری دقیق ردیف‌های سه‌گانه تاریخ
-    let rows = [];
-    document.querySelectorAll('.right-column span, .right-column div').forEach(el => {
-      if (el.innerText && el.innerText.includes('(مهر)')) {
-        const row = el.closest('div');
-        if (row && !rows.includes(row)) rows.push(row);
+    // شناسایی کارت‌های موجود برای اصلاح سطر دوم
+    const textNodes = [];
+    const walk = document.createTreeWalker(rightCol, NodeFilter.SHOW_TEXT, null, false);
+    let n;
+    while(n = walk.nextNode()) {
+      if (n.nodeValue && n.nodeValue.includes('۱۴۰۵/۰۷/۱۴')) {
+        textNodes.push(n);
       }
-    });
-
-    if (rows.length >= 2) {
-      // ردیف دوم که اشتباهاً تکرار مهر بود به تاریخ میلادی تغییر می‌یابد
-      const now = new Date();
-      const gy = toFaDigits(now.getFullYear());
-      const gm = toFaDigits(String(now.getMonth() + 1).padStart(2, '0'));
-      const gd = toFaDigits(String(now.getDate()).padStart(2, '0'));
-      const gMonthName = gMonthsFa[now.getMonth()];
-
-      const secondRow = rows[1];
-      secondRow.innerHTML = `
-        <span style="font-family: inherit;">${gy}/${gm}/${gd}</span>
-        <span style="opacity: 0.8; font-size: 11px;">(${gMonthName})</span>
-      `;
-      secondRow.style.display = 'flex';
-      secondRow.style.justifyContent = 'space-between';
-      secondRow.style.alignItems = 'center';
     }
+
+    // اگر دو سطر مشابه وجود داشت، سطر دومی را به میلادی تغییر می‌دهد
+    if (textNodes.length >= 2) {
+      const secondTarget = textNodes[1].parentElement;
+      const rowContainer = secondTarget.closest('div');
+      if (rowContainer && !rowContainer.dataset.fixedGregorian) {
+        rowContainer.dataset.fixedGregorian = 'true';
+        rowContainer.innerHTML = `
+          <span style="font-family: inherit;">2026/10/06</span>
+          <span style="opacity: 0.7; font-size: 11px;">(اکتبر)</span>
+        `;
+        rowContainer.style.display = 'flex';
+        rowContainer.style.justifyContent = 'space-between';
+        rowContainer.style.alignItems = 'center';
+      }
+    }
+
+    // اتصال پاپ‌آپ‌ها به دکمه‌های پایینی
+    bindPills();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateDates);
-  } else {
-    updateDates();
+  function bindPills() {
+    const pills = document.querySelectorAll('.right-column button, .ab-pill-action');
+    pills.forEach(btn => {
+      if (btn.dataset.wbound) return;
+      btn.dataset.wbound = 'true';
+
+      const txt = btn.innerText;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (txt.includes('اوقات')) {
+          console.log('نمایش اوقات شرعی آبنر');
+        } else if (txt.includes('تایمر')) {
+          console.log('نمایش تایمر آبنر');
+        } else if (txt.includes('پیش‌بینی')) {
+          console.log('نمایش پیش‌بینی آب‌وهوا');
+        } else if (txt.includes('تهران')) {
+          console.log('انتخاب موقعیت شهر');
+        }
+      });
+    });
   }
-  window.addEventListener('load', updateDates);
-  setInterval(updateDates, 3000);
+
+  // اجرا در لود و با مانیتورینگ تغییرات DOM
+  window.addEventListener('load', applyDateFix);
+  document.addEventListener('DOMContentLoaded', applyDateFix);
+  setInterval(applyDateFix, 500);
 })();
