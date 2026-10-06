@@ -1,133 +1,20 @@
 
 /* ========================================================
-   استایل اختصاصی تقویم ماهانه آبنر (modules/calendar/calendar.css)
+   استایل شیشه‌ای تقویم اصلی آبنر (modules/calendar/calendar.css)
 ======================================================== */
-.calendar-card,
-.ab-calendar-box {
-  width: 100% !important;
-  max-width: 340px !important;
-  padding: 18px !important;
+/* مخفی‌سازی کامل هرگونه تقویم متفرقه تزریقی */
+#abner-native-calendar {
+  display: none !important;
+}
+
+/* استایل تقویم اصلی موجود در ستون راست */
+.right-column > div:last-child,
+.right-column .Calendar,
+.right-column [class*="calendar"] {
   border-radius: 28px !important;
-  box-sizing: border-box !important;
-  direction: rtl !important;
-  user-select: none !important;
-  font-family: inherit !important;
-  color: #fff !important;
-  background: var(--dash-glass-bg, rgba(255, 255, 255, 0.12)) !important;
+  background: var(--dash-glass-bg, rgba(20, 24, 35, 0.50)) !important;
   backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--dash-blur-px, 20px)) saturate(160%) !important;
   border: 1px solid var(--dash-glass-border, rgba(255, 255, 255, 0.18)) !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18) !important;
-}
-
-/* سربرگ ماه و سال */
-.cal-header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  margin-bottom: 4px !important;
-}
-.cal-title-wrap {
-  text-align: center !important;
-}
-.cal-title {
-  font-size: 19px !important;
-  font-weight: 800 !important;
-  color: #2563eb !important;
-  cursor: pointer !important;
-}
-.cal-sub-title {
-  font-size: 11px !important;
-  opacity: 0.75 !important;
-  margin-top: 2px !important;
-}
-.cal-nav-btn {
-  background: none !important;
-  border: none !important;
-  color: #fff !important;
-  font-size: 16px !important;
-  cursor: pointer !important;
-  padding: 4px 8px !important;
-  opacity: 0.8 !important;
-}
-.cal-nav-btn:hover {
-  opacity: 1 !important;
-}
-
-/* ردیف روزهای هفته */
-.cal-weekdays {
-  display: grid !important;
-  grid-template-columns: repeat(7, 1fr) !important;
-  text-align: center !important;
-  font-size: 11.5px !important;
-  font-weight: 700 !important;
-  margin: 12px 0 8px 0 !important;
-  color: #fff !important;
-}
-.cal-weekdays .holiday {
-  color: #ef4444 !important;
-}
-
-/* شبکه روزهای ماه */
-.cal-days-grid {
-  display: grid !important;
-  grid-template-columns: repeat(7, 1fr) !important;
-  gap: 4px !important;
-  text-align: center !important;
-}
-.cal-day-cell {
-  height: 38px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 50% !important;
-  cursor: pointer !important;
-  position: relative !important;
-  font-size: 13.5px !important;
-  font-weight: 600 !important;
-}
-.cal-day-cell.holiday {
-  background: rgba(239, 68, 68, 0.22) !important;
-  color: #f87171 !important;
-}
-.cal-day-cell.is-today {
-  background: #2563eb !important;
-  color: #fff !important;
-  box-shadow: 0 0 12px rgba(37, 99, 235, 0.6) !important;
-}
-.cal-event-dot {
-  width: 4px !important;
-  height: 4px !important;
-  border-radius: 50% !important;
-  background: #10b981 !important;
-  margin-top: 2px !important;
-}
-
-/* نوار ابزار پایینی تقویم */
-.cal-footer {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-around !important;
-  margin-top: 14px !important;
-  padding-top: 10px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-  font-size: 12px !important;
-}
-.cal-foot-action {
-  background: none !important;
-  border: none !important;
-  color: #fff !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  font-family: inherit !important;
-  opacity: 0.9 !important;
-}
-.cal-foot-action:hover {
-  opacity: 1 !important;
-}
-.cal-foot-divider {
-  color: rgba(255, 255, 255, 0.3) !important;
 }
